@@ -1,3 +1,4 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
-gem "nokogiri"
+gem 'nokogiri'
+gem 'puppet'

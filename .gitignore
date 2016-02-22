@@ -1,3 +1,5 @@
 projects/**
 unusedcode
 .DS_Store
+.idea
+.vagrant

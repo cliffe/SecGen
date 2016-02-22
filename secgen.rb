@@ -1,12 +1,4 @@
-# Security Simulator
-#
-# $Id$
-#
-# $Revision$
-#
-# This program allows you to use a large amount of virtual machines and install vulnerable software to create a learning environment.
-#
-# By: Lewis Ardern (Leeds Metropolitan University)
+# Wrapper for secgen components
 
 require 'getoptlong'
 require 'fileutils'
@@ -17,11 +9,7 @@ require_relative 'vagrant.rb'
 
 # coloured logo
 puts "\e[34m"
-File.open('lib/commandui/logo/logo.txt', 'r') do |f1|
-	while line = f1.gets
-		puts line
-	end
-end
+puts 'SecGen - An application for creating randomized vulnerable environments.'
 puts "\e[0m"
 
 def usage

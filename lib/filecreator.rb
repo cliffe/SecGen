@@ -1,5 +1,5 @@
 require 'erb'
-require_relative 'system.rb'
+require_relative 'constants'
 
 
 VAGRANT_TEMPLATE_FILE = "#{ROOT_DIR}/lib/templates/vagrantbase.erb"

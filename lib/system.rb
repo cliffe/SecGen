@@ -1,13 +1,6 @@
 require 'nokogiri'
-# assign constants
-ROOT_DIR = File.dirname(__FILE__)
+require_relative 'constants'
 
-BOXES_XML = "#{ROOT_DIR}/lib/xml/boxes.xml"
-NETWORKS_XML = "#{ROOT_DIR}/lib/xml/networks.xml"
-VULN_XML = "#{ROOT_DIR}/lib/xml/vulns.xml"
-SERVICES_XML = "#{ROOT_DIR}/lib/xml/services.xml"
-BASE_XML = "#{ROOT_DIR}/lib/xml/bases.xml"
-MOUNT_DIR = "#{ROOT_DIR}/mount/"
 
 class System
     # can access from outside of class

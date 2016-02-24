@@ -10,7 +10,7 @@
 
 require 'getoptlong'
 require 'fileutils'
-require_relative 'lib/system.rb'
+require_relative 'lib/constants'
 require_relative 'lib/filecreator.rb'
 require_relative 'lib/systemreader.rb'
 require_relative 'lib/vagrant.rb'

@@ -46,7 +46,7 @@ class Network
     end
 
     def eql? other
-        # checks if name matches networks.xml from boxes.xml
+        # checks if name matches networks.xml from scenario.xml
         other.kind_of?(self.class) && @name == other.name
     end
 
@@ -81,7 +81,7 @@ end
 
 class ServiceManager
 	# secure services are randomly selected from the definitions in services.xml (secure_services)
-	# based on the attributes optionally specified in boxes.xml (want_services)
+	# based on the attributes optionally specified in scenario.xml (want_services)
 	# However, if the service type has already had a vulnerability assigned (selected_vulns), it is ignored here
 	def self.process(want_services, secure_services, selected_vulns=[])
 		return_services = {}
@@ -109,7 +109,7 @@ class ServiceManager
 			end
 
 			if search_list.length == 0
-				STDERR.puts "Matching service was not found please check the xml boxes.xml"
+				STDERR.puts "Matching service was not found please check the xml scenario.xml"
 				STDERR.puts "(note: you can only have one of each type of service per system)"
 				exit
 			else
@@ -151,7 +151,7 @@ class NetworkManager
                      end
                 end
                 if not has_found
-                    p "Network was not found please check the xml boxes.xml"
+                    p "Network was not found please check the xml scenario.xml"
                     exit
                 end
             end
@@ -178,7 +178,7 @@ class Vulnerability
     attr_accessor :type, :privilege, :access ,:puppets, :details, :ports, :cve
 
     def eql? other
-        # checks if type matches vulns.xml from boxes.xml
+        # checks if type matches vulns.xml from scenario.xml
         other.kind_of?(self.class) && @type == other.type
     end
 
@@ -204,7 +204,7 @@ end
 
 class VulnerabilityManager
 	# vulnerabilities are randomly selected from the definitions in vulns.xml (all_vulns)
-	# based on the attributes optionally specified in boxes.xml (want_vulns)
+	# based on the attributes optionally specified in scenario.xml (want_vulns)
 	def self.process(want_vulns, all_vulns)
 		return_vulns = {}
 
@@ -231,7 +231,7 @@ class VulnerabilityManager
 			end
 
 			if search_list.length == 0
-				STDERR.puts "Matching vulnerability was not found please check the xml boxes.xml"
+				STDERR.puts "Matching vulnerability was not found please check the xml scenario.xml"
 				STDERR.puts "(note: you can only have one of each type of vulnerability per system)"
 				exit
 			else

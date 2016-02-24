@@ -6,7 +6,7 @@ class SystemReader
 		@systems_xml = systems_xml
 	end
 
-	# uses nokogiri to extract all system information from boxes.xml will add it to the system class after
+	# uses nokogiri to extract all system information from scenario.xml will add it to the system class after
 	# checking if the vulnerabilities / networks exist from system.rb
 	def systems
 		systems = []

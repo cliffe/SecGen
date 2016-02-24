@@ -1,6 +1,6 @@
 require "test/unit"
 require 'nokogiri'
-require_relative "../../system.rb"
+require_relative "../system.rb"
 #http://ruby-doc.org/stdlib-2.0.0/libdoc/test/unit/rdoc/Test/Unit/Assertions.html
 
 class TestXMLIsEqual < Test::Unit::TestCase

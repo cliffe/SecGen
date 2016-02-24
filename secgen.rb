@@ -10,10 +10,10 @@
 
 require 'getoptlong'
 require 'fileutils'
-require_relative 'system.rb'
-require_relative 'filecreator.rb'
-require_relative 'systemreader.rb'
-require_relative 'vagrant.rb'
+require_relative 'lib/system.rb'
+require_relative 'lib/filecreator.rb'
+require_relative 'lib/systemreader.rb'
+require_relative 'lib/vagrant.rb'
 
 # coloured logo
 puts "\e[34m"

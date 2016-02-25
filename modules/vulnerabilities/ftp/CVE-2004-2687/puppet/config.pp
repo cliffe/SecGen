@@ -11,7 +11,7 @@ class distcc::config {
     owner   => 'root',
     group   => 'root',
     mode    => '0777',
-    content  => template('distcc/distcc.erb')
+    content  => template('../data/distcc.erb')
   }
 
 

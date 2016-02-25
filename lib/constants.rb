@@ -15,4 +15,4 @@ VULNERABILITIES_PATH = "#{ROOT_DIR}/modules/vulnerabilities/"
 VULN_NOT_FOUND = "Matching vulnerability was not found please check the xml scenario.xml"
 
 #RUNTIME_CONSTANTS
-
+AVAILABLE_CVE_NUMBERS = []

@@ -90,8 +90,8 @@ class ServiceManager
 		
 		# remove all services that have already been selected as vulns (from both the wanted and secure lists)
 		selected_vulns.each do |a_vuln|
-			legal_services.delete_if{|x| x.type == a_vuln['type']}
-			wanted_services.delete_if{|x| x.type == a_vuln['type']}
+			legal_services.delete_if{|x| x.type == a_vuln.type}
+			wanted_services.delete_if{|x| x.type == a_vuln.type}
 		end
 		
 		wanted_services.each do |service_query|

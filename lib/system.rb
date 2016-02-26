@@ -90,8 +90,8 @@ class ServiceManager
 		
 		# remove all services that have already been selected as vulns (from both the wanted and secure lists)
 		selected_vulns.each do |a_vuln|
-			legal_services.delete_if{|x| x.type == a_vuln.type}
-			wanted_services.delete_if{|x| x.type == a_vuln.type}
+			legal_services.delete_if{|x| x.type == a_vuln['type']}
+			wanted_services.delete_if{|x| x.type == a_vuln['type']}
 		end
 		
 		wanted_services.each do |service_query|
@@ -174,8 +174,6 @@ class BaseManager
     end
 end
 
-
-
 class Conf
     # this class uses nokogiri to grab all of the information from network.xml, bases.xml, and vulns.xml
     # then adds them to their specific class to do checking for legal in Manager.process
@@ -193,12 +191,12 @@ class Conf
         return @@bases = self._get_list(BASE_XML, "//bases/base", Basebox)
     end
 
-    def self.vulnerabilities
-        if defined? @@vulnerabilities
-            return @@vulnerabilities
-        end
-        return @@vulnerabilities = self._get_list(VULN_XML, "//vulnerabilities/vulnerability", Vulnerability)
-    end
+    #def self.vulnerabilities
+    #    if defined? @@vulnerabilities
+    #        return @@vulnerabilities
+    #    end
+    #    return @@vulnerabilities = self._get_list(VULN_XML, "//vulnerabilities/vulnerability", Vulnerability)
+    #end
 
     def self.services
         if defined? @@services

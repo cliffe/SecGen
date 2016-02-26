@@ -2,4 +2,4 @@
 <network name="homeonly" range="172.16.0.0"></network>
 <network name="homeonly1" range="172.17.0.0"></network>
 <network name="homeonly2" range="172.18.0.0"></network>
-</network>
+</networks>

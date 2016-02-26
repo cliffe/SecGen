@@ -1,13 +1,3 @@
-# Security Simulator
-#
-# $Id$
-#
-# $Revision$
-#
-# This program allows you to use a large amount of virtual machines and install vulnerable software to create a learning environment.
-#
-# By: Lewis Ardern (Leeds Metropolitan University)
-
 require 'getoptlong'
 require 'fileutils'
 require_relative 'lib/constants'
@@ -41,7 +31,7 @@ def build_config
 	puts 'Reading configuration file for virtual machines you want to create'
 
 	# uses nokogoiri to grab all the system information from scenario.xml
-	systems = SystemReader.new(BOXES_XML).systems
+	systems = SystemReader.new(SCENARIO_XML).systems
 	  
 	puts 'Creating vagrant file'
 	# create's vagrant file / report a starts the vagrant installation'

@@ -1,4 +1,5 @@
 require_relative 'system.rb'
+require_relative 'objects/vulnerability'
 require_relative 'helpers/vulnerability_processor'
 class SystemReader
 	# initializes systems xml from BOXES_XML const

@@ -4,10 +4,11 @@
         privilege="user"
         access="remote"
         details="ftpbackdoor smiley face backdoor exploit"
-        platform="unix">
+        platform="unix"
+        name="ftpbackdoor">
   <puppets>
-    <puppet>install.pp</puppet>
-    <puppet>ftpbackdoor.pp</puppet>
+    <puppet>install</puppet>
+    <puppet>ftpbackdoor</puppet>
   </puppets>
   <files>
     <file>vsftpd-2.3.4.tar.gz</file>

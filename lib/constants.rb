@@ -16,3 +16,6 @@ VULN_NOT_FOUND = "Matching vulnerability was not found please check the xml scen
 
 #RUNTIME_CONSTANTS
 AVAILABLE_CVE_NUMBERS = []
+
+#VAGRANT_FILE_CONSTANTS
+PATH_TO_CLEANUP = "#{ROOT_DIR}/modules/build/puppet/"

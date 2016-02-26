@@ -23,9 +23,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # Add secure services
 <%s.services.each do |v|%>
 <%v.puppets.each do |p|%>
-    config.vm.provision "puppet" do |<%=p%>|
-      <%=p%>.module_path = "<%=ROOT_DIR%>/mount/puppet/modules"
-      <%=p%>.manifests_path = "<%=ROOT_DIR%>/mount/puppet/manifests"
+    config.vm.provision "puppet" do |<%=p["puppet"][0]%>|
+      <%=p%>.module_path = <%="#{v.puppet_path}modules"%>
+      <%=p%>.manifests_path = "<%="#{v.puppet_path}manifest"%>
       <%=p%>.manifest_file = "<%=p%>.pp"
     end
 <% end %>
@@ -35,9 +35,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 <%s.vulns.each do |v|%>
 <%v.puppets.each do |p|%>
     config.vm.provision "puppet" do |<%=p%>|
-      <%=p%>.module_path = <% v.puppet_path + 'modules/' %>
-      <%=p%>.manifests_path = <%=v.puppet_path + 'manifests/'%>.puppet_path/manifests"
-      <%=p%>.manifest_file = "<%=p%>.pp"
+      <%=p%>.manifest_path= <%="#{v.puppet_path}manifest"%>
+      <%=p%>.manifest_file = "<%p%>.pp"
     end
 <% end %>
 <% end %>

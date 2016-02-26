@@ -128,13 +128,13 @@ class ServiceManager
 end
 
 class NetworkManager
-    # the user will either specify a blank network type or a knownnetwork type
+    # the user will either specify a blank misc type or a knownnetwork type
     def self.process(networks,valid_network)
         new_networks = {}
         # intersection of valid networks / user defined networks
         legal_networks = valid_network & networks
         networks.each do |network|
-            # checks to see string is blank if so valid network into a new hash map of vulnerabilities 
+            # checks to see string is blank if so valid misc into a new hash map of vulnerabilities
             if network.name == ""
                 random = valid_network.sample
                  new_networks[random.id] = random
@@ -144,7 +144,7 @@ class NetworkManager
                 legal_networks.shuffle.each do |valid|
                      if network.name == valid.name
                         network.range = valid.range unless not network.range.empty?
-                        # valid network into a new hash map of networks 
+                        # valid misc into a new hash map of networks
                         new_networks[network.id] = network
                         has_found = true
                         break
@@ -175,7 +175,7 @@ class BaseManager
 end
 
 class Conf
-    # this class uses nokogiri to grab all of the information from network.xml, bases.xml, and vulns.xml
+    # this class uses nokogiri to grab all of the information from misc.xml, bases.xml, and vulns.xml
     # then adds them to their specific class to do checking for legal in Manager.process
     def self.networks
         if defined? @@networks

@@ -17,7 +17,7 @@ class TestXMLIsEqual < Test::Unit::TestCase
 	    vulns = system.css('vulnerabilities vulnerability').collect do |v|
 	    	Vulnerability.new(v[:type],v[:privilege],v[:access],v[:puppet],v[:details])
 	      end
-	    networks = system.css('networks network').collect { |n| n['name'] }
+	    networks = system.css('networks misc').collect { |n| n['name'] }
 
 	    @systems << System.new(id, os, base, vulns, networks)
 	  end

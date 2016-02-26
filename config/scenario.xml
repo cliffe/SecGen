@@ -22,7 +22,7 @@
 			<vulnerability privilege="root" access="remote" type="www" cve=""></vulnerability>
 		</vulnerabilities>
 		<networks>
-			<network name="homeonly"></network>
+			<misc name="homeonly"></misc>
 		</networks>
 	</system> -->
 

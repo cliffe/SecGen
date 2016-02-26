@@ -1,1 +1,0 @@
-include distcc::config

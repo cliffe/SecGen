@@ -191,12 +191,12 @@ class Conf
         return @@bases = self._get_list(BASE_XML, "//bases/base", Basebox)
     end
 
-    #def self.vulnerabilities
-    #    if defined? @@vulnerabilities
-    #        return @@vulnerabilities
-    #    end
-    #    return @@vulnerabilities = self._get_list(VULN_XML, "//vulnerabilities/vulnerability", Vulnerability)
-    #end
+    def self.vulnerabilities
+        if defined? @@vulnerabilities
+            return @@vulnerabilities
+        end
+        return @@vulnerabilities = self._get_list(VULN_XML, "//vulnerabilities/vulnerability", Vulnerability)
+    end
 
     def self.services
         if defined? @@services

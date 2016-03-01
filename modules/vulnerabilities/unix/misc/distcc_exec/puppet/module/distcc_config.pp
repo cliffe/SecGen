@@ -1,4 +1,4 @@
-class distcc_exec::config {
+class distcc_exec::distcc_config {
 
   package { 'distcc':
       ensure => installed

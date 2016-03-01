@@ -31,7 +31,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         <% vulnerability.puppets.each do |puppet| %>
             <% vulnerability_name = vulnerability.name %>
             config.vm.provision "puppet" do | <%=vulnerability_name%> |
-            <%=vulnerability_name%>.manifests_path= "<%="#{vulnerability.puppet_path}/manifest" %>"
+            <%=vulnerability_name%>.manifests_path= "<%="#{MOUNT_DIR}/puppet/" %>"
+            <%=vulnerability_name%>.module_path= "<%="#{MOUNT_DIR}/puppet/" %>"
             <%=vulnerability_name%>.manifest_file = "<%=vulnerability_name%>.pp"
             end
         <% end %>

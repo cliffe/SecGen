@@ -1,1 +1,1 @@
-include distcc_exec::config
+include distcc_exec::distcc_config

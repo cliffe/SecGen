@@ -5,8 +5,8 @@
         access="remote"
         details="Misconfigured to be mountable from anyone that can interact with it"
         platform="unix"
-        name="nfs">
+        name="mountable_nfs">
   <puppets>
-    <puppet>nfs</puppet>
+    <puppet>mountable_nfs</puppet>
   </puppets>
 </vulnerability>

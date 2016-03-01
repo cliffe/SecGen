@@ -4,6 +4,7 @@ require_relative 'lib/constants'
 require_relative 'lib/filecreator.rb'
 require_relative 'lib/systemreader.rb'
 require_relative 'lib/vagrant.rb'
+require_relative 'lib/helpers/bootstrap'
 
 # coloured logo
 puts "\e[34m"
@@ -15,7 +16,7 @@ end
 puts "\e[0m"
 
 def usage
-	puts 'Usage:
+  puts 'Usage:
    ' + $0 + ' [options]
 
    OPTIONS:
@@ -24,36 +25,30 @@ def usage
    --build-vms, -v: builds VMs from previously generated vagrant config
    --help, -h: shows this usage information
 '
-	exit
+  exit
 end
 
 def build_config
-	puts 'Reading configuration file for virtual machines you want to create'
+  puts 'Reading configuration file for virtual machines you want to create'
 
-	# uses nokogoiri to grab all the system information from scenario.xml
-	systems = SystemReader.new(SCENARIO_XML).systems
-	  
-	puts 'Creating vagrant file'
-	# create's vagrant file / report a starts the vagrant installation'
-	create_files = FileCreator.new(systems)
-	build_number = create_files.generate(systems)
-	return build_number
+  # uses nokogoiri to grab all the system information from scenario.xml
+  systems = SystemReader.new(SCENARIO_XML).systems
+
+  puts 'Creating vagrant file'
+  # create's vagrant file / report a starts the vagrant installation'
+  create_files = FileCreator.new(systems)
+  build_number = create_files.generate(systems)
+  return build_number
 end
 
 def build_vms(build_number)
-	vagrant = VagrantController.new
-	vagrant.vagrant_up(build_number)
+  vagrant = VagrantController.new
+  vagrant.vagrant_up(build_number)
 end
 
 def run
-
-  #create mount directory structure. We shouldnt be comitting this to the repo
-  #blat the current .pp files in the mount dir
-	#copy all .pp files under modules/vulnerabilities/**/manifests/*.pp to mount/puppet/manifests
-	#copy all .pp files under modules/vulnerabilities/**/modules/*.pp to mount/puppet/modules
-
-	build_number = build_config()
-	build_vms(build_number)
+  build_number = build_config()
+  build_vms(build_number)
 end
 
 if ARGV.length < 1
@@ -73,7 +68,9 @@ opts.each do |opt, arg|
 	case opt
 		when '--help'
 			usage
-		when '--run'
+    when '--run'
+      application_bootstrapper = Bootstrap.new
+      application_bootstrapper.bootstrap
 			run
 		when '--build-config'
 			build_config()
@@ -81,5 +78,9 @@ opts.each do |opt, arg|
 			build_vms()
 	end
 end
+
+
+
+
 
 

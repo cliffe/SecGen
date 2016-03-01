@@ -31,14 +31,14 @@ end
 def build_config
   puts 'Reading configuration file for virtual machines you want to create'
 
-  # uses nokogoiri to grab all the system information from scenario.xml
-  systems = SystemReader.new.systems
+	# Initialise configuration
+	config = Configuration.new()
 
-  puts 'Creating vagrant file'
+	puts 'Creating vagrant file'
   # create's vagrant file / report a starts the vagrant installation'
-  create_files = FileCreator.new(systems)
-  build_number = create_files.generate(systems)
-  return build_number
+	file_creator = FileCreator.new(config)
+	build_number = file_creator.generate()
+	return build_number
 end
 
 def build_vms(build_number)

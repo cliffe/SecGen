@@ -1,4 +1,4 @@
-require_relative 'conf.rb'
+require_relative 'configuration.rb'
 require_relative 'network_manager.rb'
 require_relative 'service_manager.rb'
 require_relative 'base_manager.rb'
@@ -17,7 +17,7 @@ class SystemReader
 
 	# uses nokogiri to extract all system information from scenario.xml will add it to the system class after
 	# checking if the vulnerabilities / networks exist from system.rb
-	def systems
+	def parse_systems
 		systems = []
 		doc = Nokogiri::XML(File.read(SCENARIO_XML))
 		doc.xpath("//systems/system").each do |system|
@@ -58,9 +58,9 @@ class SystemReader
 			new_vulns = @vulnerability_processor.process(vulns)
 			#puts new_vulns.inspect
 			
-			new_networks = NetworkManager.process(networks, System.networks)
+			new_networks = NetworkManager.process(networks, Configuration.networks)
 			# pass in the already selected set of vulnerabilities, and additional secure services to find
-			new_services = ServiceManager.process(services, System.services, new_vulns)
+			new_services = ServiceManager.process(services, Configuration.services, new_vulns)
 
 			s = System.new(id, os, basebox, url, new_vulns, new_networks, new_services)
 			if s.is_valid_base == false

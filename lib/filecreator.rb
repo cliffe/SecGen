@@ -1,16 +1,18 @@
 require 'erb'
 require_relative 'erb_controller'
 require_relative 'constants'
+require_relative 'configuration'
 
 class FileCreator
 # Creates project directory, uses .erb files to create a report and the vagrant file that will be used
 # to create the virtual machines
-	def initialize(systems)
-		@systems = systems
+	def initialize(config)
+		@configuration = config
 	end
 	
-	def generate(system)
-		Dir::mkdir("#{PROJECTS_DIR}") unless File.exists?("#{PROJECTS_DIR}") 
+	def generate()
+		systems = @configuration.get_systems
+		Dir::mkdir("#{PROJECTS_DIR}") unless File.exists?("#{PROJECTS_DIR}")
 
 		count = Dir["#{PROJECTS_DIR}/*"].length
 		build_number = count.next
@@ -26,7 +28,7 @@ class FileCreator
 		%x[#{command}] 
 
 		controller = ERBController.new
-		controller.systems = system
+		controller.systems = systems
 		vagrant_template = ERB.new(File.read(VAGRANT_TEMPLATE_FILE), 0, '<>')
 		File.delete("#{PROJECTS_DIR}/Project#{build_number}/Vagrantfile")
 		puts "#{PROJECTS_DIR}/Project#{build_number}/Vagrantfile file has been created"

@@ -46,6 +46,12 @@ def build_vms(build_number)
 end
 
 def run
+
+  #create mount directory structure. We shouldnt be comitting this to the repo
+  #blat the current .pp files in the mount dir
+	#copy all .pp files under modules/vulnerabilities/**/manifests/*.pp to mount/puppet/manifests
+	#copy all .pp files under modules/vulnerabilities/**/modules/*.pp to mount/puppet/modules
+
 	build_number = build_config()
 	build_vms(build_number)
 end

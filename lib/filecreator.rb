@@ -22,7 +22,9 @@ class FileCreator
 
 
 		puts "The system is now creating the Project#{build_number}"
-		Dir::mkdir("#{PROJECTS_DIR}/Project#{build_number}") unless File.exists?("#{PROJECTS_DIR}/#{build_number}") 
+		Dir::mkdir("#{PROJECTS_DIR}/Project#{build_number}") unless File.exists?("#{PROJECTS_DIR}/#{build_number}")
+		puts 'Creating the projects mount directory'
+		Dir::mkdir("#{PROJECTS_DIR}/Project#{build_number}/mount") unless File.exists?("#{PROJECTS_DIR}/Project#{build_number}/mount")
 		
 		# initialises box before creation
 		command = "cd #{PROJECTS_DIR}/Project#{build_number}/; vagrant init"

@@ -1,0 +1,12 @@
+<vulnerability
+        type="other"
+        cve=""
+        privilege="user"
+        access="remote"
+        details="Misconfigured to be mountable from anyone that can interact with it"
+        platform="unix"
+        name="nfs">
+  <puppets>
+    <puppet>nfs</puppet>
+  </puppets>
+</vulnerability>

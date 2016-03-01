@@ -7,6 +7,7 @@ SERVICES_XML = "#{ROOT_DIR}/xml/services.xml"
 BASE_XML = "#{ROOT_DIR}/xml/bases.xml"
 MOUNT_DIR = "#{ROOT_DIR}/mount/"
 BUILD_DIR = "#{ROOT_DIR}/modules/build/"
+MOUNT_PUPPET_DIR = "#{ROOT_DIR}/mount/puppet"
 
 #PATH CONSTANTS
 MODULES_PATH = "#{ROOT_DIR}/modules/"

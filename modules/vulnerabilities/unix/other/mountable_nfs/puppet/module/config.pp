@@ -1,4 +1,4 @@
-class nfslewis::config {
+class nfs::config {
 
   package { ['nfs-kernel-server', 'nfs-common', 'portmap']:
       ensure => installed

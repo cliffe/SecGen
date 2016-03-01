@@ -7,7 +7,7 @@
         platform="unix"
         name="distcc_exec">
   <puppets>
-    <puppet>distcc</puppet>
+    <puppet>distcc_exec</puppet>
   </puppets>
   <files>
     <file>distcc.erb</file>

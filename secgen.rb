@@ -32,7 +32,7 @@ def build_config
   puts 'Reading configuration file for virtual machines you want to create'
 
   # uses nokogoiri to grab all the system information from scenario.xml
-  systems = SystemReader.new(SCENARIO_XML).systems
+  systems = SystemReader.new.systems
 
   puts 'Creating vagrant file'
   # create's vagrant file / report a starts the vagrant installation'

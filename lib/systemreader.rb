@@ -11,8 +11,7 @@ require_relative 'objects/vulnerability'
 
 class SystemReader
 	# initializes systems xml from BOXES_XML const
-	def initialize(systems_xml)
-		@systems_xml = systems_xml
+	def initialize()
 		@vulnerability_processor = VulnerabilityProcessor.new
 	end
 
@@ -20,7 +19,7 @@ class SystemReader
 	# checking if the vulnerabilities / networks exist from system.rb
 	def systems
 		systems = []
-		doc = Nokogiri::XML(File.read(@systems_xml))
+		doc = Nokogiri::XML(File.read(SCENARIO_XML))
 		doc.xpath("//systems/system").each do |system|
 			id = system["id"]
 			os = system["os"]

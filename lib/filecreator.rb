@@ -1,11 +1,6 @@
 require 'erb'
+require_relative 'erb_controller'
 require_relative 'constants'
-
-
-VAGRANT_TEMPLATE_FILE = "#{ROOT_DIR}/lib/templates/vagrantbase.erb"
-REPORT_TEMPLATE_FILE = "#{ROOT_DIR}/lib/templates/report.erb"
-
-PROJECTS_DIR = "#{ROOT_DIR}/projects"
 
 class FileCreator
 # Creates project directory, uses .erb files to create a report and the vagrant file that will be used
@@ -43,18 +38,5 @@ class FileCreator
 		#File.open("#{PROJECTS_DIR}/Project#{build_number}/Report", 'w'){ |file| file.write(report_template.result(controller.get_binding)) }
 
 		return build_number
-	end
-end 
-
-
-class ERBController
-
-# ERB Controller initializes the system and returns the binding when mapping .erb files
-	attr_accessor :systems
-	def initialize
-		@systems = []
-	end
-	def get_binding
-		return binding
 	end
 end

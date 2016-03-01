@@ -8,6 +8,7 @@ BASE_XML = "#{ROOT_DIR}/xml/bases.xml"
 MOUNT_DIR = "#{ROOT_DIR}/mount/"
 BUILD_DIR = "#{ROOT_DIR}/modules/build/"
 MOUNT_PUPPET_DIR = "#{ROOT_DIR}/mount/puppet"
+PROJECTS_DIR = "#{ROOT_DIR}/projects"
 
 #PATH CONSTANTS
 MODULES_PATH = "#{ROOT_DIR}/modules/"
@@ -21,3 +22,5 @@ AVAILABLE_CVE_NUMBERS = []
 
 #VAGRANT_FILE_CONSTANTS
 PATH_TO_CLEANUP = "#{ROOT_DIR}/modules/build/puppet/"
+VAGRANT_TEMPLATE_FILE = "#{ROOT_DIR}/lib/templates/vagrantbase.erb"
+REPORT_TEMPLATE_FILE = "#{ROOT_DIR}/lib/templates/report.erb"

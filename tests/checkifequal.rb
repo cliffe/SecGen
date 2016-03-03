@@ -52,7 +52,7 @@ class TestXMLIsEqual < Test::Unit::TestCase
 	    
 	    if empty_type.type == ""
 	    	p empty_type
-	    	vuln = generate_vulnerability(empty_type,Conf.vulnerabilities,dummy_list)
+	    	vuln = generate_vulnerability(empty_type, Configuration.vulnerabilities, dummy_list)
 	    	assert_not_match(vuln,"")
 	    end
 	end

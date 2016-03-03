@@ -1,21 +1,18 @@
 require 'erb'
+require_relative 'erb_controller'
 require_relative 'constants'
-
-
-VAGRANT_TEMPLATE_FILE = "#{ROOT_DIR}/lib/templates/vagrantbase.erb"
-REPORT_TEMPLATE_FILE = "#{ROOT_DIR}/lib/templates/report.erb"
-
-PROJECTS_DIR = "#{ROOT_DIR}/projects"
+require_relative 'configuration'
 
 class FileCreator
 # Creates project directory, uses .erb files to create a report and the vagrant file that will be used
 # to create the virtual machines
-	def initialize(systems)
-		@systems = systems
+	def initialize(config)
+		@configuration = config
 	end
 	
-	def generate(system)
-		Dir::mkdir("#{PROJECTS_DIR}") unless File.exists?("#{PROJECTS_DIR}") 
+	def generate()
+		systems = @configuration.get_systems
+		Dir::mkdir("#{PROJECTS_DIR}") unless File.exists?("#{PROJECTS_DIR}")
 
 		count = Dir["#{PROJECTS_DIR}/*"].length
 		build_number = count.next
@@ -31,7 +28,7 @@ class FileCreator
 		%x[#{command}] 
 
 		controller = ERBController.new
-		controller.systems = system
+		controller.systems = systems
 		vagrant_template = ERB.new(File.read(VAGRANT_TEMPLATE_FILE), 0, '<>')
 		File.delete("#{PROJECTS_DIR}/Project#{build_number}/Vagrantfile")
 		puts "#{PROJECTS_DIR}/Project#{build_number}/Vagrantfile file has been created"
@@ -43,18 +40,5 @@ class FileCreator
 		#File.open("#{PROJECTS_DIR}/Project#{build_number}/Report", 'w'){ |file| file.write(report_template.result(controller.get_binding)) }
 
 		return build_number
-	end
-end 
-
-
-class ERBController
-
-# ERB Controller initializes the system and returns the binding when mapping .erb files
-	attr_accessor :systems
-	def initialize
-		@systems = []
-	end
-	def get_binding
-		return binding
 	end
 end

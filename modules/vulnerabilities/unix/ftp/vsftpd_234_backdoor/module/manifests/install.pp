@@ -1,9 +1,9 @@
   #copies and unpacks vsftpd_234_backdoor saves it to usr/local/sbin and executes it for startup
-  class vsftpd_234_backdoor::vsftpd_234_backdoor_install {
+  class vsftpd_234_backdoor::install {
     exec { 'unzip-vsftpd':
 		command     => 'tar xzf vsftpd-2.3.4.tar.gz && mv vsftpd-2.3.4 /home/vagrant/vsftpd-2.3.4',
 		path => '/bin',
-		cwd         => "/mount/files/shell",
+		cwd         => "files/shell",
 		creates     => "/home/vagrant/vsftpd-2.3.4/vsftpd",
 		notify	 => Exec['make-vsftpd']
 	}

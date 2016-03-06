@@ -1,4 +1,4 @@
-  class cleanup::config {
+class cleanup::config {
 # removes bash history
   exec { "rm":
       command => "rm -rf .bash_history",

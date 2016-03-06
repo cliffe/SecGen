@@ -11,12 +11,12 @@ class distcc_exec::distcc_config {
     owner   => 'root',
     group   => 'root',
     mode    => '0777',
-    content  => template('../data/distcc.erb')
+    content  => template('distcc.erb')
   }
 
 
   service { 'distcc':
-    ensure => running,
+    ensure => running
 }
 }
 

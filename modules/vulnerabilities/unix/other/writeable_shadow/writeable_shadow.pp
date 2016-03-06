@@ -1,0 +1,1 @@
+include writeable_shadow::config

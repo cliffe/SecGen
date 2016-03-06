@@ -1,9 +1,0 @@
-<bases>
-	<base name="CentOS6.2" os="linux" distro="centos" url="https://dl.dropbox.com/sh/9rldlpj3cmdtntc/56JW-DSK35/centos-62-32bit-puppet.box" vagrantbase="CentOS6.2withpuppet" ></base>
-	<base name="CentOS6.3" os="linux" distro="centos" url="https://dl.dropbox.com/sh/9rldlpj3cmdtntc/chqwU6EYaZ/centos-63-32bit-puppet.box" vagrantbase="CentOS6.3withpuppet" ></base>
-	<base name="precise" os="linux" distro="unknown"  url="http://files.vagrantup.com/precise32.box" vagrantbase="precise32" >
-	</base>
-	<base name="puppettest" os="linux" distro="unknown"  url="http://puppet-vagrant-boxes.puppetlabs.com/debian-607-x64-vbox4210.box" vagrantbase="puppettest" >
-	</base>
-</base>
-

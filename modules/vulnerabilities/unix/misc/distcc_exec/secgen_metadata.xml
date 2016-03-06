@@ -1,0 +1,17 @@
+<vulnerability
+        type="misc"
+        cve="CVE-2004-2687"
+        privilege="user"
+        access="remote"
+        details="distcc can be exploited by exploit/unix/misc/distcc_exec"
+        platform="unix"
+        name="distcc_exec">
+  <puppets>
+    <puppet>distcc_exec</puppet>
+  </puppets>
+  <files>
+    <file>distcc.erb</file>
+  </files>
+  <scripts>
+  </scripts>
+</vulnerability>

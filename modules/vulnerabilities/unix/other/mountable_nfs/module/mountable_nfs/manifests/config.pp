@@ -1,4 +1,4 @@
-class mountable_nfs_config::config {
+class config::config {
 
   package { ['nfs-kernel-server', 'nfs-common', 'portmap']:
       ensure => installed

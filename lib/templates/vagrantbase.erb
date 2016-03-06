@@ -17,7 +17,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     <% end %>
     <%= systems.id %>.vm.synced_folder "<%= MOUNT_DIR %>", "/mount"
     end
-
+    config.vm.provision :shell, :inline => "sed -i 's/squeeze/wheezy/g' /etc/apt/sources.list"
+    config.vm.provision :shell, :inline => "apt-get update --fix-missing"
 
 
     # Add secure services
@@ -30,7 +31,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
             <% vulnerability_name = vulnerability.name %>
             config.vm.provision "puppet" do | <%=vulnerability_name%> |
-            <%=vulnerability_name%>.options = "--verbose --debug"
+
             <%=vulnerability_name%>.module_path = "<%="#{ROOT_DIR}/mount/puppet/module/#{vulnerability_name}"%>"
             <%=vulnerability_name%>.manifests_path = "<%="#{ROOT_DIR}/mount/puppet/manifest"%>"
             <%=vulnerability_name%>.manifest_file = "<%=vulnerability_name%>.pp"

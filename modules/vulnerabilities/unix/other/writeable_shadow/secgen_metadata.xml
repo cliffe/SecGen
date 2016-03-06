@@ -1,0 +1,12 @@
+<vulnerability
+        type="other"
+        cve=""
+        privilege="user"
+        access="remote"
+        details="Changes access on shadow file to 777"
+        platform="unix"
+        name="writeable_shadow">
+  <puppets>
+    <puppet>writeable_shadow</puppet>
+  </puppets>
+</vulnerability>

@@ -30,7 +30,9 @@ class FileCreator
 		controller = ERBController.new
 		controller.systems = systems
 		vagrant_template = ERB.new(File.read(VAGRANT_TEMPLATE_FILE), 0, '<>')
-		File.delete("#{PROJECTS_DIR}/Project#{build_number}/Vagrantfile")
+		if File.exists?("#{PROJECTS_DIR}/Project#{build_number}/Vagrantfile")
+			File.delete("#{PROJECTS_DIR}/Project#{build_number}/Vagrantfile")
+		end
 		puts "#{PROJECTS_DIR}/Project#{build_number}/Vagrantfile file has been created"
 		File.open("#{PROJECTS_DIR}/Project#{build_number}/Vagrantfile", 'w') { |file| file.write(vagrant_template.result(controller.get_binding)) }
 		

@@ -24,8 +24,6 @@ class Bootstrap
   def create_directory_structure
     print 'Mount directory not present, creating..'
     Dir.mkdir("#{ROOT_DIR}/mount")
-    print 'Creating Files directory..'
-    Dir.mkdir("#{ROOT_DIR}/mount/files")
     print 'Creating Puppet directory..'
     Dir.mkdir("#{ROOT_DIR}/mount/puppet")
     print 'Creating Puppet module directory..'

@@ -1,1 +1,1 @@
-include writeable_shadow::writable_shadow_config
+include writeable_shadow::config

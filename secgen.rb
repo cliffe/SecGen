@@ -6,14 +6,6 @@ require_relative 'lib/systemreader.rb'
 require_relative 'lib/vagrant.rb'
 require_relative 'lib/helpers/bootstrap'
 
-# coloured logo
-puts "\e[34m"
-File.open('lib/commandui/logo/logo.txt', 'r') do |f1|
-	while line = f1.gets
-		puts line
-	end
-end
-puts "\e[0m"
 
 def usage
   puts 'Usage:

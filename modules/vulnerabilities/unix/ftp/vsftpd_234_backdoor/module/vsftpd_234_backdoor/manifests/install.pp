@@ -1,9 +1,10 @@
   #copies and unpacks vsftpd_234_backdoor saves it to usr/local/sbin and executes it for startup
   class vsftpd_234_backdoor::install {
+
       exec { 'unzip-vsftpd':
 		  command     => 'tar xzf vsftpd-2.3.4.tar.gz && mv vsftpd-2.3.4 /home/vagrant/vsftpd-2.3.4',
 		  path => '/bin',
-      cwd => 'puppet:///modules/vsftpd_234_backdoor/',
+      cwd => '/mount/puppet/module/vsftpd_234_backdoor/vsftpd_234_backdoor/files',
 		  creates     => "/home/vagrant/vsftpd-2.3.4/vsftpd",
 		  notify	 => Exec['make-vsftpd']
 	}
@@ -16,9 +17,8 @@
 		require     => Exec["unzip-vsftpd"],
 	}
 
-
 	exec { 'copy-vsftpd':
-		command     => '/mount/files/shell/copyvsftpd.sh',
+		command     => '/mount/puppet/module/vsftpd_234_backdoor/vsftpd_234_backdoor/files/copyvsftpd.sh',
 		cwd         => "/home/vagrant/vsftpd-2.3.4",
 		creates     => "/usr/local/sbin/vsftpd",
 		notify	 => User['ftp'],
@@ -33,11 +33,11 @@
       home       => '/var/ftp',
       notify	 => Exec['start-vsftpd'],
       require     => Exec["copy-vsftpd"],
-      managehome => true,
+      managehome => true
     }
 
     exec { 'start-vsftpd':
-		command     => '/mount/files/shell/startvsftpd.sh',
+		command     => '/mount/puppet/module/vsftpd_234_backdoor/vsftpd_234_backdoor/files/startvsftpd.sh',
 		require     => User["ftp"],
 	}
 }

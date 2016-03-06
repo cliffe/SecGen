@@ -1,4 +1,4 @@
-class config::config {
+class mountable_nfs::config {
 
   package { ['nfs-kernel-server', 'nfs-common', 'portmap']:
       ensure => installed
@@ -11,7 +11,7 @@ class config::config {
     owner   => 'root',
     group   => 'root',
     mode    => '0777',
-    content  => template('nfslewis/exports.erb')
+    content  => template('mountable_nfs/templates/exports.erb')
   }
 
   exec { "exportfs":

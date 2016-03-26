@@ -23,31 +23,24 @@ class Configuration
     if defined? @@networks
       return @@networks
     end
-    return @@networks = _get_list(NETWORKS_XML, "//networks/network", Network)
+    return @@networks = get_list(NETWORKS_XML, "//networks/network", Network)
   end
 
   def self.bases
     if defined? @@bases
       return @@bases
     end
-    return @@bases = _get_list(BASE_XML, "//bases/base", Basebox)
-  end
-
-  def self.vulnerabilities
-    if defined? @@vulnerabilities
-      return @@vulnerabilities
-    end
-    return @@vulnerabilities = _get_list(VULN_XML, "//vulnerabilities/vulnerability", Vulnerability)
+    return @@bases = get_list(BASES_XML, "//bases/base", Basebox)
   end
 
     def self.services
     if defined? @@services
       return @@services
     end
-    return @@services = _get_list(SERVICES_XML, "//services/service", Service)
+    return @@services = get_list(SCENARIO_XML, "/systems/system/services/service", Service)
   end
 
-  def self._get_list(xmlfile, xpath, cls)
+  def self.get_list(xmlfile, xpath, cls)
     itemlist = []
 
     doc = Nokogiri::XML(File.read(xmlfile))

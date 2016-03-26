@@ -1,8 +1,9 @@
 class NetworkManager
   # the user will either specify a blank misc type or a knownnetwork type
-  def self.process(networks,valid_network)
+  def self.process(networks)
     new_networks = {}
     # intersection of valid networks / user defined networks
+    valid_network = Configuration.networks
     legal_networks = valid_network & networks
     networks.each do |network|
       # checks to see string is blank if so valid misc into a new hash map of vulnerabilities

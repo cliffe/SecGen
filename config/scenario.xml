@@ -1,29 +1,13 @@
 <systems>
-	<!-- an example remote storage system, with a remotely exploitable vulnerability that can then be escalated to root -->
-	<system id="storageserver" os="linux" basebox="puppettest" url="" >
-		<vulnerabilities>
-			<vulnerability vector_string="Au:N/A:C"></vulnerability>
-		</vulnerabilities>
-		<!-- secure services will be provided, if matching insecure ones have not been selected -->
-		<!--<services>-->
-		<!--	<service type="ftp"></service>-->
-		<!--	<service type="smb"></service>-->
-		<!--	<service type="nfs"></service>-->
-		<!--</services>-->
-		<networks>
-			<network name="homeonly"></network>
-		</networks>
-	</system>
-
-	<!-- an example remote web server, with a remotely exploitable root vulnerability -->
-	<!-- This never worked.-->
-	<!--<system id="webserver" os="linux" basebox="puppettest" url="" >
-		<vulnerabilities>
-			<vulnerability privilege="root" access="remote" type="www" cve=""></vulnerability>
-		</vulnerabilities>
-		<networks>
-			<misc name="homeonly"></misc>
-		</networks>
-	</system> -->
-
+  <system id="storageserver" os="linux" basebox="puppettest">
+    <vulnerabilities>
+      <vulnerability vector_string="Au:N/A:C"/>
+    </vulnerabilities>
+    <services>
+      <service type="http" name="apache"/>
+    </services>
+    <networks>
+      <network name="homeonly"/>
+    </networks>
+  </system>
 </systems>

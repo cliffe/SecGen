@@ -1,10 +1,9 @@
 class ServiceManager
-  # secure services are randomly selected from the definitions in services.xml (secure_services)
   # based on the attributes optionally specified in scenario.xml (want_services)
   # However, if the service type has already had a vulnerability assigned (selected_vulns), it is ignored here
-  def self.process(want_services, secure_services, selected_vulns=[])
+  def self.process(want_services, selected_vulns=[])
     return_services = {}
-    legal_services = secure_services.clone
+    legal_services = Configuration.services.clone
     wanted_services = want_services.clone
 
     # remove all services that have already been selected as vulns (from both the wanted and secure lists)

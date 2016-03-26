@@ -1,13 +1,11 @@
 require 'getoptlong'
-require 'fileutils'
 require_relative 'lib/constants'
 require_relative 'lib/filecreator.rb'
-require_relative 'lib/systemreader.rb'
-require_relative 'lib/vagrant.rb'
 require_relative 'lib/helpers/bootstrap'
 
+@build_number
 
-def usage
+def print_help
   puts 'Usage:
    ' + $0 + ' [options]
 
@@ -15,32 +13,28 @@ def usage
    --run, -r: builds vagrant config and then builds the VMs
    --build-config, -c: builds vagrant config, but does not build VMs
    --build-vms, -v: builds VMs from previously generated vagrant config
-   --help, -h: shows this usage information
-'
+   --help, -h: shows this usage information'
   exit
 end
 
 def build_config
   puts 'Reading configuration file for virtual machines you want to create'
-
 	# Initialise configuration
-	config = Configuration.new()
-
-	puts 'Creating vagrant file'
+	config = Configuration.new
   # create's vagrant file / report a starts the vagrant installation'
-	file_creator = FileCreator.new(config)
-	build_number = file_creator.generate()
-	return build_number
+	@build_number = FileCreator.new(config).generate
 end
 
-def build_vms(build_number)
-  vagrant = VagrantController.new
-  vagrant.vagrant_up(build_number)
+def vagrant_up
+	#executes vagrant up from the current build.
+	puts 'Building now.....'
+	exec "cd #{PROJECTS_DIR}/Project#{@build_number}/; vagrant up"
 end
 
 def run
-  build_number = build_config()
-  build_vms(build_number)
+	Bootstrap.new.bootstrap
+	build_config
+	vagrant_up
 end
 
 # end of method declarations
@@ -52,7 +46,7 @@ puts 'Licensed GPLv3 2014-16'
 if ARGV.length < 1
 	puts 'Please enter a command option.'
 	puts
-	usage
+	print_help
 end
 
 opts = GetoptLong.new(
@@ -62,23 +56,13 @@ opts = GetoptLong.new(
 	[ '--build-vms', '-v', GetoptLong::NO_ARGUMENT ]  
 )
 
-opts.each do |opt, arg|
+for opt in opts do
 	case opt
 		when '--help'
-			usage
+			print_help
     when '--run'
-      application_bootstrapper = Bootstrap.new
-      application_bootstrapper.bootstrap
-			run
+      run
 		when '--build-config'
-			build_config()
-		when '--build-vms'
-			build_vms()
-	end
+			build_config
+  end
 end
-
-
-
-
-
-

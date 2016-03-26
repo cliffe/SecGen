@@ -17,7 +17,6 @@ class FileCreator
 		count = Dir["#{PROJECTS_DIR}/*"].length
 		build_number = count.next
 
-
 		puts "The system is now creating the Project#{build_number}"
 		Dir::mkdir("#{PROJECTS_DIR}/Project#{build_number}") unless File.exists?("#{PROJECTS_DIR}/#{build_number}")
 		puts 'Creating the projects mount directory'
@@ -29,6 +28,7 @@ class FileCreator
 
 		controller = ERBController.new
 		controller.systems = systems
+		puts 'Creating vagrant file'
 		vagrant_template = ERB.new(File.read(VAGRANT_TEMPLATE_FILE), 0, '<>')
 		if File.exists?("#{PROJECTS_DIR}/Project#{build_number}/Vagrantfile")
 			File.delete("#{PROJECTS_DIR}/Project#{build_number}/Vagrantfile")

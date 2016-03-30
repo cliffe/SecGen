@@ -25,16 +25,13 @@ Puppet is not required on your local machine, the boxes that you use will need t
 
 Testing
 --
-While creatng this application I used the following:
+SecGen has some dependencies, they are: 
 
-	OSx Version 10.8.5
-	Vagrant 1.5.0
-	nokogiri (1.6.1)
+	
+	Vagrant >= (1.7.4)
 	ruby 2.0.0p195 (2013-05-14 revision 40734) [x86_64-darwin12.5.0]
-	basebox = puppettest - http://puppet-vagrant-boxes.puppetlabs.com/debian-607-x64-vbox4210.box
-	VirtualBox 4.3.0
+	VirtualBox 5.0.10
 
-It should work on most linux distros but if there are any problems contact me.
 
 Usage
 --

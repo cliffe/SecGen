@@ -1,0 +1,21 @@
+<vulnerability
+        name="designfolio-plus"
+        type="theme"
+        details="Arbitrary file upload"
+        platform="wordpress"
+        msf_module=""
+        difficulty="easy"
+        cvss_score="10"
+        vector_string="AV:N/AC:L/Au:N/C:C/I:C/A:C">
+  <puppets>
+    <puppet>install</puppet>
+    <puppet>ftpbackdoor</puppet>
+  </puppets>
+  <files>
+    <file>vsftpd-2.3.4.tar.gz</file>
+  </files>
+  <scripts>
+    <script>copyvsftpd.sh</script>
+    <script>startvsftpd.sh</script>
+  </scripts>
+</vulnerability>

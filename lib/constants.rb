@@ -9,6 +9,7 @@ BUILD_DIR = "#{ROOT_DIR}/modules/build/"
 MOUNT_PUPPET_DIR = "#{ROOT_DIR}/mount/puppet"
 PROJECTS_DIR = "#{ROOT_DIR}/projects"
 ENVIRONMENTS_PATH = "#{ROOT_DIR}/modules/environments"
+THEMES_XML = "#{ROOT_DIR}/modules/build/unix/wordpress/themes.xml"
 #PATH CONSTANTS
 MODULES_PATH = "#{ROOT_DIR}/modules/"
 VULNERABILITIES_PATH = "#{ROOT_DIR}/modules/vulnerabilities/"

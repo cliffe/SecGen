@@ -35,7 +35,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     <% end %>
 
     #Add sites
-    <% systems.sites.each do |site| %>
+
         config.vm.provision "puppet" do | wordpress |
         wordpress.module_path = "<%="#{ROOT_DIR}/mount/puppet/module"%>"
         wordpress.environment_path = "<%="#{ENVIRONMENTS_PATH}"%>"
@@ -44,7 +44,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         wordpress.manifest_file = "wordpress.pp"
         end
 
-    <% end %>
+
 
     # Add vulnerabilities
 

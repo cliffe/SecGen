@@ -40,7 +40,7 @@ class Configuration
     return @@vulnerabilities = _get_list(VULN_XML, "//vulnerabilities/vulnerability", Vulnerability)
   end
 
-    def self.services
+  def self.services
     if defined? @@services
       return @@services
     end

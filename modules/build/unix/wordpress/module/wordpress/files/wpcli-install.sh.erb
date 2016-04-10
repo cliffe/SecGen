@@ -1,27 +1,7 @@
 #!/bin/bash
 IPADDR=$(/sbin/ifconfig eth1 | grep 'inet addr:' | cut -d: -f2 | awk '{print $1}')
-
-<% system.sites.each do |site| %>
+<% @sites.each do |site| %>
 cd <%="/var/www/#{site.name}"%> &&
 wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar &&
-php wp-cli.phar core install --url=${IPADDR}/wordpress --title=TestTitle --admin_user=root --admin_password=passw0rd123 --admin_email=test@test.net --skip-email --allow-root
+php wp-cli.phar core install --url=${IPADDR}/<%=site.name%> --title=<%=site.name%> --admin_user=<%=site.admin_user%> --admin_password=<%=site.admin_password%> --admin_email=<%=site.admin_email%> --skip-email --allow-root
 <% end %>
-
-#site roles
-
-#if generateRandomUsers
-
-#php wp-cli.phar user generate --count=10
-
-#foreach user in site users
-
-#php wp-cli.phar user create name email --
-
-#generate posts
-
-#generate comments
-
-#foreach plugin in site plugins
-
-#remove wp-cli
-#echo `rm wp-cli.phar`

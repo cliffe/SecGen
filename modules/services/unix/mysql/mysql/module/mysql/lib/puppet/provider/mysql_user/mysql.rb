@@ -28,7 +28,7 @@ Puppet::Type.type(:mysql_user).provide(:mysql, :parent => Puppet::Provider::Mysq
       new(:name                     => name,
           :ensure                   => :present,
           :password_hash            => @password,
-          :plugin                   => @plugin,
+          :plugins                   => @plugin,
           :max_user_connections     => @max_user_connections,
           :max_connections_per_hour => @max_connections_per_hour,
           :max_queries_per_hour     => @max_queries_per_hour,
@@ -51,7 +51,7 @@ Puppet::Type.type(:mysql_user).provide(:mysql, :parent => Puppet::Provider::Mysq
   def create
     merged_name              = @resource[:name].sub('@', "'@'")
     password_hash            = @resource.value(:password_hash)
-    plugin                   = @resource.value(:plugin)
+    plugin                   = @resource.value(:plugins)
     max_user_connections     = @resource.value(:max_user_connections) || 0
     max_connections_per_hour = @resource.value(:max_connections_per_hour) || 0
     max_queries_per_hour     = @resource.value(:max_queries_per_hour) || 0
@@ -66,7 +66,7 @@ Puppet::Type.type(:mysql_user).provide(:mysql, :parent => Puppet::Provider::Mysq
         mysql([defaults_file, '-e', "CREATE USER '#{merged_name}' IDENTIFIED WITH '#{plugin}'"].compact)
       end
       @property_hash[:ensure] = :present
-      @property_hash[:plugin] = plugin
+      @property_hash[:plugins] = plugin
     else
       mysql([defaults_file, '-e', "CREATE USER '#{merged_name}' IDENTIFIED BY PASSWORD '#{password_hash}'"].compact)
       @property_hash[:ensure] = :present

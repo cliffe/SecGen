@@ -3,5 +3,10 @@ IPADDR=$(/sbin/ifconfig eth1 | grep 'inet addr:' | cut -d: -f2 | awk '{print $1}
 <% @sites.each do |site| %>
 cd <%="/var/www/#{site.name}"%> &&
 wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar &&
-php wp-cli.phar core install --url=${IPADDR}/<%=site.name%> --title=<%=site.name%> --admin_user=<%=site.admin_user%> --admin_password=<%=site.admin_password%> --admin_email=<%=site.admin_email%> --skip-email --allow-root
+php wp-cli.phar core install --url=${IPADDR}/<%=site.name%> --title=<%=site.name%> --admin_user=<%=site.admin_user%> --admin_password=<%=site.admin_password%> --admin_email=<%=site.admin_email%> --skip-email --allow-root &&
+
+  <% @sites.users.each do |user| %>
+    php wp-cli.phar user create <%=user.name%> email --
+
+  <%end%>
 <% end %>

@@ -1,0 +1,12 @@
+<users>
+  <user username="root" password="pa55w0rd" email="root@secgen.net"/>
+  <user username="david" password="password" email="david@secgen.net"/>
+  <user username="john" password="123456" email="john@secgen.net"/>
+  <user username="tom" password="qwerty" email="tom@secgen.net"/>
+  <user username="cliffe" password="baseball" email="cliffe@secgen.net"/>
+  <user username="jenny" password="987654321" email="cliffe@secgen.net"/>
+  <user username="emilia" password="iloveyou" email="emilia@secgen.net"/>
+  <user username="tyrone" password="11111111" email="emilia@secgen.net"/>
+  <user username="jane" password="dragon" email="emilia@secgen.net"/>
+  <user username="michelle" password="letmein" email="emilia@secgen.net"/>
+</users>

@@ -1,0 +1,5 @@
+<plugin
+              name="bbpress"
+              details="Secure blogging platform"
+              platform="wordpress"
+              download_url="https://downloads.wordpress.org/plugin/bbpress.2.5.8.zip"/>

@@ -1,5 +1,5 @@
 require 'erb'
-
+require_relative '../../lib/constants'
 class SiteProcessor
 
 
@@ -8,9 +8,10 @@ class SiteProcessor
   end
   def generate_script
     print @sites
-    template_path = '../../mount/puppet/module/wordpress/files/wpcli-install.sh.erb'
+    template_path = "#{ROOT_DIR}/mount/puppet/module/wordpress/files/wpcli-install.sh.erb"
     renderer = ERB.new(File.read(template_path), 0, '>')
-    return renderer.result(get_binding)
+
+    File.open("#{ROOT_DIR}/mount/puppet/module/wordpress/files/wpcli-install.sh", 'w') { |file| file.write(renderer.result(get_binding)) }
   end
 
   def get_binding

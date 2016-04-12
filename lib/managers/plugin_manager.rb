@@ -23,8 +23,9 @@ class PluginManager
         puts "Searching for plugin matching vulnerability type #{scenario_plugin.vulnerability_type}"
         search_list.delete_if{|v| v.vulnerability_type != scenario_plugin.vulnerability_type}
       end
-
-      vulnerable_plugins << search_list.sample
+      selected_plugin = search_list.sample
+      puts "Selected plugin: #{selected_plugin.name}"
+      vulnerable_plugins << selected_plugin
     end
 
     return vulnerable_plugins
@@ -44,12 +45,18 @@ class PluginManager
           puts "The requested plugin: #{scenario_plugin.name} could not be found."
           exit
         else
-          secure_plugins << search_list.sample
+          selected_plugin = search_list.sample
+          puts "Selected plugin: #{selected_plugin.name}"
+          secure_plugins << selected_plugin
           next
         end
       else
-        secure_plugins << search_list.sample
+        selected_plugin = search_list.sample
+        puts "Selected plugin: #{selected_plugin.name}"
+        secure_plugins << selected_plugin
       end
+
+      return secure_plugins
 
     end
   end
@@ -76,6 +83,6 @@ class PluginManager
         secure_plugins << plugin
       end
     end
-    return vulnerable_plugins
+    return secure_plugins
   end
 end

@@ -1,0 +1,7 @@
+<plugin
+              name="wp-survey-and-poll"
+              details="Blind SQL Injection"
+              platform="wordpress"
+              msf_module=""
+              is_vuln = 'true'
+              download_url="https://downloads.wordpress.org/plugin/wp-survey-and-poll.1.1.zip"/>

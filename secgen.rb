@@ -39,7 +39,7 @@ def build_vms(build_number)
 end
 
 def run
-  build_number = build_config()
+  build_number = build_config
   build_vms(build_number)
 end
 

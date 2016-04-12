@@ -13,10 +13,14 @@
 		</networks>
 
 		<sites>
-			<site name="wordpress" theme="Twenty Sixteen" admin_user="root" admin_password="tiaspbiqe2r" admin_email="test@test.net">
-				<plugins>
-					<plugin name="testPlugin" is_vuln="true" version="2.3.1"></plugin>
-				</plugins>
+			<site name="wordpress" theme="" admin_user="" admin_password="" admin_email="">
+				<vulnerable_plugins>
+					<vulnerable_plugin name='wp-hb-audio-gallery'/>
+					<vulnerable_plugin name='wp-survey-and-poll'/>
+				</vulnerable_plugins>
+				<secure_plugins>
+					<secure_plugin/>
+				</secure_plugins>
 				<users>
 					<user name="root" password="tiaspbiqe2r" email="test@test.net"></user>
 				</users>

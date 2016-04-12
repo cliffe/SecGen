@@ -9,13 +9,13 @@ BUILD_DIR = "#{ROOT_DIR}/modules/build/"
 MOUNT_PUPPET_DIR = "#{ROOT_DIR}/mount/puppet"
 PROJECTS_DIR = "#{ROOT_DIR}/projects"
 ENVIRONMENTS_PATH = "#{ROOT_DIR}/modules/environments"
-THEMES_XML = "#{ROOT_DIR}/modules/build/unix/wordpress/themes.xml"
+
 #PATH CONSTANTS
 MODULES_PATH = "#{ROOT_DIR}/modules/"
 VULNERABILITIES_PATH = "#{ROOT_DIR}/modules/vulnerabilities/"
 
 #ERROR CONSTANTS
-VULN_NOT_FOUND = "Matching vulnerability was not found please check the xml scenario.xml"
+VULN_NOT_FOUND = 'Matching vulnerability was not found please check the xml scenario.xml'
 
 #RUNTIME_CONSTANTS
 AVAILABLE_CVE_NUMBERS = []
@@ -24,3 +24,7 @@ AVAILABLE_CVE_NUMBERS = []
 PATH_TO_CLEANUP = "#{ROOT_DIR}/modules/build/puppet/"
 VAGRANT_TEMPLATE_FILE = "#{ROOT_DIR}/lib/templates/vagrantbase.erb"
 REPORT_TEMPLATE_FILE = "#{ROOT_DIR}/lib/templates/report.erb"
+
+#WORDPRESS_CONSTANTS
+THEMES_XML = "#{ROOT_DIR}/modules/build/unix/wordpress/themes.xml"
+USERS_XML = "#{ROOT_DIR}/modules/build/unix/wordpress/users.xml"

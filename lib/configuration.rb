@@ -33,12 +33,13 @@ class Configuration
     return @@bases = _get_list(BASE_XML, "//bases/base", Basebox)
   end
 
-  def self.vulnerabilities
-    if defined? @@vulnerabilities
-      return @@vulnerabilities
-    end
-    return @@vulnerabilities = _get_list(VULN_XML, "//vulnerabilities/vulnerability", Vulnerability)
-  end
+  ### Depreciated code
+  # def self.vulnerabilities
+  #   if defined? @@vulnerabilities
+  #     return @@vulnerabilities
+  #   end
+  #   return @@vulnerabilities = _get_list(VULN_XML, "//vulnerabilities/vulnerability", Vulnerability)
+  # end
 
     def self.services
     if defined? @@services
@@ -60,11 +61,20 @@ class Configuration
         item.xpath("puppets/puppet").each { |c| obj.attributes[:puppets] = c.text.strip if not c.text.strip.empty? }
         item.xpath("ports/port").each { |c| obj.attributes[:ports] = c.text.strip if not c.text.strip.empty? }
       end
+
+      temp_hash = Hash.new
       # too specific move to vuln class end
       item.each do |attr, value|
+      #
+      #   ## THIS NEEDS TO BE FIXED
+      #   obj.send "attributes=", value
 
-        obj.send "#{attr}=", value
+        temp_hash[attr] = value
+        # obj.instance_variable_set(":@attributes[:#{attr}]",value)
+      #   obj.instance_eval(":@attributes[:#{attr}] = #{value}")
       end
+      obj.send 'attributes=', temp_hash
+
       # vulnerability item
       itemlist << obj
     end

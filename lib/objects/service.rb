@@ -1,22 +1,29 @@
 class Service
-  attr_accessor :name, :type, :details, :puppets
+  # attr_accessor :name, :type, :details, :puppets
+  attr_accessor :attributes
 
   def initialize(name="", type="", details="", puppets=[])
-    @name = name
-    @type = type
-    @details = details
-    @puppets = puppets
+    @attributes = {
+        :name => name,
+        :type => type,
+        :details => details,
+        :puppets => puppets
+    }
+    # @name = name
+    # @type = type
+    # @details = details
+    # @puppets = puppets
   end
 
   def eql? other
-    other.kind_of?(self.class) && @type == other.type
+    other.kind_of?(self.class) && @attributes[:type] == other.type
   end
 
   def hash
-    @type.hash
+    @attributes[:type].hash
   end
 
   def id
-    return @type
+    return @attributes[:type]
   end
 end

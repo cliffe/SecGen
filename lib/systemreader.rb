@@ -34,20 +34,20 @@ class SystemReader
 
 			system.css('sites site').each do |site|
 				site_obj = Site.new
-				site_obj.name = site['name']
-				site_obj.type = site['type']
+				site_obj.attributes[:name] = site['name']
+				site_obj.attributes[:type] = site['type']
 				sites << site_obj
 			end
 			system.css('vulnerabilities vulnerability').each do |v|
 				vulnerability = Vulnerability.new
 				# assign the value if the value is not nil (i.e. it's been specified in scenario.xml)
-				vulnerability.type = v['type'] if v['type']
-				vulnerability.privilege = v['privilege'] if v['privilege']
-				vulnerability.cve = v['cve'] if v['cve']
-				vulnerability.access = v['access'] if v['access']
-				vulnerability.difficulty = v['difficulty'] if v['difficulty']
-				vulnerability.cvss_rating = v['cvss_rating'] if v['cvss_rating']
-				vulnerability.vector_string = v['vector_string'] if v['vector_string']
+				vulnerability.attributes[:type] = v['type'] if v['type']
+				vulnerability.attributes[:privilege] = v['privilege'] if v['privilege']
+				vulnerability.attributes[:cve] = v['cve'] if v['cve']
+				vulnerability.attributes[:access] = v['access'] if v['access']
+				vulnerability.attributes[:difficulty] = v['difficulty'] if v['difficulty']
+				vulnerability.attributes[:cvss_rating] = v['cvss_rating'] if v['cvss_rating']
+				vulnerability.attributes[:vector_string] = v['vector_string'] if v['vector_string']
 				vulns << vulnerability
 			end
 
@@ -55,15 +55,18 @@ class SystemReader
 
 			system.css('services service').each do |v|
 				service = Service.new
-				service.name = v['name']
-				service.details = v['details']
-				service.type = v['type']
+				service.attributes[:name] = v['name']
+				service.attributes[:details] = v['details']
+				service.attributes[:type] = v['type']
 				services << service
 			end
 			
 			system.css('networks network').each do |n|
 				network = Network.new
-				network.name = n['name']
+				network.attributes[:name] = n['name']
+				### MAY BE WRONG AND MIGHT NEED TO DELETE
+				network.attributes[:range] = n['range']
+				### END OF MAY BE WRONG
 				networks << network
 			end
 			

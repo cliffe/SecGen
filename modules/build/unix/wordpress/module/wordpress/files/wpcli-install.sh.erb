@@ -1,9 +1,8 @@
 #!/bin/bash
-IPADDR=$(/sbin/ifconfig eth1 | grep 'inet addr:' | cut -d: -f2 | awk '{print $1}')
+IPADDR=$(/sbin/ifconfig eth2 | grep 'inet addr:' | cut -d: -f2 | awk '{print $1}')
+cd /var/www/wordpress &&
 <% @sites.each do |site| %>
-  cd <%="/var/www/#{site.name}"%> &&
-  wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar &&
-  php wp-cli.phar core install --url=${IPADDR}/<%=site.name%> --title=<%=site.name%> --admin_user=<%=site.admin_user%> --admin_password=<%=site.admin_password%> --admin_email=<%=site.admin_email%> --skip-email --allow-root &&
+  php wp-cli.phar core install --url=${IPADDR}/wordpress --title=<%=site.name%> --admin_user=<%=site.admin_user%> --admin_password=<%=site.admin_password%> --admin_email=<%=site.admin_email%> --skip-email --allow-root &&
   php wp-cli.phar theme install <%=site.theme%> --activate --allow-root &&
   <% site.vulnerable_plugins.each do |vulnerable_plugin| %>
     php wp-cli.phar plugin install <%=vulnerable_plugin.download_url%> --force --activate --allow-root &&
@@ -11,7 +10,5 @@ IPADDR=$(/sbin/ifconfig eth1 | grep 'inet addr:' | cut -d: -f2 | awk '{print $1}
    <% site.secure_plugins.each do |secure_plugin| %>
     php wp-cli.phar plugin install <%=secure_plugin.download_url%> --force --activate --allow-root &&
   <% end %>
-
+cd /var/www/wordpress
 <% end %>
-
-rm wp-cli.phar

@@ -6,22 +6,22 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 <% systems.each do |systems| %>
-    config.vm.define "<%= systems.id %>" do |<%= systems.id %>|
-    <%= systems.id %>.vm.box = "<%= systems.basebox %>"
-    <%= systems.id %>.vm.box_url = "<%= systems.url %>"
-    <% systems.networks.each do |n| %>
-        <% grab_system_number = systems.id.gsub(/[^0-9]/i, "") %>
-        <% n.range[9..9] = grab_system_number %>
-        <%= systems.id %>.vm.network :public_network
-        <%= systems.id %>.vm.network :private_network, :ip => "<%= n.range %>0"
+    config.vm.define "<%= systems.attributes[:id] %>" do |<%= systems.attributes[:id] %>|
+    <%= systems.attributes[:id] %>.vm.box = "<%= systems.attributes[:basebox] %>"
+    <%= systems.attributes[:id] %>.vm.box_url = "<%= systems.attributes[:url] %>"
+    <% systems.attributes[:networks].each do |n| %>
+        <% grab_system_number = systems.attributes[:id].gsub(/[^0-9]/i, "") %>
+        <% n.attributes[:range][9..9] = grab_system_number %>
+        <%= systems.attributes[:id] %>.vm.network :public_network
+        <%= systems.attributes[:id] %>.vm.network :private_network, :ip => "<%= n.attributes[:range] %>0"
     <% end %>
-    <%= systems.id %>.vm.synced_folder "<%= MOUNT_DIR %>", "/mount"
+    <%= systems.attributes[:id] %>.vm.synced_folder "<%= MOUNT_DIR %>", "/mount"
     end
 
     # Add secure services
-    <% systems.services.each do |service| %>
+    <% systems.attributes[:services].each do |service| %>
 
-        <% service_name = service.name%>
+        <% service_name = service.attributes['name']%>
 
         config.vm.provision "puppet" do | <%=service_name%> |
         <%=service_name%>.module_path = "<%="#{ROOT_DIR}/mount/puppet/module"%>"
@@ -35,7 +35,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     <% end %>
 
     #Add sites
-    <% systems.sites.each do |site| %>
+    <% systems.attributes[:sites].each do |site| %>
         config.vm.provision "puppet" do | wordpress |
         wordpress.module_path = "<%="#{ROOT_DIR}/mount/puppet/module"%>"
         wordpress.environment_path = "<%="#{ENVIRONMENTS_PATH}"%>"
@@ -51,7 +51,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # Add vulnerabilities
 
     #a vulnerability has 1 or many puppets
-    <% systems.vulns.each do |vulnerability| %>
+    <% systems.attributes[:vulns].each do |vulnerability| %>
 
             <% vulnerability_name = vulnerability.name %>
             config.vm.provision "puppet" do | <%=vulnerability_name%> |

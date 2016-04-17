@@ -8,8 +8,8 @@ class Network
         :range => range
     }
 
-    @name = name
-    @range = range
+    # @name = name
+    # @range = range
   end
 
   def id
@@ -18,9 +18,9 @@ class Network
     # return string that connects everything to 1 massive string
   end
 
-  def eql? other
+  def eql?(other)
     # checks if name matches networks.xml from scenario.xml
-    other.kind_of?(self.class) && @attributes[:name] == other.name
+    other.kind_of?(self.class) && (@attributes['name'] == other.attributes[:name])
   end
 
   def hash

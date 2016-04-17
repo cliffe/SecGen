@@ -9,8 +9,8 @@ class ServiceManager
 
     # remove all services that have already been selected as vulns (from both the wanted and secure lists)
     selected_vulns.each do |a_vuln|
-      legal_services.delete_if{|x| x.type == a_vuln.type}
-      wanted_services.delete_if{|x| x.type == a_vuln.type}
+      legal_services.delete_if{|x| x.attributes['type'] == a_vuln.type}
+      wanted_services.delete_if{|x| x.attributes['type'] == a_vuln.type}
     end
 
     wanted_services.each do |service_query|
@@ -22,9 +22,9 @@ class ServiceManager
       # shuffle order of available secure services
       search_list.shuffle!
       # remove all the services that don't match the current selection (type, etc)
-      if service_query.type.length > 0
-        puts "Searching for service matching type: " + service_query.type
-        search_list.delete_if{|x| x.type != service_query.type}
+      if service_query.attributes[:type].length > 0
+        puts "Searching for service matching type: " + service_query.attributes[:type]
+        search_list.delete_if{|x| x.attributes['type'] != service_query.attributes[:type]}
       end
 
       if search_list.length == 0
@@ -34,12 +34,12 @@ class ServiceManager
       else
         # use from the top of the top of the randomised list
         return_services[service_query.id] = search_list[0]
-        if search_list[0].type.length > 0
-          puts "Selected secure service : " + search_list[0].type
+        if search_list[0].attributes['type'].length > 0
+          puts "Selected secure service : " + search_list[0].attributes['type']
         end
 
         # enforce only one of any service type (remove from available)
-        legal_services.delete_if{|x| x.type == service_query.type}
+        legal_services.delete_if{|x| x.attributes['type'] == service_query.attributes[:type]}
       end
     end
     return return_services.values

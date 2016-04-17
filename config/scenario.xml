@@ -9,7 +9,7 @@
 			<service name="lamp" type="lamp"></service>
 		</services>-->
 		<networks>
-			<network name="homeonly" range = "192.168.1.1"></network>
+			<network name="homeonly"></network>
 		</networks>
 
 		<sites>

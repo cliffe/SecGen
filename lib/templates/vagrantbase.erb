@@ -53,7 +53,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     #a vulnerability has 1 or many puppets
     <% systems.attributes[:vulns].each do |vulnerability| %>
 
-            <% vulnerability_name = vulnerability.name %>
+            <% vulnerability_name = vulnerability.attributes[:name] %>
             config.vm.provision "puppet" do | <%=vulnerability_name%> |
             <%=vulnerability_name%>.module_path = "<%="#{ROOT_DIR}/mount/puppet/module"%>"
             <%=vulnerability_name%>.environment_path = "<%="#{ENVIRONMENTS_PATH}"%>"

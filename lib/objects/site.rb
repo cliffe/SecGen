@@ -1,5 +1,4 @@
 class Site
-  # attr_accessor :name, :type
   attr_accessor :attributes
 
   def initialize(name='', type='')
@@ -8,7 +7,5 @@ class Site
         :type => type
     }
 
-    # @name = name
-    # @type = type
   end
 end

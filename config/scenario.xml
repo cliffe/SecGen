@@ -2,7 +2,7 @@
 	<!-- an example remote storage system, with a remotely exploitable vulnerability that can then be escalated to root -->
 	<system id="storageserver" os="linux" basebox="debian-puppet-64" url="" >
 		<vulnerabilities>
-
+			<!--<vulnerability type="ftp"></vulnerability>-->
 		</vulnerabilities>
 		<!-- secure services will be provided, if matching insecure ones have not been selected -->
 		<services>

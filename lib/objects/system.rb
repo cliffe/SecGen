@@ -1,6 +1,5 @@
 class System
   # can access from outside of class
-  # attr_accessor :id, :os, :url,:basebox, :networks, :vulns, :services, :sites
   attr_accessor :attributes
 
   #initalizes system variables
@@ -16,14 +15,6 @@ class System
         :sites => sites
     }
 
-    # @id = id
-    # @os = os
-    # @url = url
-    # @basebox = basebox
-    # @vulns = vulns
-    # @networks = networks
-    # @services = services
-    # @sites = sites
   end
 
   def is_valid_base

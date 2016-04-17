@@ -1,5 +1,4 @@
 class Network
-  # attr_accessor :name, :range
   attr_accessor :attributes
 
   def initialize(name="", range="")
@@ -8,8 +7,6 @@ class Network
         :range => range
     }
 
-    # @name = name
-    # @range = range
   end
 
   def id

@@ -1,5 +1,4 @@
 class Service
-  # attr_accessor :name, :type, :details, :puppets
   attr_accessor :attributes
 
   def initialize(name="", type="", details="", puppets=[])
@@ -9,10 +8,7 @@ class Service
         :details => details,
         :puppets => puppets
     }
-    # @name = name
-    # @type = type
-    # @details = details
-    # @puppets = puppets
+
   end
 
   def eql? other

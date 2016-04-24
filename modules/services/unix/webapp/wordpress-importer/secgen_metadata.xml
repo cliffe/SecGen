@@ -1,0 +1,5 @@
+<plugin
+              name="wordpress-importer"
+              details="WP importing plugin"
+              platform="wordpress"
+              download_url="https://downloads.wordpress.org/plugin/wordpress-importer.0.6.1.zip"/>

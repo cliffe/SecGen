@@ -1,0 +1,5 @@
+<plugin
+              name="wp-page-navi"
+              details="WP page navigation"
+              platform="wordpress"
+              download_url="https://downloads.wordpress.org/plugin/wp-pagenavi.2.90.zip"/>

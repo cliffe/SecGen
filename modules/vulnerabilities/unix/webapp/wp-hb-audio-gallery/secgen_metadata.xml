@@ -1,6 +1,7 @@
 <plugin
               name="wp-hb-audio-gallery"
               details="Arbitrary file download"
+              type="file-download"
               platform="wordpress"
               msf_module=""
               is_vuln = 'true'

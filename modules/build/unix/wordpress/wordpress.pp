@@ -1,10 +1,15 @@
 include lamp
 
+$password = generate('/bin/sh', '-c', "mkpasswd -m sha-512 ")
+
 exec { 'add_sql':
   command => 'apt-get --yes --force-yes install php5-mysql',
   provider => 'shell'
   # path    => [ '/usr/local/bin/', '/bin/' ],  # alternative syntax
 }
+
+#generate sql password
+
 
 class { 'wordpress':
   install_dir => '/var/www/wordpress',
@@ -38,6 +43,6 @@ file{
 
 exec {
   'run_wp_cli':
-    command => '/var/www/wordpress/wpcli-install.sh'
+    command => "/var/www/wordpress/wpcli-install.sh"
 
 }

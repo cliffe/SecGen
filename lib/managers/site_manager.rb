@@ -11,6 +11,10 @@ class SiteManager
   def process(site)
     random_user = get_random_user
 
+    if site.name.length == 0
+      site.name = 'wordpress'
+    end
+
     if site.theme.length == 0
       site.theme = get_random_theme_name
     end

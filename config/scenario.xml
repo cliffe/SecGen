@@ -6,23 +6,21 @@
 		</vulnerabilities>
 		<!-- secure services will be provided, if matching insecure ones have not been selected -->
 		<services>
-			<service name="lamp" type="lamp"></service>
+
 		</services>-->
 		<networks>
 			<network name="homeonly"></network>
 		</networks>
 
 		<sites>
-			<site name="wordpress" theme="" admin_user="" admin_password="" admin_email="">
+			<site name="" theme="" admin_user="" admin_password="" admin_email="">
 				<vulnerable_plugins>
-					<vulnerable_plugin name='wp-hb-audio-gallery'/>
-					<vulnerable_plugin name='wp-survey-and-poll'/>
+
 				</vulnerable_plugins>
 				<secure_plugins>
-					<secure_plugin/>
+
 				</secure_plugins>
 				<users>
-					<user name="root" password="tiaspbiqe2r" email="test@test.net"></user>
 				</users>
 			</site>
 		</sites>

@@ -10,7 +10,6 @@ class SiteManagerTests < MiniTest::Test
 
   def test_theme_randomization_returns_random_theme_name
     result = @sut.get_random_theme_name
-    print "Picked theme: #{result}"
     assert_operator result.length, :>, 0
   end
 end

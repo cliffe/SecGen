@@ -1,6 +1,7 @@
 <plugin
               name="wp-survey-and-poll"
               details="Blind SQL Injection"
+              type="sqli"
               platform="wordpress"
               msf_module=""
               is_vuln = 'true'

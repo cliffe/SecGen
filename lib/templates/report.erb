@@ -1,43 +1,44 @@
 <%if systems.count == 1%>
-There was only 1 system generated for this project. 
+There was only 1 system generated for this project.
 <%else %>
-There were <%systems.count%> systems generated for this project. <%end%>
+There were <%systems.count%> systems generated for this project.
+<%end%>
 
 The module files for puppet can be found here: "<%=ROOT_DIR%>/mount/puppet/modules"
 The manifest files for puppet can be found here: "<%=ROOT_DIR%>/mount/puppet/manifests"
 
 <% systems.each do |s| %>
 ====System: <%=s.id%>====
-  <%=s.id%> uses <%=s.basebox%> a distro of <%=s.os%> which can be downloaded from <%=s.url%>
-<% s.networks.each do |n| %> <%grab_system_number = s.id.gsub(/[^0-9]/i, "") %> <% n.range[9..9] = grab_system_number %>   
-  ip address for <%=s.id%> = <%=n.range%>0 <% end %> 
-  ==Secure services==    
+<%=s.id%> uses <%=s.basebox%> a distro of <%=s.os%> which can be downloaded from <%=s.url%>
+<% s.networks.each do |n| %> <%grab_system_number = s.id.gsub(/[^0-9]/i, "") %> <% n.range[9..9] = grab_system_number %>
+ip address for <%=s.id%> = <%=n.range%>0
+<% end %>
+==Secure services==
 <% s.services.each do |v| %>
-  Here is a summary of the service <%=v.name%>:
-    Type: <%=v.type%>.
-    Name:  <%= v.name %>.
-    Details:  <%= v.details %>.
+Here is a summary of the service <%=v.name%>:
+Type: <%=v.type%>.
+Name:  <%= v.name %>.
+Details:  <%= v.details %>.
 <% v.puppets.each do |p| %>
     Puppet "<%=p%>.pp" has been used to create this service.
 <% end %>
 <% end %>
 
-  ==Vulnerabilities==
+==Vulnerabilities==
 <% s.vulns.each do |v| %>
-  Here is a summary of the vulnerability <%=v.type%>:
-    Type: <%=v.type%>.
-    Details:  <%= v.details %>.
-    privilege: <%= v.privilege %>.
-    access: <%= v.access %>.
-<%if not v.cve == ""%>
-    cve: <%= v.cve %>.
+Here is a summary of the vulnerability <%=v.type%>:
+Type: <%=v.type%>.
+Details:  <%= v.details %>.
+privilege: <%= v.privilege %>.
+access: <%= v.access %>.
+<%if not v.cve == ""%>cve: <%= v.cve %>.
 <% end %>
-<% v.puppets.each do |p| %>
-    Puppet "<%=p%>.pp" has been used to create this vulnerability.
+<% v.puppets.each do |p| %>Puppet "<%=p%>.pp" has been used to create this vulnerability.
 <% end %>
-<% v.ports.each do |port| %>
-    Runs on port <%=port%>
+<%#=<% v.ports.each do |port| %>
+<%#=Runs on port <%=port%>
+<%#=<% end %>
 <% end %>
 <% end %>
-<% end %> 
+
 

@@ -6,7 +6,7 @@ require_relative 'lib/systemreader.rb'
 require_relative 'lib/vagrant.rb'
 require_relative 'lib/helpers/bootstrap'
 
-
+# Displays secgen usage data
 def usage
   puts 'Usage:
    ' + $0 + ' [options]
@@ -20,6 +20,8 @@ def usage
   exit
 end
 
+# Builds the vagrant configuration file
+# @return build_number [Integer] Current system's build number
 def build_config
   puts 'Reading configuration file for virtual machines you want to create'
 
@@ -33,11 +35,14 @@ def build_config
 	return build_number
 end
 
+# Builds the vm via the vagrant file corresponding to build number
+# @param build_number [Integer] Desired system's build number
 def build_vms(build_number)
   vagrant = VagrantController.new
   vagrant.vagrant_up(build_number)
 end
 
+# Runs methods to run and configure a new vm from the configuration file
 def run
   build_number = build_config
   build_vms(build_number)
@@ -55,13 +60,15 @@ if ARGV.length < 1
 	usage
 end
 
+# Get command line arguments
 opts = GetoptLong.new(
 	[ '--help', '-h', GetoptLong::NO_ARGUMENT ],
 	[ '--run', '-r', GetoptLong::NO_ARGUMENT ],
 	[ '--build-config', '-c', GetoptLong::NO_ARGUMENT ],
-	[ '--build-vms', '-v', GetoptLong::NO_ARGUMENT ]  
+	[ '--build-vms', '-v', GetoptLong::REQUIRED_ARGUMENT ]
 )
 
+# Direct via command line arguments
 opts.each do |opt, arg|
 	case opt
 		when '--help'
@@ -73,7 +80,7 @@ opts.each do |opt, arg|
 		when '--build-config'
 			build_config()
 		when '--build-vms'
-			build_vms()
+			build_vms(arg)
 	end
 end
 

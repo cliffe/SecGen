@@ -52,6 +52,7 @@ class Configuration
   # Returns the existing services if defined, else returns services the from the file services.xml
   # @return [Array] Array of service objects
     def self.services
+
     if defined? @@services
       return @@services
     end

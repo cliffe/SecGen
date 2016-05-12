@@ -2,18 +2,27 @@
 	<!-- an example remote storage system, with a remotely exploitable vulnerability that can then be escalated to root -->
 	<system id="storageserver" os="linux" basebox="debian-puppet-64" url="" >
 		<vulnerabilities>
-
+			<vulnerability type="misc"></vulnerability>
 		</vulnerabilities>
 		<!-- secure services will be provided, if matching insecure ones have not been selected -->
 		<services>
-			<service name="lamp" type="lamp"></service>
-		</services>-->
+
+		</services>
 		<networks>
 			<network name="homeonly"></network>
 		</networks>
 
 		<sites>
-			<site type="blog"></site>
+			<!--<site name="" theme="" admin_user="" admin_password="" admin_email="">
+				<vulnerable_plugins>
+
+				</vulnerable_plugins>
+				<secure_plugins>
+
+				</secure_plugins>
+				<users>
+				</users>
+			</site> -->
 		</sites>
 	</system>
 

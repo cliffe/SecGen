@@ -44,7 +44,7 @@ end
 
 # Runs methods to run and configure a new vm from the configuration file
 def run
-  build_number = build_config()
+  build_number = build_config
   build_vms(build_number)
 end
 

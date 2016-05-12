@@ -5,15 +5,18 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+<%system_number = 5 %>
 <% systems.each do |systems| %>
+    <%system_number = system_number + 1%>
     config.vm.define "<%= systems.id %>" do |<%= systems.id %>|
     <%= systems.id %>.vm.box = "<%= systems.basebox %>"
     <%= systems.id %>.vm.box_url = "<%= systems.url %>"
     <% systems.networks.each do |n| %>
         <% grab_system_number = systems.id.gsub(/[^0-9]/i, "") %>
         <% n.range[9..9] = grab_system_number %>
+
         <%= systems.id %>.vm.network :public_network
-        <%= systems.id %>.vm.network :private_network, :ip => "<%= n.range %>0"
+        <%= systems.id %>.vm.network :private_network, :ip => "172.16.0.<%=system_number%>"
     <% end %>
     <%= systems.id %>.vm.synced_folder "<%= MOUNT_DIR %>", "/mount"
     end
@@ -35,7 +38,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     <% end %>
 
     #Add sites
-    <% systems.sites.each do |site| %>
+      <% if systems.sites.count > 0 %>
         config.vm.provision "puppet" do | wordpress |
         wordpress.module_path = "<%="#{ROOT_DIR}/mount/puppet/module"%>"
         wordpress.environment_path = "<%="#{ENVIRONMENTS_PATH}"%>"
@@ -43,7 +46,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         wordpress.manifests_path = "<%="#{ROOT_DIR}/mount/puppet/manifest"%>"
         wordpress.manifest_file = "wordpress.pp"
         end
-
     <% end %>
 
 

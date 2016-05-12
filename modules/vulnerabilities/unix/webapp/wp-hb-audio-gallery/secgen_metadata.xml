@@ -1,0 +1,8 @@
+<plugin
+              name="wp-hb-audio-gallery"
+              details="Arbitrary file download"
+              type="file-download"
+              platform="wordpress"
+              msf_module=""
+              is_vuln = 'true'
+              download_url="https://www.exploit-db.com/apps/08eb39427e3ce6bc9ace44b0194000ad-hb-audio-gallery-lite.zip"/>

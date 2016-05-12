@@ -1,0 +1,8 @@
+<plugin
+              name="wp-wpshop-ecommerce"
+              details="arbitrary file upload"
+              type="file-upload"
+              platform="wordpress"
+              msf_module=""
+              is_vuln = 'true'
+              download_url="https://downloads.wordpress.org/plugin/wpshop.1.3.9.5.zip"/>

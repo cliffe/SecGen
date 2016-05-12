@@ -1,0 +1,5 @@
+<plugin
+              name="advanced-custom-fields"
+              details="WP custom fields"
+              platform="wordpress"
+              download_url="https://downloads.wordpress.org/plugin/advanced-custom-fields.4.4.7.zip"/>

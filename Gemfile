@@ -7,4 +7,6 @@ gem 'xml-simple'
 group :test, :development do
   gem 'minitest'
   gem 'rake'
+  gem 'rdoc'
+  gem 'yard'
 end

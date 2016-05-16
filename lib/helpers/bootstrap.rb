@@ -1,9 +1,10 @@
 require 'fileutils'
 class Bootstrap
 
+  # Bootstrap the application by creating or moving all relevant puppet files
   def bootstrap
     puts 'Bootstrapping application..'
-    #if mount doesnt exist create the directory structure
+    #if mount does not exist create the directory structure
     if !Dir.exists?("#{ROOT_DIR}/mount")
       create_directory_structure
       move_vulnerability_puppet_files
@@ -21,6 +22,8 @@ class Bootstrap
 
   private
 
+  # Create directory structure for puppet files
+  # Structure /mount/puppet/module and /mount/puppet/manifest
   def create_directory_structure
     print 'Mount directory not present, creating..'
     Dir.mkdir("#{ROOT_DIR}/mount")
@@ -33,6 +36,7 @@ class Bootstrap
     puts ' Complete'
   end
 
+  # Copy all puppet files from /modules/vulnerabilities/ to /mount/puppet/module and /mount/puppet/module
   def move_vulnerability_puppet_files
     puts 'Moving vulnerability manifests'
     Dir.glob("#{ROOT_DIR}/modules/vulnerabilities/*/*/*/*.pp").each do |puppet_file|
@@ -48,6 +52,7 @@ class Bootstrap
     end
   end
 
+  # Copy all puppet files from /modules/services to /mount/puppet/manifest and /mount/puppet/module
   def move_secure_service_puppet_files
     puts 'Moving Service manifests'
     Dir.glob("#{ROOT_DIR}/modules/services/*/*/*/*.pp").each do |puppet_file|
@@ -67,6 +72,7 @@ class Bootstrap
     end
   end
 
+  # Move dependency modules, build manifests and build modules
   def move_build_puppet_files
 
     puts 'Moving Dependency modules'
@@ -96,6 +102,7 @@ class Bootstrap
 
   end
 
+  # Purge all puppet files from mount directory
   def purge_puppet_files
     FileUtils.rm_rf("#{ROOT_DIR}/mount")
   end

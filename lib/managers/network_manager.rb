@@ -1,5 +1,10 @@
 class NetworkManager
   # the user will either specify a blank misc type or a knownnetwork type
+
+  # Check if given networks are valid if networks valid return the values, else display error message
+  # @param networks [Array] Networks to check for validity
+  # @param valid_network [String] Valid network value
+  # @return [Array] Returns all the values for new_networks as an array
   def self.process(networks,valid_network)
     new_networks = {}
     # intersection of valid networks / user defined networks

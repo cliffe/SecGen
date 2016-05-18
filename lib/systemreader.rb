@@ -89,6 +89,7 @@ class SystemReader
 
 			systems << s
 		end
+
 		return systems
 	end
 end

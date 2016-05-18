@@ -1,4 +1,5 @@
 class Service
+  #Service attributes hash
   attr_accessor :attributes
 
   # Initialise Service object

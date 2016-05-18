@@ -1,5 +1,5 @@
 class Site
-  #Site attributs hash
+  #Site attributes hash
   attr_accessor :attributes
 
   # Initialize site object

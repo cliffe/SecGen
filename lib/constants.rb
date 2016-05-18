@@ -71,4 +71,4 @@ REPORT_TEMPLATE_FILE = "#{ROOT_DIR}/lib/templates/report.erb"
 
 # Version number of SecGen
 # e.g. [release state (0 = alpha, 3 = final release)].[Major bug fix].[Minor bug fix].[Cosmetic or other features]
-VERSION_NUMBER = '0.0.0.1'
+VERSION_NUMBER = '0.0.1.1'

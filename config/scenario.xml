@@ -2,6 +2,7 @@
 	<!-- an example remote storage system, with a remotely exploitable vulnerability that can then be escalated to root -->
 	<system id="storageserver" os="linux" basebox="debian-puppet-64" url="" >
 		<vulnerabilities>
+
 		</vulnerabilities>
 		<!-- secure services will be provided, if matching insecure ones have not been selected -->
 
@@ -9,7 +10,7 @@
 
 		</services>-->
 		<networks>
-			<network name="homeonly"></network>
+			<!--<network name="homeonly"></network>-->
 		</networks>
 
 	</system>

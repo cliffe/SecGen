@@ -1,5 +1,5 @@
 class NetworkManager
-  # the user will either specify a blank misc type or a knownnetwork type
+  # the user will either specify a blank misc type or a known network type
 
   # Check if given networks are valid if networks valid return the values, else display error message
   # @param networks [Array] Networks to check for validity
@@ -9,22 +9,6 @@ class NetworkManager
     new_networks = {}
     # intersection of valid networks / user defined networks
     legal_networks = valid_network & networks
-
-    # legal_networks = Array.new
-
-    # networks.each do |given_network|
-    #   legal_networks << given_network if valid_network.attributes[:range].include? given_network
-    # end
-
-    # legal_networks = (networks.hash).eql? (valid_network.hash)
-
-
-    # legal_networks =
-
-    # networks.each do |given_networks|
-    #   given_networks
-    # end
-
 
     networks.each do |network|
       # checks to see string is blank if so valid misc into a new hash map of vulnerabilities

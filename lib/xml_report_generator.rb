@@ -91,8 +91,8 @@ class XMLReportGenerator
 
     s.attributes[:sites].each do |v|
 
-      sites_hash['name'] = [v.attributes[:name]] unless (v.attributes[:name].nil? || v.attributes[:name].empty?)
-      sites_hash['type'] = [v.attributes[:type]] unless v.attributes[:type].empty?
+      sites_hash['name'] ||= [v.attributes[:name]]
+      sites_hash['type'] ||= [v.attributes[:type]]
 
       sites_array << sites_hash
     end

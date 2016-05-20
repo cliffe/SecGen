@@ -1,8 +1,6 @@
 class System
-  #System attributes hash
+  # System attributes hash
   attr_accessor :attributes
-
-  # attr_accessor :id,:os,:basebox,:url,:vulns,:networks,:services,:sites
 
   # Initalizes System object
   # @param id [String] Identifier string for system object
@@ -24,15 +22,6 @@ class System
         :services => services,
         :sites => sites
     }
-
-    # @id = id
-    # @os = os
-    # @basebox = basebox
-    # @url = url
-    # @vulns = vulns
-    # @networks = networks
-    # @services = services
-    # @sites = sites
 
   end
 

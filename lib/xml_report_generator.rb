@@ -22,11 +22,11 @@ class XMLReportGenerator
     networks_array = Array.new
     networks_hash = Hash.new
 
-    s.networks.each do |n|
+    s.attributes[:networks].each do |n|
       # grab_system_number = s.id.gsub(/[^0-9]/i, "")
       # n.range[9..9] = grab_system_number
 
-      networks_hash['network'] = [n.range << '0']
+      networks_hash['network'] = [n.attributes[:range] << '0']
 
       networks_array << networks_hash
     end
@@ -40,13 +40,13 @@ class XMLReportGenerator
   def get_services_hash(s)
     service_array = Array.new
     service_hash = Hash.new
-    s.services.each do |v|
+    s.attributes[:services].each do |v|
 
-      service_hash['type'] = [v.type] unless v.type.empty?
-      service_hash['name'] = [v.name] unless v.name.empty?
-      service_hash['details'] = [v.details] unless v.details.empty?
+      service_hash['type'] = [v.attributes[:type]] unless v.attributes[:type].empty?
+      service_hash['name'] = [v.attributes[:name]] unless v.attributes[:name].empty?
+      service_hash['details'] = [v.attributes[:details]] unless v.attributes[:details].empty?
 
-      v.puppets.each do |p|
+      v.attributes[:puppets].each do |p|
         service_hash['puppet_file'] = ["#{p}.pp"]
       end
       service_array << service_hash
@@ -62,19 +62,19 @@ class XMLReportGenerator
     vulns_array = Array.new
     vulns_hash = Hash.new
 
-    s.vulns.each do |v|
+    s.attributes[:vulns].each do |v|
 
-      vulns_hash['type'] = [v.type] unless v.type.empty?
-      vulns_hash['details'] = [v.details] unless v.details.empty?
-      vulns_hash['privilege'] = [v.privilege] unless v.privilege.empty?
-      vulns_hash['access'] = [v.access] unless v.access.empty?
-      vulns_hash['cve'] = [v.cve] unless v.cve.empty?
-      vulns_hash['difficulty'] = [v.difficulty] unless v.difficulty.empty?
-      vulns_hash['cvss_rating'] = [v.cvss_rating] unless v.cvss_rating.empty?
-      vulns_hash['cvss_score'] = [v.cvss_score] unless v.cvss_score.empty?
-      vulns_hash['vector_string'] = [v.vector_string] unless v.vector_string.empty?
+      vulns_hash['type'] = [v.attributes[:type]] unless v.attributes[:type].empty?
+      vulns_hash['details'] = [v.attributes[:details]] unless v.attributes[:details].empty?
+      vulns_hash['privilege'] = [v.attributes[:privilege]] unless v.attributes[:privilege].empty?
+      vulns_hash['access'] = [v.attributes[:access]] unless v.attributes[:access].empty?
+      vulns_hash['cve'] = [v.attributes[:cve]] unless v.attributes[:cve].empty?
+      vulns_hash['difficulty'] = [v.attributes[:difficulty]] unless v.attributes[:difficulty].empty?
+      vulns_hash['cvss_rating'] = [v.attributes[:cvss_rating]] unless v.attributes[:cvss_rating].empty?
+      vulns_hash['cvss_score'] = [v.attributes[:cvss_score]] unless v.attributes[:cvss_score].empty?
+      vulns_hash['vector_string'] = [v.attributes[:vector_string]] unless v.attributes[:vector_string].empty?
 
-      v.puppets.each do |p|
+      v.attributes[:puppets].each do |p|
         vulns_hash['puppet_file'] = ["#{p['puppet'][0]}.pp"]
       end
       vulns_array << vulns_hash
@@ -89,10 +89,10 @@ class XMLReportGenerator
     sites_array = Array.new
     sites_hash = Hash.new
 
-    s.sites.each do |v|
+    s.attributes[:sites].each do |v|
 
-      sites_hash['name'] = [v.name] unless (v.name.nil? || v.name.empty?)
-      sites_hash['type'] = [v.type] unless v.type.empty?
+      sites_hash['name'] = [v.attributes[:name]] unless v.attributes[:name].empty?
+      sites_hash['type'] = [v.attributes[:type]] unless v.attributes[:type].empty?
 
       sites_array << sites_hash
     end
@@ -105,7 +105,7 @@ class XMLReportGenerator
     hash = Hash.new
     @systems.each do |system|
       hash = {
-          'id' => system.id, 'basebox' => system.basebox, 'os' => system.os, 'url' => system.url,
+          'id' => system.attributes[:id], 'basebox' => system.attributes[:basebox], 'os' => system.attributes[:os], 'url' => system.attributes[:url],
           'networks' => get_networks_hash(system),
           'services' => get_services_hash(system),
           'vulnerabilities' => get_vulnerabilities_hash(system),

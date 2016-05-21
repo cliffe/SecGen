@@ -1,18 +1,17 @@
 <systems>
 	<!-- an example remote storage system, with a remotely exploitable vulnerability that can then be escalated to root -->
-	<system id="storageserver" os="linux" basebox="debian-puppet-64" url="" >
+	<system id="storageserver" os="linux" basebox="debian-puppet-32" url="" >
 		<vulnerabilities>
-			<vulnerability type="misc"/>
+			<vulnerability type="misc"></vulnerability>
 		</vulnerabilities>
 		<!-- secure services will be provided, if matching insecure ones have not been selected -->
 
 		<services>
-
-		</services>-->
+			<!--<service name="lamp"></service>-->
+		</services>
 		<networks>
 			<network name="homeonly"></network>
 		</networks>
-
 	</system>
 
 	<!-- an example remote web server, with a remotely exploitable root vulnerability -->

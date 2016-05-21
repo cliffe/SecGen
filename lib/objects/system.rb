@@ -1,29 +1,6 @@
 class System
-  # can access from outside of class
-
-  # System's id number
-  attr_accessor :id
-
-  # Operating system running on the system
-  attr_accessor :os
-
-  # URL to the puppet basebox
-  attr_accessor :url
-
-  # Puppet basebox name
-  attr_accessor :basebox
-
-  # Networks used by the system
-  attr_accessor :networks
-
-  # Vulnerabilite's installed on the system
-  attr_accessor :vulns
-
-  # Services installed on the system
-  attr_accessor :services
-
-  # Sites to be served from the system
-  attr_accessor :sites
+  # System attributes hash
+  attr_accessor :attributes
 
   # Initalizes System object
   # @param id [String] Identifier string for system object
@@ -35,14 +12,17 @@ class System
   # @param services [Array] Array containing selected services objects
   # @param sites [Array] Array containing selected sites objects
   def initialize(id, os, basebox, url, vulns=[], networks=[], services=[], sites=[])
-    @id = id
-    @os = os
-    @url = url
-    @basebox = basebox
-    @vulns = vulns
-    @networks = networks
-    @services = services
-    @sites = sites
+    @attributes = {
+        :id => id,
+        :os => os,
+        :basebox => basebox,
+        :url => url,
+        :vulns => vulns,
+        :networks => networks,
+        :services => services,
+        :sites => sites
+    }
+
   end
 
   # Checks to see if the selected base is a valid basebox and is in the vagrant file
@@ -51,8 +31,8 @@ class System
     valid_base = Configuration.bases
 
     valid_base.each do |b|
-      if @basebox == b.vagrantbase
-        @url = b.url
+      if @attributes[:basebox] == b.attributes[:vagrantbase]
+        @attributes[:url] = b.attributes[:url]
         return true
       end
     end

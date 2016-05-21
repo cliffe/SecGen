@@ -1,11 +1,5 @@
-#Contains common components that modules will inherit from.
+# Contains common components that modules will inherit from.
 class BaseModule
-
-  # Name of the module
-  attr_accessor :name
-
-  #Type of the module
-  attr_accessor :type
-
-
+  #BaseModule attributes hash
+  attr_accessor :attributes
 end

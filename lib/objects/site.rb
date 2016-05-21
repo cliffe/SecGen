@@ -1,15 +1,15 @@
 class Site
-  # Site name
-  attr_accessor :name
-
-  # Type of site
-  attr_accessor :type
+  #Site attributes hash
+  attr_accessor :attributes
 
   # Initialize site object
   # @param name [String]
   # @param type [String]
   def initialize(name='', type='')
-    @name = name
-    @type = type
+    @attributes = {
+        :name => name,
+        :type => type
+    }
+
   end
 end

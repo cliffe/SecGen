@@ -1,7 +1,7 @@
 ## FILE_CONSTANTS ##
 
 # Root directory of SecGen file structure
-ROOT_DIR = File.expand_path('../../../SecGen',__FILE__)
+ROOT_DIR = File.expand_path('../../',__FILE__)
 
 # Path to Scenario.xml file
 SCENARIO_XML = "#{ROOT_DIR}/config/scenario.xml"
@@ -71,4 +71,4 @@ REPORT_TEMPLATE_FILE = "#{ROOT_DIR}/lib/templates/report.erb"
 
 # Version number of SecGen
 # e.g. [release state (0 = alpha, 3 = final release)].[Major bug fix].[Minor bug fix].[Cosmetic or other features]
-VERSION_NUMBER = '0.0.0.1'
+VERSION_NUMBER = '0.0.1.1'

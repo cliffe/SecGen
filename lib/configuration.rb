@@ -68,15 +68,10 @@ class Configuration
       end
 
       temp_hash = Hash.new
-      # too specific move to vuln class end
       item.each do |attr, value|
-        #
-        #   ## THIS NEEDS TO BE FIXED
-        #   obj.send "attributes=", value
 
         temp_hash[attr] = value
-        # obj.instance_variable_set(":@attributes[:#{attr}]",value)
-        #   obj.instance_eval(":@attributes[:#{attr}] = #{value}")
+
       end
       obj.send 'attributes=', temp_hash
 

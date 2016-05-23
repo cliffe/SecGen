@@ -40,15 +40,6 @@ class Configuration
     return @@bases = _get_list(BASE_XML, "//bases/base", Basebox)
   end
 
-  # Returns the existing services if defined, else returns services the from the file services.xml
-  # @return [Array] Array of service objects
-  def self.services
-    if defined? @@services
-      return @@services
-    end
-    return @@services = _get_list(SCENARIO_XML, "/systems/system/services/service", Service)
-  end
-
   # Reads xml file and returns relevent items
   # @param  xmlfile [File] Name of XML file to read
   # @param  xpath [String] Path to puppet files

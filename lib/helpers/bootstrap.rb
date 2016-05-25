@@ -61,14 +61,13 @@ class Bootstrap
     end
 
     puts 'Moving Service modules'
-    Dir.glob("#{ROOT_DIR}/modules/services/*/*/*/module/**").each do |puppet_module_directory|
+    Dir.glob("#{ROOT_DIR}/modules/services/*/*/*/**").each do |puppet_module_directory|
 
       module_path = "#{ROOT_DIR}/mount/puppet/module/"
       puts "Moving #{puppet_module_directory} to #{module_path}"
       FileUtils.cp_r(puppet_module_directory, module_path)
 
 
-      puts 'Moving vulnerability templates'
     end
   end
 

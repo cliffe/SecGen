@@ -1,0 +1,23 @@
+<vulnerability
+        type="misc"
+        cve="CVE-2004-2000"
+        privilege="user"
+        access="remote"
+        details="lamp can be exploited by exploit/unix/misc/lamp"
+        platform="unix"
+        name="lamp"
+        msf_module="modules/exploits/unix/misc/lamp.rb"
+        difficulty="medium"
+        cvss_score="9.3"
+        vector_string="AV:N/AC:M/Au:N/C:C/I:C/A:C">
+  <puppets>
+    <puppet>lamp</puppet>
+  </puppets>
+  <files>
+    <file>lamp.erb</file>
+  </files>
+  <scripts>
+  </scripts>
+</vulnerability>
+
+<!--<service type="lamp" name="lamp" description="LAMP Stack"></service>-->

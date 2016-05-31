@@ -1,5 +1,5 @@
 <service
    type="mysql"
    name="mysql"
-   description="A secure MySql Database"
+   description="A secure MySql Database">
 </service>

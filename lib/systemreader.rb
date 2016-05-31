@@ -1,7 +1,7 @@
 require_relative 'configuration.rb'
 require_relative 'managers/network_manager'
-require_relative 'managers/service_manager'
 require_relative 'managers/base_manager'
+require_relative 'helpers/service_processor'
 require_relative 'helpers/vulnerability_processor'
 require_relative 'objects/base_box'
 require_relative 'objects/network'
@@ -15,6 +15,7 @@ class SystemReader
 
 	# initializes systems xml from BOXES_XML const
 	def initialize()
+		@service_processor = ServiceProcessor.new
 		@vulnerability_processor = VulnerabilityProcessor.new
 	end
 
@@ -78,7 +79,7 @@ class SystemReader
 			
 			new_networks = NetworkManager.process(networks, Configuration.networks)
 			# pass in the already selected set of vulnerabilities, and additional secure services to find
-			new_services = ServiceManager.process(services, Configuration.services, new_vulns)
+			new_services = @service_processor.process(services, new_vulns)
 
 			s = System.new(id, os, basebox, url, new_vulns, new_networks, new_services, sites)
 			if s.is_valid_base == false

@@ -17,13 +17,6 @@ class Service
 
   end
 
-  # Check if name matches services.xml from scenario.xml
-  # @param other [String]
-  # @return [Boolean] Returns true if @type matches services.xml from scenario.xml
-  def eql? other
-    other.kind_of?(self.class) && @attributes[:type] == other.type
-  end
-
   # Returns a hash of the type
   # @return [Hash] hash of the object variable @type
   def hash

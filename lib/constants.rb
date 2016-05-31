@@ -9,9 +9,6 @@ SCENARIO_XML = "#{ROOT_DIR}/config/scenario.xml"
 # Path to Networks.xml file
 NETWORKS_XML = "#{ROOT_DIR}/xml/networks.xml"
 
-# Path to services.xml file
-SERVICES_XML = "#{ROOT_DIR}/xml/services.xml"
-
 # Path to bases.xml file
 BASE_XML = "#{ROOT_DIR}/xml/bases.xml"
 

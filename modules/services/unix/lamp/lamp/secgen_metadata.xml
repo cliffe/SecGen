@@ -1,5 +1,5 @@
 <service
-                  type="lamp"
-                  name="lamp"
-                  description="LAMP Stack"
-          </service>
+   type="lamp"
+   name="lamp"
+   description="LAMP Stack">
+</service>

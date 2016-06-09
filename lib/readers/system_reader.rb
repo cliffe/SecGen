@@ -1,3 +1,6 @@
+#!/bin/env ruby
+# encoding: utf-8
+
 require 'nokogiri'
 
 require_relative '../objects/system'

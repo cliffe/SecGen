@@ -58,7 +58,7 @@ class SystemReader
         Print.verbose " #{module_node.name}, selecting based on:"
         module_selector.attributes.each do |attr|
           if attr[0] && attr[1] && attr[0].to_s != "module_type"
-            Print.verbose "  ├ #{attr[0].to_s} ~= #{attr[1].to_s}"
+            Print.verbose "  - #{attr[0].to_s} ~= #{attr[1].to_s}"
           end
         end
 

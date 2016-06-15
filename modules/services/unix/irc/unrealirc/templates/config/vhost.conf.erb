@@ -1,0 +1,17 @@
+vhost {
+    vhost           <%= @vhost %>;
+    from {
+<% @userhosts.each do |val| -%>
+        userhost    <%= val %>;
+<% end -%>
+    };
+    login           <%= @login %>;
+<% if @password_auth_type -%>
+    password        "<%= @password %>" { <%= @password_auth_type %>; };
+<% else -%>
+    password        "<%= @password %>";
+<% end -%>
+<% if @swhois -%>
+    swhois          "<%= @swhois %>";
+<% end -%>
+};

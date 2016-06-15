@@ -1,0 +1,31 @@
+allow {
+    ip                  <%= @ip %>;
+    hostname            <%= @hostname %>;
+    class               <%= @class %>;
+<% if @password -%>
+<% if @password_auth -%>
+    password "<%= @password %>" { <%= @password_auth %>; };
+<% else -%>
+    password "<%= @password %>";
+<% end -%>
+<% end -%>
+<% if @maxperip -%>
+    maxperip            <%= @maxperip %>;
+<% end -%>
+<% if @ipv6_clone_mask -%>
+    ipv6-clone-mask     <%= @ipv6_clone_mask %>;
+<% end -%>
+<% if @redirect_server -%>
+    redirect-server     <%= @redirect_server %>;
+<% end -%>
+<% if @redirect_port -%>
+    redirect-port       <%= @redirect_port %>;
+<% end -%>
+<% if @options -%>
+    options {
+<% @options.each do |option| -%>
+        <%= option %>;
+<% end -%>
+    };
+<% end -%>
+};

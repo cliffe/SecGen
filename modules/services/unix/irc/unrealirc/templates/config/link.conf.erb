@@ -1,0 +1,35 @@
+link <%= @servername %>
+{
+    hostname            <%= @hostname %>;
+    port                <%= @port %>;
+    password-connect    "<%= @password_connect %>";
+<% if @password_receive_auth -%>
+    password-receive    "<%= @password_receive %>" { <%= @password_receive_auth %>; };
+<% else -%>
+    password-receive    "<%= @password_receive %>";
+<% end -%>
+    username            <%= @username %>;
+    bind-ip             <%= @bind_ip %>;
+<% if @hub -%>
+    hub                 <%= @hub %>;
+<% end -%>
+<% if @leaf -%>
+    leaf                <%= @leaf %>;
+<% end -%>
+<% if @leafdepth -%>
+    leafdepth           <%= @leafdepth %>;
+<% end -%>
+    class               <%= @linkclass %>;
+<% if @compression_level -%>
+    compression-level   <%= @compression_level %>;
+<% end -%>
+<% if @ciphers -%>
+    ciphers             <%= @ciphers %>;
+<% end -%>
+    options
+    {
+<% @options.each do |option| -%>
+        <%= option %>;
+<% end -%>
+    };
+};

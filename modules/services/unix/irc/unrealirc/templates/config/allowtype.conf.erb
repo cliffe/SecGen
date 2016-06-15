@@ -1,0 +1,11 @@
+allow <%= @type %> {
+<% if @filename -%>
+    filename    "<%= @filename %>";
+<% end -%>
+<% if @soft -%>
+    soft        "<%= @soft %>";
+<% end -%>
+<% if @channel -%>
+    channel     "<%= @channel %>";
+<% end -%>
+};

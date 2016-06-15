@@ -1,0 +1,353 @@
+set {
+<% if @kline_address -%>
+  kline-address                        "<%= @kline_address %>";
+<% end -%>
+<% if @services_server  -%>
+  services-server                       "<%= @services_server  %>";
+<% end -%>
+<% if @cloak_keys_1 or @cloak_keys_2 or @cloak_keys_3 -%>
+  cloak-keys {
+<% if @cloak_keys_1 -%>  
+    "<%= @cloak_keys_1 %>";
+<% end -%>
+<% if @cloak_keys_2 -%>
+    "<%= @cloak_keys_2 %>";
+<% end -%>
+<% if @cloak_keys_3 -%>
+    "<%= @cloak_keys_3 %>";
+<% end -%>
+  };
+<% end -%>
+<% if @gline_address -%>
+  gline-address                         "<%= @gline_address %>";
+<% end -%>
+<% if @modes_on_connect -%>
+  modes-on-connect                      "<%= @modes_on_connect %>";
+<% end -%>
+<% if @snomasks_on_connect -%>
+  snomasks-on-connect                   "<%= @snomasks_on_connect %>";
+<% end -%>
+<% if @modes_on_oper -%>
+  modes-on-oper                         "<%= @modes_on_oper %>";
+<% end -%>
+<% if @snomasks_on_oper -%>
+  snomasks-on-oper                      "<%= @snomasks_on_oper %>";
+<% end -%>
+<% if @modes_on_join -%>
+  modes-on-join                         "<%= @modes_on_join %>";
+<% end -%>
+<% if @level_on_join -%>
+  level-on-join                         "<%= @level_on_join %>";
+<% end -%>
+<% if @restrict_usermodes -%>
+  restrict-usermodes                    "<%= @restrict_usermodes %>";
+<% end -%>
+<% if @restrict_channelmodes -%>
+  restrict-channelmodes                 "<%= @restrict_channelmodes %>";
+<% end -%>
+<% if @restrict_extendedbans -%>
+  restrict-extendedbans                 "<%= @restrict_extendedbans %>";
+<% end -%>
+<% if @auto_join -%>
+  auto-join                             "<%= @auto_join %>";
+<% end -%>
+<% if @oper_auto_join -%>
+  oper-auto-join                        "<%= @oper_auto_join %>";
+<% end -%>
+<% if @anti_spam_quit_message_time -%>
+  anti-spam-quit-message-time           "<%= @anti_spam_quit_message_time %>";
+<% end -%>
+<% if @prefix_quit -%>
+  prefix-quit                           "<%= @prefix_quit %>";
+<% end -%>
+<% if @static_quit -%>
+  static-quit                           "<%= @static_quit %>";
+<% end -%>
+<% if @static_part -%>
+  static-part                           "<%= @static_part %>";
+<% end -%>
+<% if @who_limit -%>
+  who-limit                             "<%= @who_limit %>";
+<% end -%>
+<% if @silence_limit -%>
+  silence-limit                         "<%= @silence_limit %>";
+<% end -%>
+<% if @maxbans -%>
+  maxbans                               "<%= @maxbans %>";
+<% end -%>
+<% if @maxbanlength -%>
+  maxbanlength                          "<%= @maxbanlength %>";
+<% end -%>
+<% if @oper_only_stats -%>
+  oper-only-stats                       "<%= @oper_only_stats %>";
+<% end -%>
+<% if @maxchannelsperuser -%>
+  maxchannelsperuser                    "<%= @maxchannelsperuser %>";
+<% end -%>
+<% if @maxdccallow -%>
+  maxdccallow                           "<%= @maxdccallow %>";
+<% end -%>
+<% if @channel_command_prefix -%>
+  channel-command-prefix                "<%= @channel_command_prefix %>";
+<% end -%>
+<% if @allowed_nickchars -%>
+  allowed-nickchars                     "<%= @allowed_nickchars %>";
+<% end -%>
+<% if @allow_userhost_change -%>
+  allow-userhost-change                 "<%= @allow_userhost_change %>";
+<% end -%>
+<% if @options_hide_ulines or @options_flat_map or @options_show_opermotd or @options_identd_check or @options_show_connect_info or @options_dont_resolve or @options_mkpasswd_for_everyone or @options_allow_part_if_shunned or @options_fail_oper_warn or @options_allow_insane_bans or @options_disable_cap -%>
+  options {
+<% if @options_hide_ulines -%>
+    hide-ulines                         "<%= @options_hide_ulines %>";
+<% end -%>
+<% if @options_flat_map -%>
+    flat-map                            "<%= @options_flat_map %>";
+<% end -%>
+<% if @options_show_opermotd -%>
+    show-opermotd                       "<%= @options_show_opermotd %>";
+<% end -%>
+<% if @options_identd_check -%>
+    identd-check                        "<%= @options_identd_check %>";
+<% end -%>
+<% if @options_show_connect_info -%>
+    show-connect-info                   "<%= @options_show_connect_info %>";
+<% end -%>
+<% if @options_dont_resolve -%>
+    dont-resolve                        "<%= @options_dont_resolve %>";
+<% end -%>
+<% if @options_mkpasswd_for_everyone -%>
+    mkpasswd-for-everyone               "<%= @options_mkpasswd_for_everyone %>";
+<% end -%>
+<% if @options_allow_part_if_shunned -%>
+    allow-part-if-shunned               "<%= @options_allow_part_if_shunned %>";
+<% end -%>
+<% if @options_fail_oper_warn -%>
+    fail-oper-warn                      "<%= @options_fail_oper_warn %>";
+<% end -%>
+<% if @options_allow_insane_bans -%>
+    allow-insane-bans                   "<%= @options_allow_insane_bans %>";
+<% end -%>
+<% if @options_disable_cap -%>
+    disable-cap                         "<%= @options_disable_cap %>";
+<% end -%>
+  };
+<% end -%>
+<% if @nopost_ban_action or @nopost_ban_reason or @nopost_ban_time or @nopost_except_hosts -%>
+  nopost {
+<% if @nopost_ban_action -%>
+    ban-action                          "<%= @nopost_ban_action %>";
+<% end -%>
+<% if @nopost_ban_reason -%>
+    ban-reason                          "<%= @nopost_ban_reason %>";
+<% end -%>
+<% if @nopost_ban_time -%>
+    ban-time                            "<%= @nopost_ban_time %>";
+<% end -%>
+<% if @nopost_except_hosts -%>
+    except-hosts                        "<%= @nopost_except_hosts %>";
+<% end -%>
+  };
+<% end -%>
+<% if @dns_timeout or @dns_retries or @dns_nameserver or @dns_bind_ip -%>
+  dns {
+<% if @dns_timeout -%>
+    timeout                             "<%= @dns_timeout %>";
+<% end -%>
+<% if @dns_retries -%>
+    retries                             "<%= @dns_retries %>";
+<% end -%>
+<% if @dns_nameserver -%>
+    nameserver                          "<%= @dns_nameserver %>";
+<% end -%>
+<% if @dns_bind_ip -%>
+    bind-ip                             "<%= @dns_bind_ip %>";
+<% end -%>
+  };
+<% end -%>
+<% if @network_name -%>
+  network-name                          "<%= @network_name %>";
+<% end -%>
+<% if @default_server -%>
+  default-server                        "<%= @default_server %>";
+<% end -%>
+<% if @default_ipv6_clone_mask -%>
+  default-ipv6-clone-mask               "<%= @default_ipv6_clone_mask %>";
+<% end -%>
+<% if @stats_server -%>
+  stats-server                          "<%= @stats_server %>";
+<% end -%>
+<% if @sasl_server -%>
+  sasl-server                           "<%= @sasl_server %>";
+<% end -%>
+<% if @help_channel -%>
+  help-channel                          "<%= @help_channel %>";
+<% end -%>
+<% if @hiddenhost_prefix -%>
+  hiddenhost-prefix                     "<%= @hiddenhost_prefix %>";
+<% end -%>
+<% if @hosts_local or @hosts_global or @hosts_coadmin or @hosts_admin or @hosts_servicesadmin or @hosts_netadmin or @hosts_host_on_oper_up -%>
+  hosts {
+<% if @hosts_local -%>
+    local                               "<%= @hosts_local %>";
+<% end -%>
+<% if @hosts_global -%>
+    global                              "<%= @hosts_global %>";
+<% end -%>
+<% if @hosts_coadmin -%>
+    coadmin                             "<%= @hosts_coadmin %>";
+<% end -%>
+<% if @hosts_admin -%>
+    admin                               "<%= @hosts_admin %>";
+<% end -%>
+<% if @hosts_servicesadmin -%>
+    servicesadmin                       "<%= @hosts_servicesadmin %>";
+<% end -%>
+<% if @hosts_netadmin -%>
+    netadmin                            "<%= @hosts_netadmin %>";
+<% end -%>
+<% if @hosts_host_on_oper_up -%>
+    host-on-oper-up                     "<%= @hosts_host_on_oper_up %>";
+<% end -%>
+  };
+<% end -%>
+<% if @ssl_egd or @ssl_certificate or @ssl_key or @ssl_trusted_ca_file or @ssl_server_cipher_list or @ssl_server_cipher_list or @ssl_renegotiate_bytes or @ssl_renegociate_timeout or @ssl_options_fail_if_no_clientcert or @ssl_options_no_self_signed or @ssl_options_verify_certificate or @ssl_options_no_starttls -%>
+  ssl {
+<% if @ssl_egd -%>
+    egd                                 "<%= @ssl_egd %>";
+<% end -%>
+<% if @ssl_certificate -%>
+    certificate                         "<%= @ssl_certificate %>";
+<% end -%>
+<% if @ssl_key -%>
+    key                                 "<%= @ssl_key %>";
+<% end -%>
+<% if @ssl_trusted_ca_file -%>
+    trusted-ca-file                     "<%= @ssl_trusted_ca_file %>";
+<% end -%>
+<% if @ssl_server_cipher_list -%>
+    server-cipher-list                  "<%= @ssl_server_cipher_list %>";
+<% end -%>
+<% if @ssl_renegotiate_bytes -%>
+    renegotiate-bytes                   "<%= @ssl_renegotiate_bytes %>";
+<% end -%>
+<% if @ssl_renegociate_timeout -%>
+    renegociate-timeout                 "<%= @ssl_renegociate_timeout %>";
+<% end -%>
+<% if @ssl_options_fail_if_no_clientcert or @ssl_options_no_self_signed or @ssl_options_verify_certificate or @ssl_options_no_starttls -%>
+    options {
+<% if @ssl_options_fail_if_no_clientcert -%>
+      fail-if-no-clientcert             "<%= @ssl_options_fail_if_no_clientcert %>";
+<% end -%>
+<% if @ssl_options_no_self_signed -%>
+      no-self-signed                    "<%= @ssl_options_no_self_signed %>";
+<% end -%>
+<% if @ssl_options_verify_certificate -%>
+      verify-certificate                "<%= @ssl_options_verify_certificate %>";
+<% end -%>
+<% if @ssl_options_no_starttls -%>
+      no-starttls                       "<%= @ssl_options_no_starttls %>";
+<% end -%>
+    };
+<% end -%>
+  };
+<% end -%>
+<% if @throttle_period or @throttle_connections-%>
+  throttle {
+<% if @throttle_period -%>
+    period                              "<%= @throttle_period %>";
+<% end -%>
+<% if @throttle_connections -%>
+    connections                         "<%= @throttle_connections %>";
+<% end -%>
+  };
+<% end -%>
+<% if @ident_connect_timeout or @ident_read_timeout -%>
+  ident {
+<% if @ident_connect_timeout -%>
+    connect-timeout                     "<%= @ident_connect_timeout %>";
+<% end -%>
+<% if @ident_read_timeout -%>
+    read-timeout                        "<%= @ident_read_timeout %>";
+<% end -%>
+  };
+<% end -%>
+<% if @anti_flood_unknown_flood_bantime or @anti_flood_unknown_flood_amount or @anti_flood_away_flood or @anti_flood_nick_flood -%>
+  anti-flood {
+<% if @anti_flood_unknown_flood_bantime -%>
+    unknown-flood-bantime               "<%= @anti_flood_unknown_flood_bantime %>";
+<% end -%>
+<% if @anti_flood_unknown_flood_amount -%>
+    unknown-flood-amount                "<%= @anti_flood_unknown_flood_amount %>";
+<% end -%>
+<% if @anti_flood_away_flood -%>
+    away-flood                          "<%= @anti_flood_away_flood %>";
+<% end -%>
+<% if @anti_flood_nick_flood -%>
+    nick-flood                          "<%= @anti_flood_nick_flood %>";
+<% end -%>
+  };
+<% end -%>
+<% if @default_bantime -%>
+  default-bantime                       "<%= @default_bantime %>";
+<% end -%>
+<% if @modef_default_unsettime -%>
+  modef-default-unsettime               "<%= @modef_default_unsettime %>";
+<% end -%>
+<% if @modef_max_unsettime -%>
+  modef-max-unsettime                   "<%= @modef_max_unsettime %>";
+<% end -%>
+<% if @ban_version_tkl_time -%>
+  ban-version-tkl-time                  "<%= @ban_version_tkl_time %>";
+<% end -%>
+<% if @spamfilter_ban_time or @spamfilter_ban_reason or @spamfilter_virus_help_channel or @spamfilter_virus_help_channel_deny or @spamfilter_except or @spamfilter_showdetect_warn or @spamfilter_showdetect_fatal -%>
+  spamfilter {
+<% if @spamfilter_ban_time -%>
+    ban-time                            "<%= @spamfilter_ban_time %>";
+<% end -%>
+<% if @spamfilter_ban_reason -%>
+    ban-reason                          "<%= @spamfilter_ban_reason %>";
+<% end -%>
+<% if @spamfilter_virus_help_channel -%>
+    virus-help-channel                  "<%= @spamfilter_virus_help_channel %>";
+<% end -%>
+<% if @spamfilter_virus_help_channel_deny -%>
+    virus-help-channel-deny             "<%= @spamfilter_virus_help_channel_deny %>";
+<% end -%>
+<% if @spamfilter_except -%>
+    except                              "<%= @spamfilter_except %>";
+<% end -%>
+<% if @spamfilter_showdetect_warn -%>
+    showdetect-warn                     "<%= @spamfilter_showdetect_warn %>";
+<% end -%>
+<% if @spamfilter_showdetect_fatal -%>
+    showdetect-fatal                    "<%= @spamfilter_showdetect_fatal %>";
+<% end -%>
+  };
+<% end -%>
+<% if @check_target_nick_bans -%>
+  check-target-nick-bans                "<%= @check_target_nick_bans %>";
+<% end -%>
+<% if @timesynch_enabled or @timesynch_server or @timesynch_timeout -%>
+  timesynch {
+<% if @timesynch_enabled -%>
+    enabled                             "<%= @timesynch_enabled %>";
+<% end -%>
+<% if @timesynch_server -%>
+    server                              "<%= @timesynch_server %>";
+<% end -%>
+<% if @timesynch_timeout -%>
+    timeout                             "<%= @timesynch_timeout %>";
+<% end -%>
+  };
+<% end -%>
+<% if @ping_cookie -%>
+  ping-cookie                           "<%= @ping_cookie %>";
+<% end -%>
+<% if @pingpong_warning -%>
+  pingpong-warning                      "<%= @pingpong_warning %>";
+<% end -%>
+<% if @watch_away_notification -%>
+  watch-away-notification               "<%= @watch_away_notification %>";
+<% end -%>
+};

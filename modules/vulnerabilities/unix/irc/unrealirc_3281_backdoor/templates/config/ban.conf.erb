@@ -1,0 +1,7 @@
+ban <%= @type %> {
+    mask    "<%= @mask %>";
+    reason  "<%= @reason %>";
+<% if @action -%>
+    action  "<%= @action %>";
+<% end -%>
+};

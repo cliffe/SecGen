@@ -1,0 +1,10 @@
+except <%= @type %> {
+    mask        "<%= @mask %>";
+<% if @types -%>
+    type {
+<% @types.each do |type| -%>
+                <%= type %>;
+<% end -%>
+    };
+<% end -%>
+};

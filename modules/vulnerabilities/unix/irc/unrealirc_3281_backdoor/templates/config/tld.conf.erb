@@ -1,0 +1,28 @@
+tld {
+    mask            "<%= @mask %>";
+<% if @motd -%>
+    motd            "<%= @motd %>";
+<% end -%>
+<% if @shortmotd -%>
+    shortmotd       "<%= @shortmotd %>";
+<% end -%>
+<% if @opermotd -%>
+    opermotd        "<%= @opermotd %>";
+<% end -%>
+<% if @svsmotd -%>
+    svsmotd         "<%= @vhost %>";
+<% end -%>
+<% if @botmotd -%>
+    botmotd         "<%= @botmotd %>";
+<% end -%>
+<% if @channel -%>
+    channel         "<%= @channel %>";
+<% end -%>
+<% if @options -%>
+    options {
+<% @options.each do |option| -%>
+        <%= option %>;
+<% end -%>
+    };
+<% end -%>
+};

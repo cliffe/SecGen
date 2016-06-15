@@ -1,0 +1,9 @@
+official-channels  {
+<% @channels.each do |channel| -%>
+<% if channel['topic'] -%>
+    "<%= channel['name'] %>" { topic "<%= channel['topic'] %>"; };
+<% else -%>
+    "<%= channel['name'] %>";
+<% end -%>
+<% end -%>
+};

@@ -1,0 +1,7 @@
+name          'wharenn-unrealirc'
+version       '0.0.1'
+author        'wharenn'
+license       'MIT'
+summary       'Module to install unrealirc'
+project_page  'https://github.com/Wharenn/puppet-unrealirc'
+description   'This module will download, compile and install unrealirc irc server'

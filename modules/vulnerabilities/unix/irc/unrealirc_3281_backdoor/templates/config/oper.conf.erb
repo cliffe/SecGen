@@ -1,0 +1,34 @@
+oper <%= @username %> {
+    from {
+<% @userhosts.each do |val| -%>
+        userhost    <%= val %>;
+<% end -%>
+    };
+<% if @password_auth_type -%>
+    password "<%= @password %>" { <%= @password_auth_type %>; };
+<% else -%>
+    password "<%= @password %>";
+<% end -%>
+    class           <%= @operclass %>;
+    flags
+    {
+<% @flags.each do |flag| -%>
+        <%= flag %>;
+<% end -%>
+    };
+<% if @swhois -%>
+    swhois "<%= @swhois %>";
+<% end -%>
+<% if @snomask -%>
+    snomask <%= @snomask %>;
+<% end -%>
+<% if @require_modes -%>
+    require-modes <%= @require_modes %>;
+<% end -%>
+<% if @modes -%>
+    modes <%= @modes %>;
+<% end -%>
+<% if @maxlogins -%>
+    maxlogins <%= @maxlogins %>;
+<% end -%>
+};

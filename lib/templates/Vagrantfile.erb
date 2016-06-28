@@ -31,6 +31,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 <%   when 'vulnerability', 'service' -%>
 <%     module_name = selected_module.module_path_name -%>
     <%= system.name %>.vm.provision "puppet" do | <%=module_name%> |
+      <%=module_name%>.facter = {"file_input" => <%=FILE_INPUT%>}
       <%=module_name%>.module_path = "<%="puppet/#{system.name}/modules"%>"
       <%=module_name%>.environment_path = "<%="#{ENVIRONMENTS_PATH}"%>"
       <%=module_name%>.environment = "production"

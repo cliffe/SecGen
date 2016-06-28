@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>Access control mis-configurations uid</name>
+  <author>Jason Keighley</author>
+  <module_license>Apache v2</module_license>
+  <description>Mis-configure files to enable root privileges</description>
+
+  <type>access_control_misconfigurations</type>
+  <privilege>user</privilege>
+  <access>local</access>
+  <platform>unix</platform>
+
+  <!--optional vulnerability details-->
+  <!--optional breadcrumb (info that is leaked and required to exploit)-->
+  <!--<breadcrumb></breadcrumb>-->
+  <!--optional hints-->
+  <hint>Text editor permission misconfiguration</hint>
+  <solution>Vi text editor running as user root</solution>
+  <!--Cannot co-exist with other installations-->
+</vulnerability>

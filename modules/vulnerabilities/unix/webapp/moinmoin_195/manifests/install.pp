@@ -23,4 +23,9 @@ class moinmoin_195::install {
     command => '/usr/bin/python setup.py install --force --prefix=/usr/local --record=install.log',
     cwd => '/usr/local/src/moin-1.9.5',
   }
+
+  # Cleanup step
+  exec { 'cleanup':
+    command => '/bin/rm /usr/local/src/* -rf',
+  }
 }

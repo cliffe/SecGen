@@ -1,10 +1,5 @@
 class moinmoin_195::install {
 
-  # Install dependencies
-  package { ['apache2' ,'libapache2-mod-wsgi']:
-    ensure => installed,
-  }
-
   # Require tarball
   file { '/usr/local/src/MoinMoin-1.9.5.tar.gz':
     ensure => file,
@@ -22,6 +17,11 @@ class moinmoin_195::install {
   exec { 'install-moinmoin':
     command => '/usr/bin/python setup.py install --force --prefix=/usr/local --record=install.log',
     cwd => '/usr/local/src/moin-1.9.5',
+  }
+
+  # Apache wsgi plugin
+  package { 'libapache2-mod-wsgi':
+    ensure => installed,
   }
 
   # Cleanup step

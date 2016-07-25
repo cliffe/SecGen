@@ -37,9 +37,9 @@
     Path traversal found in AttachFile module.
   </solution>
 
-  <!--Conflicts with apache modules-->
-  <conflict>
-    <software_name>apache</software_name>
-  </conflict>
+  <!--TODO: Depends on apache module-->
+  <!--<dependency>-->
+    <!--<module>apache</module>-->
+  <!--</dependency>-->
 
 </vulnerability>

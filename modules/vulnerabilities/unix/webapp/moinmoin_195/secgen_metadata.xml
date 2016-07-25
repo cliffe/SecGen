@@ -37,6 +37,10 @@
     Path traversal found in AttachFile module.
   </solution>
 
+  <conflict>
+    <type>webapp</type>
+  </conflict>
+
   <!--TODO: Depends on apache module-->
   <!--<dependency>-->
     <!--<module>apache</module>-->

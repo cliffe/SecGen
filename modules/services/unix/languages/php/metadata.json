@@ -1,0 +1,77 @@
+{
+  "name": "mayflower-php",
+  "version": "4.0.0-beta1",
+  "author": "mayflower",
+  "summary": "Generic PHP module that supports many platforms",
+  "license": "MIT",
+  "source": "https://github.com/mayflower/puppet-php",
+  "project_page": "http://php.puppet.mayflower.de/",
+  "issues_url": "https://github.com/mayflower/puppet-php/issues",
+  "dependencies": [
+    {"name":"puppetlabs/stdlib","version_requirement":">= 4.2.0 < 5.0.0"},
+    {"name":"puppetlabs/apt","version_requirement":">= 1.8.0 < 3.0.0"},
+    {"name":"puppetlabs/inifile","version_requirement":"1.x"},
+    {"name":"darin/zypprepo","version_requirement":"1.x"},
+    {"name":"example42/yum","version_requirement":"2.x"}
+  ],
+  "data_provider": null,
+  "description": "Puppet module that aims to manage PHP and extensions in a generic way on many platforms with sane defaults and easy configuration",
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 3.3.0 < 5.0.0"
+    },
+    {
+      "name": "pe",
+      "version_requirement": ">= 3.3.0"
+    }
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "14.10",
+        "14.04",
+        "12.04"
+      ]
+    },
+    {
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "7",
+        "8"
+      ]
+    },
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "FreeBSD",
+      "operatingsystemrelease": [
+        "9",
+        "10",
+        "11"
+      ]
+    },
+    {
+      "operatingsystem": "SLES",
+      "operatingsystemrelease": [
+        "11"
+      ]
+    },
+    {
+      "operatingsystem": "OpenSUSE"
+    }
+  ]
+}

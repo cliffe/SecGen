@@ -41,7 +41,13 @@ PATH_TO_CLEANUP = "#{ROOT_DIR}/modules/build/puppet/"
 # Path to Vagrantfile.erb file
 VAGRANT_TEMPLATE_FILE = "#{ROOT_DIR}/lib/templates/Vagrantfile.erb"
 
+# Path to Puppetfile.erb file
 PUPPET_TEMPLATE_FILE = "#{ROOT_DIR}/lib/templates/Puppetfile.erb"
+
+# Facter file input
+FILE_INPUT = {'/usr/bin/vi'          => 'test',
+              '/etc/alternatives/vi' => 'test',
+              '/usr/bin/vim.tiny'    => 'test',}
 
 ## VERSION_CONSTANTS ##
 

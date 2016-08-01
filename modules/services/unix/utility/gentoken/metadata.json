@@ -1,0 +1,13 @@
+{
+  "name": "username-gentoken",
+  "version": "0.1.0",
+  "author": "username",
+  "summary": null,
+  "license": "Apache 2.0",
+  "source": "",
+  "issues_url": null,
+  "project_page": null,
+  "dependencies": [
+    {"version_requirement":">= 1.0.0","name":"puppetlabs-stdlib"}
+  ]
+}

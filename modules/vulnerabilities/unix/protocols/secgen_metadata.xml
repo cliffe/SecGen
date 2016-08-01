@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>Protocols</name>
+  <author>Michael Oultram</author>
+  <module_license>MIT</module_license>
+  <description>Creates a broken communicaton protocol</description>
+
+  <type>protocols</type>
+  <privilege>root</privilege>
+  <access>local</access>
+  <platform>linux</platform>
+
+  <!--optional vulnerability details-->
+  <difficulty>medium</difficulty>
+  <!--<cve></cve>-->
+  <cvss_base_score>6.6</cvss_base_score>
+  <cvss_vector>AV:L/AC:M/Au:S/C:C/I:C/A:C</cvss_vector>
+  <reference></reference>
+  <software_name>nfsd</software_name>
+  <software_license>GPLv2</software_license>
+
+  <!--optional breadcrumb (info that is leaked and required to exploit)-->
+  <!--<breadcrumb></breadcrumb>-->
+
+  <!--optional hints-->
+  <!--<msf_module></msf_module>-->
+  <hint>An access control misconfiguration</hint>
+  <solution>Edit the shadow file to set a password for root</solution>
+
+  <conflict>
+    <name>Protocols</name>
+    <author>Michael Oultram</author>
+  </conflict>
+  <conflict>
+    <type>ftp</type>
+  </conflict>
+
+</vulnerability>

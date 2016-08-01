@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<service xmlns="http://www.github/cliffe/SecGen/service"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
+  <name>Gentoken</name>
+  <author>Michael Oltram</author>
+  <module_license>Apache v2</module_license>
+  <description>Generates tokens for CTF</description>
+
+  <type>ctf</type>
+  <platform>linux</platform>
+
+</service>

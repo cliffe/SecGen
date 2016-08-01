@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<system>
+		<system_name>computer</system_name>
+		<base platform="linux"/>
+
+		<service module_path="modules/services/unix/utility/wireshark"/>
+
+		<service module_path="modules/services/unix/utility/gentoken"/>
+
+		<vulnerability module_path=".*protocols"/>
+
+		<network type="private_network" range="dhcp"/>
+	</system>
+
+</scenario>

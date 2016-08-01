@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<service xmlns="http://www.github/cliffe/SecGen/service"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
+  <name>Wireshark</name>
+  <author>Micheal Oltram</author>
+  <module_license>Apache v2</module_license>
+  <description>An installation of Wireshark</description>
+
+  <type>wireshark</type>
+  <platform>linux</platform>
+</service>

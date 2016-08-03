@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>CTF Java Communiation Protocols</name>
+  <author>Michael Oultram, Paul Popa, Stefan Paui</author>
+  <module_license>MIT</module_license>
+  <description>Installs some java communicaton protocosls that run on a prot inside of the VM. The protocols that are installed depend on how the ctf_java_protocols.pp file is configured, see the README for details on this. The protocols have a key that they will send to someone who completes the handshake correctly.
+
+When the module is installed a new user 'charlie' is created. Insude of this users home directory /home/charlie/ is the source code for the protocols that have been installed. This source code does not contain the token however.</description>
+
+  <type>protocols</type>
+  <privilege>root</privilege>
+  <access>local</access>
+  <platform>linux</platform>
+  <realism>challenge</realism>
+
+  <!--optional vulnerability details-->
+  <difficulty>medium</difficulty>
+  <!--<cve></cve>-->
+  <cvss_base_score>1.5</cvss_base_score>
+  <cvss_vector>AV:L/AC:M/Au:S/C:P/I:N/A:N</cvss_vector>
+ 
+  <software_name></software_name>
+  <software_license></software_license>
+
+  <!--optional breadcrumb (info that is leaked and required to exploit)-->
+  <!--<breadcrumb></breadcrumb>-->
+
+  <!--optional hints-->
+  <!--<msf_module></msf_module>-->
+  <hint>View the source code for the protocol you are attacking (located in /home/charlie/protocol_name/) and identify the steps you would need to take to trick the server into sending you the token. Then write a program to perfrom this attack.</hint>
+  <solution>The attacks can be heavily based on the source code, the attack code could even be a modification of the source code.</solution>
+
+</vulnerability>

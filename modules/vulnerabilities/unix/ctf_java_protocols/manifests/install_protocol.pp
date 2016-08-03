@@ -1,4 +1,4 @@
-define protocols::install_protocol($detail_str = $title) {
+define ctf_java_protocols::install_protocol($detail_str = $title) {
   include stdlib
 
   $detail_arr = split($detail_str, ':')
@@ -16,7 +16,7 @@ define protocols::install_protocol($detail_str = $title) {
     # Copy version with token
     file {"${protocol}_token":
       path => "/root/tmp/${protocol}.java",
-      content => template("protocols/dirty/${protocol}.java.erb"),
+      content => template("ctf_java_protocols/dirty/${protocol}.java.erb"),
       owner => 'root',
       group => 'root',
       mode => '0700',
@@ -45,7 +45,7 @@ define protocols::install_protocol($detail_str = $title) {
     # Copy version without token
     file { "${protocol}_clean":
       path => "/home/charlie/${protocol}/",
-      source => "puppet:///modules/protocols/clean/${protocol}/",
+      source => "puppet:///modules/ctf_java_protocols/clean/${protocol}/",
       owner => "charlie",
       group => "charlie",
       mode => "0600",

@@ -1,4 +1,4 @@
-class protocols ($protocols = "") {
+class ctf_java_protocols ($protocols = "") {
 	require java
 	require gentoken
 	class { 'wireshark':
@@ -10,14 +10,14 @@ class protocols ($protocols = "") {
 
 	# Setup all protocol servers
 	$protocolsArray = split($protocols, '[,]')
-	protocols::install_protocol { $protocolsArray:
+	ctf_java_protocols::install_protocol { $protocolsArray:
 			require => File['charlie_home'],
 	}
 
 	# Setup Protocol Class Encrypter
 	file { "EncryptClass.java":
 		path => "/root/EncryptClass.java",
-		source => "puppet:///modules/protocols/loader/EncryptClass.java/",
+		source => "puppet:///modules/ctf_java_protocols/loader/EncryptClass.java/",
 		before => Exec['compile_class'],
 	}
 	exec { "compile_class":
@@ -30,13 +30,13 @@ class protocols ($protocols = "") {
 		command => "rm Encrypt*",
 		path => '/usr/bin/:/bin',
 		cwd => '/root/',
-		require => Protocols::Install_protocol[$protocolsArray],
+		require => Ctf_java_protocols::Install_protocol[$protocolsArray],
 	}
 
 	# Setup Protocol Loader
 	file { "RunProtocol.java":
 		path => "/root/RunProtocol.java",
-		source => "puppet:///modules/protocols/loader/RunProtocol.java/",
+		source => "puppet:///modules/ctf_java_protocols/loader/RunProtocol.java/",
 		before => Exec["compile_runProtocol"],
 	}
 	exec { "compile_runProtocol":
@@ -50,7 +50,7 @@ class protocols ($protocols = "") {
 	if $::in_container == "true" {
 		file { "startprotocol":
 			path => "/etc/my_init.d/startprotocol",
-			content => template("protocols/startprotocol.erb"),
+			content => template("ctf_java_protocols/startprotocol.erb"),
 			owner => root,
 			group => root,
 			mode => '0700',
@@ -58,7 +58,7 @@ class protocols ($protocols = "") {
 	} else {
 	  file { "startprotocol":
 	  	path => "/etc/init.d/startprotocol",
-	  	content => template("protocols/startprotocol.erb"),
+	  	content => template("ctf_java_protocols/startprotocol.erb"),
 	  	owner => root,
 	  	group => root,
 	  	mode => '0700',

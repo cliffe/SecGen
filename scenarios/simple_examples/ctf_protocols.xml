@@ -8,12 +8,9 @@
 		<system_name>computer</system_name>
 		<base platform="linux"/>
 
-		<!--This is only necassary for the Lutescent protocol, see the ctf_java_protocols README for more information -->
-		<service module_path="modules/services/unix/utility/wireshark"/>
+		<vulnerability module_path=".*ctf_java_protocols"/>
 
 		<service module_path="modules/services/unix/utility/gentoken"/>
-
-		<vulnerability module_path=".*ctf_java_protocols"/>
 
 		<network type="private_network" range="dhcp"/>
 	</system>

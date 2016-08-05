@@ -33,4 +33,8 @@ When the module is installed a new user 'charlie' is created. Insude of this use
   <hint>View the source code for the protocol you are attacking (located in /home/charlie/protocol_name/) and identify the steps you would need to take to trick the server into sending you the token. Then write a program to perfrom this attack.</hint>
   <solution>The attacks can be heavily based on the source code, the attack code could even be a modification of the source code.</solution>
 
+  <requires>
+    <type>token_generation</type>
+  </requires>
+
 </vulnerability>

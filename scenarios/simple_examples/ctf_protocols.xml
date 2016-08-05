@@ -10,8 +10,6 @@
 
 		<vulnerability module_path=".*ctf_java_protocols"/>
 
-		<service module_path="modules/services/unix/utility/gentoken"/>
-
 		<network type="private_network" range="dhcp"/>
 	</system>
 

@@ -8,7 +8,7 @@
   <module_license>Apache v2</module_license>
   <description>Generates tokens for CTF</description>
 
-  <type>ctf</type>
+  <type>token_generation</type>
   <platform>linux</platform>
 
 </service>

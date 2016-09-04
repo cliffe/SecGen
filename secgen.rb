@@ -1,5 +1,6 @@
 require 'getoptlong'
 require 'fileutils'
+require 'tempfile'
 
 require_relative 'lib/helpers/constants.rb'
 require_relative 'lib/helpers/print.rb'
@@ -93,6 +94,78 @@ def default_project_dir
   "#{PROJECTS_DIR}/SecGen#{Time.new.strftime("%Y%m%d_%H%M")}"
 end
 
+def build_scenario(scenario_tmp_file, options)
+  scenario_tmp_file.path
+  scenario = "<?xml version='1.0'?>
+
+<scenario xmlns='http://www.github/cliffe/SecGen/scenario'
+	   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+	   xsi:schemaLocation='http://www.github/cliffe/SecGen/scenario'>
+
+	<system>
+		<system_name>#{options[:module]}_test_module</system_name>
+		<base platform='#{options[:basebox_type]}'/>
+
+  #{
+    case options[:module_type]
+       when 'service'
+         "<service module_path='.*#{options[:module]}'/>"
+      when 'utility'
+         "<utility module_path='.*#{options[:module]}'/>"
+      when 'vulnerability'
+         "<vulnerability module_path='.*#{options[:module]}'/>"
+      else
+        puts 'Module type not recognised'
+     end
+  }
+
+		<network type='#{options[:network_type]}' range='dhcp'/>
+	</system>
+
+</scenario>"
+
+scenario_tmp_file.write(scenario)
+
+  return scenario_tmp_file
+end
+
+def error_check(command,options)
+  err = []
+
+  case command
+    when 'test-module'
+      if !(options.has_key?(:module) && options.has_key?(:module_type))
+        err << 'Both the --module and --module-type options are required for the test-module command'
+      else
+        if !(['service','utility','vulnerability'].include? options[:module_type])
+          err << "Unsupported --module-type, options include 'service', 'utility' or 'vulnerability'"
+        end
+      end
+
+      if options.has_key?(:basebox_type)
+        if !(['linux','unix','windows'].include? options[:basebox_type])
+          err << "Unsupported --basebox-type, options include 'linux', 'unix' or 'windows'"
+        end
+      end
+
+      if options.has_key?(:network_type)
+        if !(['private_network'].include? options[:network_type])
+          err << "Unsupported --network-type, options include 'private_network'"
+        end
+      end
+
+      if err.empty?
+        return true
+      else
+        return err
+      end
+    else
+      err << 'Command not recognised in error checking module'
+      return err
+  end
+
+end
+
 # end of method declarations
 # start of program execution
 
@@ -111,6 +184,10 @@ opts = GetoptLong.new(
   [ '--total-memory', GetoptLong::REQUIRED_ARGUMENT],
   [ '--max-cpu-cores', GetoptLong::REQUIRED_ARGUMENT],
   [ '--max-cpu-usage', GetoptLong::REQUIRED_ARGUMENT],
+  [ '--module', GetoptLong::REQUIRED_ARGUMENT],
+  [ '--module-type', GetoptLong::REQUIRED_ARGUMENT],
+  [ '--basebox-type', GetoptLong::REQUIRED_ARGUMENT],
+  [ '--network-type', GetoptLong::REQUIRED_ARGUMENT],
 )
 
 scenario = SCENARIO_XML
@@ -157,6 +234,22 @@ opts.each do |opt, arg|
       Print.info "Max CPU usage set to #{arg}"
       options[:max_cpu_usage] = arg
 
+    when '--module'
+      Print.info "--module set to #{arg}"
+      options[:module] = arg
+
+    when '--module-type'
+      Print.info "--module-type set to #{arg}"
+      options[:module_type] = arg
+
+    when '--basebox-type'
+      Print.info "--basebox-type set to #{arg}"
+      options[:basebox_type] = arg
+
+    when '--network-type'
+      Print.info "--network-type set to #{arg}"
+      options[:network_type] = arg
+
     else
       Print.err "Argument not valid: #{arg}"
       usage
@@ -187,6 +280,28 @@ case ARGV[0]
       usage
       exit
     end
+  when 'test-module', 'm'
+    error_check = error_check('test-module',options)
+
+    if error_check == true
+      project_dir = default_project_dir unless project_dir
+      scenario = Tempfile.new('module-test')
+      begin
+        scenario = build_scenario(scenario, options)
+        scenario.rewind
+        run(scenario.path, project_dir, options)
+      ensure
+        scenario.close
+        scenario.unlink # deletes the temp file
+      end
+    else
+      error_check.each do |error|
+        Print.err error
+      end
+      usage
+      exit
+    end
+
   else
     Print.err "Command not valid: #{ARGV[0]}"
     usage

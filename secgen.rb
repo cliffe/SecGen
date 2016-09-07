@@ -8,6 +8,7 @@ require_relative 'lib/helpers/gem_exec.rb'
 require_relative 'lib/readers/system_reader.rb'
 require_relative 'lib/readers/module_reader.rb'
 require_relative 'lib/output/project_files_creator.rb'
+require_relative 'lib/output/scenario_file_creator.rb'
 
 # Displays secgen usage data
 def usage
@@ -94,48 +95,13 @@ def default_project_dir
   "#{PROJECTS_DIR}/SecGen#{Time.new.strftime("%Y%m%d_%H%M")}"
 end
 
-def build_scenario(scenario_tmp_file, options)
-  scenario_tmp_file.path
-  scenario = "<?xml version='1.0'?>
-
-<scenario xmlns='http://www.github/cliffe/SecGen/scenario'
-	   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
-	   xsi:schemaLocation='http://www.github/cliffe/SecGen/scenario'>
-
-	<system>
-		<system_name>#{options[:module]}_test_module</system_name>
-		<base platform='#{options[:basebox_type]}'/>
-
-  #{
-    case options[:module_type]
-       when 'service'
-         "<service module_path='.*#{options[:module]}'/>"
-      when 'utility'
-         "<utility module_path='.*#{options[:module]}'/>"
-      when 'vulnerability'
-         "<vulnerability module_path='.*#{options[:module]}'/>"
-      else
-        puts 'Module type not recognised'
-     end
-  }
-
-		<network type='#{options[:network_type]}' range='dhcp'/>
-	</system>
-
-</scenario>"
-
-scenario_tmp_file.write(scenario)
-
-  return scenario_tmp_file
-end
-
-def error_check(command,options)
+def argument_checker(command,options)
   err = []
 
   case command
-    when 'test-module'
+    when 'create_scenario'
       if !(options.has_key?(:module) && options.has_key?(:module_type))
-        err << 'Both the --module and --module-type options are required for the test-module command'
+        err << 'Both the --module and --module-type options are required for the create_scenario command'
       else
         if !(['service','utility','vulnerability'].include? options[:module_type])
           err << "Unsupported --module-type, options include 'service', 'utility' or 'vulnerability'"
@@ -146,12 +112,16 @@ def error_check(command,options)
         if !(['linux','unix','windows'].include? options[:basebox_type])
           err << "Unsupported --basebox-type, options include 'linux', 'unix' or 'windows'"
         end
+      else
+        options[:basebox_type] = 'linux'
       end
 
       if options.has_key?(:network_type)
         if !(['private_network'].include? options[:network_type])
           err << "Unsupported --network-type, options include 'private_network'"
         end
+      else
+        options[:network_type] = 'private_network'
       end
 
       if err.empty?
@@ -188,6 +158,9 @@ opts = GetoptLong.new(
   [ '--module-type', GetoptLong::REQUIRED_ARGUMENT],
   [ '--basebox-type', GetoptLong::REQUIRED_ARGUMENT],
   [ '--network-type', GetoptLong::REQUIRED_ARGUMENT],
+  #########################################################
+  # [ '--number-of-systems', GetoptLong::REQUIRED_ARGUMENT],
+  # [ '--', GetoptLong::REQUIRED_ARGUMENT],
 )
 
 scenario = SCENARIO_XML
@@ -280,14 +253,14 @@ case ARGV[0]
       usage
       exit
     end
-  when 'test-module', 'm'
-    error_check = error_check('test-module',options)
+  when 'create-scenario', 'm'
+    argument_checker = argument_checker('create_scenario',options)
 
-    if error_check == true
+    if argument_checker == true
       project_dir = default_project_dir unless project_dir
       scenario = Tempfile.new('module-test')
       begin
-        scenario = build_scenario(scenario, options)
+        scenario = ScenarioFileCreator.build_scenario(scenario, options)
         scenario.rewind
         run(scenario.path, project_dir, options)
       ensure
@@ -295,7 +268,7 @@ case ARGV[0]
         scenario.unlink # deletes the temp file
       end
     else
-      error_check.each do |error|
+      argument_checker.each do |error|
         Print.err error
       end
       usage

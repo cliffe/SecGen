@@ -1,9 +1,10 @@
-
 class Print
+  private
   def self.colorize(text, color_code)
     "#{color_code}#{text}\e[0m"
   end
 
+  public
   def self.red(text); colorize(text, "\e[31m"); end
   def self.green(text); colorize(text, "\e[32m"); end
   def self.yellow(text); colorize(text, "\e[33m"); end

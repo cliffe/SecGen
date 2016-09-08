@@ -9,9 +9,11 @@
     <system_name>access_control_misconfigurations_vi_root</system_name>
     <base platform="linux"/>
 
-    <vulnerability module_path=".*uid_vi_root" type="access_control_misconfigurations"></vulnerability>
 
-    <network type="private_network" range="dhcp"></network>
+    <utility module_path="modules/utilities/unix/system/accounts"/>
+    <vulnerability module_path="modules/vulnerabilities/unix/access_control_misconfigurations/uid_vi_root"/>
+
+    <network type="private_network" range="dhcp"/>
   </system>
 
 </scenario>

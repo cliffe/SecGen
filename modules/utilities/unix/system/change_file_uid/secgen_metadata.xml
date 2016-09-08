@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Change file uid module</name>
+  <author>Jason Keighley</author>
+  <module_license>Apache v2</module_license>
+  <description>Alter files to run with uid of given user</description>
+
+  <type>system</type>
+  <platform>linux</platform>
+
+</utility>

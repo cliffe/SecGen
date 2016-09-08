@@ -22,7 +22,8 @@
   <!--Cannot co-exist with other installations-->
 
   <!-- Requires vi to run, already installed on debian systems -->
-  <!--<requires>-->
+  <requires>
     <!--<name>vi</name>-->
-  <!--</requires>-->
+    <module_path>modules/utilities/unix/system/change_file_uid</module_path>
+  </requires>
 </vulnerability>

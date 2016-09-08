@@ -1,4 +1,3 @@
-
 class Print
   private
   def self.colorize(text, color_code)

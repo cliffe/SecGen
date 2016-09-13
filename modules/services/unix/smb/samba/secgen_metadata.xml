@@ -5,10 +5,11 @@
          xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
   <name>Samba file share Server</name>
   <author>example42</author>
+  <author>Jason Keighley</author>
   <module_license>Apache v2</module_license>
   <description>An installation of Samba</description>
 
-  <type>file_share</type>
+  <type>smb</type>
   <platform>linux</platform>
 
   <!--optional details-->
@@ -16,7 +17,7 @@
   <software_name>samba</software_name>
   <software_license>Apache v2</software_license>
 
-  <!--Cannot co-exist with other apache installations-->
+  <!--Cannot co-exist with other samba installations-->
   <conflict>
     <software_name>samba</software_name>
   </conflict>
@@ -26,9 +27,3 @@
   </requires>
 
 </service>
-
-<!-- REQUIRES unix_update MODULE TO BE CALLED FIRST -->
-<!-- ALSO REQUIRES -->
-<!--example42/puppi (>=2.0.0)-->
-<!--example42/firewall (>=2.0.0)-->
-<!--example42/monitor (>=2.0.0)-->

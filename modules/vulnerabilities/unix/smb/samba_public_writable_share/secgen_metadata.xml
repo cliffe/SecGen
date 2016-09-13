@@ -24,7 +24,7 @@
   <software_license>MIT</software_license>
 
   <requires>
-    <module_path>modules/services/unix/file_share/samba</module_path>
+    <module_path>modules/services/unix/smb/samba</module_path>
   </requires>
 
 </vulnerability>

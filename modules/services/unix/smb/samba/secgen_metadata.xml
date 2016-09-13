@@ -17,7 +17,7 @@
   <software_name>samba</software_name>
   <software_license>Apache v2</software_license>
 
-  <!--Cannot co-exist with other apache installations-->
+  <!--Cannot co-exist with other samba installations-->
   <conflict>
     <software_name>samba</software_name>
   </conflict>
@@ -27,9 +27,3 @@
   </requires>
 
 </service>
-
-<!-- REQUIRES unix_update MODULE TO BE CALLED FIRST -->
-<!-- ALSO REQUIRES -->
-<!--example42/puppi (>=2.0.0)-->
-<!--example42/firewall (>=2.0.0)-->
-<!--example42/monitor (>=2.0.0)-->

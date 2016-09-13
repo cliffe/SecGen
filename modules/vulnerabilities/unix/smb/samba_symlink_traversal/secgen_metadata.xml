@@ -29,7 +29,7 @@
   <msf_module>auxiliary/admin/smb/samba_symlink_traversal</msf_module>
 
   <requires>
-    <module_path>modules/services/unix/file_share/samba</module_path>
+    <module_path>modules/services/unix/smb/samba</module_path>
     <module_path>modules/vulnerabilities/unix/smb/samba_public_writable_share</module_path>
   </requires>
 

@@ -9,7 +9,7 @@
     <system_name>samba_service</system_name>
     <base platform="linux"/>
 
-    <service module_path="modules/services/unix/file_share/samba"></service>
+    <service module_path="modules/services/unix/smb/samba"></service>
 
     <network type="private_network" range="dhcp"></network>
   </system>

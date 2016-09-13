@@ -15,18 +15,42 @@ def usage
   Print.std "Usage:
    #{$0} [--options] <command>
 
-   OPTIONS:
+   MAIN OPTIONS:
    --scenario [xml file], -s [xml file]: set the scenario to use
               (defaults to #{SCENARIO_XML})
    --project [output dir], -p [output dir]: directory for the generated project
               (output will default to #{default_project_dir})
+
+   CREATE-SCENARIO OPTIONS:
    --help, -h: shows this usage information
+   --module [name]: sets module to use with create-scenario command
+   --module-type [type]: sets module type to use with create-scenario command
+               (type can be set to utility, service or vulnerability)
+   --network-type [type]: sets network type to use with create-scenario command
+               (type can be set to private-network)
+   --basebox-type [type]: sets basebox type to use with create-scenario command
+               (type can be set to linux, unix or windows
+
+   VIRTUAL MACHINE OPTIONS:
+   --gui-output', '-g': Spawns the virtual machine once created
+   --memory-per-vm [memory]: Sets the amount of RAM to be used each vm
+               (cannot be used with --total-memory option)
+   --total-memory [memory]: Sets the amount of RAM to be used for all vms
+               (cannot be used with --memory-per-vm)
+   --max-cpu-cores [core count]: Sets the max amount of cpu cores to be used for the vms
+               (defaults to max cores if value higher then max system cores given)
+   --max-cpu-usage [max usage]: Sets the maximum cpu usage percentage for all the vms
+               (should be given a value of 1-100)
+
 
    COMMANDS:
    run, r: builds project and then builds the VMs
    build-project, p: builds project (vagrant and puppet config), but does not build VMs
    build-vms [/project/dir], v [project #]: builds VMs from a previously generated project
               (use in combination with --project [dir])
+   create-scenario: builds a scenario from given command line options
+              (requires the --module [name] and --module-type [type] options to function)
+              (can also be given options --basebox-type and --network-type)
 "
   exit
 end
@@ -158,9 +182,6 @@ opts = GetoptLong.new(
   [ '--module-type', GetoptLong::REQUIRED_ARGUMENT],
   [ '--basebox-type', GetoptLong::REQUIRED_ARGUMENT],
   [ '--network-type', GetoptLong::REQUIRED_ARGUMENT],
-  #########################################################
-  # [ '--number-of-systems', GetoptLong::REQUIRED_ARGUMENT],
-  # [ '--', GetoptLong::REQUIRED_ARGUMENT],
 )
 
 scenario = SCENARIO_XML
@@ -280,4 +301,3 @@ case ARGV[0]
     usage
     exit
 end
-

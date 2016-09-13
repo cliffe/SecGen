@@ -31,7 +31,7 @@ class ScenarioFileCreator
       }
     end
 
-    scenario_tmp_file.write(xml)
+    scenario_tmp_file.write(builder.doc)
 
     return scenario_tmp_file
   end

@@ -5,10 +5,11 @@
          xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
   <name>Samba file share Server</name>
   <author>example42</author>
+  <author>Jason Keighley</author>
   <module_license>Apache v2</module_license>
   <description>An installation of Samba</description>
 
-  <type>file_share</type>
+  <type>smb</type>
   <platform>linux</platform>
 
   <!--optional details-->

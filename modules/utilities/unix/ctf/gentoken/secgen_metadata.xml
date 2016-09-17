@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 
-<service xmlns="http://www.github/cliffe/SecGen/service"
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
   <name>Gentoken</name>
   <author>Michael Oltram</author>
   <module_license>Apache v2</module_license>
@@ -11,4 +11,4 @@
   <type>token_generation</type>
   <platform>linux</platform>
 
-</service>
+</utility>

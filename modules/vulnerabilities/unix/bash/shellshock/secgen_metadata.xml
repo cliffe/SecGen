@@ -12,6 +12,7 @@
   <privilege>none</privilege>
   <access>local</access>
   <platform>unix</platform>
+  <realism>common</realism>
 
   <!--optional vulnerability details-->
   <difficulty>medium</difficulty>

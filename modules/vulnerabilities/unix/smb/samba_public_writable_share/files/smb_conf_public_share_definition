@@ -1,0 +1,15 @@
+#
+# Insecure Public share definition
+#
+[public]
+comment = Public Share
+# Path to directory
+path = /tmp
+# Allow writing to share
+read only = no
+# Force connections as guests
+guest ok = yes
+locking = no
+# Sets the umask for files/directories created on this share
+force create mode = 777
+force directory mode = 777

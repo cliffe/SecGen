@@ -13,7 +13,7 @@ class ProjectFilesCreator
 # @param [Object] systems list of systems that have been defined and randomised
 # @param [Object] out_dir the directory that the project output should be stored into
 # @param [Object] scenario the file path used to as a basis
-  def initialize(systems, out_dir, scenario)
+  def initialize(systems, out_dir, scenario, options)
     @systems = systems
     @out_dir = out_dir
 
@@ -24,6 +24,7 @@ class ProjectFilesCreator
     end
     @scenario = scenario
     @time = Time.new.to_s
+    @options = options
 
   end
 

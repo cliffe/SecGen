@@ -9,11 +9,7 @@
     <system_name>firewall_configuration_example</system_name>
     <base platform="linux"/>
 
-    <!--TODO: Dependency-->
-    <service module_path="modules/services/unix/update/unix_update"></service>
-    <!--TODO: /Dependency-->
-
-    <service module_path="modules/services/unix/firewall/firewall"></service>
+    <utility module_path="modules/utilities/unix/firewall/firewall"/>
 
     <network type="private_network" range="dhcp"></network>
   </system>

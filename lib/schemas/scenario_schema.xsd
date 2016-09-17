@@ -24,6 +24,7 @@
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element name='vulnerability' type='VulnerabilityType' minOccurs='0' maxOccurs='unbounded' />
         <xs:element name='service' type='ServiceType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='utility' type='UtilityType' minOccurs='0' maxOccurs='unbounded' />
         <xs:element name='network' type='NetworkType' minOccurs='0' maxOccurs='unbounded' />
       </xs:choice>
     </xs:sequence>
@@ -90,6 +91,21 @@
     <xs:attribute name="software_name" type="xs:string"/>
     <xs:attribute name="software_license" type="xs:string"/>
 
+  </xs:complexType>
+  
+  <xs:complexType name="UtilityType">
+    <xs:attribute name="module_path" type="xs:string"/>
+
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="author" type="xs:string"/>
+    <xs:attribute name="module_license" type="xs:string"/>
+    <xs:attribute name="description" type="xs:string"/>
+    <xs:attribute name="type" type="xs:string"/>
+    <xs:attribute name="platform" type="xs:string"/>
+
+    <xs:attribute name="reference" type="xs:string"/>
+    <xs:attribute name="software_name" type="xs:string"/>
+    <xs:attribute name="software_license" type="xs:string"/>
   </xs:complexType>
 
   <xs:complexType name="NetworkType">

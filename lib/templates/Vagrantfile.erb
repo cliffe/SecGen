@@ -12,7 +12,32 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define "<%= system.name %>" do |<%= system.name %>|
     # REMOVE: < %= system.name %>.vm.synced_folder "< %= MOUNT_DIR %>", "/mount"
     config.vm.provider :virtualbox do |vb|
-      vb.gui = true
+      <%=
+        if (@options.has_key? :gui_output)
+          "vb.gui = true"
+        else "
+      vb.gui = false
+      vb.customize ['modifyvm', :id, '--pae', 'on']
+      vb.customize ['modifyvm', :id, '--hwvirtex', 'off']
+      vb.customize ['modifyvm', :id, '--vtxvpid', 'off']"
+        end %>
+      <%=
+        if (@options.has_key? :memory_per_vm)
+          "vb.memory = #{@options[:memory_per_vm]}"
+        elsif (@options.has_key? :total_memory)
+          "vb.memory = #{@options[:total_memory]}/#{@systems.length}"
+        end
+      %>
+      <%=
+        if (@options.has_key? :max_cpu_cores)
+          "vb.cpus = #{@options[:max_cpu_cores]}"
+        end
+      %>
+      <%=
+        if (@options.has_key? :max_cpu_usage)
+            "vb.customize ['modifyvm', :id, '--cpuexecutioncap', '#{@options[:max_cpu_usage]}']"
+        end
+      %>
     end
     # SecGen modules
 <% system.module_selections.each do |selected_module| -%>
@@ -28,7 +53,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 <%     else -%>
     <%= system.name %>.vm.network :<%= selected_module.attributes['type'][0] %>, ip: "<%= selected_module.attributes['range'][0] %>"
 <%     end -%>
-<%   when 'vulnerability', 'service' -%>
+<%   when 'vulnerability', 'service', 'utility' -%>
 <%     module_name = selected_module.module_path_name -%>
     <%= system.name %>.vm.provision "puppet" do | <%=module_name%> |
       <%=module_name%>.module_path = "<%="puppet/#{system.name}/modules"%>"

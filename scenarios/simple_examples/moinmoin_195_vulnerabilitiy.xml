@@ -8,11 +8,6 @@
     <system_name>file_server</system_name>
     <base platform="linux"/>
 
-    <!--TODO: Dependency-->
-    <service module_path="modules/services/unix/update/unix_update"></service>
-    <service module_path="modules/services/unix/http/apache"></service>
-    <!--TODO: /Dependency-->
-
     <vulnerability module_path=".*moinmoin_195"/>
 
     <network type="private_network" range="dhcp"/>

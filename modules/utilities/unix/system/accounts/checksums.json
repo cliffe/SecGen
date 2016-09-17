@@ -1,0 +1,22 @@
+{
+  "CHANGELOG.md": "ab8ad961820c6206f612d322b49b07bf",
+  "Gemfile": "bf3e2f7d33eb4497453331532e85a998",
+  "LICENSE": "b3f8a01d8699078d82e8c3c992307517",
+  "README.markdown": "7f96b7fa71f67c88790f2ba4ca435a26",
+  "Rakefile": "d953eb985f82600dc3b9ac6e1f2cfe64",
+  "examples/user_group.pp": "afcbd38c69bdb4baf06590ece91c0b7d",
+  "examples/user_group_hash.pp": "9cb2af2e0e1f4b4822b196f86c60ce3a",
+  "files/shell/bash_profile": "546be8ec0dfc6a62ceb331a4430f30f5",
+  "files/shell/bashrc": "776e5327b6b492e2b49f84a41f6f68dd",
+  "manifests/home_dir.pp": "463a878a924f759a8607bc92a7c8ce89",
+  "manifests/manage_keys.pp": "ece14075dde2b03f7d8f4db350311f8e",
+  "manifests/user.pp": "0b02cdc7b8621c48040d7df8e4a8a276",
+  "metadata.json": "9098c47ff88dc35e0ef5b90d38a6a1ae",
+  "spec/acceptance/nodesets/centos-6-vcloud.yml": "bdf9ce9d3b0f0b4995666ae9d64d878d",
+  "spec/acceptance/nodesets/default.yml": "bdf9ce9d3b0f0b4995666ae9d64d878d",
+  "spec/acceptance/user_spec.rb": "4d58fcae36ef9e7998abaf2f27ef1e56",
+  "spec/defines/accounts_user_spec.rb": "a716df4bb719c2f7937222b7624a4139",
+  "spec/spec.opts": "a600ded995d948e393fbe2320ba8e51c",
+  "spec/spec_helper.rb": "0db89c9a486df193c0e40095422e19dc",
+  "spec/spec_helper_acceptance.rb": "33be60505bad56dd78e53ed2ad9f6d85"
+}

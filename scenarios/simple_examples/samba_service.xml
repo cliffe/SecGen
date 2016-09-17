@@ -4,13 +4,12 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
 
-  <!-- an example remote storage system, with a remotely exploitable vulnerability that can then be escalated to root -->
+  <!-- A secure samba service -->
   <system>
     <system_name>samba_service</system_name>
     <base platform="linux"/>
 
-    <!--<service module_path="modules/services/unix/update/unix_update"></service>-->
-    <service module_path="modules/services/unix/file_share/samba"></service>
+    <service module_path="modules/services/unix/smb/samba"></service>
 
     <network type="private_network" range="dhcp"></network>
   </system>

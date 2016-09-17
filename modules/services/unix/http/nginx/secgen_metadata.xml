@@ -22,4 +22,7 @@
     <software_name>nginx</software_name>
   </conflict>
 
+  <requires>
+    <type>update</type>
+  </requires>
 </service>

@@ -9,7 +9,7 @@
     <system_name>clean_system_with_update</system_name>
     <base platform="linux"/>
 
-    <service module_path="modules/services/unix/update/unix_update"></service>
+    <utility module_path="modules/utilities/unix/update/unix_update"/>
 
   </system>
 

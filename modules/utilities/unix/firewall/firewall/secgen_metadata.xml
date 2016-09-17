@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Iptables firewall config</name>
+  <author>Jason Keighley</author>
+  <author>Puppet Labs, Inc.</author>
+  <author>Jonathan Boyett</author>
+  <author>Media Temple, Inc.</author>
+  <author>Bob.sh Limited</author>
+  <author>Camptocamp Association</author>
+  <author>Dmitri Priimak</author>
+
+
+  <module_license>Apache v2</module_license>
+  <description>Configuration of the Iptables firewall</description>
+
+  <type>firewall</type>
+  <platform>linux</platform>
+
+  <!--optional details-->
+  <reference>https://forge.puppet.com/puppetlabs/firewall</reference>
+  <software_name></software_name>
+  <software_license>Apache v2</software_license>
+
+  <!--Cannot co-exist with other iptables installations-->
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+</utility>

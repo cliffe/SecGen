@@ -29,4 +29,8 @@
   <software_name>unrealircd</software_name>
   <software_license>MIT</software_license>
 
+  <requires>
+    <module_path>services/unix/irc/unrealirc</module_path>
+  </requires>
+
 </vulnerability>

@@ -3,7 +3,7 @@ require_relative '../helpers/constants.rb'
 class Module
   #Vulnerability attributes hash
   attr_accessor :module_path # vulnerabilities/unix/ftp/vsftp_234_backdoor
-  attr_accessor :module_type # vulnerability|service
+  attr_accessor :module_type # vulnerability|service|utility
   attr_accessor :attributes  # attributes are hashes that contain arrays of values
   # Each attribute is stored in a hash containing an array of values (because elements such as author can repeat).
   # Module *selectors*, store filters in the attributes hash.
@@ -113,68 +113,6 @@ class Module
 
   def printable_name
     "#{self.attributes['name'][0]} (#{self.module_path})"
-  end
-
-
-
-  def select_required_modules(available_modules, selected_modules)
-    modules_to_add = []
-    available_modules_rnd = available_modules.clone.shuffle!
-
-
-    available_modules_rnd.each do |possible_module_selection|
-
-      # for each requirement
-      self.requires.each do |requires|
-        # if possible_module_selection.
-
-        if possible_module_selection.attributes["#{conflict_key}"] != nil
-          # for each corresponding value in the previously selected module
-          other_module.attributes["#{conflict_key}"].each do |value|
-            # for each value in the conflict list
-            conflict["#{conflict_key}"].each do |conflict_value|
-              if Regexp.new(conflict_value).match(value)
-                key_matched = true
-              end
-            end
-          end
-        end
-
-      end
-    end
-
-    modules_to_add
-  end
-
-
-
-  def select_required_modules(available_modules, selected_modules)
-    modules_to_add = []
-    available_modules_rnd = available_modules.clone.shuffle!
-
-
-    available_modules_rnd.each do |possible_module_selection|
-
-      # for each requirement
-      self.requires.each do |requires|
-        # if possible_module_selection.
-
-        if possible_module_selection.attributes["#{conflict_key}"] != nil
-          # for each corresponding value in the previously selected module
-          other_module.attributes["#{conflict_key}"].each do |value|
-            # for each value in the conflict list
-            conflict["#{conflict_key}"].each do |conflict_value|
-              if Regexp.new(conflict_value).match(value)
-                key_matched = true
-              end
-            end
-          end
-        end
-
-      end
-    end
-
-    modules_to_add
   end
 
 end

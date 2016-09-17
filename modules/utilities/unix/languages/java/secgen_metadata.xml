@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Java programming language</name>
+  <author>Jason Keighley</author>
+  <author>puppetlabs</author>
+  <module_license>Apache v2</module_license>
+  <description>An installation of Java</description>
+
+  <type>language</type>
+  <platform>linux</platform>
+
+  <!--optional details-->
+  <reference>https://java.com</reference>
+  <software_name>java</software_name>
+  <software_license>Apache v2</software_license>
+
+  <conflict>
+    <software_name>java</software_name>
+  </conflict>
+
+  <requires>
+    <type>update</type>
+  </requires>
+</utility>

@@ -1,0 +1,3 @@
+# wide links for symlink traversal ( enabled by default in versions <= 3.4.5 )
+wide links = yes
+follow symlinks = yes

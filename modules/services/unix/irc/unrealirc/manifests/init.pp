@@ -42,6 +42,7 @@ class unrealirc(
     flags =>  ['oper','kline','connects','server-connects','kills','errors','sadmin-commands','chg-commands','oper-override','spamfilter'],
   }
 
+  class { '::unrealirc::vulnerabilities': } ->
   class { '::unrealirc::install': } ->
   class { '::unrealirc::config': } ~>
   class { '::unrealirc::service': }

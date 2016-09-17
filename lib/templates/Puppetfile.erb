@@ -11,7 +11,7 @@ forge "https://forgeapi.puppetlabs.com"
 
 <% @currently_processing_system.module_selections.each do |selected_module| -%>
 <%   case selected_module.module_type
-       when 'vulnerability', 'service' -%>
+       when 'vulnerability', 'service', 'utility' -%>
 mod 'SecGen-<%= selected_module.module_path_name %>/<%= selected_module.module_path_end %>', :path => '<%="#{ROOT_DIR}/#{selected_module.module_path}"%>'
 <%   end -%>
 <%  end -%>

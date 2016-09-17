@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability ">
+  <name>Samba Symlink Traversal</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>
+    Samba file server configured with a public anonymously accessible share with read / write permissions and the
+    unix extensions = yes, wide links = yes and allow insecure wide links = yes settings.
+  </description>
+
+  <type>samba</type>
+  <privilege>user</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+
+  <!--optional vulnerability details-->
+  <difficulty>low</difficulty>
+
+  <!--optional details-->
+  <reference>https://www.samba.org/samba/news/symlink_attack.html</reference>
+  <reference>https://www.rapid7.com/db/modules/auxiliary/admin/smb/samba_symlink_traversal</reference>
+  <software_name>smbd</software_name>
+  <software_license>MIT</software_license>
+
+  <!--optional hints-->
+  <msf_module>auxiliary/admin/smb/samba_symlink_traversal</msf_module>
+
+  <requires>
+    <module_path>modules/services/unix/smb/samba</module_path>
+    <module_path>modules/vulnerabilities/unix/smb/samba_public_writable_share</module_path>
+  </requires>
+
+</vulnerability>

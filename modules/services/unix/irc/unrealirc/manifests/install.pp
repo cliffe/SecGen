@@ -23,7 +23,8 @@ class unrealirc::install {
     owner  => root,
     group  => root,
     mode   => '0775',
-    ensure => file,
+    ensure => present,
+    replace => no,        # important: vulnerable version does not get overriden if copied to the box
     source => "puppet:///modules/unrealirc/${archive}",
     notify => Exec['extract-unrealirc'],
   }

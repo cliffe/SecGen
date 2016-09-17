@@ -38,6 +38,8 @@ class XMLReportGenerator
                   xml.base(selected_module.attributes_for_scenario_output)
                 when 'service'
                   xml.service(selected_module.attributes_for_scenario_output)
+                when 'utility'
+                  xml.utility(selected_module.attributes_for_scenario_output)
                 when 'network'
                   xml.network(selected_module.attributes_for_scenario_output)
                 else

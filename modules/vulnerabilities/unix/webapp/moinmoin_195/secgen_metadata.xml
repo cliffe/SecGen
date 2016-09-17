@@ -42,9 +42,8 @@
     <type>webapp</type>
   </conflict>
 
-  <!--TODO: Depends on apache module-->
-  <!--<dependency>-->
-    <!--<module>apache</module>-->
-  <!--</dependency>-->
+  <requires>
+    <module_path>services/unix/http/apache</module_path>
+  </requires>
 
 </vulnerability>

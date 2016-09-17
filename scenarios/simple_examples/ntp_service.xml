@@ -9,7 +9,7 @@
 		<system_name>ntp_server</system_name>
 		<base platform="linux"/>
 
-		<service module_path="modules/services/unix/utility/ntp"></service>
+		<service module_path="modules/services/unix/ntp/ntp"></service>
 
 		<network type="private_network" range="dhcp"></network>
 	</system>

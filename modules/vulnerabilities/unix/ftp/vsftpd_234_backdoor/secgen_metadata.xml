@@ -40,9 +40,7 @@
     <software_name>vsftpd</software_name>
   </conflict>
 
-  <!--Dependencies-->
-  <!--<dependency>-->
-    <!--<software_name>unix_update</software_name>-->
-  <!--</dependency>-->
-
+  <requires>
+    <type>update</type>
+  </requires>
 </vulnerability>

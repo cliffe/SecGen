@@ -36,5 +36,8 @@ When the module is installed a new user 'charlie' is created. Insude of this use
   <requires>
     <type>token_generation</type>
   </requires>
+  <requires>
+    <software_name>java</software_name>
+  </requires>
 
 </vulnerability>

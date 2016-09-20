@@ -16,6 +16,7 @@
   <privilege>user</privilege>
   <access>remote</access>
   <platform>linux</platform>
+  <realism>common</realism>
 
   <!--optional vulnerability details-->
   <difficulty>medium</difficulty>

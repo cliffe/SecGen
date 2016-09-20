@@ -13,6 +13,7 @@
   <privilege>root</privilege>
   <access>local</access>
   <platform>linux</platform>
+  <realism>common</realism>
 
   <!--optional vulnerability details-->
   <difficulty>medium</difficulty>

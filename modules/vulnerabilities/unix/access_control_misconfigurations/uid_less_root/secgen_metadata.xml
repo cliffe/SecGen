@@ -12,6 +12,7 @@
   <privilege>root</privilege>
   <access>local</access>
   <platform>unix</platform>
+  <realism>common</realism>
 
   <!--optional vulnerability details-->
   <!--optional breadcrumb (info that is leaked and required to exploit)-->

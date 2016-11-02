@@ -10,6 +10,10 @@ class ModuleReader
     return read_modules('base', BASES_PATH, BASE_SCHEMA_FILE, false)
   end
 
+  def self.read_builds
+    return read_modules('build', BUILDS_PATH, BUILDS_SCHEMA_FILE, false)
+  end
+
   # reads in all vulnerability modules
   def self.read_vulnerabilities
     return read_modules('vulnerability', VULNERABILITIES_PATH, VULNERABILITY_SCHEMA_FILE, true)

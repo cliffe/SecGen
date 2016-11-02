@@ -3,3 +3,6 @@ unusedcode
 .DS_Store
 .idea
 mount
+modules/bases/windows_2008_r2_64/iso/
+modules/bases/windows_2008_r2_64/packer_cache/
+modules/bases/windows_2008_r2_64/windows_2008_r2_virtualbox.box

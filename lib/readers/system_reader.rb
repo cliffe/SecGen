@@ -51,7 +51,7 @@ class SystemReader
       end
 
       # for each module selection
-      system_node.xpath('//vulnerability | //service | //utility | //network | //base | //encoder | //generator').each do |module_node|
+      system_node.xpath('//vulnerability | //service | //utility | //network | //base | //encoder | //generator | //build').each do |module_node|
         # create a selector module, which is a regular module instance used as a placeholder for matching requirements
         module_selector = Module.new(module_node.name)
 

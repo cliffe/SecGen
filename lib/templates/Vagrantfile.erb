@@ -33,6 +33,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end %>
     end
 
+<%= if system.base_platform == 'windows'
+"  config.vm.guest = :windows
+  config.vm.communicator = \"winrm\"
+  config.vm.boot_timeout = 600
+  config.vm.graceful_halt_timeout = 600"
+    end %>
+
     # SecGen modules
 <% system.module_selections.each do |selected_module| -%>
 
@@ -41,13 +48,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
      when 'base' -%>
     <%= system.name %>.vm.box = "<%= selected_module.module_path_name %>"
     <%= system.name %>.vm.box_url = "<%= selected_module.attributes['url'][0] %>"
+    <%= if system.base_platform == 'windows'
+    "#{system.name}.vm.provision :shell, path: \"#{ROOT_DIR}/modules/build/windows/puppet/windows_puppet_bootstrap.ps1\"
+    #{system.name}.vm.provision :reload"
+        end %>
 <%   when 'network' -%>
 <%     if selected_module.attributes['range'][0].nil? || selected_module.attributes['range'][0] == "dhcp" -%>
     <%= system.name %>.vm.network :<%= selected_module.attributes['type'][0] %>, type: "dhcp"
 <%     else -%>
     <%= system.name %>.vm.network :<%= selected_module.attributes['type'][0] %>, ip: "<%= selected_module.attributes['range'][0] %>"
 <%     end -%>
-<%   when 'vulnerability', 'service', 'utility', 'encoder', 'generator' -%>
+<%   when 'vulnerability', 'service', 'utility', 'encoder', 'generator', 'build' -%>
 <%     module_name = selected_module.module_path_name -%>
     <%= system.name %>.vm.provision "puppet" do | <%=module_name%> |
 <%     # if there are facter variables to define
@@ -56,9 +67,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         "json_inputs" => '<%=JSON.generate(selected_module.received_inputs)%>'
       }
 <%    end -%>
+<%= if system.base_platform == 'linux'
+"      #{module_name}.environment_path = '#{ENVIRONMENTS_PATH}'
+      #{module_name}.environment = 'production' "
+    end %>
       <%=module_name%>.module_path = "<%="puppet/#{system.name}/modules"%>"
-      <%=module_name%>.environment_path = "<%="#{ENVIRONMENTS_PATH}"%>"
-      <%=module_name%>.environment = "production"
       <%=module_name%>.manifests_path = "<%="#{ROOT_DIR}/#{selected_module.module_path}/"%>"
       <%=module_name%>.manifest_file = "<%="#{selected_module.module_path_end}.pp"%>"
     end
@@ -74,7 +87,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 #      cleanup.manifests_path = "<%="#{ROOT_DIR}/mount/puppet/manifest"%>"
 #      cleanup.manifest_file = "cleanup.pp"
 #    end
-    <%= system.name %>.vm.provision :shell, :inline => "history -c && history -w"
+#    <%= system.name %>.vm.provision :shell, :inline => "history -c && history -w"
 #    <%= system.name %>.vm.provision :shell, :inline => "umount /mount/"
   end
 <% end %>

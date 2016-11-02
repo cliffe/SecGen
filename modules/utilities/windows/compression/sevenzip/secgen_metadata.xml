@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>sevenzip for Windows</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>A 7zip utility module for windows</description>
+
+  <type>compression</type>
+  <platform>windows</platform>
+
+  <!--optional details-->
+  <reference>www.7-zip.org</reference>
+  <software_name>7zip</software_name>
+  <software_license>MIT</software_license>
+
+</utility>

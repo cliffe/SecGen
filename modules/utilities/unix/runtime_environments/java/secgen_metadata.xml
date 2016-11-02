@@ -3,13 +3,13 @@
 <utility xmlns="http://www.github/cliffe/SecGen/utility"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
-  <name>Java programming language</name>
+  <name>Java Runtime Environment</name>
   <author>Jason Keighley</author>
   <author>puppetlabs</author>
   <module_license>Apache v2</module_license>
   <description>An installation of Java</description>
 
-  <type>language</type>
+  <type>runtime_environment</type>
   <platform>linux</platform>
 
   <!--optional details-->

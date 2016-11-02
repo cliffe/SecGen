@@ -15,12 +15,15 @@ GENERATOR_SCHEMA_FILE = "#{ROOT_DIR}/lib/schemas/generator_metadata_schema.xsd"
 ENCODER_SCHEMA_FILE = "#{ROOT_DIR}/lib/schemas/encoder_metadata_schema.xsd"
 NETWORK_SCHEMA_FILE = "#{ROOT_DIR}/lib/schemas/network_metadata_schema.xsd"
 BASE_SCHEMA_FILE = "#{ROOT_DIR}/lib/schemas/base_metadata_schema.xsd"
+BUILDS_SCHEMA_FILE = "#{ROOT_DIR}/lib/schemas/build_metadata_schema.xsd"
 
 # Path to projects directory
 PROJECTS_DIR = "#{ROOT_DIR}/projects"
 
-# Path to environments directory
-ENVIRONMENTS_PATH = "#{ROOT_DIR}/modules/build/environments"
+# Path to build directory
+BUILDS_PATH = "#{ROOT_DIR}/modules/build"
+ENVIRONMENTS_PATH = "#{BUILDS_PATH}/environments"
+CHOCOLATEY_PATH = "#{BUILDS_PATH}/windows/chocolatey"
 
 # Path to modules directories
 MODULES_PATH = "#{ROOT_DIR}/modules/"
@@ -32,6 +35,8 @@ ENCODERS_PATH = "#{MODULES_PATH}encoders/"
 NETWORKS_PATH = "#{MODULES_PATH}networks/"
 BASES_PATH = "#{MODULES_PATH}bases/"
 MODULE_LOCAL_CALC_PATH = '/secgen_local/local.rb'
+
+WINDOWS_BASE_PATH = "#{BASES_PATH}windows_2008_r2_64/"
 
 # Path to documentation (Make sure documentation directory is already deleted with rake yard_clean before changing this)
 DOCUMENTATION_PATH = "#{ROOT_DIR}/documentation/yard/doc"

@@ -1,0 +1,47 @@
+version: 1.0.x.{build}
+skip_commits:
+  message: /(^\(?doc\)?.*|.*[A|a]cceptance [T|t]est.*)/
+clone_depth: 5
+init:
+- git config --global user.email "chocolatey@realdimensions.net"
+- git config --global user.name "Chocolatey yo"
+- SET
+- 'mkdir C:\ProgramData\PuppetLabs\code && exit 0'
+- 'mkdir C:\ProgramData\PuppetLabs\facter && exit 0'
+- 'mkdir C:\ProgramData\PuppetLabs\hiera && exit 0'
+- 'mkdir C:\ProgramData\PuppetLabs\puppet\var && exit 0'
+environment:
+  matrix:
+  - PUPPET_GEM_VERSION: ~> 3.0
+    RUBY_VER: 193
+  - PUPPET_GEM_VERSION: ~> 3.0
+    RUBY_VER: 200-x64
+  - PUPPET_GEM_VERSION: ~> 4.0
+    RUBY_VER: 21
+  - PUPPET_GEM_VERSION: ~> 4.0
+    RUBY_VER: 21-x64
+  - PUPPET_GEM_VERSION: 3.0.0
+    RUBY_VER: 193
+matrix:
+  fast_finish: true
+install:
+- SET PATH=C:\Ruby%RUBY_VER%\bin;%PATH%
+- gem install bundler --quiet --no-ri --no-rdoc
+- bundle install --jobs 4 --retry 2 --without system_tests
+- type Gemfile.lock
+build: off
+nuget:
+  disable_publish_on_pr: true
+test_script:
+- bundle exec puppet -V
+- ruby -v
+- bundle exec rspec spec/unit -fd -b
+deploy: off
+notifications:
+- provider: Email
+  to:
+  - chocolatey-build-status@googlegroups.com
+  subject: AppVeyor - Chocolatey Puppet Provider Build Notification
+  on_build_success: false
+  on_build_failure: true
+  on_build_status_changed: true

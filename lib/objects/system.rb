@@ -4,6 +4,7 @@ class System
 
   attr_accessor :name
   attr_accessor :attributes # (basebox selection)
+  attr_accessor :base_platform # (unix/linux/windows)
   attr_accessor :module_selectors # (filters)
   attr_accessor :module_selections # (after resolution)
   attr_accessor :num_actioned_module_conflicts
@@ -33,6 +34,13 @@ class System
       # for each module specified in the scenario
       module_selectors.each do |module_filter|
         selected_modules += select_modules(module_filter.module_type, module_filter.attributes, available_modules, selected_modules, module_filter.unique_id, module_filter.write_output_variable, module_filter.write_to_module_with_id, module_filter.received_inputs)
+        if selected_modules.size == 1  # First iteration, the base box
+          base_box = selected_modules[0]
+          self.base_platform = base_box.attributes['platform'][0]
+          if base_platform == 'windows'
+            selected_modules += get_windows_build_modules(available_modules)
+          end
+        end
       end
       selected_modules
 
@@ -187,4 +195,44 @@ class System
     modules_to_add
   end
 
+  def validate_windows_base
+    windows_vagrant_box = 'modules_bases_windows_2008_r2_64'
+    packed_box = 'windows_2008_r2_virtualbox.box'
+
+    Dir.chdir WINDOWS_BASE_PATH
+    unless windows_box_in_vagrant? windows_vagrant_box
+      Print.info "Packing windows base box: This may take a while ..."
+      GemExec.exe('packer', WINDOWS_BASE_PATH, 'build -force windows_2008_r2.json')
+      if File.exists? packed_box
+        GemExec.exe('vagrant', WINDOWS_BASE_PATH,
+                    "box add --name #{windows_vagrant_box} #{packed_box}")
+      else
+        Print.err 'Error packing windows_2008_r2_virtualbox.box'
+        exit
+      end
+    end
+  end
+
+  def windows_box_in_vagrant? (windows_vagrant_box)
+    box_in_vagrant = false
+    box_list_output = `vagrant box list`
+    boxes = box_list_output.split("\n")
+    boxes.each do |box_name|
+      if /^#{windows_vagrant_box}/.match(box_name)
+        box_in_vagrant = true
+      end
+    end
+    box_in_vagrant
+  end
+
+  def get_windows_build_modules(available_modules)
+    windows_build_modules = []
+    available_modules.each do |mod|
+      if mod.attributes['module_path'][0] == 'modules/build/windows/chocolatey'
+        Print.std "Module added: #{mod.printable_name}"
+        windows_build_modules += [mod]
+      end
+    end
+    windows_build_modules
+  end
 end

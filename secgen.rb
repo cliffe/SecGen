@@ -67,15 +67,20 @@ def build_config(scenario, out_dir, options)
   all_available_networks = ModuleReader.read_networks
   Print.std "#{all_available_networks.size} network modules loaded"
 
+  Print.info 'Reading available build modules...'
+  all_available_builds = ModuleReader.read_builds
+  Print.std "#{all_available_builds.size} build modules loaded"
+
   Print.info 'Resolving systems: randomising scenario...'
   # for each system, select modules
-  all_available_modules = all_available_bases + all_available_vulnerabilties + all_available_services + all_available_utilities + all_available_generators + all_available_encoders + all_available_networks
+  all_available_modules = all_available_bases + all_available_vulnerabilties + all_available_services + all_available_utilities + all_available_generators + all_available_encoders + all_available_networks + all_available_builds
   # update systems with module selections
   systems.map! {|system|
     system.module_selections = system.resolve_module_selection(all_available_modules)
     system
   }
 
+  $selected_systems = systems
   Print.info "Creating project: #{out_dir}..."
   # create's vagrant file / report a starts the vagrant installation'
   creator = ProjectFilesCreator.new(systems, out_dir, scenario, options)
@@ -88,6 +93,7 @@ end
 # @param project_dir
 def build_vms(project_dir)
   Print.info "Building project: #{project_dir}"
+  pre_vagrant_validation
   GemExec.exe('vagrant', project_dir, 'up')
   Print.info 'VMs created.'
 end
@@ -106,6 +112,14 @@ def list_scenarios
   Print.info "Full paths to scenario files are displayed below"
   Dir["#{ROOT_DIR}/scenarios/**/*"].select{ |file| !File.directory? file}.each_with_index do |scenario_name, scenario_number|
     Print.std "#{scenario_number}) #{scenario_name}"
+  end
+end
+
+def pre_vagrant_validation
+  unless $selected_systems.empty?
+    $selected_systems.each do |system|
+      system.validate_windows_base
+    end
   end
 end
 
@@ -132,6 +146,7 @@ opts = GetoptLong.new(
 scenario = SCENARIO_XML
 project_dir = nil
 options = {}
+$selected_systems = []
 
 # process option arguments
 opts.each do |opt, arg|

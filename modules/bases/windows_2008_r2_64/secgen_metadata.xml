@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<base xmlns="http://www.github/cliffe/SecGen/base"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.github/cliffe/SecGen/base">
+  <name>Windows Server 2008 R2 w/ SP1 64 bit</name>
+  <author>Thomas Shaw</author>
+  <module_license>GPLv3</module_license>
+  <description>
+    Based on the metasploitable3 box built from the Windows Server 2008 R2 w/ SP1 64 bit ISO at the MSDN.
+    Packed using Metasploitable3's Packer script.
+  </description>
+  <type>server</type>
+  <type>desktop</type>
+
+  <platform>windows</platform>
+  <distro>windows-2008-r2-sp1</distro>
+
+  <!--Note: this url is for a .iso, not a .box - it requires packing through packer -->
+  <url>http://download.microsoft.com/download/7/5/E/75EC4E54-5B02-42D6-8879-D8D3A25FBEF7/7601.17514.101119-1850_x64fre_server_eval_en-us-GRMSXEVAL_EN_DVD.iso</url>
+
+  <reference>https://technet.microsoft.com/en-us/windows/gg635126.aspx</reference>
+  <software_license>various</software_license>
+
+</base>

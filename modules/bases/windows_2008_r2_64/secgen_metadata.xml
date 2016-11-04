@@ -6,10 +6,8 @@
   <name>Windows Server 2008 R2 w/ SP1 64 bit</name>
   <author>Thomas Shaw</author>
   <module_license>GPLv3</module_license>
-  <description>
-    Based on the metasploitable3 box built from the Windows Server 2008 R2 w/ SP1 64 bit ISO at the MSDN.
-    Packed using Metasploitable3's Packer script.
-  </description>
+  <description>Based on the metasploitable3 box built from the Windows Server 2008 R2 w/ SP1 64 bit ISO at the MSDN.
+    Packed using Metasploitable3's Packer script, based on packer-windows, with an additional step to install puppet.</description>
   <type>server</type>
   <type>desktop</type>
 
@@ -20,6 +18,8 @@
   <url>http://download.microsoft.com/download/7/5/E/75EC4E54-5B02-42D6-8879-D8D3A25FBEF7/7601.17514.101119-1850_x64fre_server_eval_en-us-GRMSXEVAL_EN_DVD.iso</url>
 
   <reference>https://technet.microsoft.com/en-us/windows/gg635126.aspx</reference>
+  <reference>https://github.com/joefitzgerald/packer-windows</reference>
+  <reference>https://www.packer.io/</reference>
   <software_license>various</software_license>
 
 </base>

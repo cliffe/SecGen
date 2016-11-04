@@ -48,10 +48,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
      when 'base' -%>
     <%= system.name %>.vm.box = "<%= selected_module.module_path_name %>"
     <%= system.name %>.vm.box_url = "<%= selected_module.attributes['url'][0] %>"
-    <%= if system.base_platform == 'windows'
-    "#{system.name}.vm.provision :shell, path: \"#{ROOT_DIR}/modules/build/windows/puppet/windows_puppet_bootstrap.ps1\"
-    #{system.name}.vm.provision :reload"
-        end %>
 <%   when 'network' -%>
 <%     if selected_module.attributes['range'][0].nil? || selected_module.attributes['range'][0] == "dhcp" -%>
     <%= system.name %>.vm.network :<%= selected_module.attributes['type'][0] %>, type: "dhcp"

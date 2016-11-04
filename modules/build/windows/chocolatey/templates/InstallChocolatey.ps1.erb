@@ -1,0 +1,135 @@
+# ==============================================================================
+# Copyright 2011 - Present RealDimensions Software, LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+# this file except in compliance with the License. You may obtain a copy of the
+# License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software distributed
+# under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+# CONDITIONS OF ANY KIND, either express or implied. See the License for the
+# specific language governing permissions and limitations under the License.
+# ==============================================================================
+
+$ErrorActionPreference = 'Stop'
+
+# For some reason try/catch wrapping only ensures
+# that none of this script runs at all
+# https://tickets.puppetlabs.com/browse/MODULES-2634
+#try {
+
+# variables
+$url = '<%= @download_url %>'
+$unzipMethod = '<%= @unzip_type %>'
+if ($env:TEMP -eq $null) {
+  $env:TEMP = Join-Path $env:SystemDrive 'temp'
+}
+$chocTempDir = Join-Path $env:TEMP "chocolatey"
+$tempDir = Join-Path $chocTempDir "chocInstall"
+if (![System.IO.Directory]::Exists($tempDir)) {[System.IO.Directory]::CreateDirectory($tempDir)}
+$file = Join-Path $tempDir "chocolatey.zip"
+$chocErrorLog = Join-Path $tempDir "chocError.log"
+
+# PowerShell v2/3 caches the output stream. Then it throws errors due
+# to the FileStream not being what is expected. Fixes "The OS handle's
+# position is not what FileStream expected. Do not use a handle
+# simultaneously in one FileStream and in Win32 code or another
+# FileStream."
+
+
+# This only works with the ConsoleHost (PowerShell InternalHost)
+function Fix-PowerShellOutputRedirectionBug {
+  try{
+    # http://www.leeholmes.com/blog/2008/07/30/workaround-the-os-handles-position-is-not-what-filestream-expected/ plus comments
+    $bindingFlags = [Reflection.BindingFlags] "Instance,NonPublic,GetField"
+    $objectRef = $host.GetType().GetField("externalHostRef", $bindingFlags).GetValue($host)
+    $bindingFlags = [Reflection.BindingFlags] "Instance,NonPublic,GetProperty"
+    $consoleHost = $objectRef.GetType().GetProperty("Value", $bindingFlags).GetValue($objectRef, @())
+    [void] $consoleHost.GetType().GetProperty("IsStandardOutputRedirected", $bindingFlags).GetValue($consoleHost, @())
+    $bindingFlags = [Reflection.BindingFlags] "Instance,NonPublic,GetField"
+    $field = $consoleHost.GetType().GetField("standardOutputWriter", $bindingFlags)
+    $field.SetValue($consoleHost, [Console]::Out)
+    [void] $consoleHost.GetType().GetProperty("IsStandardErrorRedirected", $bindingFlags).GetValue($consoleHost, @())
+    $field2 = $consoleHost.GetType().GetField("standardErrorWriter", $bindingFlags)
+    $field2.SetValue($consoleHost, [Console]::Error)
+  } catch {
+    Write-Output "Unable to apply redirection fix. Error: $_"
+  }
+
+
+}
+
+Fix-PowerShellOutputRedirectionBug
+
+function Download-File {
+param (
+  [string]$url,
+  [string]$file
+ )
+  Write-Output "Downloading $url to $file"
+  $downloader = new-object System.Net.WebClient
+  $downloader.Proxy.Credentials=[System.Net.CredentialCache]::DefaultNetworkCredentials;
+  $downloader.DownloadFile($url, $file)
+}
+
+# download the package
+Download-File $url $file
+
+if ($unzipMethod -eq '7zip') {
+  # download 7zip
+  Write-Output "Download 7Zip commandline tool"
+  $7zaExe = Join-Path $tempDir '7za.exe'
+
+  Download-File 'https://chocolatey.org/7za.exe' "$7zaExe"
+
+  # unzip the package
+  Write-Output "Extracting $file to $tempDir..."
+  Start-Process "$7zaExe" -ArgumentList "x -o`"$tempDir`" -y `"$file`"" -Wait -NoNewWindow
+} else {
+  $shellApplication = new-object -com shell.application
+  $zipPackage = $shellApplication.NameSpace($file)
+  $destinationFolder = $shellApplication.NameSpace($tempDir)
+  $destinationFolder.CopyHere($zipPackage.Items(),0x10)
+}
+
+# call chocolatey install
+Write-Output "Installing chocolatey on this machine"
+$toolsFolder = Join-Path $tempDir "tools"
+$chocInstallPS1 = Join-Path $toolsFolder "chocolateyInstall.ps1"
+
+if ($PSVersionTable.psversion.Major -gt 2) {
+  & $chocInstallPS1
+} else {
+  $output = Invoke-Expression $chocInstallPS1
+  $output
+  write-output "Any errors that occured during install or upgrade are logged here: $chocoErrorLog"
+  $error | out-file $chocErrorLog
+}
+
+Write-Output 'Ensuring chocolatey commands are on the path'
+$chocInstallVariableName = "ChocolateyInstall"
+$chocoPath = [Environment]::GetEnvironmentVariable($chocInstallVariableName, [System.EnvironmentVariableTarget]::User)
+if ($chocoPath -eq $null -or $chocoPath -eq '') {
+  $chocoPath = 'C:\ProgramData\Chocolatey'
+}
+
+$chocoBinPath = Join-Path $chocoPath 'bin'
+
+if ($($env:Path).ToLower().Contains($($chocoBinPath).ToLower()) -eq $false) {
+  $env:Path = [Environment]::GetEnvironmentVariable('Path',[System.EnvironmentVariableTarget]::Machine);
+}
+
+Write-Output 'Ensuring chocolatey.nupkg is in the lib folder'
+$chocoPkgDir = Join-Path $chocoPath 'lib\chocolatey'
+$nupkg = Join-Path $chocoPkgDir 'chocolatey.nupkg'
+if (![System.IO.Directory]::Exists($chocoPkgDir)) { [System.IO.Directory]::CreateDirectory($chocoPkgDir); }
+Copy-Item "$file" "$nupkg" -Force -ErrorAction SilentlyContinue
+
+#}
+#catch
+#{
+#  Write-Host "$($_.Exception.Message)"
+#  exit 1
+#}

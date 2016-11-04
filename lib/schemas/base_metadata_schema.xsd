@@ -8,6 +8,7 @@
     <xs:restriction base="xs:string">
       <xs:enumeration value="linux"/>
       <xs:enumeration value="unix"/>
+      <xs:enumeration value="windows"/>
     </xs:restriction>
   </xs:simpleType>
 

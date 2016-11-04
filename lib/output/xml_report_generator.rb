@@ -67,6 +67,14 @@ class XMLReportGenerator
             }
           end
         }
+      when 'build'
+        xml.build(selected_module.attributes_for_scenario_output) {
+          selected_module.received_inputs.each do |key,value|
+            xml.input({"into" => key}) {
+              xml.value value
+            }
+          end
+        }
       when 'service'
         xml.service(selected_module.attributes_for_scenario_output) {
           selected_module.received_inputs.each do |key,value|

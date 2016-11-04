@@ -24,9 +24,10 @@ Ruby: https://www.ruby-lang.org/en/
 Vagrant: http://www.vagrantup.com/  
 Virtual Box: https://www.virtualbox.org/  
 Puppet: http://puppet.com/  
+Packer: https://www.packer.io/
 And the required Ruby Gems (including Nokogiri and Librarian-puppet)
 
-### On Ubuntu these commands should get you up and running
+### On Ubuntu these commands should get you up and running (Note: Windows bases also require Packer)
 ```bash
 curl -o vagrant.deb https://releases.hashicorp.com/vagrant/1.8.4/vagrant_1.8.4_x86_64.deb
 sudo dpkg -i vagrant.deb

@@ -15,11 +15,12 @@
     <xs:sequence>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element name='vulnerability' type='VulnerabilityType' minOccurs='0' maxOccurs='unbounded' />
-        <xs:element name='service' type='ServiceUtilityEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
-        <xs:element name='utility' type='ServiceUtilityEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='service' type='ServiceUtilityBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='utility' type='ServiceUtilityBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
         <xs:element name='network' type='NetworkType' minOccurs='0' maxOccurs='unbounded' />
-        <xs:element name='generator' type='ServiceUtilityEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
-        <xs:element name='encoder' type='ServiceUtilityEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='build' type='ServiceUtilityBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='generator' type='ServiceUtilityBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='encoder' type='ServiceUtilityBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
         <xs:element name='value' type='xs:string' minOccurs='0' maxOccurs='unbounded' />
       </xs:choice>
     </xs:sequence>
@@ -38,8 +39,9 @@
       <xs:element name='base' type='BaseType' minOccurs='1' maxOccurs='1' />
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element name='vulnerability' type='VulnerabilityType' minOccurs='0' maxOccurs='unbounded' />
-        <xs:element name='service' type='ServiceUtilityEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
-        <xs:element name='utility' type='ServiceUtilityEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='service' type='ServiceUtilityBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='utility' type='ServiceUtilityBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='build' type='ServiceUtilityBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
         <xs:element name='network' type='NetworkType' minOccurs='0' maxOccurs='unbounded' />
       </xs:choice>
     </xs:sequence>
@@ -99,7 +101,7 @@
     <xs:attribute name="solution" type="xs:string"/>
   </xs:complexType>
 
-  <xs:complexType name="ServiceUtilityEncoderGeneratorType">
+  <xs:complexType name="ServiceUtilityBuildEncoderGeneratorType">
     <xs:sequence>
       <xs:element name="input" type="InputElements" minOccurs="0" maxOccurs="unbounded" />
     </xs:sequence>

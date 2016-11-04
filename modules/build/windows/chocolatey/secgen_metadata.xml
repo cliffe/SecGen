@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<build xmlns="http://www.github/cliffe/SecGen/build"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.github/cliffe/SecGen/build">
+  <name>Chocolatey Provider</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Chocolatey install for windows, used as a puppet provider.</description>
+
+  <type>provider</type>
+  <platform>windows</platform>
+
+  <!--optional details-->
+  <reference>https://chocolatey.org</reference>
+  <software_name>choco</software_name>
+  <software_license>MIT</software_license>
+</build>

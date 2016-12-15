@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Industry Generator</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Industry generator using the Forgery ruby gem.</description>
+
+  <type>string_generator</type>
+  <type>industry_generator</type>
+  <type>industry</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <reference>https://github.com/sevenwire/forgery</reference>
+
+  <output_type>industry</output_type>
+</generator>

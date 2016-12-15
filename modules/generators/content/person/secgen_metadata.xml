@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Person Profile Generator</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Person profile hash builder / generator. Wrapper individually generated facts to create people.
+  </description>
+
+  <type>person</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <read_fact>name</read_fact>
+  <read_fact>address</read_fact>
+  <read_fact>phone_number</read_fact>
+  <read_fact>email_address</read_fact>
+
+  <!-- TODO: This generator should have default values so that we can omit a default input -->
+
+  <output_type>person</output_type>
+</generator>

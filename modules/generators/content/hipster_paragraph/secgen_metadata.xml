@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Lipsum Paragraph Generator</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Random Hipster paragraph generator using the Faker ruby gem.</description>
+
+  <type>paragraph_generator</type>
+  <type>text_paragraph</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <reference>https://github.com/stympy/faker</reference>
+
+  <output_type>paragraph</output_type>
+</generator>

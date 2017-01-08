@@ -154,7 +154,7 @@ class Module
       end
       # wrap value with ^ and $ to limit start/end of string.
       value = "^#{value}$"
-    elsif required_key == 'privilege'
+    elsif required_key == 'privilege' || required_key == 'type'
       value = "^#{value}$"
     end
     value

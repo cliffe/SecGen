@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>Random Parameterised Website</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Parameterised website filled with SecGen generated content.</description>
+
+  <type>webapp</type>
+  <privilege>info_leak</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+
+  <read_fact>ctf_flags</read_fact>
+  <read_fact>company_name</read_fact>
+  <read_fact>company_motto</read_fact>
+  <read_fact>manager_profile</read_fact>
+  <read_fact>business_address</read_fact>
+  <read_fact>industry</read_fact>
+  <read_fact>employees</read_fact>
+  <read_fact>product_name</read_fact>
+  <read_fact>main_page_paragraph_content</read_fact>
+
+  <!-- Flags - [0]: Leaked in index.html comments. -->
+  <default_input into="ctf_flags">
+    <generator type="flag_generator"/>
+  </default_input>
+
+  <default_input into="company_name">
+    <generator type="company_name"/>
+  </default_input>
+
+  <default_input into="company_motto">
+    <generator type="motto"/>
+  </default_input>
+
+  <default_input into="manager_profile">
+    <generator type="person">
+      <input into="name">
+        <generator type="name_generator"/>
+      </input>
+      <input into="address">
+        <generator type="address_generator"/>
+      </input>
+      <input into="phone_number">
+        <generator type="phone_number_generator"/>
+      </input>
+      <input into="email_address">
+        <generator type="email_address"/>
+      </input>
+    </generator>
+  </default_input>
+
+  <default_input into="business_address">
+    <generator type="address_generator"/>
+  </default_input>
+
+  <default_input into="industry">
+    <generator type="industry_generator"/>
+  </default_input>
+
+  <default_input into="employees">
+    <generator type="person">
+      <input into="name">
+        <generator type="name_generator"/>
+      </input>
+      <input into="address">
+        <generator type="address_generator"/>
+      </input>
+      <input into="phone_number">
+        <generator type="phone_number_generator"/>
+      </input>
+      <input into="email_address">
+        <generator type="email_address"/>
+      </input>
+    </generator>
+    <generator type="person">
+      <input into="name">
+        <generator type="name_generator"/>
+      </input>
+      <input into="address">
+        <generator type="address_generator"/>
+      </input>
+      <input into="phone_number">
+        <generator type="phone_number_generator"/>
+      </input>
+      <input into="email_address">
+        <generator type="email_address"/>
+      </input>
+    </generator>
+  </default_input>
+
+  <default_input into="product_name">
+    <generator type="application_name"/>
+  </default_input>
+
+  <default_input into="main_page_paragraph_content">
+    <generator type="text_paragraph"/>
+  </default_input>
+
+  <conflict>
+    <type>webapp</type>
+  </conflict>
+
+  <requires>
+    <module_path>modules/services/unix/http/apache</module_path>
+  </requires>
+
+</vulnerability>

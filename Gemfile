@@ -4,6 +4,8 @@ gem 'nokogiri'
 gem 'puppet'
 gem 'librarian-puppet'
 gem 'wordlist'
+gem 'faker'
+gem 'forgery'
 
 #development only gems go here
 group :test, :development do

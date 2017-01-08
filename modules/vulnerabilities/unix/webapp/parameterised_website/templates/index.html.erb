@@ -1,0 +1,83 @@
+<% require 'json'
+   $secgen_parameters = JSON.parse(@json_inputs)
+   $company_name = $secgen_parameters['company_name'][0]
+   $company_motto = $secgen_parameters['company_motto'][0]
+   $manager_profile = $secgen_parameters['manager_profile'][0]
+   $business_address = $secgen_parameters['business_address'][0]
+   $industry = $secgen_parameters['industry'][0]
+   $employees = $secgen_parameters['employees']
+   $comment_ctf_flag = $secgen_parameters['ctf_flags'][0]
+
+   # single product for now, later we can have a products array w/ individual product objects
+   $product_name = $secgen_parameters['product_name'][0]
+
+   $main_page_paragraph_content = $secgen_parameters['main_page_paragraph_content']
+%>
+<html>
+<head>
+  <!-- Default stylesheet -->
+  <link rel="stylesheet" href="css/default.css"/>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="css/bootstrap.min.css" />
+  <!-- Optional theme -->
+  <link rel="stylesheet" href=css/bootstrap-theme.min.css" />
+</head>
+<body>
+  <!-- <%= $comment_ctf_flag %> -->
+
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#"></a>
+      </div>
+      <div id="navbar" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="#about">About</a></li>
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div>
+  </nav>
+
+  <div id="main_container" class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="intro-text">
+          <h1 class="name"><%= $company_name %></h1>
+          <hr class="star-light">
+          <h3> <%= $company_motto %></h3>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="main_page_content">
+        <h1><%= $product_name %></h1>
+        <p class="lead"><%= $main_page_paragraph_content.join %></p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="contact_us">
+        <h3>Contact Us</h3>
+        <div id="manager_profile">
+          <h4>Manager</h4>
+          <p><%= $manager_profile['name']%></p>
+          <p><%= $manager_profile['telephone_number']%></p>
+          <p><%= $manager_profile['email_address']%></p>
+        </div>
+        <p id="address">Address: <%= $business_address %></p>
+      </div>
+    </div>
+  </div>
+</body>
+
+<footer>
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="js/bootstrap.min.js"></script>
+</footer>
+</html>

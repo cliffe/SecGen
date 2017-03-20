@@ -33,7 +33,7 @@
 			</input>
 		</vulnerability>
 
-		<!--vulnerability module_path=".*ssh_leaked_keys">
+		<vulnerability module_path=".*ssh_leaked_keys">
 			<input into="accounts">
 				<generator type="account">
 					<input into="leaked_filenames">
@@ -47,7 +47,7 @@
 					</input>
 				</generator>
 			</input>
-		</vulnerability-->
+		</vulnerability>
 		
 
 		<vulnerability module_path=".*two_shell_calls">

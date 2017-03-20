@@ -9,7 +9,7 @@
 		<!--base platform="linux" distro="Debian 8.2"/-->
 		<base platform="linux" distro="Debian 7.8"/>
 
-		<utility module_path=".*gnome"/>
+		<!--utility module_path=".*gnome"/-->
 
 		<vulnerability module_path=".*parameterised_accounts">
 			<input into="accounts">
@@ -33,7 +33,7 @@
 			</input>
 		</vulnerability>
 
-		<vulnerability module_path=".*ssh_leaked_keys">
+		<!--vulnerability module_path=".*ssh_leaked_keys">
 			<input into="accounts">
 				<generator type="account">
 					<input into="leaked_filenames">
@@ -47,9 +47,41 @@
 					</input>
 				</generator>
 			</input>
+		</vulnerability-->
+		
+
+		<vulnerability module_path=".*two_shell_calls">
+			<input into="accounts">
+				<generator type="account">
+					<input into="username">
+						<value>jakesmith</value>
+					</input>
+					<input into="password">
+						<generator module_path="modules/generators/random/random_base64"/>
+					</input>
+					<input into="leaked_filenames">
+						<value>flag.txt</value>
+					</input>
+						<input into="strings_to_leak">
+							<generator module_path="modules/generators/random/random_base64"/>
+						</input>
+				</generator>
+				<generator type="account">
+					<input into="username">
+						<value>nickadler</value>
+					</input>
+					<input into="password">
+						<generator module_path="modules/generators/random/random_base64"/>
+					</input>
+					<input into="strings_to_leak">
+						<value>none</value>
+					</input>
+					<input into="leaked_filenames">
+						<value></value>
+					</input>
+				</generator>
+			</input>
 		</vulnerability>
-
-
 
 		<network type="private_network" range="dhcp"/>
 	</system>

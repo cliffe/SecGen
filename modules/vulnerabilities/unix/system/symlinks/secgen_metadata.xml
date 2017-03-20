@@ -3,11 +3,11 @@
 <vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
-  <name>2x shell module</name>
+  <name>symlinks</name>
   <author>Mihai Ordean</author>
   <author>Puppet Labs</author>
   <module_license>Apache v2</module_license>
-  <description>creates a shell executable with permisions</description>
+  <description>exploits symlink to shadow</description>
 
   <type>system</type>
   <privilege>none</privilege>
@@ -20,7 +20,7 @@
 
     <generator type="account">
       <input into="username">
-        <value>jakesmith</value>
+        <value>carolmiller</value>
       </input>
       <input into="password">
         <generator module_path="modules/generators/random/random_base64"/>
@@ -32,22 +32,6 @@
 				<generator module_path="modules/generators/random/random_base64"/>
 			</input>
     </generator>
-
-    <generator type="account">
-      <input into="username">
-        <value>nickadler</value>
-      </input>
-      <input into="password">
-        <generator module_path="modules/generators/random/random_base64"/>
-      </input>
-      <input into="leaked_filenames">
-				<value></value>
-			</input>
-			<input into="strings_to_leak">
-				<value>none</value>
-			</input>
-    </generator>
-    
   </default_input>
 
   <!--optional details-->

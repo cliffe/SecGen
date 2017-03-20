@@ -36,11 +36,14 @@
 		<vulnerability module_path=".*ssh_leaked_keys">
 			<input into="accounts">
 				<generator type="account">
-					<input into="leaked_filenames">
-						<value>flag.txt</value>
+					<input into="username">
+						<value>davebakon</value>
 					</input>
 					<input into="password">
 						<generator module_path="modules/generators/random/random_base64"/>
+					</input>
+					<input into="leaked_filenames">
+						<value>flag.txt</value>
 					</input>
 					<input into="strings_to_leak">
 						<generator module_path="modules/generators/random/random_base64"/>
@@ -54,7 +57,7 @@
 			<input into="accounts">
 				<generator type="account">
 					<input into="username">
-						<value>jakesmith</value>
+						<value>jakkinkade</value>
 					</input>
 					<input into="password">
 						<generator module_path="modules/generators/random/random_base64"/>
@@ -82,6 +85,8 @@
 				</generator>
 			</input>
 		</vulnerability>
+
+		<vulnerability module_path=".*symlinks" />
 
 		<network type="private_network" range="dhcp"/>
 	</system>

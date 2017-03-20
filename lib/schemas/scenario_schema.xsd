@@ -27,6 +27,7 @@
     </xs:sequence>
     <xs:attribute name='into' type='xs:string'/>
     <xs:attribute name='into_datastore' type='xs:string'/>
+    <xs:attribute name='unique_module_list' type='xs:string'/>
 
   </xs:complexType>
   <xs:complexType name="SystemType">

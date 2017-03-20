@@ -81,8 +81,12 @@ class SystemReader
             end
           end
           # check if we need to send the module output to a datastore
-          if input.xpath('@into_datastore').to_s
+          if input.xpath('@into_datastore').to_s != ''
             module_selector.write_to_datastore = input.xpath('@into_datastore').to_s
+          end
+          # check if we need to send the module path to a datastore (to ensure unique module selection)
+          if input.xpath('@unique_module_list').to_s != ''
+            module_selector.write_module_path_to_datastore = input.xpath('@unique_module_list').to_s
           end
 
         end

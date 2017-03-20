@@ -13,6 +13,7 @@ class Module
 
   attr_accessor :write_to_module_with_id # the module instance that this module writes to
   attr_accessor :write_to_datastore # the datastore to store the result to
+  attr_accessor :write_module_path_to_datastore # the datastore to store the result to
   attr_accessor :write_output_variable # the variable/fact written to
   attr_accessor :output # the result of local processing
   attr_accessor :unique_id # the unique id for this module *instance*

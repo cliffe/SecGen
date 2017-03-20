@@ -9,6 +9,7 @@
   <description>Strong password, a 15 character long SecureRandom base64 generated string.</description>
 
   <type>password_generator</type>
+  <type>strong_password_generator</type>
   <type>local_calculation</type>
   <platform>linux</platform>
   <platform>windows</platform>

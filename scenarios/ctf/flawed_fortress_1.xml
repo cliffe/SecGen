@@ -10,23 +10,33 @@
 		<base platform="linux"/>
 
 		<vulnerability name="NFS Share Leak">
-			<input into="strings_to_leak" into_datastore="flags">
+			<input into="strings_to_leak" unique_module_list="unique_encoders">
 				<generator type="flag_generator" />
 				<!--TODO: need more ascii_reversable encoders (binary, hex, etc)-->
 				<encoder type="ascii_reversable">
-					<input into="strings_to_encode" into_datastore="flags">
+					<input into="strings_to_encode">
 							<generator type="flag_generator" />
 					</input>
 				</encoder>
 				<encoder type="ascii_reversable">
-					<input into="strings_to_encode" into_datastore="flags">
+					<input into="strings_to_encode">
 						<generator type="flag_generator" />
 					</input>
 				</encoder>
 				<encoder type="ascii_reversable">
-					<input into="strings_to_encode" into_datastore="flags">
+					<input into="strings_to_encode">
+						<generator type="flag_generator" />
+					</input>
+				</encoder>
+				<encoder type="ascii_reversable">
+					<input into="strings_to_encode">
+						<generator type="flag_generator" />
+					</input>
+				</encoder>
+				<encoder type="ascii_reversable">
+					<input into="strings_to_encode">
 						<encoder type="ascii_reversable">
-							<input into="strings_to_encode" into_datastore="flags">
+							<input into="strings_to_encode">
 								<generator type="flag_generator" />
 							</input>
 						</encoder>
@@ -45,10 +55,10 @@
 		<base platform="linux"/>
 
 		<vulnerability read_fact="strings_to_leak" access="remote" privilege="user_rwx">
-			<input into="strings_to_leak" into_datastore="flags">
+			<input into="strings_to_leak">
 				<generator type="flag_generator" />
 				<encoder type="ascii_reversable">
-					<input into="strings_to_encode" into_datastore="flags">
+					<input into="strings_to_encode">
 						<generator type="flag_generator" />
 					</input>
 				</encoder>
@@ -57,12 +67,12 @@
 
 		<!--double encoded-->
 		<vulnerability read_fact="strings_to_leak" access="remote" privilege="user_rwx">
-			<input into="strings_to_leak" into_datastore="flags">
+			<input into="strings_to_leak">
 				<generator type="flag_generator" />
 				<encoder type="ascii_reversable">
-					<input into="strings_to_encode" into_datastore="flags">
+					<input into="strings_to_encode">
 						<encoder type="ascii_reversable">
-							<input into="strings_to_encode" into_datastore="flags">
+							<input into="strings_to_encode">
 								<generator type="flag_generator" />
 							</input>
 						</encoder>
@@ -83,13 +93,13 @@
 		<base platform="linux"/>
 
 		<vulnerability read_fact="strings_to_leak" access="remote" privilege="user_rwx">
-			<input into="strings_to_leak" into_datastore="flags">
+			<input into="strings_to_leak">
 				<generator type="flag_generator" />
 			</input>
 		</vulnerability>
 
 		<vulnerability read_fact="strings_to_leak" access="local" privilege="root_rwx">
-			<input into="strings_to_leak" into_datastore="flags">
+			<input into="strings_to_leak">
 				<generator type="flag_generator" />
 			</input>
 		</vulnerability>

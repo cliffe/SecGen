@@ -10,6 +10,8 @@
 		<base platform="linux" distro="Debian 7.8"/>
 
 		<!--utility module_path=".*gnome"/-->
+		<!--utility module_path=".*xfce"/-->
+		<!--utility module_path=".*user_accounts"/-->
 
 		<vulnerability module_path=".*parameterised_accounts">
 			<input into="accounts">

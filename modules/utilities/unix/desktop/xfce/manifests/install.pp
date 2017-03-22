@@ -4,8 +4,8 @@ class xfce::install{
     ensure => 'installed',
   }
 
-  exec { 'lightdm-autologin-root':
-    require => Package['lightdm'],
-    command => "/bin/sed -i \'/\\[SeatDefaults\\]/a autologin-user=root\' /etc/lightdm/lightdm.conf"
-  }
+# exec { 'lightdm-autologin-root':
+#   require => Package['lightdm'],
+#   command => "/bin/sed -i \'/\\[SeatDefaults\\]/a autologin-user=root\' /etc/lightdm/lightdm.conf"
+# }
 }

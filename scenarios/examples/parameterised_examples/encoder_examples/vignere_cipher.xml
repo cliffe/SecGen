@@ -10,17 +10,10 @@
 
 		<!--select a vulnerability that leaks strings-->
 		<vulnerability read_fact="strings_to_leak">
-			<!--direct the output from below into strings_to_leak-->
 			<input into="strings_to_leak">
-				<encoder type="morse_code_encoder">
-					<input into="strings_to_encode">
-						<generator type="message_generator"/>
-						<generator type="flag_generator"/>
-					</input>
-				</encoder>
+				<encoder type="vignere_cipher"/>
 			</input>
 		</vulnerability>
-
 		<network type="private_network" range="dhcp"/>
 	</system>
 

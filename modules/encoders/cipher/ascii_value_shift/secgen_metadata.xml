@@ -21,7 +21,7 @@
   <read_fact>shift_key</read_fact>
 
   <default_input into="strings_to_encode">
-    <generator type="string_generator"/>
+    <generator type="flag_generator"/>
   </default_input>
   <default_input into="shift_key">
     <generator type="number_range">

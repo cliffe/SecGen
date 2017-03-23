@@ -19,7 +19,7 @@
   <read_fact>strings_to_encode</read_fact>
 
   <default_input into="strings_to_encode">
-    <generator type="string_generator"/>
+    <generator type="flag_generator"/>
   </default_input>
 
   <output_type>encoded_strings</output_type>

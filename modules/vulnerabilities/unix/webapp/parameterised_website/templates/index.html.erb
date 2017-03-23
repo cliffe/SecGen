@@ -1,6 +1,7 @@
 <% $current_page = 'Homepage' %>
 <html>
-<!-- <%= @strings_to_leak[0] %> -->
+<%= @strings_to_leak.each { |string_to_leak| '<!-- ' + string_to_leak + ' -->' } %>
+
 <%= scope.function_template(['parameterised_website/subtemplates/header.html.erb']) %>
 <body>
   <%= scope.function_template(['parameterised_website/subtemplates/navbar.html.erb']) %>

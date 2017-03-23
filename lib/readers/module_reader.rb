@@ -169,11 +169,11 @@ class ModuleReader
             module_selector.write_to_module_with_id = 'vulnerabilitydefaultinput'
           end
 
-          # check if we are being passed an input *literal value*
+          # check if we are being passed an input *literal value*, into a module selector
           module_node.xpath('input/value').each do |input_value|
             variable = input_value.xpath('../@into').to_s
             value = input_value.text
-            (module_selector.default_inputs_literals[variable] ||= []).push(value)
+            (module_selector.received_inputs[variable] ||= []).push(value)
           end
 
           into = module_node.xpath('ancestor::default_input/@into').to_s

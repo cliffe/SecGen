@@ -30,7 +30,7 @@
     <value>false</value>
   </default_input>
   <default_input into="strings_to_leak">
-    <generator type="string_generator"/>
+    <generator type="message_generator"/>
   </default_input>
   <default_input into="leaked_filenames">
     <generator type="filename_generator"/>

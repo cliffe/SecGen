@@ -3,14 +3,14 @@
 <encoder xmlns="http://www.github/cliffe/SecGen/encoder"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.github/cliffe/SecGen/encoder">
-  <name>ASCII Value Shift Cipher</name>
+  <name>Caesar Shift Cipher</name>
   <author>Thomas Shaw</author>
   <module_license>MIT</module_license>
-  <description>Shifts ASCII characters by numerical value via a numerical shift_key. Rotating between standard ASCII
-    characters values 32(' ') to 126('~').
+  <description>Shifts alphabet characters from A - Z in position by a numerical shift_key.
   </description>
 
   <type>shift_cipher</type>
+  <type>alpha_reversable</type>
   <type>caesar_cipher</type>
   <type>cipher_encoder</type>
   <platform>linux</platform>
@@ -20,7 +20,7 @@
   <read_fact>shift_key</read_fact>
 
   <default_input into="strings_to_encode">
-    <generator type="string_generator"/>
+    <generator type="flag_generator"/>
   </default_input>
   <default_input into="shift_key">
     <generator type="number_range">

@@ -14,7 +14,7 @@
 			<input into="strings_to_leak">
 				<encoder module_path="modules/encoders/cipher/caesar_shift">
 					<input into="strings_to_encode">
-						<generator type="string_generator"/>
+						<generator type="message_generator"/>
 						<generator type="flag_generator"/>
 					</input>
 				</encoder>

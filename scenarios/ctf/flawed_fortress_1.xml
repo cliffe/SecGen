@@ -12,7 +12,6 @@
 		<vulnerability name="NFS Share Leak">
 			<input into="strings_to_leak" unique_module_list="unique_encoders">
 				<generator type="flag_generator" />
-				<!--TODO: need more ascii_reversable encoders (binary, hex, etc)-->
 				<encoder type="ascii_reversable">
 					<input into="strings_to_encode">
 							<generator type="flag_generator" />

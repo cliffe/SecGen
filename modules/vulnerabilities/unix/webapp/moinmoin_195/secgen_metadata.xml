@@ -18,6 +18,7 @@
   <platform>linux</platform>
 
   <read_fact>strings_to_leak</read_fact>
+  <read_fact>images_to_leak</read_fact>
   <read_fact>site_name</read_fact>
   <read_fact>default_page</read_fact>
 
@@ -28,6 +29,11 @@
   <default_input into="strings_to_leak">
     <value>This is some leaked data.</value>
     <generator type="message_generator"/>
+  </default_input>
+
+  <default_input into="images_to_leak">
+    <generator type="image_generator"/>
+    <generator type="image_generator"/>
   </default_input>
 
   <default_input into="site_name">

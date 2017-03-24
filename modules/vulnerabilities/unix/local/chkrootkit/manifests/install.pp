@@ -32,7 +32,7 @@ class chkrootkit::install {
   }
 
   # Leak a file containing a string/flag to /root/
-  ::secgen_functions::leak_files { 'nfs_overshare-file-leak':
+  ::secgen_functions::leak_files { 'chkrootkit-file-leak':
     storage_directory => '/root',
     leaked_filenames => $leaked_filenames,
     strings_to_leak => $strings_to_leak,

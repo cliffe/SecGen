@@ -33,5 +33,5 @@
     </encoder>
   </default_input>
 
-  <output_type>generated_strings</output_type>
+  <output_type>generated_image</output_type>
 </generator>

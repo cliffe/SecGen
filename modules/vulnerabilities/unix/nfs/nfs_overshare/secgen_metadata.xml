@@ -14,6 +14,7 @@
   <platform>linux</platform>
 
   <read_fact>strings_to_leak</read_fact>
+  <read_fact>images_to_leak</read_fact>
   <read_fact>leaked_filenames</read_fact>
   <read_fact>storage_directory</read_fact>
 
@@ -35,6 +36,11 @@
   <default_input into="leaked_filenames">
     <generator module_path="generators/filenames/leaked_filename"/>
     <generator module_path="generators/filenames/leaked_filename"/>
+  </default_input>
+
+  <default_input into="images_to_leak">
+    <generator type="image_generator"/>
+    <generator type="image_generator"/>
   </default_input>
 
   <default_input into="storage_directory">

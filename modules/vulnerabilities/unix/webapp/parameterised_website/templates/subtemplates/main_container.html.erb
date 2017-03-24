@@ -1,9 +1,6 @@
 <div id="main_container" class="container">
   <div class="row">
     <div class="main_page_content">
-      <% if @images_to_leak -%>
-          <img src="image.png" height="128" width="128">
-      <% end -%>
       <% # Intranet style -%>
       <% if @security_audit or @acceptable_use_policy -%>
           <p class="lead">Welcome to the internal intranet server for <%=@business_name%>.</p>
@@ -19,6 +16,10 @@
           <h2><%= @product_name %></h2>
           <p><%= @main_page_paragraph_content.join %></p>
       <% end -%>
+      <br/>
+      <% @images_to_leak.each_with_index{ |image_to_leak, counter| -%>
+          <img src="image<%=counter + 1 %>.png" height="128" width="128">
+      <%} -%>
     </div>
   </div>
 </div>

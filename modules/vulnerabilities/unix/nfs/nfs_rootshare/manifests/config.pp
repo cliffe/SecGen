@@ -1,9 +1,15 @@
 class nfs_rootshare::config {
 
+  # Setup SecGen Parameters
+  $json_inputs = base64('decode', $::base64_inputs)
+  $secgen_parameters=parsejson($json_inputs)
+  $leaked_filenames=$secgen_parameters['leaked_filenames']
+  $strings_to_leak=$secgen_parameters['strings_to_leak']
+  $images_to_leak=$secgen_parameters['images_to_leak']
+
   package { ['nfs-kernel-server', 'nfs-common', 'portmap']:
       ensure => installed
   }
-
 
   file { '/etc/exports':
     require => Package['nfs-common'],
@@ -19,6 +25,14 @@ class nfs_rootshare::config {
       command => "exportfs -a",
       path    => "/usr/sbin",
       # path    => [ "/usr/local/bin/", "/bin/" ],  # alternative syntax
+  }
+
+  ::secgen_functions::leak_files { 'nfs_rootshare-file-leak':
+    storage_directory => '/root',
+    leaked_filenames => $leaked_filenames,
+    strings_to_leak => $strings_to_leak,
+    images_to_leak => $images_to_leak,
+    leaked_from => "nfs_rootshare",
   }
 }
 

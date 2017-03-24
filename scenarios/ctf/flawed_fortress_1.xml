@@ -41,6 +41,7 @@
 						</encoder>
 					</input>
 				</encoder>
+				<generator name="Bitwise XOR Challenge Generator"/>
 			</input>
 		</vulnerability>
 
@@ -77,6 +78,15 @@
 						</encoder>
 					</input>
 				</encoder>
+			</input>
+		</vulnerability>
+
+		<!-- vulnerability which can leak images, leak 2 image challenges and a random red-herring image -->
+		<vulnerability read_fact="images_to_leak">
+			<input into="images_to_leak">
+				<generator name="Hidden Data in Image File Challenge"/>
+				<generator name="QR Code Generator"/>
+				<generator name="Random Image Generator"/>
 			</input>
 		</vulnerability>
 

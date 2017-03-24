@@ -15,7 +15,6 @@ class parameterised_website::install {
   $strings_to_leak = $secgen_parameters['strings_to_leak']
   $main_page_paragraph_content = $secgen_parameters['main_page_paragraph_content']
   $images_to_leak = $secgen_parameters['images_to_leak']
-  $image_contents = $images_to_leak[0]
 
   $security_audit = $secgen_parameters['security_audit']
   $acceptable_use_policy = str2bool($secgen_parameters['host_acceptable_use_policy'][0])
@@ -57,8 +56,9 @@ class parameterised_website::install {
     content => template('parameterised_website/contact.html.erb'),
   }
 
-  file { "$docroot/image.png":
-    ensure => file,
-    content => base64('decode', $image_contents)
+  ::secgen_functions::leak_files{ 'parameterised_website-image-leak':
+    storage_directory => $docroot,
+    images_to_leak => $images_to_leak,
+    leaked_from => "parameterised_website",
   }
 }

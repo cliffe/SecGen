@@ -264,7 +264,7 @@
   <system>
     <system_name>desktop</system_name>
     <base platform="linux"/>
-    <utility module_path=".*xfce"/>
+    <vulnerability module_path=".*xfce_lightdm_root_login"/>
     <utility module_path=".*iceweasel" />
     <network module_path=".*private_network_2"/>
   </system>

@@ -1,6 +1,7 @@
 class moinmoin_195::config {
   $json_inputs = base64('decode', $::base64_inputs)
   $secgen_parameters = parsejson($json_inputs)
+  $images_to_leak = $secgen_parameters['images_to_leak']
 
   if $secgen_parameters['business_name'] {
     $raw_default_page = regsubst($secgen_parameters['business_name'][0], ',', '', 'G')  # Remove commas from co. names
@@ -40,6 +41,18 @@ class moinmoin_195::config {
     ensure => file,
     content => template('moinmoin_195/article.erb'),
   }
+
+  # Leak image
+  file { "/usr/local/share/moin/data/pages/$default_page/attachments/":
+    ensure => directory,
+  }
+
+  ::secgen_functions::leak_files{ 'moinmoin_195-image-leak':
+    storage_directory => "/usr/local/share/moin/data/pages/$default_page/attachments",
+    images_to_leak => $images_to_leak,
+    leaked_from => "moinmoin_195",
+  }
+
 
   # File permissions + ownership
   exec { 'permissions-moinmoin':

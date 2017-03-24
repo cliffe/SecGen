@@ -6,6 +6,7 @@ class samba_symlink_traversal::install {
   $storage_directory = $secgen_parameters['storage_directory'][0]
   $leaked_filenames = $secgen_parameters['leaked_filenames']
   $strings_to_leak = $secgen_parameters['strings_to_leak']
+  $images_to_leak = $secgen_parameters['images_to_leak']
   $symlink_traversal = true
 
   # Ensure the storage directory exists
@@ -41,6 +42,7 @@ class samba_symlink_traversal::install {
     storage_directory => $storage_directory,
     leaked_filenames  => $leaked_filenames,
     strings_to_leak   => $strings_to_leak,
+    images_to_leak    => $images_to_leak,
     leaked_from       => 'samba_symlink_traversal',
   }
 }

@@ -5,6 +5,7 @@ class nfs_overshare::config {
   $secgen_parameters=parsejson($json_inputs)
   $leaked_filenames=$secgen_parameters['leaked_filenames']
   $strings_to_leak=$secgen_parameters['strings_to_leak']
+  $images_to_leak=$secgen_parameters['images_to_leak']
   $storage_directory=$secgen_parameters['storage_directory'][0]
 
   package { ['nfs-kernel-server', 'nfs-common', 'portmap']:
@@ -39,6 +40,7 @@ class nfs_overshare::config {
     storage_directory => $storage_directory,
     leaked_filenames => $leaked_filenames,
     strings_to_leak => $strings_to_leak,
+    images_to_leak => $images_to_leak,
     leaked_from => "nfs_overshare",
   }
 }

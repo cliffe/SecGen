@@ -32,11 +32,11 @@
 
   <default_input into="strings_to_leak">
     <generator type="flag_generator"/>
-    <generator type="flag_generator"/>
+    <generator type="message_generator"/>
   </default_input>
 
-  <!-- Currently only leaks 1 image, named images_to_leak for consistency. -->
   <default_input into="images_to_leak">
+    <generator type="image_generator"/>
     <generator type="image_generator"/>
   </default_input>
 

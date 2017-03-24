@@ -13,6 +13,34 @@
   <access>remote</access>
   <platform>linux</platform>
 
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>images_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+
+  <default_input into="strings_to_leak">
+    <value>Plain text from the metadata default, destined for strings_to_leak...</value>
+    <encoder type="string_encoder">
+      <input into="strings_to_encode">
+        <!--encode the following strings-->
+        <value>Encoded text from the metadata default, destined for strings_to_leak...</value>
+        <value>More encoded text from the metadata default, destined for strings_to_leak...</value>
+        <generator module_path=".*random.*"/>
+      </input>
+    </encoder>
+    <generator type="message_generator"/>
+  </default_input>
+
+  <!-- File-name which contains strings_to_leak -->
+  <default_input into="leaked_filenames">
+    <generator module_path="generators/filenames/leaked_filename"/>
+    <generator module_path="generators/filenames/leaked_filename"/>
+  </default_input>
+
+  <default_input into="images_to_leak">
+    <generator type="image_generator"/>
+    <generator type="image_generator"/>
+  </default_input>
+
   <!--optional vulnerability details-->
   <difficulty>low</difficulty>
   <!--<cve></cve>-->

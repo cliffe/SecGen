@@ -3,7 +3,7 @@
 <generator xmlns="http://www.github/cliffe/SecGen/generator"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
-  <name>Bitwise XOR Encoder</name>
+  <name>Bitwise XOR Challenge Generator</name>
   <author>Thomas Shaw</author>
   <module_license>MIT</module_license>
   <description>Binary bitwise XOR operation module. Takes a string input, generates a random bitstream of equal length.,
@@ -20,7 +20,7 @@
 
   <read_fact>string_to_mask</read_fact>
   <default_input into="string_to_mask">
-    <value>Password</value>
+    <generator type="flag_generator"/>
   </default_input>
 
   <output_type>generated_strings</output_type>

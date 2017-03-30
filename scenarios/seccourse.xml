@@ -89,6 +89,7 @@
 		</vulnerability>
 
 		<vulnerability module_path=".*symlinks" />
+		<vulnerability module_path=".*onlinestore" />
 
 		<network type="private_network" range="dhcp"/>
 	</system>

@@ -5,8 +5,15 @@ class onlinestore::install {
   # Parse out parameters
   $db_flag = $secgen_parameters['db_flag'][0]
   $file_flag = $secgen_parameters['file_flag'][0]
+  $root_file_flag = $secgen_parameters['root_file_flag'][0]
 
   $docroot = '/var/www'
+  $db_username = 'csecvm'
+  $db_password = 'H93AtG6akq'
+
+  package { ['mysql-client','php5-mysql']:
+    ensure => 'installed',
+  }
 
   file { "/var/www/index.html":
     ensure => absent,
@@ -47,14 +54,14 @@ class onlinestore::install {
 
   exec { 'setup_mysql':
     cwd     => "/tmp",
-    command => "sudo ./mysql_setup.sh csecvm H93AtG6akq",
+    command => "sudo ./mysql_setup.sh $db_username $db_password $db_flag",
     path    => [ '/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/' ],
     notify => Exec['create_flag1'],
   }
 
   exec { 'create_flag1':
     cwd     => "/home/vagrant",
-    command => "echo '$db_flag' > flag.txt",
+    command => "echo '$file_flag' > /flag.txt && chown -f root:root /flag.txt && chmod -f 0600 /flag.txt",
     path    => [ '/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/' ],
   }
 }

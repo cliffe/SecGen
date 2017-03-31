@@ -14,12 +14,17 @@
   <platform>linux</platform>
 
   <default_input into="db_flag">
-    <generator type="flag_generator"/>
+    <generator module_path="modules/generators/random/random_base64"/>
   </default_input>
 
   <default_input into="file_flag">
-    <generator type="flag_generator"/>
+    <generator module_path="modules/generators/random/random_base64"/>
   </default_input>
+
+  <default_input into="root_file_flag">
+    <generator module_path="modules/generators/random/random_base64"/>
+  </default_input>
+
 
   <conflict>
     <type>webapp</type>

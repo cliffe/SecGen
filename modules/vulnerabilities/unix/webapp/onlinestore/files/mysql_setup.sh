@@ -1,6 +1,12 @@
 #!/bin/sh
 
-echo "CREATE USER '${1}'@'localhost' IDENTIFIED BY '${2}';"| mysql --force
-echo "GRANT ALL PRIVILEGES ON * . * TO '${1}'@'localhost';"| mysql --force
-echo "CREATE DATABASE csecvm;"| mysql --user=${1} --password=${2} --force
-mysql --force --user=${1} --password=${2} csecvm < ./csecvm.sql
+USERNAME=${1}
+PASSWORD=${2}
+token=${3}
+
+echo "CREATE USER '${USERNAME}'@'localhost' IDENTIFIED BY '${PASSWORD}';"| mysql --force
+echo "GRANT ALL PRIVILEGES ON * . * TO '${USERNAME}'@'localhost';"| mysql --force
+echo "CREATE DATABASE csecvm;"| mysql --user=${USERNAME} --password=${PASSWORD} --force
+mysql --force --user=${USERNAME} --password=${PASSWORD} csecvm < ./csecvm.sql
+
+echo "USE csecvm; INSERT INTO token VALUES ('${token}');" |  mysql --force --user=${USERNAME} --password=${PASSWORD}

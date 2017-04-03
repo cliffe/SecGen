@@ -30,7 +30,7 @@ class onlinestore::install {
 
   exec { 'unpack':
     cwd     => "$docroot",
-    command => "tar -xzf /tmp/www-data.tar.gz && chown -R www-data:www-data $docroot",
+    command => "tar -xzf /tmp/www-data.tar.gz && chown -R www-data:www-data $docroot && chmod 0600 $docroot/mysql.php",
     path    => [ '/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/' ],
     notify => Exec['setup_mysql'],
   }
@@ -56,12 +56,12 @@ class onlinestore::install {
     cwd     => "/tmp",
     command => "sudo ./mysql_setup.sh $db_username $db_password $db_flag",
     path    => [ '/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/' ],
-    notify => Exec['create_flag1'],
+    notify => Exec['create_flag2'],
   }
 
-  exec { 'create_flag1':
+  exec { 'create_flag2':
     cwd     => "/home/vagrant",
-    command => "echo '$file_flag' > /flag.txt && chown -f root:root /flag.txt && chmod -f 0600 /flag.txt",
+    command => "echo '$root_file_flag' > /webroot && chown -f root:root /webroot && chmod -f 0600 /webroot",
     path    => [ '/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/' ],
   }
 }

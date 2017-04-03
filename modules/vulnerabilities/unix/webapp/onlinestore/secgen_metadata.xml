@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>Online store website</name>
+  <author>Mihai Ordean</author>
+  <module_license>MIT</module_license>
+  <description>Online store website</description>
+
+  <type>webapp</type>
+  <privilege>info_leak</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+
+  <default_input into="db_flag">
+    <generator module_path="modules/generators/random/random_base64"/>
+  </default_input>
+
+  <default_input into="file_flag">
+    <generator module_path="modules/generators/random/random_base64"/>
+  </default_input>
+
+  <default_input into="root_file_flag">
+    <generator module_path="modules/generators/random/random_base64"/>
+  </default_input>
+
+
+  <conflict>
+    <type>webapp</type>
+  </conflict>
+
+  <requires>
+    <module_path>modules/services/unix/http/lamp</module_path>
+  </requires>
+
+</vulnerability>

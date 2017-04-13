@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>symlinks</name>
+  <author>Mihai Ordean</author>
+  <author>Puppet Labs</author>
+  <module_license>Apache v2</module_license>
+  <description>exploits symlink to shadow</description>
+
+  <type>system</type>
+  <privilege>none</privilege>
+  <access>local</access>
+  <platform>linux</platform>
+
+  <read_fact>accounts</read_fact>
+
+  <default_input into="accounts">
+
+    <generator type="account">
+      <input into="username">
+        <value>carolmiller</value>
+      </input>
+      <input into="password">
+        <generator module_path="modules/generators/random/random_base64"/>
+      </input>
+      <input into="leaked_filenames">
+				<value>flag.txt</value>
+			</input>
+			<input into="strings_to_leak">
+				<generator module_path="modules/generators/random/random_base64"/>
+			</input>
+    </generator>
+  </default_input>
+
+  <!--optional details-->
+  <reference>https://forge.puppet.com/puppetlabs/accounts</reference>
+
+  <requires>
+    <module_path>utilities/unix/system/accounts</module_path>
+  </requires>
+
+</vulnerability>

@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<service xmlns="http://www.github/cliffe/SecGen/service"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
+  <name>Secure PHP Installation</name>
+  <author>Jason Keighley</author>
+  <author>Mayflower GmbH</author>
+  <author>Tobias Nyholm</author>
+  <author>Christian "Jippi" Winther</author>
+  <module_license>MIT</module_license>
+  <description>A PHP installation</description>
+
+  <type>languages</type>
+  <platform>linux</platform>
+
+  <!--optional details-->
+  <reference>http://php.net/</reference>
+  <software_name>php</software_name>
+  <software_license>BSD</software_license>
+
+  <!--Cannot co-exist with other php installations-->
+  <conflict>
+    <software_name>^php$</software_name>
+  </conflict>
+
+</service>
+
+<!-- DEPENDENCIES unix_update -->

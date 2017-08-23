@@ -30,9 +30,9 @@ def usage
    --ovirtuser [ovirt_username]         (REQUIRED)
    --ovirtpass [ovirt_password]         (REQUIRED)
    --ovirt-vmname [ovirt_vm_name]       (OPTIONAL)
-   --ovirt-url [ovirt_api_url]          (REQUIRED)
-   --ovirt-cluster [ovirt_cluster]      (REQUIRED)
-   --ovirt-template [ovirt_template]    (REQUIRED)
+   --ovirt-url [ovirt_api_url]          (OPTIONAL)
+   --ovirt-cluster [ovirt_cluster]      (OPTIONAL)
+   --ovirt-template [ovirt_template]    (OPTIONAL)
    --ovirt-ip [ovirt_static_ip]         (OPTIONAL)
    --ovirt-network [ovirt_network_name] (OPTIONAL)
 
@@ -387,3 +387,14 @@ case ARGV[0]
     exit
 end
 
+
+# oVirt Virtualization platform (Usage)
+#################################################
+#
+# @author Gajendra Ravichandran
+# 
+# set DEFAULT Value in lib/templates/Vagrantfile.erb or use command argument
+# ovirt-api-url  : set DEFAULT_URL (Line 36) 
+# ovirt-cluster  : set DEFAULT_CLUSTER (Line 41)
+# ovirt-template : set DEFAULT_TEMPLATE (Line 46)
+# ovirt-network  : set DEFAULT_NETWORK (Line 121)

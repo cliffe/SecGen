@@ -26,6 +26,16 @@ def usage
    --vtxvpid: enable VTX support
    --forensic-image-type [image type]: Forensic image format of generated image (raw, ewf)
 
+   OVIRT OPTIONS:
+   --ovirtuser [ovirt_username]         (REQUIRED)
+   --ovirtpass [ovirt_password]         (REQUIRED)
+   --ovirt-vmname [ovirt_vm_name]       (OPTIONAL)
+   --ovirt-url [ovirt_api_url]          (OPTIONAL)
+   --ovirt-cluster [ovirt_cluster]      (OPTIONAL)
+   --ovirt-template [ovirt_template]    (OPTIONAL)
+   --ovirt-ip [ovirt_static_ip]         (OPTIONAL)
+   --ovirt-network [ovirt_network_name] (OPTIONAL)
+
    COMMANDS:
    run, r: Builds project and then builds the VMs
    build-project, p: Builds project (vagrant and puppet config), but does not build VMs
@@ -235,6 +245,14 @@ opts = GetoptLong.new(
   [ '--max-cpu-usage', GetoptLong::REQUIRED_ARGUMENT],
   [ '--shutdown', GetoptLong::NO_ARGUMENT],
   [ '--forensic-image-type', GetoptLong::REQUIRED_ARGUMENT],
+  [ '--ovirt-vmname', GetoptLong::REQUIRED_ARGUMENT ],
+  [ '--ovirtuser', GetoptLong::REQUIRED_ARGUMENT ],
+  [ '--ovirtpass', GetoptLong::REQUIRED_ARGUMENT ],
+  [ '--ovirt-url', GetoptLong::REQUIRED_ARGUMENT ],
+  [ '--ovirt-cluster', GetoptLong::REQUIRED_ARGUMENT ],
+  [ '--ovirt-template', GetoptLong::REQUIRED_ARGUMENT ],
+  [ '--ovirt-ip', GetoptLong::REQUIRED_ARGUMENT ],
+  [ '--ovirt-network', GetoptLong::REQUIRED_ARGUMENT ],
 )
 
 scenario = SCENARIO_XML
@@ -294,6 +312,32 @@ opts.each do |opt, arg|
     when '--forensic-image-type'
       Print.info "Image output type set to #{arg}"
       options[:forensic_image_type] = arg
+
+    when '--ovirt-vmname'
+      Print.info "Ovirt VM Name : #{arg}"
+      options[:ovirtvmname] = arg
+      filename = arg;
+    when '--ovirtuser'
+      Print.info "Ovirt Username : #{arg}"
+      options[:ovirtuser] = arg
+    when '--ovirtpass'
+      Print.info "Ovirt Password : ********"
+      options[:ovirtpass] = arg
+    when '--ovirt-url'
+      Print.info "Ovirt API url : #{arg}"
+      options[:ovirturl] = arg
+    when '--ovirt-cluster'
+      Print.info "Ovirt Cluster : #{arg}"
+      options[:ovirtcluster] = arg
+    when '--ovirt-template'
+      Print.info "Ovirt Template : #{arg}"
+      options[:ovirttemplate] = arg
+    when '--ovirt-ip'
+      Print.info "Ovirt Static IP : #{arg}"
+      options[:ovirtip] = arg
+    when '--ovirt-network'
+      Print.info "Ovirt Network Name : #{arg}"
+      options[:ovirtnetwork] = arg
 
     else
       Print.err "Argument not valid: #{arg}"
@@ -358,3 +402,14 @@ case ARGV[0]
     exit
 end
 
+
+# oVirt Virtualization platform (Usage)
+#################################################
+#
+# @author Gajendra Ravichandran
+# 
+# set DEFAULT Value in lib/templates/Vagrantfile.erb or use command argument
+# ovirt-api-url  : set DEFAULT_URL (Line 36) 
+# ovirt-cluster  : set DEFAULT_CLUSTER (Line 41)
+# ovirt-template : set DEFAULT_TEMPLATE (Line 46)
+# ovirt-network  : set DEFAULT_NETWORK (Line 121)

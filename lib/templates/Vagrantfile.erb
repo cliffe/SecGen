@@ -6,12 +6,39 @@
 # Based on <%= @scenario %>
 <% require 'json'
    require 'base64' -%>
-
+<% vmnum = 0 %>
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 <% @systems.each do |system| %>
   config.vm.define "<%= system.name %>" do |<%= system.name %>|
+<% if (@options.has_key? :ovirtuser) && (@options.has_key? :ovirtpass) %>
+    #oVirt provider begin
+    config.vm.provider :ovirt4 do |ovirt|
+    <%=
+"    ovirt.username = '#{@options[:ovirtuser]}'
+        ovirt.password = '#{@options[:ovirtpass]}'" %>
+    <%= if(@options.has_key? :ovirturl)
+"    ovirt.url = '#{@options[:ovirturl]}'"
+        else
+"    ovirt.url = 'DEFAULT_API_URL'"
+        end %>
+    <%= if(@options.has_key? :ovirtcluster)
+"    ovirt.cluster = '#{@options[:ovirtcluster]}'"
+        else
+"    ovirt.cluster = 'DEFAULT_OVIRT_CLUSTER'"
+        end %>
+    <%= if(@options.has_key? :ovirttemplate)
+"    ovirt.template = '#{@options[:ovirttemplate]}'"
+        else
+"    ovirt.template = 'DEFAULT_OVIRT_TEMPLATE'"
+        end %>
+        ovirt.insecure = true
+        ovirt.debug = true
+    end
+    # oVirt provider end
+<%
+  else %>
     config.vm.provider :virtualbox do |vb|
 <%  system.module_selections.each do |selected_module|
       if selected_module.module_type == 'base'
@@ -45,7 +72,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       "      vb.customize ['modifyvm', :id, '--cpuexecutioncap', '#{@options[:max_cpu_usage]}']\n"
     end -%>
     end
-
+<% end %>
     # SecGen datastore
     # <%= JSON.generate($datastore) %>
 
@@ -55,8 +82,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 <%= selected_module.to_s_comment -%>
 <%   case selected_module.module_type
      when 'base' -%>
+    <% if (@options.has_key? :ovirtuser) && (@options.has_key? :ovirtpass) %>
+    <% if (@options.has_key? :ovirtvmname) %>
+    <% vmnum = vmnum + 1 %>
+    <%= system.name %>.vm.hostname = '<%= "#{@options[:ovirtvmname]}#{vmnum}" %>'
+    <% else %>
+    <%= system.name %>.vm.hostname = '<%= "SecGen-oVirt-VM-#{Time.new.strftime("%Y%m%d-%H%M")}" %>'
+    <% end %>
+    <%= system.name %>.vm.box = 'ovirt4'
+    <%= system.name %>.vm.box_url = 'https://github.com/myoung34/vagrant-ovirt4/blob/master/example_box/dummy.box?raw=true'
+    <% else %>
     <%= system.name %>.vm.box = "<%= selected_module.module_path_name %>"
     <%= system.name %>.vm.box_url = "<%= selected_module.attributes['url'].first %>"
+    <% end %>
     <% if selected_module.attributes['platform'].first.downcase == 'windows' %>
     <%= system.name %>.vm.communicator = 'winrm'
     <%= system.name %>.vm.guest = :windows
@@ -65,9 +103,21 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     <% end %>
 <%   when 'network' -%>
 <%     if selected_module.attributes['range'].first.nil? || selected_module.attributes['range'].first == "dhcp" -%>
-    <%= system.name %>.vm.network :<%= selected_module.attributes['type'].first %>, type: "dhcp"
+  <%       if (@options.has_key? :ovirtnetwork) && (@options.has_key? :ovirtuser) && (@options.has_key? :ovirtpass)  %>
+      <%= system.name %>.vm.network :<%= selected_module.attributes['type'].first %>, :ovirt__network_name => '<%= "#{@options[:ovirtnetwork]}" %>'
+  <%       elsif (@options.has_key? :ovirtuser) && (@options.has_key? :ovirtpass) %>
+      <%= system.name %>.vm.network :<%= selected_module.attributes['type'].first %>, :ovirt__network_name => 'DEFAULT_NETWORK_NAME'
+  <%       else %>
+      <%= system.name %>.vm.network :<%= selected_module.attributes['type'].first %>, type: "dhcp"
+  <%       end %>
 <%     else -%>
-    <%= system.name %>.vm.network :<%= selected_module.attributes['type'].first %>, ip: "<%= resolve_network(selected_module.attributes['range'].first)%>"
+      <%       if (@options.has_key? :ovirtip) && (@options.has_key? :ovirtuser) && (@options.has_key? :ovirtpass)  %>
+          <%= system.name %>.vm.network :<%= selected_module.attributes['type'].first %>, :ovirt__ip => '<%= "#{@options[:ovirtip]}" %>'
+      <%       elsif (@options.has_key? :ovirtuser) && (@options.has_key? :ovirtpass) %>
+          <%= system.name %>.vm.network :<%= selected_module.attributes['type'].first %>, :ovirt__ip => "<%= resolve_network(selected_module.attributes['range'].first)%>"
+      <%       else %>
+          <%= system.name %>.vm.network :<%= selected_module.attributes['type'].first %>, ip: "<%= resolve_network(selected_module.attributes['range'].first)%>"
+      <%       end %>
 <%     end -%>
 <%   when 'vulnerability', 'service', 'utility', 'build' -%>
 <%     module_name = selected_module.module_path_name -%>

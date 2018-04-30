@@ -1,7 +1,4 @@
-<%  require 'json'
-    $secgen_parameters = JSON.parse(@json_inputs)
-    $port = $secgen_parameters['port'].first
-%>
+<% $port = $secgen_parameters['port'].first -%>
 #
 # /etc/proftpd/proftpd.conf -- This is a basic ProFTPD configuration file.
 # To really apply changes, reload proftpd after modifications, if

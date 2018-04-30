@@ -10,7 +10,7 @@
 
   <type>desktop_environment</type>
   <privilege>root_rwx</privilege>
-  <access>local</access>
+  <access>physical</access>
   <platform>linux</platform>
 
   <requires>

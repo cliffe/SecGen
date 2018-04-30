@@ -27,7 +27,7 @@
   <difficulty>medium</difficulty>
 
   <requires>
-    <module_path>modules/utilities/unix/scanners/nmap</module_path>
+    <module_path>modules/utilities/unix/audit_tools/scanners/nmap</module_path>
   </requires>
 
 </vulnerability>

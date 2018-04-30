@@ -12,8 +12,14 @@ gem 'mini_exiftool_vendored'
 gem 'rmagick'
 gem 'sshkey'
 gem 'zipruby'
+gem 'zip'
 gem 'credy'
 gem 'pg'
+gem 'cinch'
+gem 'nori'
+gem 'programr', :git => "http://github.com/robertjwhitney/programr.git"
+gem 'process_helper'
+gem 'ovirt-engine-sdk'
 gem 'sqlite3'
 
 #development only gems go here

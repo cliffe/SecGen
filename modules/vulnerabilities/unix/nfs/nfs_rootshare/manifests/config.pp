@@ -1,9 +1,7 @@
 class nfs_rootshare::config {
 
   # Setup SecGen Parameters
-  $json_inputs = base64('decode', $::base64_inputs)
-  $secgen_parameters=parsejson($json_inputs)
-  $leaked_filenames=$secgen_parameters['leaked_filenames']
+  $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)$leaked_filenames=$secgen_parameters['leaked_filenames']
   $strings_to_leak=$secgen_parameters['strings_to_leak']
   $images_to_leak=$secgen_parameters['images_to_leak']
 

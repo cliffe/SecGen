@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.github/cliffe/SecGen/hackerbot"
+           xmlns="http://www.github/cliffe/SecGen/hackerbot"
+           elementFormDefault="qualified">
+
+  <xs:element name="hackerbot">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+
+        <xs:element name="greeting" type="xs:string" minOccurs="1" maxOccurs="1"/>
+
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

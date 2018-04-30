@@ -1,6 +1,5 @@
 <%  require 'json'
-    $secgen_parameters = JSON.parse(@json_inputs)
-    $port = $secgen_parameters['port'].first
+    $port = @secgen_parameters['port'].first
     $raw_anonymous_ftp = $secgen_parameters['anonymous_ftp'].first
     $anonymous_ftp = $raw_anonymous_ftp ? 'YES' : 'NO'
 

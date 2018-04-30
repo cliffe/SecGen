@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>WeeChat IRC Client (Console)</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>MIT</module_license>
+  <description>Installs WeeChat, a nice looking console IRC client</description>
+
+  <type>irc_client</type>
+  <platform>linux</platform>
+
+  <software_name>weechat</software_name>
+  <software_license>GPL</software_license>
+
+  <requires>
+    <type>update</type>
+  </requires>
+</utility>

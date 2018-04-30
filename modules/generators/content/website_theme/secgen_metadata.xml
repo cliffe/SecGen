@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Website Theme Generator</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Theme selector for parameterised_website module.</description>
+
+  <type>website_theme</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <output_type>string</output_type>
+
+</generator>

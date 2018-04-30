@@ -1,3 +1,5 @@
+$secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
+
 user { 'user':
   ensure => 'present',
   home => '/home/user',
@@ -14,7 +16,6 @@ file { ['/home/user/testfile', '/home/user/testdir/test']:
   ensure => 'file',
 }
 
-$json_inputs = base64('decode', $::base64_inputs)
 
 class { 'vsftpd':
   template         => 'vsftpd/vsftpd.conf.erb',

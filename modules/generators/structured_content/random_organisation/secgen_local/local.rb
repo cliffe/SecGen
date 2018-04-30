@@ -12,6 +12,7 @@ class RandomOrganisationGenerator < StringEncoder
   attr_accessor :manager
   attr_accessor :employees
   attr_accessor :product_name
+  attr_accessor :intro_paragraph
 
   def initialize
     super
@@ -26,6 +27,7 @@ class RandomOrganisationGenerator < StringEncoder
     self.manager = {}
     self.employees = []
     self.product_name = ''
+    self.intro_paragraph = []
   end
 
   def encode_all
@@ -40,6 +42,7 @@ class RandomOrganisationGenerator < StringEncoder
     organisation_hash['manager'] = self.manager
     organisation_hash['employees'] = self.employees
     organisation_hash['product_name'] = self.product_name
+    organisation_hash['intro_paragraph'] = self.intro_paragraph
 
     self.outputs << organisation_hash.to_json
   end
@@ -54,7 +57,8 @@ class RandomOrganisationGenerator < StringEncoder
              ['--industry', GetoptLong::REQUIRED_ARGUMENT],
              ['--manager', GetoptLong::REQUIRED_ARGUMENT],
              ['--employees', GetoptLong::REQUIRED_ARGUMENT],
-             ['--product_name', GetoptLong::REQUIRED_ARGUMENT]]
+             ['--product_name', GetoptLong::REQUIRED_ARGUMENT],
+             ['--intro_paragraph', GetoptLong::REQUIRED_ARGUMENT]]
   end
 
   def process_options(opt, arg)
@@ -80,6 +84,8 @@ class RandomOrganisationGenerator < StringEncoder
         self.employees << JSON.parse(arg);
       when '--product_name'
         self.product_name << arg;
+      when '--intro_paragraph'
+        self.intro_paragraph << arg;
     end
   end
 
@@ -93,7 +99,8 @@ class RandomOrganisationGenerator < StringEncoder
     'industry: ' + self.industry.to_s + print_string_padding +
     'manager: ' + self.manager.to_s + print_string_padding +
     'employees: ' + self.employees.to_s + print_string_padding +
-    'product_name: ' + self.product_name.to_s
+    'product_name: ' + self.product_name.to_s +
+    'intro_paragraph: ' + self.intro_paragraph.to_s
   end
 end
 

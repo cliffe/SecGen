@@ -10,6 +10,8 @@ class PersonHashBuilder < StringEncoder
   attr_accessor :username
   attr_accessor :password
   attr_accessor :account
+  attr_accessor :credit_card
+  attr_accessor :national_insurance_number
 
   def initialize
     super
@@ -20,6 +22,8 @@ class PersonHashBuilder < StringEncoder
     self.email_address = ''
     self.username = ''
     self.password = ''
+    self.credit_card = ''
+    self.national_insurance_number = ''
     self.account = []
   end
 
@@ -29,6 +33,8 @@ class PersonHashBuilder < StringEncoder
     person_hash['address'] = self.address
     person_hash['phone_number'] = self.phone_number
     person_hash['email_address'] = self.email_address
+    person_hash['credit_card'] = self.credit_card
+    person_hash['national_insurance_number'] = self.national_insurance_number
 
     if self.account != []
       account = JSON.parse(self.account[0])
@@ -49,6 +55,8 @@ class PersonHashBuilder < StringEncoder
              ['--email_address', GetoptLong::REQUIRED_ARGUMENT],
              ['--username', GetoptLong::REQUIRED_ARGUMENT],
              ['--password', GetoptLong::REQUIRED_ARGUMENT],
+             ['--credit_card', GetoptLong::REQUIRED_ARGUMENT],
+             ['--national_insurance_number', GetoptLong::REQUIRED_ARGUMENT],
              ['--account', GetoptLong::OPTIONAL_ARGUMENT]]
   end
 
@@ -67,6 +75,10 @@ class PersonHashBuilder < StringEncoder
         self.username << arg;
       when '--password'
         self.password << arg;
+      when '--credit_card'
+        self.credit_card << arg;
+      when '--national_insurance_number'
+        self.national_insurance_number << arg;
       when '--account'
         self.account << arg;
     end
@@ -79,6 +91,8 @@ class PersonHashBuilder < StringEncoder
     'email_address: ' + self.email_address.to_s + print_string_padding +
     'username: ' + self.username.to_s + print_string_padding +
     'password: ' + self.password.to_s + print_string_padding +
+    'credit_card: ' + self.credit_card.to_s + print_string_padding +
+    'national_insurance_number: ' + self.national_insurance_number.to_s + print_string_padding +
     'account: ' + self.account.to_s
   end
 end

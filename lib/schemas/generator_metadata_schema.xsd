@@ -23,6 +23,7 @@
             <xs:restriction base="xs:string">
               <xs:enumeration value="MIT"/>
               <xs:enumeration value="Apache v2"/>
+              <xs:enumeration value="GPLv3"/>
             </xs:restriction>
           </xs:simpleType>
         </xs:element>

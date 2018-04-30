@@ -68,7 +68,9 @@
   </solution>
 
   <requires>
-    <module_path>services/unix/http/apache</module_path>
+    <module_path>.*apache</module_path>
+    <type>httpd</type>
   </requires>
+
 
 </vulnerability>

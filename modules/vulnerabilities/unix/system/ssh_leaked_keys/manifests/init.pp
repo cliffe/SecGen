@@ -1,6 +1,5 @@
 class ssh_leaked_keys::init {
-  $json_inputs = base64('decode', $::base64_inputs)
-  $secgen_parameters = parsejson($json_inputs)
+  $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
   $strings_to_leak = $secgen_parameters['strings_to_leak']
 
   $accounts = $secgen_parameters['accounts']

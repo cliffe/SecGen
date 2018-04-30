@@ -1,6 +1,5 @@
 class gitlist_040::apache {
-  $json_inputs = base64('decode', $::base64_inputs)
-  $secgen_parameters = parsejson($json_inputs)
+  $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
   $port = $secgen_parameters['port'][0]
   $docroot = '/var/www/gitlist'
 

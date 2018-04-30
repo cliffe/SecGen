@@ -1,0 +1,44 @@
+# Backing Up and Recovering from Disaster: SSH/SCP, Deltas, and Rsync
+
+## Getting started
+### VMs in this lab
+
+==Start these VMs== (if you haven't already):
+
+- hackerbot_server (leave it running, you don't log into this)
+- backup_server (IP address: <%= $server_ip %>)
+- desktop
+
+All of these VMs need to be running to complete the lab.
+
+### Your login details for the "desktop" and "backup_server" VMs
+User: <%= $main_user %>
+Password: tiaspbiqe2r (**t**his **i**s **a** **s**ecure **p**assword **b**ut **i**s **q**uite **e**asy **2** **r**emember)
+
+You won't login to the hackerbot_server, but the VM needs to be running to complete the lab.
+
+You don't need to login to the backup_server, but you will connect to it via SSH later in the lab.
+
+### For marks in the module
+1. **You need to submit flags**. Note that the flags and the challenges in your VMs are different to other's in the class. Flags will be revealed to you as you complete challenges throughout the module. Flags look like this: ==flag{*somethingrandom*}==. Follow the link on the module page to submit your flags.
+2. **You need to document the work and your solutions in a workbook**. This needs to include screenshots (including the flags) of how you solved each Hackerbot challenge and a writeup describing your solution to each challenge, and answering any "Workbook Questions". The workbook will be submitted later in the semester.
+
+## Hackerbot!
+![small-right](images/skullandusb.svg)
+
+This exercise involves interacting with Hackerbot, a chatbot who will task you to perform backups and will attack your system. If you satisfy Hackerbot by completing the challenges, she will reveal flags to you.
+
+**On the desktop VM:**
+
+==Open Pidgin and send "hello" to Hackerbot:==
+
+Work through the below exercises, completing the Hackerbot challenges as noted.
+
+---
+## Availability and recovery
+
+As you will recall, availability is a common security goal. This includes data availability, and systems and services availability. Preparing for when things go wrong, and having procedures in place to respond and recover is a task known as contingency planning. This includes business continuity planning (BCP), which has a wide scope covering many kinds of problems, disaster recovery planning, which aims to recover ICT after a major disaster, and incident response (IR) planning, which aims to detect and respond to security incidents.
+
+Business impact analysis involves determining which business processes are mission critical, and what the recovery requirements are. This includes Recovery Point Objectives (RPO), that is, which data and services are acceptable to lose and how often backups are necessary, and Recovery Time Objectives (RTO), which is how long it should take to recover, and the amount of downtime that is allowed for.
+
+Having reliable backups and redundancy that can be used to recover data and/or services is a basic security maintenance requirement.

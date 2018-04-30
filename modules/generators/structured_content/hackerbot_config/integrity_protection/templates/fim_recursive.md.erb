@@ -1,0 +1,124 @@
+#### Recursive file integrity checkers
+
+The md5deep program (also known as sha1deep, sha256deep, and so on for different hash algorithms) can recursively walk through directories (and into all contained subdirectories) to generate and check lists of hashes.
+
+==Run:==
+
+```bash
+sudo sha1deep -r /etc/
+```
+> You can stop the program early by pressing Ctrl-C
+
+The output of the above command will include hashes of every file in /etc/, which is where system-wide configuration files are stored on Unix.
+
+Read the sha1deep manual to understand the above command:
+
+```bash
+man sha1deep
+```
+> ==Figure out what the -r flag does.==
+>
+> (q to quit)
+
+We can save (redirect) this output to a file so that we have a record of the current state of our system's configuration:
+
+```bash
+sudo sha1deep -r /etc > /home/<%= $main_user %>/hashes/etc_hashes
+```
+
+This may take a minute or so, while the program calculates all the hashes and sends them to standard out (known as stdout), which is then redirected to the etc_hashes file.
+
+Next, let's compare the size of our list of hashes, with the actual content that we have hashed...
+
+See how big our list of hashes is:
+
+```bash
+ls -hs /home/<%= $main_user %>/hashes/etc_hashes
+```
+> (-h = human readable, -s = size)
+
+This is likely to be in the Kilobytes.
+
+And for the size of all of the files in /etc/:
+
+```bash
+sudo du -hs /etc/
+```
+> (-h = human readable, -s summarise)
+
+This is likely in the Megabytes (or maybe even Gigabytes).
+
+Clearly, **the list of hashes is much smaller**.
+
+Create a new file somewhere in /etc/, containing your name. Name the file whatever you like (for example /etc/test).
+> Hint: 'sudo vi /etc/test', 'i' to enter insert mode, and after typing your name, 'Esc', ':wq'.
+
+Also, change an existing file in /etc/, but do be careful to only make a minor change that will **not cause damage to your system**. For example, you could use vi to edit /etc/hostname ('sudo vi /etc/hostname'), and add a comment to the file such as '#find this comment!'
+
+Lets try to identify what has changed on our system...
+
+Now that we have a list of hashes of our files, ==use shasum to check if anything has changed using our newly generated list of hashes== (/home/<%= $main_user %>/hashes/etc_hashes).
+
+> Hint: look at the previous command using shasum to check hashes.
+
+Does this detect our the changed file AND the new file? Why not?
+
+Md5deep/sha1deep takes a different approach to checking integrity, by checking all of the files it is told to check (possibly recursing over all files in a directory) against a list of hashes, and reporting whether any files it checked did not (or did, depending on the flags used) have its hash somewhere in the hash list.
+
+Run sha1deep to check whether any files in /etc/ do not match a hash previously generated:
+
+```bash
+sudo sha1deep -X /home/<%= $main_user %>/hashes/etc_hashes -r /etc
+```
+
+This should detect both modified files, both new and modified.
+
+But would sha1deep detect a copy of an existing file, to a new location?
+
+Try it:
+
+```bash
+sudo cp /etc/passwd /etc/passwd.backup
+```
+
+Now rerun the previous sha1deep command. Was the copy detected? Why not?
+
+What about copying one file over another? Which out of shasum or sha1deep would detect that?
+
+Another tool, hashdeep, which is included with md5deep, provides more coverage when it comes to detecting files that have moved, changed, or created.
+
+Generate a hash list for /etc using hashdeep:
+
+```bash
+sudo hashdeep -r /etc/ > /home/<%= $main_user %>/hashes/etc_hashdeep_hashes
+```
+
+Hashdeep stores hashes in a different format than the previous tools. Have a look:
+
+```bash
+less /home/<%= $main_user %>/hashes/etc_hashdeep_hashes
+```
+> (q to quit)
+>
+> Note that the output includes some more information, such as the file size for each file.
+
+Delete the new file that you created earlier:
+
+```bash
+sudo rm /etc/*whatever-the-filename-was*
+```
+
+Conduct a hashdeep audit to detect any changes:
+
+```bash
+sudo hashdeep -r -a -k /home/<%= $main_user %>/hashes/etc_hashdeep_hashes /etc
+```
+> Note, that this can take a while, so feel free to start working through the next section in another terminal, if you like.
+
+After, run it again, this time asking for more details, since the default message does not provide any information as to why an audit has failed:
+
+```bash
+sudo hashdeep -rakvv /tmp/etc_hashdeep_hashes /etc
+```
+
+Consult the man page for information about what each of the above flags do.

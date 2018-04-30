@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Pidgin</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Pidgin chat client</description>
+
+  <type>chat_client</type>
+  <platform>linux</platform>
+
+  <read_fact>server_ip</read_fact>
+  <read_fact>accounts</read_fact>
+  <read_fact>autostart</read_fact>
+
+  <default_input into="server_ip">
+    <value>127.0.0.1</value>
+  </default_input>
+
+  <default_input into="accounts">
+    <generator type="account"/>
+  </default_input>
+
+  <default_input into="autostart">
+    <value>true</value>
+  </default_input>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+</utility>

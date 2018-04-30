@@ -9,7 +9,7 @@
 		<base platform="linux" type="server"/>
 
 		<service module_path="modules/services/unix/database/mysql"/>
-		<service module_path="modules/services/unix/http/apache"/>
+		<service module_path=".*apache"/>
 
 		<network type="private_network" range="dhcp"/>
 	</system>
@@ -18,7 +18,7 @@
 		<system_name>apache_server</system_name>
 		<base platform="linux" type="server"/>
 
-		<service module_path="modules/services/unix/http/apache"/>
+		<service module_path=".*apache"/>
 
 		<network type="private_network" range="dhcp"/>
 	</system>

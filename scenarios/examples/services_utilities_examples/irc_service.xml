@@ -8,7 +8,7 @@
     <system_name>irc_server</system_name>
     <base platform="linux" type="server"/>
 
-    <service type="irc"/>
+    <service type="ircd"/>
 
     <network type="private_network" range="dhcp"/>
   </system>

@@ -3,6 +3,6 @@
 #
 
 class lamp::apache {
-class {'::apache':  mpm_module => 'prefork',}
-include ::apache::mod::php
+  class {'::apache':  mpm_module => 'prefork',}
+  include ::apache::mod::php
 }

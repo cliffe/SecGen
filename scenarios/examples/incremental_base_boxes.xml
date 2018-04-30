@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<system>
+		<system_name>debian_desktop_base</system_name>
+		<base platform="linux" distro="Debian 7.8"/>
+
+		<utility module_path=".*kde_minimal"/>
+		<utility module_path=".*iceweasel"/>
+		<utility module_path=".*handy_cli_tools"/>
+	</system>
+
+	<system>
+		<system_name>debian_server_base</system_name>
+		<base platform="linux" distro="Debian 7.8"/>
+
+		<utility module_path=".*handy_cli_tools"/>
+	</system>
+
+	<system>
+		<system_name>kali_base</system_name>
+		<base distro="Kali"/>
+
+		<!--TODO: a basebox with this (it takes 13 mins to install via modules)-->
+		<utility module_path=".*metasploit_framework"/>
+		<utility module_path=".*nmap"/>
+		<utility module_path=".*handy_cli_tools"/>
+	</system>
+
+</scenario>

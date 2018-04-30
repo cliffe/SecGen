@@ -1,6 +1,5 @@
 <%require 'json' -%>
-<%$parsed_inputs = JSON.parse(@json_inputs) -%>
-<%$storage_directory = $parsed_inputs['storage_directory'].first -%>
+<%$storage_directory = @secgen_parameters['storage_directory'].first -%>
 # /etc/exports: the access control list for filesystems which may be exported
 #               to NFS clients.  See exports(5).
 #

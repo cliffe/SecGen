@@ -87,7 +87,17 @@ class StringGenerator
 
     Print.local_verbose "Generating..."
     generate
-    Print.local_verbose "Generated: #{self.outputs.to_s}"
+
+    # print the first 1000 chars to screen
+    output = self.outputs.to_s
+    length = output.length
+    if length < 1000
+      Print.local_verbose "Generated: #{output}..."
+    else
+      Print.local_verbose "Generated: #{output.to_s[0..1000]}..."
+      Print.local_verbose "(Displaying 1000/#{length} length output)"
+    end
+
     puts has_base64_inputs ? base64_encode_outputs : self.outputs
   end
 

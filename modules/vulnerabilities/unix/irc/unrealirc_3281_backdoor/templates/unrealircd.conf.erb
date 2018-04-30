@@ -1,9 +1,8 @@
 <%  require 'json'
-    $secgen_parameters = JSON.parse(@json_inputs)
-    $server_name = $secgen_parameters['server_name'].first
-    $server_desc = $secgen_parameters['server_desc'].first
-    $user = $secgen_parameters['user'].first
-    $group = $secgen_parameters['group'].first
+    $server_name = @secgen_parameters['server_name'].first
+    $server_desc = @secgen_parameters['server_desc'].first
+    $user = @secgen_parameters['user'].first
+    $group = @secgen_parameters['group'].first
 
     if @organisation and @organisation[0] and @organisation[0] != ''
       $admin = @organisation['manager']
@@ -11,7 +10,7 @@
       $server_name = @organisation['domain']
       $server_desc = "Welcome to the #{@organisation['business_name']} IRC server!"
     else
-      $admins = [ $secgen_parameters['admin_name'].first + ' <' + $secgen_parameters['admin_email'].first + '>' ]
+      $admins = [ @secgen_parameters['admin_name'].first + ' <' + @secgen_parameters['admin_email'].first + '>' ]
     end
 %>
 # Example UnrealIRCd 3.2.8.1 configuration file

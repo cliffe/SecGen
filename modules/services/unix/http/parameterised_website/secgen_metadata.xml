@@ -29,6 +29,7 @@
   <read_fact>hidden_tabs</read_fact>
 
   <read_fact>port</read_fact>
+  <read_fact>theme</read_fact>
 
   <default_input into="port">
     <value>80</value>
@@ -51,8 +52,21 @@
     <value>false</value>
   </default_input>
 
+  <default_input into="theme">
+    <generator type="website_theme"/>
+  </default_input>
+
+  <default_input into="theme">
+    <generator type="website_theme"/>
+  </default_input>
+
+  <conflict>
+    <module_path>.*parameterised_website</module_path>
+  </conflict>
+
   <requires>
-    <module_path>modules/services/unix/http/apache</module_path>
+    <module_path>.*apache</module_path>
+    <type>httpd</type>
   </requires>
 
 </service>

@@ -10,11 +10,15 @@
     UnrealIRCd 3.2.8.1
   </description>
 
-  <type>irc</type>
+  <type>ircd</type>
   <platform>linux</platform>
 
+  <read_fact>ip</read_fact>
   <read_fact>port</read_fact>
 
+  <default_input into="ip">
+    <value>*</value>
+  </default_input>
   <default_input into="port">
     <value>6667</value>
   </default_input>
@@ -22,5 +26,10 @@
   <!--optional details-->
   <software_name>unreal</software_name>
   <software_license>MIT</software_license>
+
+  <!--fails to build on Kali-->
+  <conflict>
+    <name>Kali.*</name>
+  </conflict>
 
 </service>

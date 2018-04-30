@@ -1,6 +1,5 @@
 class proftpd_133c_backdoor::config {
-  $json_inputs = base64('decode', $::base64_inputs)
-  $secgen_parameters = parsejson($json_inputs)
+  $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
   $raw_org = $secgen_parameters['organisation']
   if $raw_org and $raw_org[0] and $raw_org[0] != '' {
     $organisation = parsejson($raw_org[0])

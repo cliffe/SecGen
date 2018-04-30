@@ -1,0 +1,48 @@
+{
+  "business_name": "Leeds Beckett- Leeds Law School",
+  "business_motto": "",
+  "business_address": "City Campus, Leeds LS1 3HE",
+  "domain": "leedsbeckett.ac.uk",
+  "office_telephone": "0113 81 23000",
+  "office_email": "study@leedsbeckett.ac.uk",
+  "industry": "Higher Education",
+  "manager": {
+    "name": "Deveral Capps",
+    "address": "306, Portland Building, City Campus",
+    "phone_number": "0113 81 26085",
+    "email_address": "d.capps@leedsbeckett.ac.uk",
+    "username": "d_capps",
+    "password": ""
+  },
+  "employees": [
+    {
+      "name": "Dr. Simon Hale-Ross",
+      "address": "306, Portland Building, City Campus",
+      "phone_number": "0113 8129526",
+      "email_address": "S.Haleross@leedsbeckett.ac.uk",
+      "username": "s_haleross",
+      "password": ""
+    },
+    {
+      "name": "Professor Simon Gardiner",
+      "address": "204, Rose Bowl, City Campus",
+      "phone_number": "0113 81 26414",
+      "email_address": "S.Gardiner@leedsbeckett.ac.uk",
+      "username": "s_gardiner",
+      "password": ""
+    },
+    {
+      "name": "Dr. Jessica Guth",
+      "address": "306, Portland Building, City Campus",
+      "phone_number": "0113 81 26403",
+      "email_address": "J.Guth@leedsbeckett.ac.uk",
+      "username": "j_guth",
+      "password": ""
+    }
+  ],
+  "product_name": "University Education",
+  "intro_paragraph": [
+    "Our Law School sits in the heart of the great city of Leeds, the most important legal centre outside London and home to over 180 law firms employing in excess of 8,000 professionals. It is perfectly placed to ensure all our undergraduate, postgraduate, full and part-time students are able to mine the wealth of practical experience and employment opportunities available on our doorstep.",
+    "With state-of-the-art facilities, mentoring and career development opportunities, placements and a courtroom, students who choose Leeds Law School can expect a successful career founded on high calibre, practical teaching. We offer a broad variety of courses including our LLB, LLM Legal Practice (incorporating the LPC), LLM Qualifying Law Degree (incorporating the GDL) and LLM International Business Law, and each aims to give our graduates the enthusiasm, sharpness of mind and practical tools to thrive in competitive and fast-paced professional environments."
+  ]
+}

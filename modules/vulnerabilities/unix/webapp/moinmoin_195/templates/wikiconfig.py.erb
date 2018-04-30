@@ -5,14 +5,12 @@
 # encoding) you MUST use: coding: utf-8
 # That setting must match the encoding your editor uses when you modify the
 # settings below. If it does not, special non-ASCII chars will be wrong.
-<%  require 'json'
-    if @organisation
+<%  if @organisation
       $site_name = @organisation['business_name']
       $default_page = @organisation['business_name'].gsub(/[,]/, '')
     else
-      $secgen_parameters = JSON.parse(@json_inputs)
-      $site_name = $secgen_parameters['site_name'].first
-      $default_page = $secgen_parameters['default_page'].first
+      $site_name = @secgen_parameters['site_name'].first
+      $default_page = @secgen_parameters['default_page'].first
     end
 -%>
 """

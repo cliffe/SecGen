@@ -44,7 +44,7 @@ class XmlMarkerGenerator
                       end
                     }
 
-                    add_hint("Remember, search for text in the format of flag{SOMETHING}, and submit it for points", "flaggyflag", "normal", xml)
+                    # add_hint("Remember, search for text in the format of flag{SOMETHING}, and submit it for points", "flaggyflag", "normal", xml)
                   }
                 end
               }

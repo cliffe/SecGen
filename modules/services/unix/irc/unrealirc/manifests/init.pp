@@ -15,8 +15,8 @@ class unrealirc(
   $ssl_key = undef,
   $motd = undef
 ) {
-  $json_inputs = base64('decode', $::base64_inputs)
-  $secgen_inputs = parsejson($json_inputs)
+  $secgen_inputs = secgen_functions::get_parameters($::base64_inputs_file)
+  $ip = $secgen_inputs['ip'][0]
   $port = $secgen_inputs['port'][0]
 
   class { '::unrealirc::vulnerabilities': } ->
@@ -43,6 +43,7 @@ class unrealirc(
     }
 
     unrealirc::config::listen { 'default_6667':
+      ip => $ip,
       port => $port,
     }
 

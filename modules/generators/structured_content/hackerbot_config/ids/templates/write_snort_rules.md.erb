@@ -1,0 +1,116 @@
+## Writing your own Snort rules
+
+Snort is predominantly designed as a signature-based IDS. Snort monitors the network for matches to rules that indicate activity that should trigger an alert. You have now seen Snort detect a few types of activity, and have added a rule to detect ICMP packets. Next you will apply more complicated rules, and create your own.
+
+You may find external reference guides to writing Snort rules helpful. See the resources section below, and Google may come in handy.
+
+In general, rules are defined on one line (although, they can break over lines by using `\`), and take the form of:
+
+**header (body)**
+
+where header = "**action** (log,alert) **protocol** (ip,tcp,udp,icmp,any) **source_IP** **source_port** **direction** (-&gt;,&lt;&gt;) **destination_IP** **destination_port**"
+
+> for example: `alert tcp any any -> any any` to make an alert for all TCP traffic, or `alert tcp any any -> 192.168.0.1 23` to make an alert for connections to telnet on the given IP address
+
+and body = "**option; option: "parameter"; ...**"
+
+The most common options are:
+
+> `msg: "message to display"`
+
+and, to search the packet's content:
+
+> `content: "some text to search for"`
+
+To set the type of alert:
+
+> `classtype:misc-attack`
+>
+> (where *misc-attack* is defined in `/etc/snort/classification.conf`)
+
+To give a unique identifier and revision version number:
+
+> `sid:1000001; rev:1`
+
+So for example the body could be:
+
+> `msg: "user login attempt"; content: "user"; classtype:attempted-user; sid:1000001; rev:1;`
+
+And bringing all this together a Snort rule could read:
+
+> `alert tcp any any -> 192.168.0.1 110 (msg: "Email login attempt"; content: "user"; classtype:attempted-user; sid:1000001; rev:1;)`
+
+This rule looks at packets destined for 192.168.0.1 on the pop3 Email port (110), and sends an alert if the content contains the "user" command (which is used to log on to check email). Note that this rule is imperfect as it is, since it is case sensitive.
+
+There are lots more options that can make rules more precise and efficient. For example, making them case insensitive, or starting to search content after an offset. Feel free to do some reading, to help you to create better IDS rules.
+
+==Figure out how the rule could be improved to be case insensitive.==
+
+==Browse the existing rules in `/etc/snort/rules` and figure out how at least two of them work.==
+
+Lets create a basic rule that detects any web traffic on port 80.
+
+**On your IDS server:**
+
+```bash
+echo 'alert tcp any any -> any 80  (msg: "Web traffic detected - ASDFGH"; sid:1000002; rev:1;)' >> /etc/snort/rules/my.rules
+
+service snort restart
+```
+
+==**Don't forget to reload Snort every time you add or modify a rule!**==
+
+**From your desktop VM**, browse to a website, and confirm the rule worked to generate an alert containing "ASDFGH". Note that Hackerbot will require you to include particular text within the alerts of the rules you write.
+
+
+# TODO RANDOM
+# HACKERBOT ATTACKS
+
+Add a rule to detect any attempt to connect to a Telnet server, the output message must include "- RANDOM". Connections to a Telnet server could be a security issue, since logging into a networked computer using Telnet is known to be insecure because traffic is not encrypted. Don't forget to reload Snort!
+
+#TODO SecGen module to install telnetd
+
+
+
+Once you have saved your rule and reloaded Snort, test this rule by using Telnet. Rather than starting an actual Telnet server (unless you want to do so), you can simulate this by using Netcat to listen on the Telnet port, then connect with Telnet from the desktop VM.
+On a terminal on the Kali Linux VM:
+```bash
+netcat -l -p 23
+```
+Leaving that running, and on a terminal on the openSUSE VM:
+```bash
+telnet localhost
+```
+Type "hello"
+
+
+
+##TODO
+Create a rule that only triggers on loading the Webserver's homepage (http://<%= $web_server_ip %>). Don't forget to reload Snort.
+
+---
+
+Create a rule that triggers on the 
+
+##TODO
+Create a Snort rule that detects visits to the Leeds Beckett website from the Kali VM, but does not get triggered by general web browsing.
+
+Hints:
+> Look at some of the existing Snort rules for detecting Web sites, such as those in /etc/snort/rules/community-inappropriate.rules
+
+> In the IMS labs or when using oVirt, you are likely using the proxy to access the web, so you will need to approach your rules a little differently, you may find you need to change the port you are listening to. Look at the output of tcpdump -A when you access a web page, what does the traffic contain that may point to what is being accessed? Have a look through the output of tcpdump for the text "Host".
+
+As before, include your name in the alert message.
+
+##TODO
+
+Setup Snort as an intrusion *prevention* system (IPS): on the Kali VM so that it can actually deny traffic, and demonstrate with a rule. You may wish to extend the Leeds Beckett website rule, so that all attempts to access the website are denied by Snort.
+
+
+# write a rule that detects
+"Top secret"
+Randomly specified content
+Randomly generated content (requires network monitoring)
+attacks
+random port number (by service name?)
+

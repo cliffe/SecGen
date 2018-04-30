@@ -1,0 +1,47 @@
+{
+  "business_name": "Leeds Beckett- Music and Performing Arts",
+  "business_motto": "",
+  "business_address": "43 Church Wood Ave, Leeds LS16 5LF",
+  "domain": "leedsbeckett.ac.uk",
+  "office_telephone": "0113 81 23000",
+  "office_email": "study@leedsbeckett.ac.uk",
+  "industry": "Higher Education",
+  "manager": {
+    "name": "Dr Richard Stevens",
+    "address": "209, Caedmon, Headingley Campus",
+    "phone_number": "0113 81 23690",
+    "email_address": "R.C.Stevens@leedsbeckett.ac.uk",
+    "username": "r_stevens",
+    "password": ""
+  },
+  "employees": [
+    {
+      "name": "Dr. Laura Griffiths",
+      "address": "Reception, Priestley Hall, Headingley Campus",
+      "phone_number": "n/a",
+      "email_address": "Laura.Griffiths@leedsbeckett.ac.uk",
+      "username": "l_griffiths",
+      "password": ""
+    },
+    {
+      "name": "Carl Flattery",
+      "address": "104, Caedmon, Headingley Campus",
+      "phone_number": "0113 81 27372",
+      "email_address": "C.Flattery@leedsbeckett.ac.uk",
+      "username": "c_flattery",
+      "password": ""
+    },
+    {
+      "name": "Sam Nicholls",
+      "address": "212, Caedmon, Headingley Campus",
+      "phone_number": "0113 81 23726",
+      "email_address": "S.Nicholls@leedsbeckett.ac.uk",
+      "username": "s_nicholls",
+      "password": ""
+    }
+  ],
+  "product_name": "University Education",
+  "intro_paragraph": [
+    "The School of Film, Music & Performing Arts fosters a culture of creation and participation. We are proud shapers of, and contributors to, the cultural life of this great Northern city – a city that is the original birthplace of film. We nurture the arts pioneers of the future: influencers who will not just reflect the outside world, but impact upon it."
+  ]
+}

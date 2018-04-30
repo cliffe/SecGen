@@ -10,6 +10,7 @@
 
   <type>string_generator</type>
   <type>address_generator</type>
+  <type>address_generator_uk</type>
   <type>address</type>
   <type>local_calculation</type>
   <platform>linux</platform>

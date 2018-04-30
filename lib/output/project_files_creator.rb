@@ -34,11 +34,26 @@ class ProjectFilesCreator
 
 # Generate all relevant files for the project
   def write_files
+    # when writing to a project that already contains a project, move everything out the way,
+    # and keep the Vagrant config, so that existing VMs can be re-provisioned/updated
+    if File.exists? "#{@out_dir}/Vagrantfile" or File.exists? "#{@out_dir}/puppet"
+      dest_dir = "#{@out_dir}/MOVED_#{Time.new.strftime("%Y%m%d_%H%M")}"
+      Print.warn "Project already built to this directory -- moving last build to: #{dest_dir}"
+      Dir.glob( "#{@out_dir}/**/*" ).select { |f| File.file?( f ) }.each do |f|
+        dest = "#{dest_dir}/#{f}"
+        FileUtils.mkdir_p( File.dirname( dest ) )
+        if f =~ /\.vagrant/
+          FileUtils.cp( f, dest )
+        else
+          FileUtils.mv( f, dest )
+        end
+      end
+    end
+
     FileUtils.mkpath "#{@out_dir}" unless File.exists?("#{@out_dir}")
     FileUtils.mkpath "#{@out_dir}/puppet/" unless File.exists?("#{@out_dir}/puppet/")
     FileUtils.mkpath "#{@out_dir}/environments/production/" unless File.exists?("#{@out_dir}/environments/production/")
 
-    threads = []
     # for each system, create a puppet modules directory using librarian-puppet
     @systems.each do |system|
       @currently_processing_system = system # for template access
@@ -48,8 +63,11 @@ class ProjectFilesCreator
       Print.std "Creating Puppet modules librarian-puppet file: #{pfile}"
       template_based_file_write(PUPPET_TEMPLATE_FILE, pfile)
       Print.std 'Preparing puppet modules using librarian-puppet'
-      GemExec.exe('librarian-puppet', path, 'install')
-
+      librarian_output = GemExec.exe('librarian-puppet', path, 'install')
+      if librarian_output[:status] != 0
+        Print.err 'Failed to prepare puppet modules!'
+        abort
+      end
       system.module_selections.each do |selected_module|
 
         if selected_module.module_type == 'base'
@@ -65,7 +83,8 @@ class ProjectFilesCreator
 
               if File.file? packerfile_path
                 Print.info "Would you like to use the packerfile to create the packerfile from the given url (y/n)"
-                (Print.info "Exiting as vagrant needs the basebox to continue"; exit) unless ['y','yes'].include?(STDIN.gets.chomp.downcase)
+                # TODO: remove user interaction, this should be an config option
+                (Print.info "Exiting as vagrant needs the basebox to continue"; abort) unless ['y','yes'].include?(STDIN.gets.chomp.downcase)
 
                 Print.std "Packerfile #{packerfile_path.split('/').last} found, building basebox #{url.split('/').last} via packer"
                 template_based_file_write(packerfile_path, packerfile_path.split(/.erb$/).first)
@@ -104,23 +123,24 @@ class ProjectFilesCreator
       end
     rescue StandardError => e
       Print.err "Error writing file: #{e.message}"
-      exit
+      abort
     end
 
     # Create the marker xml file
-    x2file = "#{@out_dir}/marker.xml"
+    x2file = "#{@out_dir}/flag_hints.xml"
 
     xml_marker_generator = XmlMarkerGenerator.new(@systems, @scenario, @time)
     xml = xml_marker_generator.output
-    Print.std "Creating marker file: #{x2file}"
+    Print.std "Creating flags and hints file: #{x2file}"
     begin
       File.open(x2file, 'w+') do |file|
         file.write(xml)
       end
     rescue StandardError => e
       Print.err "Error writing file: #{e.message}"
-      exit
+      abort
     end
+    Print.std "VM(s) can be built using 'vagrant up' in #{@out_dir}"
 
   end
 
@@ -130,20 +150,28 @@ class ProjectFilesCreator
     template_out = ERB.new(File.read(template), 0, '<>-')
 
     begin
-      File.open(filename, 'w+') do |file|
+      File.open(filename, 'wb+') do |file|
         file.write(template_out.result(self.get_binding))
       end
     rescue StandardError => e
       Print.err "Error writing file: #{e.message}"
-      exit
+      Print.err e.backtrace.inspect
     end
   end
 
 # Resolves the network based on the scenario and ip_range.
-  def resolve_network(scenario_ip_range)
+# In the case that both command-line --network-ranges and datastores are provided, we have already handled the replacement of the ranges in the datastore.
+# Because of this we prioritise datastore['IP_address'], then command line options (i.e. when no datastore is used, but the --network-ranges are passed), then the default network module's IP range.
+  def resolve_network(network_module)
+    current_network = network_module
+    scenario_ip_range = network_module.attributes['range'].first
+
+    # Prioritise datastore IP_address
+    if current_network.received_inputs.include? 'IP_address'
+      ip_address = current_network.received_inputs['IP_address'].first
+    elsif @options.has_key? :ip_ranges
     # if we have options[:ip_ranges] we want to use those instead of the ip_range argument.
     # Store the mappings of scenario_ip_ranges => @options[:ip_range]  in @option_range_map
-    if @options.has_key? :ip_ranges
       # Have we seen this scenario_ip_range before? If so, use the value we've assigned
       if @option_range_map.has_key? scenario_ip_range
         ip_range = @option_range_map[scenario_ip_range]
@@ -154,10 +182,14 @@ class ProjectFilesCreator
         @option_range_map[scenario_ip_range] = options_ips.first
         ip_range = options_ips.first
       end
+      ip_address = get_ip_from_range(ip_range)
     else
-      ip_range = scenario_ip_range
+      ip_address = get_ip_from_range(scenario_ip_range)
     end
+    ip_address
+  end
 
+  def get_ip_from_range(ip_range)
     # increment @scenario_networks{ip_range=>counter}
     @scenario_networks[ip_range] += 1
 

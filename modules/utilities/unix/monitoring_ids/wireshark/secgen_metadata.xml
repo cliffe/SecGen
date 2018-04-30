@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Wireshark Network Monitor Tool</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>Apache v2</module_license>
+  <description>Installs Wireshark and Tcpdump.</description>
+
+  <type>audit_tools</type>
+  <platform>linux</platform>
+
+</utility>

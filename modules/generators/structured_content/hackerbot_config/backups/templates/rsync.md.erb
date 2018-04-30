@@ -1,0 +1,219 @@
+## Rsync, deltas and epoch backups
+
+Rsync is a popular tool for copying files locally, or over a network. Rsync can use delta encoding (only sending *differences* over the network rather than whole files) to reduce the amount of data that needs to be transferred. Many commercial backup systems provide a managed frontend for `rsync`.
+
+Note: make sure you exited SSH above, and are now running commands on your local system.
+
+Lets start by doing a simple ==copy of your /etc/ directory== to a local copy:
+
+```bash
+sudo rsync -av /etc /home/<%= $main_user %>/backups/rsync_backup/
+```
+> Note that the presence of a trailing "/" changes the behaviour, so be careful when constructing rsync commands. In this case we are copying the directory (not just its contents), into the directory etc\_backup. See the man page for more information.
+
+Rsync reports the amount of data "sent".
+
+Read the Rsync man page ("`man rsync`"), to ==understand the flags we have used== (`-a` and `-v`). As you will see, Rsync has a great deal of options.
+
+Now, lets ==add a file to /etc, and repeat the backup:==
+
+```bash
+sudo bash -c 'echo hello > /etc/hello'
+
+sudo rsync -av /etc /home/<%= $main_user %>/backups/rsync_backup/
+```
+
+Note that only the new file was transferred (incremental) to update our epoch (full) backup of /etc/.
+
+## Rsync remote copies via SSH with compression
+
+Rsync can act as a server, listening on a TCP port. It can also be used via SSH, as you will see. ==Copy your /etc/ directory to your backup_server== system using Rsync via SSH:
+
+```bash
+sudo rsync -avzh --fake-super /etc <%= $main_user %>@<%= $server_ip %>:/home/<%= $main_user %>/remote-rsync-backup/
+```
+> Tip: this is all one line
+
+Note that this initial copy will have used less network traffic compared to `scp`, due to the `-z` flag, which tells `rsync` to use compression. ==Compare the amount of data sent== (as reported by Rsync in the previous command -- the `-h` told Rsync to use human readable sizes) to the size of the date that was sent:
+
+```bash
+sudo du -sh /etc
+```
+
+Now, if you were to ==delete a local file== that had been backed up:
+
+```bash
+sudo rm /etc/hello
+```
+
+Even if you ==re-sync your local changes== to the backup_server, the file will not be deleted from the server:
+
+```bash
+sudo rsync -avzh --fake-super /etc <%= $main_user %>@<%= $server_ip %>:/home/<%= $main_user %>/remote-rsync-backup/
+```
+
+To recover the file, you can simply ==retrieve the backup:==
+
+```bash
+sudo rsync -avz --fake-super <%= $main_user %>@<%= $server_ip %>:/home/<%= $main_user %>/remote-rsync-backup/etc/hello /etc/
+```
+
+Note, that the `--fake-super` option is used to ensure the recovered file is still owned by root (even though it is not associated with root on the backup_server). This avoids requiring SSH root access to the remote machine (for security reasons this is not usually done) to retain ownership and so on.
+
+==Read the man page entry for `--fake-super`==
+> Hint: `man rsync`, then press '/' followed by '--fake-super$', and enter.
+
+==Delete the file locally, and sync the changes== *including deletions* to the server so that it is also deleted there:
+
+```bash
+sudo rm /etc/hello
+sudo rsync -avzh --fake-super --delete /etc <%= $main_user %>@<%= $server_ip %>:/home/<%= $main_user %>/remote-rsync-backup/
+```
+> Note the added **`--delete`**
+
+==Confirm that the file has been deleted== from the backup stored on the server.
+> Hint: login via SSH and view the backups
+
+==Lab book question: Compare the file access/modification times== of the scp and rsync backups, are they the same/similar? If not, why?
+
+## Rsync incremental/differential backups
+
+If you need to keep daily backups, it would be an inefficient use of disk space (and network traffic and/or disk usage) to simply save separate full copies of your entire backup each day. Therefore, it often makes sense to copy only the files that have changed for our daily backup. This can either be comparisons to the last backup (incremental), or last full backup (differential).
+
+### Differential backups
+
+==Create a new file== in /etc:
+
+```bash
+sudo bash -c 'echo "hello there" > /etc/hello'
+```
+
+And now lets ==create differential backups== of our changes to /etc (both local and remote backup copies):
+
+```bash
+#local
+sudo rsync -av /etc --compare-dest=/home/<%= $main_user %>/backups/rsync_backup/ /home/<%= $main_user %>/backups/rsync_backup_week1/
+
+#remote
+sudo rsync -avzh --fake-super /etc --compare-dest=/home/<%= $main_user %>/remote-rsync-backup/ <%= $main_user %>@<%= $server_ip %>:/home/<%= $main_user %>/remote-rsync-backup-week1/
+```
+> The **-\-compare-dest** flag tells rsync to search these backup copies, and only copy files if they have changed since a backup. Refer the the man page for further explanation.
+
+Look at what is contained in the differential update:
+
+```bash
+ls -la /home/<%= $main_user %>/backups/rsync_backup_week1/etc
+```
+
+Note that there are lots of empty directories, with only the files that have actually changed (in this case /etc/hello).
+
+Now ==create another change== to /etc:
+
+```bash
+sudo bash -c 'echo "hello there!" > /etc/hi'
+```
+
+To ==make another differential backup== (saving changes since the last full backup), we just repeat the previous command(s), with a new destination directory:
+
+```bash
+#local
+sudo rsync -av /etc --compare-dest=/home/<%= $main_user %>/backups/rsync_backup/ /home/<%= $main_user %>/backups/rsync_backup_week2/
+
+#remote
+sudo rsync -avzh --fake-super /etc --compare-dest=/home/<%= $main_user %>/remote-rsync-backup/ <%= $main_user %>@<%= $server_ip %>:/home/<%= $main_user %>/remote-rsync-backup-week2/
+```
+
+==Look at the contents== of your new backup. You will find it now contains your two new files. That is, all of the changes since the full backup.
+
+==Delete a non-essential existing file== in /etc/, and our test hello file:
+
+```bash
+sudo rm /etc/wgetrc /etc/hello
+```
+
+Now ==restore from your backups== by first restoring from the full backup, then the latest differential backup ("week2"). The advantage to a differential backup, is you only need to use two commands to restore your system.
+
+```bash
+sudo rsync -avz --fake-super <%= $main_user %>@<%= $server_ip %>:/home/<%= $main_user %>/remote-rsync-backup/etc/ /etc/
+
+sudo rsync -avz --fake-super <%= $main_user %>@<%= $server_ip %>:/home/<%= $main_user %>/remote-rsync-backup-week2/etc/ /etc/
+```
+> This example is restoring from the remote copy. ==Try restoring from the local copy==.
+
+### Incremental backups
+
+The disadvantage of the above differential approach to backups, is that your daily backup gets bigger and bigger for every backup until you do another full backup. With *incremental backups* you *only store the changes since the last backup*.
+
+Now ==create another change== to /etc:
+
+```bash
+sudo bash -c 'echo "Another test change" > /etc/test1'
+
+sudo bash -c 'echo "Another test change" > /etc/hello'
+```
+
+Now ==create an incremental backup== based on the last differential backup:
+
+```bash
+#local
+sudo rsync -av /etc --compare-dest=/home/<%= $main_user %>/backups/rsync_backup/ --compare-dest=/home/<%= $main_user %>/backups/rsync_backup_week2/ /home/<%= $main_user %>/backups/rsync_backup_monday/
+
+#remote
+sudo rsync -avzh --fake-super /etc --compare-dest=/home/<%= $main_user %>/remote-rsync-backup/ --compare-dest=/home/<%= $main_user %>/remote-rsync-backup-week2/ <%= $main_user %>@<%= $server_ip %>:/home/<%= $main_user %>/remote-rsync-backup-monday/
+```
+
+==Another change== to /etc:
+
+```bash
+sudo bash -c 'echo "Another test change" > /etc/test2'
+```
+
+Now ==create an incremental backup based on the last differential backup and the last incremental backup:==
+
+```bash
+#local
+sudo rsync -av /etc --compare-dest=/home/<%= $main_user %>/backups/rsync_backup/ --compare-dest=/home/<%= $main_user %>/backups/rsync_backup_week2/ --compare-dest=/home/<%= $main_user %>/backups/rsync_backup_monday/ /home/<%= $main_user %>/backups/rsync_backup_tuesday/
+
+#remote
+sudo rsync -avzh --fake-super /etc --compare-dest=/home/<%= $main_user %>/remote-rsync-backup/ --compare-dest=/home/<%= $main_user %>/remote-rsync-backup-week2/ --compare-dest=/home/<%= $main_user %>/remote-rsync-backup-monday/ <%= $main_user %>@<%= $server_ip %>:/home/<%= $main_user %>/remote-rsync-backup-tuesday/
+```
+
+Now ==delete a number of files:==
+
+```bash
+sudo rm /etc/wgetrc /etc/hello /etc/test1 /etc/test2
+```
+
+==Restore /etc== by restoring from the full backup, then the last differential backup, then the first incremental backup, then the second incremental backup.
+
+### Rsync snapshot backups
+
+Another approach to keeping backups is to keep a snapshot of all of the files, but wherever the files have not changed, a hard link is used to point at a previously backed up copy. If you are unfamiliar with hard links, read more about them online. This approach gives users a snapshot of how the system was on a particular date, without having to have redundant full copies of files.
+
+These snapshots can be achieved using the `--link-dest` flag. Open the Rsync man page, and read about `--link-dest`. Lets see it in action.
+
+==Make an rsync snapshot== containing hard links to files that have not changed, with copies for files that have changed:
+
+```bash
+sudo rsync -av --delete --link-dest=/home/<%= $main_user %>/backups/rsync_backup/ /etc /home/<%= $main_user %>/backups/rsync_backup_snapshot_1
+```
+
+Rsync reports not having copied any new files, yet look at what is contained in rsync_backup_snapshot_1. It looks like a complete copy, yet is **taking up almost no extra storage space**.
+
+==Create other changes== to /etc:
+
+```bash
+sudo bash -c 'echo "Another test change" > /etc/test3'
+
+sudo bash -c 'echo "Another test change" > /etc/test4'
+```
+
+And ==make a new rsync snapshot==, with copies of files that have changed:
+
+```bash
+sudo rsync -av --delete --link-dest=/home/<%= $main_user %>/backups/rsync_backup/ /etc /home/<%= $main_user %>/backups/rsync_backup_snapshot_2
+```
+
+==Delete some files==, and ==make a new differential rsync snapshot==. Although Rsync does not report a deletion, the deleted files will be absent from the new snapshot.
+
+==Recover a file from a previous snapshot.==

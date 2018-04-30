@@ -1,6 +1,5 @@
 class nfs_share::config {
-  $json_inputs = base64('decode', $::base64_inputs)
-  $secgen_parameters = parsejson($json_inputs)
+  $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
   $storage_directory = $secgen_parameters['storage_directory'][0]
 
   package { ['nfs-kernel-server', 'nfs-common', 'portmap']:

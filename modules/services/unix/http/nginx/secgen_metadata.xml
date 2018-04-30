@@ -24,6 +24,9 @@
   <conflict>
     <type>httpd</type>
   </conflict>
+  <conflict>
+    <name>Kali</name>
+  </conflict>
 
   <requires>
     <type>update</type>

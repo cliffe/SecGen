@@ -17,6 +17,11 @@
   <reference>https://github.com/sophsec/wordlist</reference>
   <reference>http://wordlist.sourceforge.net/</reference>
 
+  <read_fact>wordlist</read_fact>
+  <default_input into="wordlist">
+    <value>wordlist</value>
+  </default_input>
+
   <output_type>generated_strings</output_type>
   
 </generator>

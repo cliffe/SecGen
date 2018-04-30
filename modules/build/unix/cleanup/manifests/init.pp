@@ -1,6 +1,5 @@
 class cleanup::init {
-  $json_inputs = base64('decode', $::base64_inputs)
-  $secgen_params = parsejson($json_inputs)
+  $secgen_params = secgen_functions::get_parameters($::base64_inputs_file)
   $remove_history = str2bool($secgen_params['remove_history'][0])
   $root_password = $secgen_params['root_password'][0]
   $clobber_file_times = str2bool($secgen_params['clobber_file_times'][0])

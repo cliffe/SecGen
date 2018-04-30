@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Hackerbot config for an integrity detection lab</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>GPLv3</module_license>
+  <description>Generates a config file for a hackerbot for an integrity lab.
+    Topics covered: Detecting changes to resources using backups;
+    File integrity checkers.</description>
+
+  <type>hackerbot_config</type>
+  <platform>linux</platform>
+
+  <read_fact>accounts</read_fact>
+  <read_fact>flags</read_fact>
+  <read_fact>root_password</read_fact>
+
+  <!--TODO: require input, such as accounts, or fail?-->
+
+  <default_input into="accounts">
+    <generator type="account">
+      <input into="username">
+        <value>vagrant</value>
+      </input>
+    </generator>
+  </default_input>
+
+  <default_input into="flags">
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+  </default_input>
+
+  <default_input into="root_password">
+    <value>puppet</value>
+  </default_input>
+
+  <output_type>hackerbot</output_type>
+
+</generator>

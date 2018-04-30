@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Iceweasel
+GenericName=Iceweasel web browser
+Comment=Autostart script
+Exec=/usr/bin/firefox
+Terminal=false
+Type=Application
+X-GNOME-Autostart-enabled=true

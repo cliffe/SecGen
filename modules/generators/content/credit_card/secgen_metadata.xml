@@ -3,12 +3,13 @@
 <generator xmlns="http://www.github/cliffe/SecGen/generator"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
-  <name>Industry Generator</name>
+  <name>Credit Card Number Generator</name>
   <author>Thomas Shaw</author>
   <module_license>MIT</module_license>
-  <description>Industry generator using the Forgery ruby gem.</description>
+  <description>Credit Card Number Generator generator using the Credy ruby gem.</description>
 
-  <type>credit_card</type>
+  <type>credit_card_generator</type>
+  <type>personal_sensitive</type>
   <type>local_calculation</type>
   <platform>linux</platform>
   <platform>windows</platform>

@@ -1,8 +1,7 @@
 <% require 'json'
-   $secgen_parameters = JSON.parse(@json_inputs)
-   $user = $secgen_parameters['user'].first
-   $group = $secgen_parameters['group'].first
-   $server_name = $secgen_parameters['server_name'].first
+   $user = @secgen_parameters['user'].first
+   $group = @secgen_parameters['group'].first
+   $server_name = @secgen_parameters['server_name'].first
 %>
 #! /bin/sh
 ### BEGIN INIT INFO

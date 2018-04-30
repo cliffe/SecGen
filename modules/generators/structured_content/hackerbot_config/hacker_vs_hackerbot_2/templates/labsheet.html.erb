@@ -1,0 +1,121 @@
+<html>
+<head>
+	<title><%= self.title %></title>
+</head>
+<body>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="css/github-markdown.css">
+<style>
+	.markdown-body {
+		box-sizing: border-box;
+		min-width: 200px;
+		max-width: 980px;
+		margin: 0 auto;
+		padding: 45px;
+	}
+	.markdown-body h4[id^='hackerbot']:after {
+		display: inline-block;
+		float: right;
+		content: url("images/skullandusb.svg");
+		width: 30px;
+	}
+	article {
+		float: right;
+		width: calc(100% - 300px);
+	}
+	.toc {
+		float: left;
+		font-size: smaller;
+		color: #1a1d22;
+		width: 300px;
+		position: fixed;
+		height: calc(100% - 56px);
+		overflow-y: scroll;
+		font-family: sans-serif;
+		margin-top: 50px;
+	}
+	.toc ul {
+		list-style-type: none;
+		padding: 0;
+		margin-left: 1em;
+	}
+	.toc li { /* Space between menu items*/
+		margin: 1em 0;
+	}
+	.toc a {
+		color: #1a1d22;
+		text-decoration: none;
+	}
+	.toc a:hover {
+		color: #6c036d;
+		text-decoration: none;
+	}
+	.toc a:visited {
+		color: #1a1d22;
+		text-decoration: none;
+	}
+	.markdown-body pre {
+		background-color: #570138;
+		color: whitesmoke;
+	}
+	.markdown-body p code span, li code .pln {
+		color: black !important;
+	}
+	.markdown-body p code {
+		background-color: whitesmoke;
+		border: 1px solid #eaecef;
+	}
+	.markdown-body img[alt="small-left"] {
+		max-width: 100px;
+		float: left;
+	}
+	.markdown-body img[alt="small-right"] {
+		max-width: 100px;
+		float: right;
+	}
+	.markdown-body img[alt="tiny-right"] {
+		max-width: 30px;
+		float: right;
+	}
+	.markdown-body img[alt="small"] {
+		max-width: 100px;
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+		padding: 15px;
+	}
+	mark {
+		background-color: white;
+		color: #5b29bd;
+		font-weight: bolder;
+	}
+	@media (max-width: 767px) {
+		.markdown-body {
+			padding: 15px;
+			min-width: 200px;
+			max-width: 980px;
+    }
+		.toc {
+			float: none;
+			width: 100%;
+      position: relative;
+			overflow: auto;
+			height: auto;
+		}
+		article {
+			float: none;
+			width: 100%;
+		}
+
+	}
+</style>
+<div class="toc">
+	<%= self.html_TOC_rendered %>
+</div>
+
+<article class="markdown-body">
+	<%= self.html_rendered %>
+</article>
+<script src="js/code-prettify/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css"></script>
+</body>
+</html>

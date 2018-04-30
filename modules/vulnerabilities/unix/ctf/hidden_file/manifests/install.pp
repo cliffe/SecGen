@@ -1,6 +1,5 @@
 class hidden_file::install {
-  $json_inputs = base64('decode', $::base64_inputs)
-  $secgen_params = parsejson($json_inputs)
+  $secgen_params = secgen_functions::get_parameters($::base64_inputs_file)
   $challenge_name = $secgen_params['challenge_name'][0]
   $account = parsejson($secgen_params['account'][0])
   $leaked_filename = $secgen_params['leaked_filenames'][0]

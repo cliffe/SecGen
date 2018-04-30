@@ -10,6 +10,7 @@
   <description>An installation of Java</description>
 
   <type>language</type>
+  <type>java</type>
   <platform>linux</platform>
 
   <!--optional details-->

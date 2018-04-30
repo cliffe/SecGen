@@ -1,37 +1,50 @@
-<div id="main_container" class="container">
-  <div class="row">
-    <div class="main_page_content">
-      <% # Intranet style -%>
-      <% if @security_audit or @acceptable_use_policy -%>
-          <p class="lead">Welcome to the internal intranet server for <%=@business_name%>.</p>
-        <% if @security_audit -%>
-          <p>Find your Security Audit Remit <a href="security_audit_remit.html">here</a>.</p>
-        <% end -%>
-        <% if @acceptable_use_policy -%>
-          <p>Find the Acceptable Use Policy <a href="acceptable_use_policy.html">here</a>.</p>
-        <% end -%>
-      <% # Externally input / default style -%>
-      <% elsif @manager_profile != '' or @employees[0] != '' or @business_address != ''-%>
-          <h1><%= @business_name %></h1>
-          <h2><%= @product_name %></h2>
-          <p><%= @main_page_paragraph_content.join %></p>
-    <% elsif @main_page_paragraph_content-%>
-          <p><%= @main_page_paragraph_content.join %></p>
-    <% end -%>
-      <br/>
+<div class="container">
+  <% if @business_name != ''-%>
+      <div class="page-header" id="banner">
+        <div class="row">
+          <div class="col-lg-8 col-md-7 col-sm-6">
+            <h1><%= @business_name %></h1>
+            <% if @business_motto != ''-%>
+            <p class="lead"><%= @business_motto %></p>
+            <% end -%>
+          </div>
+        </div>
+      </div>
+  <% end -%>
 
-      <% if @visible_tabs and @visible_tabs[0] != '' -%>
-          <%= scope.function_template(['parameterised_website/subtemplates/tab_panel.html.erb']) %>
+  <div class="bs-docs-section clearfix">
+    <div class="row">
+      <div class="main_page_content">
+        <% # Intranet style  -%>
+        <% if @security_audit or @acceptable_use_policy -%>
+            <p class="lead">Welcome to the internal intranet server for <%= @business_name %>.</p>
+            <% if @security_audit -%>
+            <p>Find your Security Audit Remit <a href="security_audit_remit.html">here</a>.</p>
+            <% end -%>
+            <% if @acceptable_use_policy -%>
+            <p>Find the Acceptable Use Policy <a href="acceptable_use_policy.html">here</a>.</p>
+            <% end -%>
+      <% # Default style -%>
+      <% else -%>
+        <% @main_page_paragraph_content.each do |pg| -%>
+            <p> <%= pg %></p>
+        <% end -%>
+        <br/>
       <% end -%>
 
-      <br/>
-      <% if @images_to_leak  -%>
-        <% @images_to_leak.each_with_index{ |img, counter| -%>
-          <% unless img == '' -%>
-          <img src="image<%=counter + 1 %>.png" height="128" width="128">
-          <% end -%>
-        <% } -%>
-      <% end -%>
+        <% if @visible_tabs and @visible_tabs[0] != '' -%>
+            <%= scope.function_template(['parameterised_website/subtemplates/tab_panel.html.erb']) %>
+        <% end -%>
+
+        <br/>
+        <% if @images_to_leak -%>
+            <% @images_to_leak.each_with_index {|img, counter| -%>
+                <% unless img == '' -%>
+                    <img src="image<%= counter + 1 %>.png" height="128" width="128">
+                <% end -%>
+            <% } -%>
+        <% end -%>
+      </div>
     </div>
   </div>
 </div>

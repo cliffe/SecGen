@@ -1,15 +1,14 @@
 <%require 'json' -%>
-<%$parsed_inputs = JSON.parse(@json_inputs)
-  $share_name = $parsed_inputs['share_name'].first
-  $share_comment = $parsed_inputs['share_comment'].first
-  $storage_directory = $parsed_inputs['storage_directory'].first
-  $raw_read_only_share = $parsed_inputs['read_only_share'].first
-  $raw_guests_allowed = $parsed_inputs['guests_allowed'].first
+<%$share_name = @secgen_parameters['share_name'].first
+  $share_comment = @secgen_parameters['share_comment'].first
+  $storage_directory = @secgen_parameters['storage_directory'].first
+  $raw_read_only_share = @secgen_parameters['read_only_share'].first
+  $raw_guests_allowed = @secgen_parameters['guests_allowed'].first
   $read_only_share = $raw_read_only_share == 'true' ? 'yes' : 'no' # convert boolean to 'yes' or 'no'
   $guests_allowed = $raw_guests_allowed  == 'true' ? 'yes' : 'no'
 
   # structured_content/organisation overrides
-  $raw_org = $parsed_inputs['organisation']
+  $raw_org = @secgen_parameters['organisation']
   if $raw_org and $raw_org[0] and $raw_org[0] != ''
     $organisation = JSON.parse($raw_org[0])
     $domain = $organisation['domain']

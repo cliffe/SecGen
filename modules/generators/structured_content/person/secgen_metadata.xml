@@ -27,10 +27,10 @@
     <generator type="name_generator"/>
   </default_input>
   <default_input into="address">
-    <generator type="address_generator"/>
+    <generator module_path=".*address_uk"/>
   </default_input>
   <default_input into="phone_number">
-    <generator type="phone_number_generator"/>
+    <generator module_path=".*phone_number_uk"/>
   </default_input>
   <default_input into="email_address">
     <generator type="email_address"/>
@@ -40,6 +40,12 @@
   </default_input>
   <default_input into="password">
     <generator type="password_generator"/>
+  </default_input>
+  <default_input into="credit_card">
+    <generator type="credit_card_generator"/>
+  </default_input>
+  <default_input into="national_insurance_number">
+    <generator type="national_insurance_number_generator"/>
   </default_input>
 
   <output_type>person</output_type>

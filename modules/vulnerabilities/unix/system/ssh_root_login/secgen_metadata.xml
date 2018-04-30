@@ -18,10 +18,6 @@
   <read_fact>leaked_filenames</read_fact>
 
 
-  <default_input into="strings_to_leak">
-    <generator type="flag_generator"/>
-  </default_input>
-
   <default_input into="root_password">
     <generator module_path=".*weak_password.*"/>
   </default_input>
@@ -36,6 +32,10 @@
   <solution>Use a ssh bruteforce/dictionary cracker, connect with ssh root@victim-IP-address
   </solution>
 
+  <!--<attack>-->
+    <!--<required_attack_software>sshpass</required_attack_software>-->
+    <!--<command>sshpass -p {{root_password}} ssh -oStrictHostKeyChecking=no root@{{IP_address}}</command>-->
+  <!--</attack>-->
   <!--<attack_command>sshpass -p {{root_password}} ssh -oStrictHostKeyChecking=no root@{{IP_address}}</attack_command>-->
 
 </vulnerability>

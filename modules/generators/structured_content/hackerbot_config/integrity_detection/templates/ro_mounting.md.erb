@@ -1,0 +1,80 @@
+### Protecting integrity with read-only filesystems
+#### Getting to know read-only mounting
+On Unix, a filesystem is mounted to a particular point in the directory structure; for example, a USB thumb drive may be mounted to /media/myUSB/. Some filesystems will automatically mount read-only; for example, if you insert a CD-ROM, since those disks are physically read-only. It is possible to optionally mount almost any filesystem, such as a USB or even a directory, in read-only mode, which will make it practically impossible to write changes to it (without remounting or accessing the drive/directory in other ways, which normally only root can do).
+
+In new versions of Linux, it is possible to have a directory (one part of what is on a disk) present in the directory structure twice with different mount options (for example, /home/<%= $main_user %> and /home/<%= $main_user %>-read-only). This can be achieved by bind mounting, and then remounting to set the bind mount to read only.
+
+In a command prompt, ==run:==
+
+```bash
+mount
+```
+> Note that many of the devices and directories have been mounted for read and write access (**rw**). For security reasons, it can be safer to mount things as read-only, when we don't need to be able to make changes to the contents.
+
+Ordinary users can only read the /etc/ directory but the superuser root who owns the /etc/ directory can read and write to it. In the following example, you are going to mount the /etc/ directory to a mount point (another directory within the filesystem) and the contents of the /etc/ directory will be accessible via the mount point.
+
+List the contents of the /etc/ directory so you are familiar with its contents:
+
+```bash
+ls /etc/
+```
+Create a new directory to be the mount point. ==Run:==
+
+```bash
+mkdir /home/<%= $main_user %>/etc
+```
+==Mount the /etc/ directory to the new mount point:==
+
+```bash
+sudo mount -o bind /etc/ /home/<%= $main_user %>/etc/
+```
+Make sure the /etc/ directory is accessible via the home-etc directory mount point:
+
+```bash
+ls /home/<%= $main_user %>/etc/
+```
+Ordinary users can only read but the superuser root can still write to the directory. Test this by creating a new file as the superuser root in the /home/<%= $main_user %>/etc/ directory:
+
+```bash
+sudo touch /home/<%= $main_user %>/etc/newfile1
+```
+Check that a new file has been created using the following commands:
+
+```bash
+ls -l /home/<%= $main_user %>/etc/newfile1
+```
+
+```bash
+ls -l /etc/newfile1
+```
+
+We can use read only mounting to make filesystems and directories available read-only. Next you will ==remount /etc/ in read-only mode== so that even the superuser root who owns the /etc/ directory cannot make changes to its contents via the mount point.
+
+```bash
+sudo mount -o remount,ro,bind /etc/ /home/<%= $main_user %>/etc/
+```
+==Test this== by trying to create a new file as the superuser root in the /home/<%= $main_user %>/etc/ directory:
+
+```bash
+sudo touch /home/<%= $main_user %>/etc/newfile2
+```
+
+This should prevent changes being accidentally being made to important configuration files in the /etc/ directory.
+
+
+We can ==remount a directory as read-only to itself==:
+
+```bash
+sudo mount -o bind <%= $example_dir %> <%= $example_dir %>
+sudo mount -o remount,ro,bind <%= $example_dir %> <%= $example_dir %>
+```
+
+Now even the owner of the directory (you), can't make changes. ==Try:==
+
+```bash
+cat > <%= $example_dir %>new_file
+```
+
+Mounting read-only can be an effective way of protecting resources that you don't need to make any changes to. Read-only mounting is particularly effective when an actual disk resides externally, and *can be enforced remotely*. For example, when sharing files over the network.
+
+> Note that mounting read-only may be circumvented by root (or a user with enough privilege) via direct access to the device files (/dev/sdc1 in the example above), or by re-mounting as read-write (when the mounting ro is not enforced via remote network share).

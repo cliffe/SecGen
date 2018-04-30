@@ -3,11 +3,11 @@
 <base xmlns="http://www.github/cliffe/SecGen/base"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.github/cliffe/SecGen/base">
-  <name>Debian 32bit with Puppet</name>
+  <name>Debian 7 Wheezy Server</name>
   <author>Z. Cliffe Schreuders</author>
   <module_license>GPLv3</module_license>
   <description>Based on the Official Puppet Vagrant box. Debian 7.8 (wheezy) 32-bit (i386), Puppet 4.3.2 / Puppet Enterprise 2015.3.2 (agent).
-    This is the primary base box used during development.</description>
+    This is the primary base box used during development. For testing purposes, the default root password is puppet.</description>
   <cpu_word_size>32-bit</cpu_word_size>
   <type>server</type>
   <type>cli</type>
@@ -15,11 +15,9 @@
   <platform>linux</platform>
   <platform>unix</platform>
   <distro>Debian 7.8 (wheezy) 32-bit (i386)</distro>
-  <url>http://atlas.hashicorp.com/puppetlabs/boxes/debian-7.8-32-puppet/versions/1.0.4/providers/virtualbox.box</url>
+  <url>https://app.vagrantup.com/secgen/boxes/debian_wheezy_puppet/versions/1.0.0/providers/virtualbox.box</url>
+  <ovirt_template>debian_server</ovirt_template>
 
   <reference>https://atlas.hashicorp.com/puppetlabs</reference>
   <software_license>various</software_license>
-
-  <ovirt_template>debian_server</ovirt_template>
-
 </base>

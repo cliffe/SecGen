@@ -25,6 +25,7 @@
   <read_fact>manager</read_fact>
   <read_fact>employees</read_fact>
   <read_fact>product_name</read_fact>
+  <read_fact>intro_paragraph</read_fact>
 
   <default_input into="business_name">
     <generator type="business_name"/>
@@ -57,6 +58,9 @@
   </default_input>
   <default_input into="product_name">
     <generator type="product"/>
+  </default_input>
+  <default_input into="intro_paragraph">
+    <generator type="paragraph_generator"/>
   </default_input>
 
   <output_type>account</output_type>

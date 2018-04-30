@@ -1,6 +1,5 @@
 class dc16_amadhj::install {
-  $json_inputs = base64('decode', $::base64_inputs)
-  $secgen_params = parsejson($json_inputs)
+  $secgen_params = secgen_functions::get_parameters($::base64_inputs_file)
   $account = parsejson($secgen_params['account'][0])
 
   ::secgen_functions::install_setuid_root_binary { 'defcon16_amadhj':

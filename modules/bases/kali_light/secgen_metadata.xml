@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<base xmlns="http://www.github/cliffe/SecGen/base"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/base">
+  <name>Kali Light, XFCE and Puppet</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>GPLv3</module_license>
+  <description>Kali Light 2017.1 XFCE minimal install, with puppet.</description>
+  <cpu_word_size>64-bit</cpu_word_size>
+  <type>attack</type>
+  <type>desktop</type>
+
+  <platform>linux</platform>
+  <platform>unix</platform>
+  <distro>Kali Linux 2017.1</distro>
+  <url>https://app.vagrantup.com/cliffe/boxes/kali-light/versions/1.0.0/providers/virtualbox.box</url>
+
+  <reference>https://app.vagrantup.com/cliffe</reference>
+  <software_license>various</software_license>
+
+</base>

@@ -1,7 +1,6 @@
 class chkrootkit::configure {
   # Add cron job for chkrootkit, run it every minute so it's exploitable without a wait
-  $json_inputs = base64('decode', $::base64_inputs)
-  $secgen_parameters = parsejson($json_inputs)
+  $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
   $cron_frequency = $secgen_parameters['cron_frequency'][0]
 
   case $cron_frequency {

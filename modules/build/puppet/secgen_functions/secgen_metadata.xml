@@ -6,7 +6,7 @@
   <name>SecGen Puppet Functions</name>
   <author>Thomas Shaw</author>
   <module_license>MIT</module_license>
-  <description>SecGen functions module encapuslates commonly used functions within secgen (e.g. leaking files,
+  <description>SecGen functions module encapsulates commonly used functions within secgen (e.g. leaking files,
     overshare, flags etc.) into puppet resource statements.
   </description>
 

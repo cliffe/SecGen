@@ -1,0 +1,19 @@
+
+	<attack>
+		<!-- topic: Detecting changes to resources using backups-->
+		<prompt>An attempt to edit a config file is coming, let it happen. But first make sure you have a backup of the /etc/ directory at /home/<%= $main_user %>/backups/etc/.</prompt>
+		<post_command>changedf=`find /home/<%= $main_user %>/backups/etc/ -name '*.sh' | sort -R | head -n 1`; echo '# <%= $flags.pop %>' >> $changedf; echo $changedf</post_command>
+		<suppress_command_output_feedback />
+		<condition>
+			<output_matches>/home/<%= $main_user %>/backups/</output_matches>
+			<message>A flag has been inserted into a random file IN YOUR BACKUPS! (Did you really think that was a safe place to store them?) Find the flag. Get to work!</message>
+			<trigger_next_attack />
+		</condition>
+		<condition>
+			<output_matches>Permission denied|Operation not permitted|Read-only</output_matches>
+			<message>:( You stopped the attack, rather than monitor for changes... We are trying to write to /home/<%= $main_user %>/backups/etc/</message>
+		</condition>
+		<else_condition>
+			<message>:( Something was not right... We are trying to write to /home/<%= $main_user %>/backups/etc/</message>
+		</else_condition>
+	</attack>

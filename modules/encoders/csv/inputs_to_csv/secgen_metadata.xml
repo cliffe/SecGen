@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<encoder xmlns="http://www.github/cliffe/SecGen/encoder"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/encoder">
+  <name>CSV Encoder</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>MIT</module_license>
+  <description>Converts all of the inputs into a single CSV output. Accepts one layer of JSON hashes. For example, outputs from person generator.</description>
+
+  <type>csv</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <read_fact>strings_to_encode</read_fact>
+
+  <output_type>csv</output_type>
+  
+</encoder>

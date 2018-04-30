@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<service xmlns="http://www.github/cliffe/SecGen/service"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
+  <name>IRC Server ircd-irc2</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>MIT</module_license>
+  <description>This is the original Internet Relay Chat (IRC) daemon, allowing interactive character based communication between people connected to this server with IRC clients.
+  </description>
+
+  <type>ircd</type>
+  <platform>linux</platform>
+
+  <!--optional details-->
+  <software_name>ircd-irc2</software_name>
+  <software_license>MIT</software_license>
+
+  <conflict>
+    <type>ircd</type>
+  </conflict>
+  <requires>
+    <type>update</type>
+  </requires>
+</service>

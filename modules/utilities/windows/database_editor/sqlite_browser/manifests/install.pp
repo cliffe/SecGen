@@ -7,4 +7,6 @@ class sqlite_browser::install {
     ensure   => installed,
     provider => 'chocolatey',
   }
+
+  notice('Sqlite browser install finished')
 }

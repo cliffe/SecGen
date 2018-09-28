@@ -150,7 +150,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       <%= system.name %>.vm.network :<%= selected_module.attributes['type'].first %>, ip: "<%= resolve_network(selected_module)%>"
   <%       end %>
 <%     end -%>
-<%   when 'vulnerability', 'service', 'utility', 'build' -%>
+<%   when 'vulnerability', 'service', 'utility', 'build', 'forensic' -%>
 <%     module_name = selected_module.module_path_name -%>
     <%= system.name %>.vm.provision "puppet" do | <%=module_name%> |
 <%     # if there are facter variables to define
@@ -172,7 +172,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       <%=module_name%>.module_path = "<%="puppet/#{system.name}/modules"%>"
       <%=module_name%>.environment_path = "environments/"
       <%=module_name%>.environment = "production"
+      <% if (selected_module.attributes['platform'].first.downcase == 'windows') -%>
+      #<%=module_name%>.synced_folder_type = "smb"
+      <% else -%>
       <%=module_name%>.synced_folder_type = "rsync"
+      <% end -%>
       <%=module_name%>.manifests_path = "<%="puppet/#{system.name}/modules/#{selected_module.module_path_end}"%>"
       <%=module_name%>.manifest_file = "<%="#{selected_module.module_path_end}.pp"%>"
     end

@@ -1,0 +1,1 @@
+include sqlite_browser::install

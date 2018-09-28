@@ -1,0 +1,168 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.github/cliffe/SecGen/forensic"
+           xmlns="http://www.github/cliffe/SecGen/forensic"
+           elementFormDefault="qualified">
+
+  <xs:simpleType name="platformOptions">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="linux"/>
+      <xs:enumeration value="unix"/>
+      <xs:enumeration value="windows"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:element name="forensic">
+    <xs:complexType>
+      <xs:sequence>
+        <!--required SecGen module details-->
+        <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="author" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+        <xs:element name="module_license" minOccurs="1" maxOccurs="unbounded">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="MIT"/>
+              <xs:enumeration value="Apache v2"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name="description" type="xs:string" minOccurs="1" maxOccurs="1"/>
+
+        <xs:element name="type" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+        <xs:element name="platform" type="platformOptions" minOccurs="1" maxOccurs="1"/>
+
+        <!--optional details-->
+        <xs:element name="reference" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="software_name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="software_license" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+
+        <!--I/O: a generator writes it's output to one fact & can also take inputs-->
+        <xs:element name="read_fact" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="default_input" type="InputElements" minOccurs="0" maxOccurs="unbounded" />
+
+        <!-- cannot co-exist with a system matching ALL of the optionally specified values (can be repeated for OR)-->
+        <xs:element name="conflict" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="module_path" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="author" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="module_license" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+
+              <xs:element name="type" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="platform" type="platformOptions" minOccurs="0" maxOccurs="unbounded"/>
+
+              <xs:element name="reference" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="software_name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="software_license" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+
+        <!-- must co-exist with a system matching ALL of the optionally specified values (can be repeated for OR)-->
+        <!-- if a scenario does not include one already, the first match (randomly) found will be added before this module-->
+        <xs:element name="requires" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="module_path" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="author" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="module_license" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+
+              <xs:element name="type" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="platform" type="platformOptions" minOccurs="0" maxOccurs="unbounded"/>
+
+              <xs:element name="reference" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="software_name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="software_license" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="InputElements">
+    <xs:sequence>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name='vulnerability' type='VulnerabilityType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='service' type='ServiceUtilityForensicEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='utility' type='ServiceUtilityForensicEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='network' type='NetworkType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='generator' type='ServiceUtilityForensicEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='encoder' type='ServiceUtilityForensicEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='value' type='xs:string' minOccurs='0' maxOccurs='unbounded' />
+      </xs:choice>
+    </xs:sequence>
+    <xs:attribute name='into' type='xs:string'/>
+  </xs:complexType>
+  <xs:complexType name="VulnerabilityType">
+    <xs:sequence>
+      <xs:element name="input" type="InputElements" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+
+    <xs:attribute name="module_path" type="xs:string"/>
+
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="author" type="xs:string"/>
+    <xs:attribute name="module_license" type="xs:string"/>
+    <xs:attribute name="description" type="xs:string"/>
+
+    <xs:attribute name="type" type="xs:string"/>
+    <xs:attribute name="privilege" type="xs:string"/>
+    <xs:attribute name="access" type="xs:string"/>
+    <xs:attribute name="platform" type="xs:string"/>
+
+    <!--optional vulnerability inputs-->
+    <xs:attribute name="read_fact" type="xs:string"/>
+
+    <!--optional vulnerability details-->
+    <xs:attribute name="difficulty" type="xs:string"/>
+    <xs:attribute name="cve" type="xs:string"/>
+    <xs:attribute name="cvss_base_score" type="xs:string"/>
+    <xs:attribute name="cvss_vector" type="xs:string"/>
+    <xs:attribute name="reference" type="xs:string"/>
+    <xs:attribute name="software_name" type="xs:string"/>
+    <xs:attribute name="software_license" type="xs:string"/>
+
+    <!--optional breadcrumb (info that is leaked and required to exploit)-->
+    <xs:attribute name="breadcrumb" type="xs:string"/>
+
+    <!--optional hints-->
+    <xs:attribute name="msf_module" type="xs:string"/>
+    <xs:attribute name="hint" type="xs:string"/>
+    <xs:attribute name="solution" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="ServiceUtilityForensicEncoderGeneratorType">
+    <xs:sequence>
+      <xs:element name="input" type="InputElements" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="module_path" type="xs:string"/>
+
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="author" type="xs:string"/>
+    <xs:attribute name="module_license" type="xs:string"/>
+    <xs:attribute name="description" type="xs:string"/>
+    <xs:attribute name="type" type="xs:string"/>
+    <xs:attribute name="platform" type="xs:string"/>
+
+    <xs:attribute name="reference" type="xs:string"/>
+    <xs:attribute name="software_name" type="xs:string"/>
+    <xs:attribute name="software_license" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="NetworkType">
+    <xs:attribute name="module_path" type="xs:string"/>
+
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="author" type="xs:string"/>
+    <xs:attribute name="module_license" type="xs:string"/>
+    <xs:attribute name="description" type="xs:string"/>
+    <xs:attribute name="type" type="xs:string"/>
+    <xs:attribute name='range' type='xs:string'/>
+  </xs:complexType>
+</xs:schema>

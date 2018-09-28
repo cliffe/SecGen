@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Select illegal image cat paths</name>
+  <author>Jason Keighley</author>
+  <module_license>Apache v2</module_license>
+  <description>Selects an illegal image (cat image) path to use</description>
+
+  <type>illegal_image</type>
+  <type>illegal_image_generator</type>
+  <type>illegal_image_selector</type>
+  <platform>windows</platform>
+
+  <reference></reference>
+
+  <output_type>illegal_image</output_type>
+</generator>

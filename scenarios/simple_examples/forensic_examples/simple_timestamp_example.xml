@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<!-- an example remote storage system, with a remotely exploitable vulnerability that can then be escalated to root -->
+	<system>
+		<system_name>storage_server</system_name>
+		<base platform="windows" name="Windows 2008 Virtualbox puppet 64"/>
+
+		<!--<forensic type="internet_artifacts" name="Internet history chrome"/>-->
+		<forensic type="file_manipulation" name="Create file">
+			<input into="new_file_path">
+				<value>C:\Users\vagrant\Desktop\Hello.txt</value>
+			</input>
+			<input into="new_file_contents">
+				<value>File contents</value>
+			</input>
+		</forensic>
+		<forensic type="timestamps" name="Change timestamp last write time">
+			<input into="last_write_time_file_path">
+				<value>C:\Users\vagrant\Desktop\Hello.txt</value>
+			</input>
+			<input into="last_write_time_date">
+				<generator type="time_generator" name="Generate random time"/>
+			</input>
+		</forensic>
+		<forensic type="timestamps" name="Change timestamp last access time">
+			<input into="last_access_time_file_path">
+				<value>C:\Users\vagrant\Desktop\Hello.txt</value>
+			</input>
+			<input into="last_access_time_date">
+				<generator type="time_generator" name="Generate random time"/>
+			</input>
+		</forensic>
+		<forensic type="timestamps" name="Change timestamp creation time">
+			<input into="creation_time_file_path">
+				<value>C:\Users\vagrant\Desktop\Hello.txt</value>
+			</input>
+			<input into="creation_time_date">
+				<generator type="time_generator" name="Generate random time"/>
+			</input>
+		</forensic>
+
+		<network type="private_network" range="dhcp"/>
+	</system>
+
+</scenario>

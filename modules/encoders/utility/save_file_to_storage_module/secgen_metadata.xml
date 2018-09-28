@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<encoder xmlns="http://www.github/cliffe/SecGen/encoder"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/encoder">
+  <name>Save file to storage module</name>
+  <author>Jason Keighley</author>
+  <module_license>Apache v2</module_license>
+  <description>Saves the given file to the storage module be used in transfer via the file { source => puppet:/// } puppet resource</description>
+
+  <type>utility</type>
+  <platform>windows</platform>
+
+  <read_fact>file_path</read_fact>
+
+  <output_type>file_path</output_type>
+</encoder>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Select prefetch file paths</name>
+  <author>Jason Keighley</author>
+  <module_license>Apache v2</module_license>
+  <description>Select prefetch file paths from prefetch resources</description>
+
+  <type>prefetch</type>
+  <type>forensic_artefact</type>
+  <platform>windows</platform>
+
+  <reference></reference>
+
+  <output_type>prefetch</output_type>
+</generator>

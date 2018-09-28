@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <!-- an example remote storage system, with a remotely exploitable vulnerability that can then be escalated to root -->
+  <system>
+    <system_name>storage_server</system_name>
+    <base platform="windows" name="Windows 2008 Virtualbox puppet 64"/>
+
+    <utility type="database_editor" name="Sqlite browser install"/>
+
+    <forensic type="internet_artifacts" name="Internet history chrome">
+      <input into="chrome_history_file_name">
+        <generator name="Chrome history file generator">
+          <input into="number_of_generic_urls">
+            <value>100</value>
+          </input>
+          <input into="generic_urls_start_time">
+            <value>3rd july 2013 15:16:20</value>
+          </input>
+          <input into="generic_urls_end_time">
+            <value>5th june 2015 15:16:20</value>
+          </input>
+          <input into="number_of_cybercrime_urls">
+            <value>10</value>
+          </input>
+          <input into="cybercrime_urls_start_time">
+            <value>4th july 2013 12:00:00</value>
+          </input>
+          <input into="cybercrime_urls_end_time">
+            <value>4th july 2013 15:00:00</value>
+          </input>
+        </generator>
+      </input>
+    </forensic>
+
+    <network type="private_network" range="dhcp"/>
+  </system>
+
+</scenario>

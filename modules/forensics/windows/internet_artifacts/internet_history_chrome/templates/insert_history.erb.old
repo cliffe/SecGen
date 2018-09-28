@@ -1,0 +1,17 @@
+<% #puts "Hello World!" %>
+<%
+  require 'sqlite3'
+
+  local_user = 'vagrant'
+  chrome_user = 'Default'
+
+  SQLite3::Database.new( "C:\\Users\\#{local_user}\\AppData\\Local\\Google\\Chrome\\User Data\\#{chrome_user}\\History" ) do |db|
+    db.execute( "select * from urls" ) do |row|
+      p row
+    end
+    db.execute(
+        "INSERT INTO urls(id, url, title, visit_count, typed_count, last_visit_time, hidden, favicon_id)
+VALUES ('37', 'test_url', 'test_title', '1', '1', '1', '0', '0');"
+    )
+  end
+%>

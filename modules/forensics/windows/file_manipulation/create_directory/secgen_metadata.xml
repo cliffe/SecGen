@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<forensic xmlns="http://www.github/cliffe/SecGen/forensic"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/forensic">
+  <name>Create directory</name>
+  <author>Jason Keighley</author>
+  <module_license>Apache v2</module_license>
+  <description>Create new directory</description>
+
+  <type>file_manipulation</type>
+  <platform>windows</platform>
+
+  <!--optional details-->
+  <reference></reference>
+
+  <read_fact>new_directory_path</read_fact>
+
+  <default_input into="new_directory_path">
+    <value>C:\Users\vagrant\Desktop\Hello</value>
+  </default_input>
+
+</forensic>

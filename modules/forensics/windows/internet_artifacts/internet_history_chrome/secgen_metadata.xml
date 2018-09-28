@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+
+<forensic xmlns="http://www.github/cliffe/SecGen/forensic"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/forensic">
+  <name>Internet history chrome</name>
+  <author>Jason Keighley</author>
+  <module_license>Apache v2</module_license>
+  <description>Create internet history for the Google Chrome browser</description>
+
+  <type>internet_artifacts</type>
+  <platform>windows</platform>
+
+  <!--optional details-->
+  <reference></reference>
+
+  <read_fact>chrome_history_file_name</read_fact>
+
+  <default_input into="chrome_history_file_name">
+    <generator name="Chrome history file generator">
+      <input into="number_of_generic_urls">
+        <value>100</value>
+      </input>
+      <input into="generic_urls_start_time">
+        <value>3rd july 2013 15:16:20</value>
+      </input>
+      <input into="generic_urls_end_time">
+        <value>5th june 2015 15:16:20</value>
+      </input>
+      <input into="number_of_cybercrime_urls">
+        <value>10</value>
+      </input>
+      <input into="cybercrime_urls_start_time">
+        <value>4th july 2013 12:00:00</value>
+      </input>
+      <input into="cybercrime_urls_end_time">
+        <value>4th july 2013 15:00:00</value>
+      </input>
+    </generator>
+  </default_input>
+
+  <requires>
+    <name>Powershell install local</name>
+  </requires>
+  <requires>
+    <name>Google Chrome install</name>
+  </requires>
+  <requires>
+    <name>Store files for transfer</name>
+  </requires>
+</forensic>

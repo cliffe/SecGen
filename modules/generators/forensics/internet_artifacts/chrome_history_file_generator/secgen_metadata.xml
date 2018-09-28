@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Chrome history file generator</name>
+  <author>Jason Keighley</author>
+  <module_license>Apache v2</module_license>
+  <description>Randomly selects urls from pool of crime urls dependent on inputted crime type.</description>
+
+  <type>internet_history_file_generator</type>
+  <platform>windows</platform>
+
+  <reference></reference>
+
+  <!-- Number of Urls of a given type. -->
+  <!--<read_fact>history_urls</read_fact>-->
+
+  <read_fact>number_of_generic_urls</read_fact>
+  <read_fact>generic_urls_start_time</read_fact>
+  <read_fact>generic_urls_end_time</read_fact>
+
+  <read_fact>number_of_cybercrime_urls</read_fact>
+  <read_fact>cybercrime_urls_start_time</read_fact>
+  <read_fact>cybercrime_urls_end_time</read_fact>
+
+  <output_type>urls</output_type>
+</generator>

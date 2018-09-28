@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Python programming language</name>
+  <author>Jason Keighley</author>
+  <module_license>Apache v2</module_license>
+  <description>A Python installation</description>
+
+  <type>languages</type>
+  <platform>windows</platform>
+
+  <!--optional details-->
+  <reference></reference>
+
+  <requires>
+    <name>Chocolatey install</name>
+  </requires>
+</utility>

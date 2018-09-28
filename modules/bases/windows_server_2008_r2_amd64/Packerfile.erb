@@ -6,7 +6,7 @@
 <%= if (@options.has_key? :memory_per_vm)
       "[ \"modifyvm\", \"{{.Name}}\", \"--memory\", \"#{@options[:memory_per_vm]}\" ],"
     elsif (@options.has_key? :total_memory)
-      "[ \"modifyvm\", \"{{.Name}}\", \"--memory\", \"#{@options[:total_memory]/@systems.length}\" ],"
+      "[ \"modifyvm\", \"{{.Name}}\", \"--memory\", \"#{@options[:total_memory].to_i/@systems.length}\" ],"
     end %>
 <%= if (@options.has_key? :cpu_cores)
       "[ \"modifyvm\", \"{{.Name}}\", \"--cpus\", \"#{@options[:cpu_cores]}\" ],"

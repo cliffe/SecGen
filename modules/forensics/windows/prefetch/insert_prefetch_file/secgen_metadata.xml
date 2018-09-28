@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+
+<forensic xmlns="http://www.github/cliffe/SecGen/forensic"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/forensic">
+  <name>Add prefetch file</name>
+  <author>Jason Keighley</author>
+  <module_license>Apache v2</module_license>
+  <description>Insert prefetch files</description>
+
+  <type>prefetch</type>
+  <type>forensic_artefact</type>
+  <platform>windows</platform>
+
+  <!--optional details-->
+  <reference></reference>
+
+  <read_fact>prefetch_file_name</read_fact>
+
+  <default_input into="prefetch_file_name">
+    <encoder type="utility" name="Save file to storage module">
+      <input into="file_path">
+        <generator type="prefetch" name="Select prefetch file paths"/>
+      </input>
+    </encoder>
+  </default_input>
+
+  <requires>
+    <name>Store files for transfer</name>
+  </requires>
+
+</forensic>

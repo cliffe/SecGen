@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+
+<forensic xmlns="http://www.github/cliffe/SecGen/forensic"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/forensic">
+  <name>Change timestamp all main times</name>
+  <author>Jason Keighley</author>
+  <module_license>Apache v2</module_license>
+  <description>Change timestamp last write time</description>
+
+  <type>timestamps</type>
+  <platform>windows</platform>
+
+  <!--optional details-->
+  <reference></reference>
+
+  <read_fact>all_times_file_path</read_fact>
+  <read_fact>all_times_date</read_fact>
+
+  <default_input into="all_times_file_path">
+    <value>C:\Users\vagrant\Desktop\Hello.txt</value>
+  </default_input>
+
+  <default_input into="all_times_date">
+    <generator type="time_generator" name="Generate random time"/>
+  </default_input>
+
+  <requires>
+    <name>Powershell install local</name>
+  </requires>
+
+</forensic>

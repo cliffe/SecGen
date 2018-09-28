@@ -31,6 +31,11 @@ class ModuleReader
     return read_modules('utility', UTILITIES_DIR, UTILITY_SCHEMA_FILE, true)
   end
 
+  # reads in all forensics
+  def self.read_forensics
+    return read_modules('forensic', FORENSICS_DIR, FORENSICS_SCHEMA_FILE, true)
+  end
+
   # reads in all utilities
   def self.read_generators
     return read_modules('generator', GENERATORS_DIR, GENERATOR_SCHEMA_FILE, true)
@@ -147,7 +152,7 @@ class ModuleReader
 
       # for each default input
       doc.xpath("/#{module_type}/default_input").each do |inputs_doc|
-        inputs_doc.xpath('descendant::vulnerability | descendant::service | descendant::utility | descendant::network | descendant::base | descendant::encoder | descendant::generator').each do |module_node|
+        inputs_doc.xpath('descendant::vulnerability | descendant::service | descendant::utility | descendant::forensic | descendant::network | descendant::base | descendant::encoder | descendant::generator').each do |module_node|
 
           # create a selector module, which is a regular module instance used as a placeholder for matching requirements
           module_selector = Module.new(module_node.name)

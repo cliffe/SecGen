@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+<forensic xmlns="http://www.github/cliffe/SecGen/forensic"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/forensic">
+  <name>Add illegal images cats</name>
+  <author>Jason Keighley</author>
+  <module_license>Apache v2</module_license>
+  <description>Add illegal cat images (simulation of illegal images)</description>
+
+  <type>illegal_images</type>
+  <platform>windows</platform>
+
+  <!--optional details-->
+  <reference></reference>
+
+  <read_fact>image_path</read_fact>
+
+  <default_input into="image_path">
+    <value>C:\Users\vagrant\Desktop\Hello.jpg</value>
+  </default_input>
+
+  <!--<generator type="filename" name="Random Filename Generator"/>-->
+
+  <default_input into="original_image_filename">
+    <encoder type="utility" name="Save file to storage module">
+      <input into="file_path">
+        <generator type="illegal_image_generator" name="Select illegal image cat paths"/>
+      </input>
+    </encoder>
+  </default_input>
+
+  <!--<value>JABQAHIAbwBnAHIAZQBzAHMAUAByAGUAZgBlAHIAZQBuAGMAZQA9ACcAUwBpAGwAZQBuAHQAbAB5AEMAbwBuAHQAaQBuAHUAZQAnADsAIAAkAGUAbgB2ADoARgBBAEMAVABFAFIAXwBiAGEAcwBlADYANABfAGkAbgBwAHUAdABzAD0AJwBlAHkASgBwAGIAVwBGAG4AWgBWADkAdwBZAFgAUgBvAEkAagBwAGIASQBrAE</value>-->
+  <!--<generator type="image_generator" name="Random Image Generator"/>-->
+  <!--<generator type="illegal_image_generator" name="Select illegal image cat"/>-->
+
+  <requires>
+    <name>Store files for transfer</name>
+  </requires>
+
+</forensic>

@@ -1,0 +1,133 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <system>
+    <system_name>windows_box</system_name>
+    <base platform="windows" name="Windows 2008 Virtualbox puppet 64"/>
+
+    <!--Not working-->
+    <!--<utility type="database_editor" name="Sqlite browser install"/>-->
+
+    <!--Working-->
+    <utility type="text_editor" name="Notepadplusplus install"/>
+    <utility type="languages" name="Python programming language"/>
+    <utility type="languages" name="Ruby programming language"/>
+    <utility type="web_browsers" name="Firefox install"/>
+    <utility type="web_browsers" name="Internet Explorer 11 install"/>
+
+    <!--Need Testing-->
+    <!--<forensic type="internet_artifacts" name="Internet history chrome">-->
+      <!--<input into="chrome_history_file_name">-->
+        <!--<generator name="Chrome history file generator">-->
+          <!--<input into="number_of_generic_urls">-->
+            <!--<value>100</value>-->
+          <!--</input>-->
+          <!--<input into="generic_urls_start_time">-->
+            <!--<value>3rd july 2013 15:16:20</value>-->
+          <!--</input>-->
+          <!--<input into="generic_urls_end_time">-->
+            <!--<value>5th june 2015 15:16:20</value>-->
+          <!--</input>-->
+          <!--<input into="number_of_cybercrime_urls">-->
+            <!--<value>10</value>-->
+          <!--</input>-->
+          <!--<input into="cybercrime_urls_start_time">-->
+            <!--<value>4th july 2013 12:00:00</value>-->
+          <!--</input>-->
+          <!--<input into="cybercrime_urls_end_time">-->
+            <!--<value>4th july 2013 15:00:00</value>-->
+          <!--</input>-->
+        <!--</generator>-->
+      <!--</input>-->
+    <!--</forensic>-->
+
+    <!--Needs Testing-->
+    <!--<forensic type="illegal_images" name="Add illegal images cats">-->
+      <!--<input into="image_path">-->
+        <!--&lt;!&ndash;<value>['C:\Secret\Illegal_image.jpg','C:\Users\vagrant\Desktop\Illegal_image_2.jpg','C:\Users\vagrant\Documents\Illegal_image_3.jpg']</value>&ndash;&gt;-->
+        <!--<value>C:\Users\vagrant\Desktop\Illegal_image.jpg</value>-->
+      <!--</input>-->
+    <!--</forensic>-->
+
+    <!--Needs Testing-->
+    <!--<forensic type="file_manipulation" name="Create directory">-->
+      <!--<input into="new_directory_path">-->
+        <!--<value>C:\Secret</value>-->
+      <!--</input>-->
+    <!--</forensic>-->
+
+    <!--Needs Testing-->
+    <!--<forensic type="file_manipulation" name="Create file">-->
+      <!--<input into="new_file_path">-->
+        <!--<value>C:\Users\vagrant\Desktop\Crime.txt</value>-->
+      <!--</input>-->
+      <!--<input into="new_file_contents">-->
+        <!--<value>I robbed a bank last week, got about 1 mil. I think I'm set now unless the rozzers find me.</value>-->
+      <!--</input>-->
+    <!--</forensic>-->
+
+    <!--Needs Testing-->
+    <!--<forensic type="timestamps" name="Change timestamp last write time">-->
+      <!--<input into="last_write_time_file_path">-->
+        <!--<value>C:\Users\vagrant\Desktop\Crime.txt</value>-->
+      <!--</input>-->
+      <!--<input into="last_write_time_date">-->
+        <!--<generator type="time_generator" name="Generate random time">-->
+          <!--<input into="date_start">-->
+            <!--<value>4th july 2013 12:00:00</value>-->
+          <!--</input>-->
+          <!--<input into="date_end">-->
+            <!--<value>4th july 2013 15:00:00</value>-->
+          <!--</input>-->
+        <!--</generator>-->
+      <!--</input>-->
+    <!--</forensic>-->
+
+    <!--Needs Testing-->
+    <!--<forensic type="timestamps" name="Change timestamp last access time">-->
+      <!--<input into="last_access_time_file_path">-->
+        <!--<value>C:\Users\vagrant\Desktop\Crime.txt</value>-->
+      <!--</input>-->
+      <!--<input into="last_access_time_date">-->
+        <!--<generator type="time_generator" name="Generate random time">-->
+          <!--<input into="date_start">-->
+            <!--<value>4th july 2013 12:00:00</value>-->
+          <!--</input>-->
+          <!--<input into="date_end">-->
+            <!--<value>4th july 2013 15:00:00</value>-->
+          <!--</input>-->
+        <!--</generator>-->
+      <!--</input>-->
+    <!--</forensic>-->
+
+    <!--Needs Testing-->
+    <!--<forensic type="timestamps" name="Change timestamp creation time">-->
+      <!--<input into="creation_time_file_path">-->
+        <!--<value>C:\Users\vagrant\Desktop\Crime.txt</value>-->
+      <!--</input>-->
+      <!--<input into="creation_time_date">-->
+        <!--<generator type="time_generator" name="Generate random time"/>-->
+      <!--</input>-->
+    <!--</forensic>-->
+
+    <!--Needs Testing-->
+    <!--<forensic type="file_manipulation" name="Create file">-->
+      <!--<input into="new_file_path">-->
+        <!--<value>C:\Users\vagrant\Desktop\Hello</value>-->
+      <!--</input>-->
+    <!--</forensic>-->
+
+    <!--Needs Testing-->
+    <!--<forensic type="timestamps" name="Change timestamp all main times">-->
+      <!--<input into="all_times_file_path">-->
+        <!--<value>C:\Users\vagrant\Desktop\Hello</value>-->
+      <!--</input>-->
+    <!--</forensic>-->
+
+    <network type="private_network" range="dhcp"/>
+  </system>
+
+</scenario>

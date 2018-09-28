@@ -35,6 +35,9 @@ def usage
    --nopae: Disable PAE support
    --hwvirtex: Enable HW virtex support
    --vtxvpid: Enable VTX support
+   --memory-per-vm: set amount of memory to give each VM
+   --total-memory: set total amount of memory to give all VMs
+   --max-cpu-cores: set total amount of cpu cores for each VM
    --max-cpu-usage [1-100]: Controls how much cpu time a virtual CPU can use
                             (e.g. 50 implies a single virtual CPU can use up to 50% of a single host CPU)
 
@@ -88,6 +91,10 @@ def build_config(scenario, out_dir, options)
   all_available_utilities = ModuleReader.read_utilities
   Print.std "#{all_available_utilities.size} utility modules loaded"
 
+  Print.info 'Reading available forensic modules...'
+  all_available_forensics = ModuleReader.read_forensics
+  Print.std "#{all_available_forensics.size} forensic modules loaded"
+
   Print.info 'Reading available generator modules...'
   all_available_generators = ModuleReader.read_generators
   Print.std "#{all_available_generators.size} generator modules loaded"
@@ -103,7 +110,8 @@ def build_config(scenario, out_dir, options)
   Print.info 'Resolving systems: randomising scenario...'
   # for each system, select modules
   all_available_modules = all_available_bases + all_available_builds + all_available_vulnerabilties +
-      all_available_services + all_available_utilities + all_available_generators + all_available_encoders + all_available_networks
+      all_available_services + all_available_utilities + all_available_forensics + all_available_generators +
+      all_available_encoders + all_available_networks
   # update systems with module selections
   systems.map! { |system|
     system.module_selections = system.resolve_module_selection(all_available_modules, options)
@@ -247,6 +255,11 @@ end
 # Make forensic image helper methods \end
 #################################################
 
+# Make forensic image
+#
+# @author Jason Keighley
+# @param [Hash] options Main options hash containing all options for the running ForGen instance
+# @return [Hash] options Main options hash containing all options for the running ForGen instance
 def make_forensic_image(project_dir, image_output_location, image_type)
   drive_path = %x(VBoxManage list hdds | grep '#{project_dir.split('/').last}').sub(/\ALocation:\s*/, '').sub(/\n/, '')
   drive_name = drive_path.split('/').last
@@ -343,7 +356,8 @@ opts = GetoptLong.new(
     ['--total-memory', GetoptLong::REQUIRED_ARGUMENT],
     ['--cpu-cores', GetoptLong::REQUIRED_ARGUMENT],
     ['--max-cpu-usage', GetoptLong::REQUIRED_ARGUMENT],
-    ['--shutdown', GetoptLong::NO_ARGUMENT],
+    ['--delete-vm-after-image-creation', GetoptLong::NO_ARGUMENT],
+  [ '--shutdown', GetoptLong::NO_ARGUMENT],
     ['--network-ranges', GetoptLong::REQUIRED_ARGUMENT],
     ['--forensic-image-type', GetoptLong::REQUIRED_ARGUMENT],
     ['--ovirtuser', GetoptLong::REQUIRED_ARGUMENT],
@@ -411,6 +425,9 @@ opts.each do |opt, arg|
     when '--max-cpu-usage'
       Print.info "Max CPU usage set to #{arg}"
       options[:max_cpu_usage] = arg
+    when '--delete-vm-after-image-creation'
+      Print.info "Will delete the virtual machine after a forensic image has been generated"
+      options[:delete_vm_after_image_creation] = true
     when '--shutdown'
       Print.info 'Shutdown VMs after provisioning'
       options[:shutdown] = true

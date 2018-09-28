@@ -1,0 +1,1 @@
+include access_data_registry_viewer::install

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Place prefetch file</name>
+  <author>Jason Keighley</author>
+  <module_license>Apache v2</module_license>
+  <description>Place a prefetch file onto the system</description>
+
+  <type>prefetch</type>
+  <platform>windows</platform>
+
+  <!--optional details-->
+  <reference></reference>
+
+</utility>

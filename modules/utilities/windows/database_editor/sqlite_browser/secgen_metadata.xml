@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Sqlite browser install</name>
+  <author>Jason Keighley</author>
+  <module_license>Apache v2</module_license>
+  <description>A Sqlite browser installation</description>
+
+  <type>database_editor</type>
+  <platform>windows</platform>
+
+  <!--optional details-->
+  <reference></reference>
+
+  <requires>
+    <name>Chocolatey install</name>
+  </requires>
+</utility>

@@ -3,7 +3,7 @@ Puppet::Type.newtype(:mysql_database) do
 
   ensurable
 
-  autorequire(:file) { '/root/.my.cnf' }
+  autorequire(:utility) { '/root/.my.cnf' }
   autorequire(:class) { 'mysql::server' }
 
   newparam(:name, :namevar => true) do

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <!-- an example remote storage system, with a remotely exploitable vulnerability that can then be escalated to root -->
+  <system>
+    <system_name>storage_server</system_name>
+    <base platform="windows" name="Windows 2008 Virtualbox puppet 64"/>
+
+    <!--<forensic type="internet_artifacts" name="Internet history chrome"/>-->
+    <forensic type="illegal_images" name="Add illegal images cats">
+      <input into="image_path">
+        <value>C:\Users\vagrant\Desktop\Hello.jpg</value>
+      </input>
+    </forensic>
+
+    <!--<forensic type="illegal_images" name="Add illegal images cats">-->
+      <!--<input into="image_path">-->
+        <!--<value>C:\Users\vagrant\Desktop\meow.jpg</value>-->
+      <!--</input>-->
+    <!--</forensic>-->
+
+    <!--<forensic type="illegal_images" name="Add illegal images cats">-->
+      <!--<input into="image_path">-->
+        <!--<value>C:\Users\vagrant\Desktop\meowth.jpg</value>-->
+      <!--</input>-->
+    <!--</forensic>-->
+
+    <network type="private_network" range="dhcp"/>
+  </system>
+
+</scenario>

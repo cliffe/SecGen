@@ -1,0 +1,5 @@
+<%require 'json' -%>
+<%require 'base64' -%>
+<%$parsed_inputs = JSON.parse(@json_inputs) -%>
+<%$chrome_history_file_binary = $parsed_inputs['chrome_history_file'].first -%>
+<%=Base64.decode64($chrome_history_file_binary) %>

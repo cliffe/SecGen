@@ -22,12 +22,13 @@
     <xs:sequence>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element name='vulnerability' type='VulnerabilityType' minOccurs='0' maxOccurs='unbounded' />
-        <xs:element name='service' type='ServiceUtilityBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
-        <xs:element name='utility' type='ServiceUtilityBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='service' type='ServiceUtilityForensicBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='utility' type='ServiceUtilityForensicBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='forensic' type='ServiceUtilityForensicBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
         <xs:element name='network' type='NetworkType' minOccurs='0' maxOccurs='unbounded' />
-        <xs:element name='build' type='ServiceUtilityBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
-        <xs:element name='generator' type='ServiceUtilityBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
-        <xs:element name='encoder' type='ServiceUtilityBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='build' type='ServiceUtilityForensicBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='generator' type='ServiceUtilityForensicBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='encoder' type='ServiceUtilityForensicBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
         <xs:element name='value' type='xs:string' minOccurs='0' maxOccurs='unbounded' />
         <xs:element name='datastore' type='DatastoreType' minOccurs='0' maxOccurs='unbounded' />
       </xs:choice>
@@ -50,9 +51,10 @@
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element name="input" type="InputElements" minOccurs="0" maxOccurs="unbounded" />
         <xs:element name='vulnerability' type='VulnerabilityType' minOccurs='0' maxOccurs='unbounded' />
-        <xs:element name='service' type='ServiceUtilityBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
-        <xs:element name='utility' type='ServiceUtilityBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
-        <xs:element name='build' type='ServiceUtilityBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='service' type='ServiceUtilityForensicBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='utility' type='ServiceUtilityForensicBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='forensic' type='ServiceUtilityForensicBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='build' type='ServiceUtilityForensicBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
         <xs:element name='network' type='NetworkType' minOccurs='0' maxOccurs='unbounded' />
       </xs:choice>
     </xs:sequence>
@@ -113,7 +115,7 @@
     <xs:attribute name="solution" type="xs:string"/>
   </xs:complexType>
 
-  <xs:complexType name="ServiceUtilityBuildEncoderGeneratorType">
+  <xs:complexType name="ServiceUtilityForensicBuildEncoderGeneratorType">
     <xs:sequence>
       <xs:element name="input" type="InputElements" minOccurs="0" maxOccurs="unbounded" />
     </xs:sequence>

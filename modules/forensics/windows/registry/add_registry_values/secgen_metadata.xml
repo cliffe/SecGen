@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<forensic xmlns="http://www.github/cliffe/SecGen/forensic"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/forensic">
+  <name>Add registry values</name>
+  <author>Jason Keighley</author>
+  <module_license>Apache v2</module_license>
+  <description>Add registry values to Windows registry</description>
+
+  <type>registry</type>
+  <platform>windows</platform>
+
+  <!--optional details-->
+  <reference></reference>
+
+  <read_fact>key_locations</read_fact>
+  <read_fact>key_value_type</read_fact>
+  <read_fact>key_value</read_fact>
+
+  <default_input into="key_locations">
+    <value>HKLM\System\CurrentControlSet\Services\Puppet</value>
+  </default_input>
+
+  <default_input into="key_value_type">
+    <value>string</value>
+  </default_input>
+
+  <default_input into="key_value">
+    <value>String to demonstrate the module</value>
+  </default_input>
+
+  <requires>
+    <name>Registry library</name>
+  </requires>
+
+</forensic>

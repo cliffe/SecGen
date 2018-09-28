@@ -7,7 +7,7 @@ def gem_type(place_or_version)
   if place_or_version =~ /^git:/
     :git
   elsif place_or_version =~ /^file:/
-    :file
+    :utility
   else
     :gem
   end

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<encoder xmlns="http://www.github/cliffe/SecGen/encoder"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/encoder">
+  <name>SHA1 hash encoder file</name>
+  <author>Jason Keighley</author>
+  <module_license>Apache v2</module_license>
+  <description>SHA1 hash encoder module</description>
+
+  <type>hash</type>
+  <platform>windows</platform>
+
+  <read_fact>strings_to_encode</read_fact>
+
+  <output_type>hash</output_type>
+</encoder>

@@ -15,6 +15,7 @@ SCENARIO_SCHEMA_FILE = "#{ROOT_DIR}/lib/schemas/scenario_schema.xsd"
 VULNERABILITY_SCHEMA_FILE = "#{ROOT_DIR}/lib/schemas/vulnerability_metadata_schema.xsd"
 SERVICE_SCHEMA_FILE = "#{ROOT_DIR}/lib/schemas/service_metadata_schema.xsd"
 UTILITY_SCHEMA_FILE = "#{ROOT_DIR}/lib/schemas/utility_metadata_schema.xsd"
+FORENSICS_SCHEMA_FILE = "#{ROOT_DIR}/lib/schemas/forensic_metadata_schema.xsd"
 GENERATOR_SCHEMA_FILE = "#{ROOT_DIR}/lib/schemas/generator_metadata_schema.xsd"
 ENCODER_SCHEMA_FILE = "#{ROOT_DIR}/lib/schemas/encoder_metadata_schema.xsd"
 NETWORK_SCHEMA_FILE = "#{ROOT_DIR}/lib/schemas/network_metadata_schema.xsd"
@@ -29,6 +30,7 @@ MODULES_DIR = "#{ROOT_DIR}/modules/"
 VULNERABILITIES_DIR = "#{MODULES_DIR}vulnerabilities/"
 SERVICES_DIR = "#{MODULES_DIR}services/"
 UTILITIES_DIR = "#{MODULES_DIR}utilities/"
+FORENSICS_DIR = "#{MODULES_DIR}forensics/"
 GENERATORS_DIR = "#{MODULES_DIR}generators/"
 ENCODERS_DIR = "#{MODULES_DIR}encoders/"
 NETWORKS_DIR = "#{MODULES_DIR}networks/"
@@ -42,9 +44,15 @@ DOCUMENTATION_DIR = "#{ROOT_DIR}/documentation/yard/doc"
 # Path to resources
 WORDLISTS_DIR = "#{ROOT_DIR}/lib/resources/wordlists"
 IMAGES_DIR = "#{ROOT_DIR}/lib/resources/images"
+URLLISTS_DIR = "#{ROOT_DIR}/lib/resources/urllists"
+INTERNET_BROWSER_FILES_DIR = "#{ROOT_DIR}/lib/resources/internet_browser_files"
+ILLEGAL_IMAGES_DIR = "#{ROOT_DIR}/lib/resources/illegal_images"
+FORENSIC_ARTEFACTS_DIR = "#{ROOT_DIR}/lib/resources/forensic_artefacts"
 
 # Path to secgen_functions puppet module
 SECGEN_FUNCTIONS_PUPPET_DIR = "#{MODULES_DIR}build/puppet/secgen_functions"
+
+FILE_TRANSFER_STORAGE_MODULE_DIR = "#{ROOT_DIR}/modules/forensics/windows/file_transfer_storage/file_transfer_storage_module"
 
 ## PACKER CONSTANTS ##
 

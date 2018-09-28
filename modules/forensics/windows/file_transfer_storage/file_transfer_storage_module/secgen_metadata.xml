@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<forensic xmlns="http://www.github/cliffe/SecGen/forensic"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/forensic">
+  <name>Store files for transfer</name>
+  <author>Jason Keighley</author>
+  <module_license>Apache v2</module_license>
+  <description>Store files to be grabbed via the file { source => puppet:/// } resource to avoid file transfer issues via the source and content tags</description>
+
+  <type>file_transfer_storage</type>
+  <platform>windows</platform>
+
+  <!--optional details-->
+  <reference></reference>
+
+</forensic>

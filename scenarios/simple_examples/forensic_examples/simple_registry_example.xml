@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <!-- an example remote storage system, with a remotely exploitable vulnerability that can then be escalated to root -->
+  <system>
+    <system_name>windows_server</system_name>
+    <base platform="windows" name="Windows 2008 Virtualbox puppet 64"/>
+
+    <utility type="registry" name="Access data registry viewer install"/>
+
+    <forensic type="registry" name="Add registry keys">
+      <input into="key_locations">
+        <value>HKLM\System\CurrentControlSet\Services\Example1</value>
+      </input>
+    </forensic>
+
+    <forensic type="registry" name="Add registry values">
+      <input into="key_locations">
+        <value>HKLM\System\CurrentControlSet\Services\Example2</value>
+      </input>
+
+      <input into="key_value_type">
+        <value>string</value>
+      </input>
+
+      <input into="key_value">
+        <value>String to demonstrate the module</value>
+      </input>
+    </forensic>
+
+    <network type="private_network" range="dhcp"/>
+  </system>
+
+</scenario>

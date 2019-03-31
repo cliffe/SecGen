@@ -1,0 +1,488 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+          <system>
+            <system_name>decoder_box</system_name>
+            <base platform="linux" type="desktop" distro="Stretch"/>
+
+            <!-- Generates the passwords for each level -->
+            <input into_datastore="passwords_to_encode">
+              <generator type="medium_password_generator" />
+              <generator type="medium_password_generator" />
+              <generator type="medium_password_generator" />
+              <generator type="medium_password_generator" />
+            </input>
+
+            <input into_datastore="IP_addresses">
+              <value>10.172.0.6</value>
+            </input>
+
+            <!-- Generates each flag fragment -->
+            <input into_datastore="flag_fragments">
+              <generator module_path=".*random_word">
+                <input into="min_length">
+                  <value>5</value>
+                </input>
+                <input into="max_length">
+                  <value>15</value>
+                </input>
+              </generator>
+              <generator module_path=".*random_word">
+                <input into="min_length">
+                  <value>5</value>
+                </input>
+                <input into="max_length">
+                  <value>15</value>
+                </input>
+              </generator>
+              <generator module_path=".*random_word">
+                <input into="min_length">
+                  <value>5</value>
+                </input>
+                <input into="max_length">
+                  <value>15</value>
+                </input>
+              </generator>
+              <generator module_path=".*random_word">
+                <input into="min_length">
+                  <value>5</value>
+                </input>
+                <input into="max_length">
+                  <value>15</value>
+                </input>
+              </generator>
+              <generator module_path=".*random_word">
+                <input into="min_length">
+                  <value>5</value>
+                </input>
+                <input into="max_length">
+                  <value>15</value>
+                </input>
+              </generator>
+              <generator module_path=".*random_word">
+                <input into="min_length">
+                  <value>5</value>
+                </input>
+                <input into="max_length">
+                  <value>15</value>
+                </input>
+              </generator>
+              <generator module_path=".*random_word">
+                <input into="min_length">
+                  <value>5</value>
+                </input>
+                <input into="max_length">
+                  <value>15</value>
+                </input>
+              </generator>
+              <generator module_path=".*random_word">
+                <input into="min_length">
+                  <value>5</value>
+                </input>
+                <input into="max_length">
+                  <value>15</value>
+                </input>
+              </generator>
+              <generator module_path=".*random_word">
+                <input into="min_length">
+                  <value>5</value>
+                </input>
+                <input into="max_length">
+                  <value>15</value>
+                </input>
+              </generator>
+            </input>
+
+            <!-- Joins the flag fragments so Hacktivity will pick them up -->
+            <input into_datastore="combined_fragments">
+              <generator type="concat_flag.*">
+                <input into="strings_to_join">
+                  <datastore access="0">flag_fragments</datastore>
+                  <datastore access="1">flag_fragments</datastore>
+                  <datastore access="2">flag_fragments</datastore>
+                </input>
+              </generator>
+              <generator type="concat_flag.*">
+                <input into="strings_to_join">
+                  <datastore access="3">flag_fragments</datastore>
+                  <datastore access="4">flag_fragments</datastore>
+                  <datastore access="5">flag_fragments</datastore>
+                </input>
+              </generator>
+              <generator type="concat_flag.*">
+                <input into="strings_to_join">
+                  <datastore access="6">flag_fragments</datastore>
+                  <datastore access="7">flag_fragments</datastore>
+                  <datastore access="8">flag_fragments</datastore>
+                </input>
+              </generator>
+            </input>
+
+
+            <!-- Generates the encoded strings for the trials -->
+            <input into_datastore="trials">
+              <!-- trial 1 -->
+              <encoder type="hash" difficulty="low">
+                <input into="strings_to_encode">
+                  <value>Well done, here have a fragment (1 of 3)</value>
+                  <datastore access="0">flag_fragments</datastore>
+                </input>
+              </encoder>
+              <!-- trial 2 -->
+              <encoder type="caesar_cipher">
+                <input into="strings_to_encode">
+                  <value>Well done, here have a fragment (2 of 3)</value>
+                  <datastore access="1">flag_fragments</datastore>
+                </input>
+                <input into="shift">
+                  <generator module_path=".*random_number">
+                    <input into="minimum">
+                      <value>2</value>
+                    </input>
+                    <input into="maximum">
+                      <value>24</value>
+                    </input>
+                  </generator>
+                </input>
+              </encoder>
+              <!-- trial 3 -->
+              <encoder module_path=".*base64">
+                <input into="strings_to_encode">
+                  <value>Well done, here have a fragment (3 of 3)</value>
+                  <datastore access="2">flag_fragments</datastore>
+                  <value>Oh, also the password for level two is:</value>
+                  <datastore access="2">passwords_to_encode</datastore>
+                </input>
+              </encoder>
+              <!-- trial 4 -->
+              <encoder type="hash" difficulty="medium">
+                <input into="strings_to_encode">
+                  <value>Well done, here have a fragment (1 of 3)</value>
+                  <datastore access="3">flag_fragments</datastore>
+                </input>
+              </encoder>
+              <!-- trial 5 -->
+              <encoder type="shift_cipher">
+                <input into="strings_to_encode">
+                  <value>Well done, here have a fragment{2 of 3}:</value>
+                  <datastore access="4">flag_fragments</datastore>
+                </input>
+                <input into="shift">
+                  <generator module_path=".*random_number">
+                    <input into="minimum">
+                      <value>2</value>
+                    </input>
+                    <input into="maximum">
+                      <value>24</value>
+                    </input>
+                  </generator>
+                </input>
+              </encoder>
+              <!-- trial 6 -->
+              <encoder type="dna_encoder">
+                <input into="strings_to_encode">
+                  <encoder type="caesar_cipher">
+                    <input into="strings_to_encode">
+                      <value>Well done, here have a fragment{3 of 3}:</value>
+                      <datastore access="5">flag_fragments</datastore>
+                      <value>Oh, also the password for level three is:</value>
+                      <datastore access="2">passwords_to_encode</datastore>
+                    </input>
+                    <input into="shift">
+                      <generator module_path=".*random_number">
+                        <input into="minimum">
+                          <value>2</value>
+                        </input>
+                        <input into="maximum">
+                          <value>24</value>
+                        </input>
+                      </generator>
+                    </input>
+                  </encoder>
+                </input>
+              </encoder>
+
+              <!-- trial 7 -->
+              <encoder type="braille_encoder">
+                <input into="strings_to_encode">
+                  <encoder type="caesar_cipher">
+                    <input into="strings_to_encode">
+                      <value>Well done, here have a fragment{1 of 3}:</value>
+                      <datastore access="6">flag_fragments</datastore>
+                    </input>
+                    <input into="shift">
+                      <generator module_path=".*random_number">
+                        <input into="minimum">
+                          <value>2</value>
+                        </input>
+                        <input into="maximum">
+                          <value>24</value>
+                        </input>
+                      </generator>
+                    </input>
+                  </encoder>
+                </input>
+              </encoder>
+              <!-- trial 8 -->
+              <generator type="hidden_data_in_image_file">
+                <input into="string_to_leak">
+                    <value>Well done, here have a fragment{2 of 3}:</value>
+                    <datastore access="7">flag_fragments</datastore>
+                </input>
+              </generator>
+              <!-- trial 9 -->
+              <encoder type="morse_code_encoder">
+                <input into="strings_to_encode">
+                  <encoder type="caesar_cipher">
+                    <input into="strings_to_encode">
+                      <value>Well done, here have a fragment{3 of 3}:</value>
+                      <datastore access="8">flag_fragments</datastore>
+                    </input>
+                    <input into="shift">
+                      <generator module_path=".*random_number">
+                        <input into="minimum">
+                          <value>2</value>
+                        </input>
+                        <input into="maximum">
+                          <value>24</value>
+                        </input>
+                      </generator>
+                    </input>
+                  </encoder>
+                </input>
+              </encoder>
+            </input>
+
+            <!-- Generates the user account and levels -->
+            <utility module_path=".*parameterised_accounts">
+              <input into="accounts" into_datastore="accounts">
+              <!-- player user account -->
+              <generator type="account">
+                <input into="username">
+                  <value>player</value>
+                </input>
+                <input into="password">
+                  <datastore access="0">passwords_to_encode</datastore>
+                </input>
+                <input into="leaked_filenames">
+                  <value>mission.txt</value>
+                </input>
+                <input into="strings_to_leak">
+                  <value>Hello there player!</value>
+                  <value>Your mission is to advance through 3 levels participating in some decoding challenges to complete this CTF</value>
+                  <value>Good luck</value>
+                  <value>The password to gain access to level one is:</value>
+                  <datastore access="1">passwords_to_encode</datastore>
+                  <value>To access level one utilise the following command: su levelone</value>
+                  <value>enter the password then enter: cd</value>
+                  <value>Note there are hash tools installed on this machine, however some challenges may require some googling...</value>
+                </input>
+                <input into="super_user">
+                  <value>false</value>
+                </input>
+              </generator>
+
+              <!-- Level one -->
+              <generator type="account">
+                <input into="username">
+                  <value>levelone</value>
+                </input>
+                <input into="password">
+                  <datastore access="1">passwords_to_encode</datastore>
+                </input>
+                <input into="leaked_filenames">
+                  <value>welcome.txt</value>
+                </input>
+                <input into="strings_to_leak">
+                  <value>Hello there player!</value>
+                  <value>Welcome to level one, to complete this box there are a series of decoding challenges with some hidden flags</value>
+                  <value>to get the final 'boss' flag of each level you must combine all the flag fragments within: flag{fragmentone fragmenttwo ...}</value>
+                  <value>each fragement will be clearly labelled so make sure you dont miss them!</value>
+                </input>
+                <input into="super_user">
+                  <value>false</value>
+                </input>
+                <!-- Challenge file creation -->
+                  <input into="data_to_leak">
+                  <!-- File with encoded passwords and hint -->
+                  <generator type="leaked_data">
+                    <input into="data">
+                      <datastore access="0">trials</datastore>
+                    </input>
+                    <input into="filename">
+                      <value>trial_1</value>
+                    </input>
+                    <input into="subdirectory">
+                      <value>trials</value>
+                    </input>
+                  </generator>
+
+                  <generator type="leaked_data">
+                    <input into="data">
+                      <datastore access="1">trials</datastore>
+                    </input>
+                    <input into="filename">
+                      <value>trial_2</value>
+                    </input>
+                    <input into="subdirectory">
+                      <value>trials</value>
+                    </input>
+                  </generator>
+
+                  <generator type="leaked_data">
+                    <input into="data">
+                      <datastore access="2">trials</datastore>
+                    </input>
+                    <input into="filename">
+                      <value>trial_3</value>
+                    </input>
+                    <input into="subdirectory">
+                      <value>trials</value>
+                    </input>
+                  </generator>
+                </input>
+              </generator>
+
+
+              <!-- Level two -->
+              <generator type="account">
+                <input into="username">
+                  <value>leveltwo</value>
+                </input>
+                <input into="password">
+                  <datastore access="2">passwords_to_encode</datastore>
+                </input>
+                <input into="super_user">
+                  <value>false</value>
+                </input>
+                <!-- Challenge file creation -->
+                  <input into="data_to_leak">
+                  <!-- File with encoded passwords and hint -->
+                  <generator type="leaked_data">
+                    <input into="data">
+                      <datastore access="3">trials</datastore>
+                    </input>
+                    <input into="filename">
+                      <value>trial_1</value>
+                    </input>
+                    <input into="subdirectory">
+                      <value>trials</value>
+                    </input>
+                  </generator>
+
+                  <generator type="leaked_data">
+                    <input into="data">
+                      <datastore access="4">trials</datastore>
+                    </input>
+                    <input into="filename">
+                      <value>trial_2</value>
+                    </input>
+                    <input into="subdirectory">
+                      <value>trials</value>
+                    </input>
+                  </generator>
+
+                  <generator type="leaked_data">
+                    <input into="data">
+                      <datastore access="5">trials</datastore>
+                    </input>
+                    <input into="filename">
+                      <value>trial_3</value>
+                    </input>
+                    <input into="subdirectory">
+                      <value>trials</value>
+                    </input>
+                  </generator>
+                </input>
+              </generator>
+
+
+              <!-- Level three -->
+              <generator type="account">
+                <input into="username">
+                  <value>levelthree</value>
+                </input>
+                <input into="password">
+                  <datastore access="3">passwords_to_encode</datastore>
+                </input>
+                <input into="super_user">
+                  <value>false</value>
+                </input>
+                <!-- Challenge file creation -->
+                  <input into="data_to_leak">
+                  <!-- File with encoded passwords and hint -->
+                  <generator type="leaked_data">
+                    <input into="data">
+                      <datastore access="6">trials</datastore>
+                    </input>
+                    <input into="filename">
+                      <value>trial_1</value>
+                    </input>
+                    <input into="subdirectory">
+                      <value>trials</value>
+                    </input>
+                  </generator>
+
+                  <generator type="leaked_data">
+                    <input into="data">
+                      <datastore access="7">trials</datastore>
+                    </input>
+                    <input into="filename">
+                      <value>trial_2</value>
+                    </input>
+                    <input into="subdirectory">
+                      <value>trials</value>
+                    </input>
+                  </generator>
+
+                  <generator type="leaked_data">
+                    <input into="data">
+                      <datastore access="8">trials</datastore>
+                    </input>
+                    <input into="filename">
+                      <value>trial_3</value>
+                    </input>
+                    <input into="subdirectory">
+                      <value>trials</value>
+                    </input>
+                  </generator>
+                </input>
+              </generator>
+            </input>
+            </utility>
+
+            <utility module_path=".*hash_tools"/>
+            <utility module_path=".*hashcat"/>
+            <utility module_path=".*iceweasel">
+              <input into="accounts">
+                <datastore>accounts</datastore>
+              </input>
+              <input into="autostart">
+                <value>true</value>
+              </input>
+            </utility>
+
+            <!-- auto login the player -->
+            <utility module_path=".*kde_minimal">
+              <input into="accounts">
+                <datastore>accounts</datastore>
+              </input>
+              <input into="autostart_konsole">
+                <value>true</value>
+              </input>
+              <input into="autologin_user">
+                <datastore access="0" access_json="['username']">accounts</datastore>
+              </input>
+            </utility>
+
+            <network type="private_network">
+              <input into="IP_address">
+                <datastore access="0">IP_addresses</datastore>
+              </input>
+            </network>
+
+          </system>
+</scenario>

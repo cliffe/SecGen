@@ -1,0 +1,25 @@
+[
+    {
+        "Name": "dummyapp_default",
+        "Id": "c5810f1e3113e8856c0615d9484a7491b7367ea80c6c32a2e5118069fe4af565",
+        "Created": "2017-11-28T11:37:08.744115226-05:00",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "172.18.0.0/16",
+                    "Gateway": "172.18.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Containers": {},
+        "Options": {},
+        "Labels": {}
+    }
+]

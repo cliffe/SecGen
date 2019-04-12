@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<encoder xmlns="http://www.github/cliffe/SecGen/encoder"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/encoder">
+  <name>Octal Encoder</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Takes ASCII strings and encodes each character into it's Octal representation.</description>
+
+  <type>ascii_reversible</type>
+  <type>oct_encoder</type>
+  <type>string_encoder</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+  <difficulty>medium</difficulty>
+
+  <solution>Convert the octal (base 8) string character by character in sets of 3 into its ASCII value.
+    Decoders are available online e.g. http://www.unit-conversion.info/texttools/octal/
+  </solution>
+
+  <read_fact>strings_to_encode</read_fact>
+
+  <output_type>encoded_strings</output_type>
+</encoder>

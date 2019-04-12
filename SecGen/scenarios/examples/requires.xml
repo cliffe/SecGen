@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<system>
+		<system_name>requires_example</system_name>
+		<base platform="linux" type="server" distro=".*Ubuntu.*"/>
+
+		<utility module_path=".*requires_ubuntu.*"/>
+
+		<network type="private_network">
+			<input into="IP_address">
+				<value>172.16.0.3</value>
+			</input>
+		</network>
+	</system>
+
+</scenario>

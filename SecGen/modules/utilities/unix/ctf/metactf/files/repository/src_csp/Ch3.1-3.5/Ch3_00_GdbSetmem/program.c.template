@@ -1,0 +1,148 @@
+// Level derived from Kevin Zerzan, New Beginnings 12/2016
+#include <stdio.h>
+#include <fcntl.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <string.h>
+#define USERDEF0 AAAAAA
+#define USERDEF1 BBBBBB
+
+//Hash function created by Thomas Wang and taken from https://naml.us/post/inverse-of-a-hash-function/
+
+unsigned long long int hash(unsigned long long int key) {
+  key = (~key) + (key << 21); // key = (key << 21) - key - 1;
+  key = key ^ (key >> 24);
+  key = (key + (key << 3)) + (key << 8); // key * 265
+  key = key ^ (key >> 14);
+  key = (key + (key << 2)) + (key << 4); // key * 21
+  key = key ^ (key >> 28);
+  key = key + (key << 31);
+  return key;
+}
+
+unsigned long long int inverse_hash(unsigned long long int key) {
+  unsigned long long int tmp;
+
+  // Invert key = key + (key << 31)
+  tmp = key-(key<<31);
+  key = key-(tmp<<31);
+
+  // Invert key = key ^ (key >> 28)
+  tmp = key^key>>28;
+  key = key^tmp>>28;
+
+  // Invert key *= 21
+  key *= 14933078535860113213u;
+
+  // Invert key = key ^ (key >> 14)
+  tmp = key^key>>14;
+  tmp = key^tmp>>14;
+  tmp = key^tmp>>14;
+  key = key^tmp>>14;
+
+  // Invert key *= 265
+  key *= 15244667743933553977u;
+
+  // Invert key = key ^ (key >> 24)
+  tmp = key^key>>24;
+  key = key^tmp>>24;
+
+  // Invert key = (~key) + (key << 21)
+  tmp = ~key;
+  tmp = ~(key-(tmp<<21));
+  tmp = ~(key-(tmp<<21));
+  key = ~(key-(tmp<<21));
+
+  return key;
+}
+
+void print_pswd(unsigned long long int key) {
+    printf("%llu\n", inverse_hash(key));
+}
+
+void print_good(void) {
+  printf("Good Job.\n");
+  printflag();
+}
+
+void segv_handler(int sig) {
+        printf("Segmentation fault.  Try again.\n");
+        exit(0);
+}
+
+char msg[] =
+  "In GDB, one can overwrite a memory address while at a breakpoint using\n"
+  "the command \"set {dt} 0xaddress=value\" where dt is the data type,\n"
+  "address is the memory location in hex, and value is what you wish to\n"
+  "write to the address.  In this program, there is a comparison involving\n"
+  "an integer that, if satisfied, will print the password.  Changing the\n"
+  "integer to the appropriate value will then cause the password to be\n"
+  "printed. You can then use this password to solve the level outside of\n"
+  "the debugger.  Some other GDB commands that might help you include:\n"
+  "   break *main+30    (sets a breakpoint at this location in main)\n"
+  "   p /x $rbp-0x24    (prints the hexadecimal address of -0x24(%%rbp)\n"
+  "   x /xw $rbp-0x24   (prints the integer at address -0x24(%%rbp)\n\n";
+
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg[i%len] + msg[(i+1)%len];
+    h2 += msg[(i+1)%len] + msg[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg);
+  else
+    printf("%s",msg);
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main(void) {
+  signal(SIGSEGV, segv_handler);
+  int x=1024;
+  unsigned long long int u;
+  unsigned long long int key=USERDEF0;
+
+  print_msg();
+  printf("Enter the password: ");
+  scanf("%llu",&u);
+  if(x==USERDEF1) {
+    print_pswd(key);
+  }
+
+  if(hash(u)==key) {
+    print_good();
+  }
+  else {
+    printf("Try again.\n");
+  }
+  return 0;
+}

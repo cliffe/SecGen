@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Vulnerable PHP Admin Account</name>
+  <author>Joshua Hickling</author>
+  <module_license>MIT</module_license>
+  <description>
+    Utilised in commando vulnerability for a admin account which can be logged into via php.
+    Created by SQL, used to differentitate the site.
+  </description>
+
+  <type>php_admin_account</type>
+  <platform>linux</platform>
+
+  <read_fact>username</read_fact>
+  <read_fact>password</read_fact>
+  <read_fact>name</read_fact>
+  <read_fact>address</read_fact>
+
+  <default_input into="username">
+    <generator module_path=".*default_admin_username"/>
+  </default_input>
+  <default_input into="password">
+    <generator module_path=".*default_admin_password"/>
+  </default_input>
+  <default_input into="name">
+    <generator type="name" />
+  </default_input>
+  <default_input into="address">
+    <generator type="address_generator_uk" />
+  </default_input>
+
+  <output_type>php_admin_account</output_type>
+</generator>

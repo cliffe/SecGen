@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+
+  <name>XSS Search Vulnerability Generator</name>
+  <author>Joshua Hickling</author>
+  <module_license>MIT</module_license>
+  <description>Generates a php template with a vector that is vulnerable to Reflected XSS attacks</description>
+
+  <type>xss_snippet</type>
+  <type>reflected_xss</type>
+  <type>search_vuln</type>
+  <platform>unix</platform>
+
+  <default_input into="table_headings">
+    <generator module_path=".*product_table_headings" />
+  </default_input>
+
+  <default_input into="blacklist">
+    <generator module_path=".*xss_blacklist" />
+  </default_input>
+
+  <default_input into="strings_to_leak">
+    <generator type="flag_generator" />
+  </default_input>
+  <output_type>generated_attack_template</output_type>
+</generator>

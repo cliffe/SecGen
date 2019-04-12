@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Thunderbird
+GenericName=Thunderbird email client
+Comment=Autostart script
+Exec=/usr/bin/thunderbird
+Terminal=false
+Type=Application
+X-GNOME-Autostart-enabled=true

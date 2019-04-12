@@ -1,0 +1,114 @@
+/**
+ * The base configurations of the WordPress.
+ *
+ * This file has the following configurations: MySQL settings, Table Prefix,
+ * Secret Keys, WordPress Language, and ABSPATH. You can find more information
+ * by visiting {@link http://codex.wordpress.org/Editing_wp-config.php Editing
+ * wp-config.php} Codex page. You can get the MySQL settings from your web host.
+ *
+ * This file is used by the wp-config.php creation script during the
+ * installation. You don't have to use the web site, you can just copy this file
+ * to "wp-config.php" and fill in the values.
+ *
+ * @package WordPress
+ */
+
+// ** MySQL settings - You can get this info from your web host ** //
+/** The name of the database for WordPress */
+define('DB_NAME', '<%= @db_name %>');
+
+/** MySQL database username */
+define('DB_USER', '<%= @db_user %>');
+
+/** MySQL database password */
+define('DB_PASSWORD', '<%= @db_password %>');
+
+/** MySQL hostname */
+define('DB_HOST', '<%= @db_host %>');
+
+/** Database Charset to use in creating database tables. */
+define('DB_CHARSET', 'utf8');
+
+/** The Database Collate type. Don't change this if in doubt. */
+define('DB_COLLATE', '');
+
+/**
+ * WordPress Database Table prefix.
+ *
+ * You can have multiple installations in one database if you give each a unique
+ * prefix. Only numbers, letters, and underscores please!
+ */
+$table_prefix  = '<%= @wp_table_prefix %>';
+
+/**
+ * WordPress Localized Language, defaults to English.
+ *
+ * Change this to localize WordPress. A corresponding MO file for the chosen
+ * language must be installed to wp-content/languages. For example, install
+ * de_DE.mo to wp-content/languages and set WPLANG to 'de_DE' to enable German
+ * language support.
+ */
+
+define('WPLANG', '<%= @wp_lang %>');
+
+/**
+ * For developers: WordPress debugging mode.
+ *
+ * Change this to true to enable the display of notices during development.
+ * It is strongly recommended that plugin and theme developers use WP_DEBUG
+ * in their development environments.
+ *
+ * WP_DEBUG_LOG is a companion to WP_DEBUG that causes all errors to also be
+ * saved to a debug.log log file inside the /wp-content/ directory. This is
+ * useful if you want to review all notices later or need to view notices
+ * generated off-screen (e.g. during an AJAX request or wp-cron run).
+ *
+ * WP_DEBUG_DISPLAY is another companion to WP_DEBUG that controls whether
+ * debug messages are shown inside the HTML of pages or not. The default
+ * is 'true' which shows errors and warnings as they are generated. Setting
+ * this to false will hide all errors. This should be used in conjunction with
+ * WP_DEBUG_LOG so that errors can be reviewed later.
+ */
+define('WP_DEBUG', <%= @wp_debug %>);
+define('WP_DEBUG_LOG', <%= @wp_debug_log %>);
+define('WP_DEBUG_DISPLAY', <%= @wp_debug_display %>);
+
+<% if @wp_plugin_dir != 'DEFAULT' %>
+define('WP_PLUGIN_DIR', '<%= @wp_plugin_dir %>');
+<% end %>
+
+<% if @wp_proxy_host and ! @wp_proxy_host.empty? %>
+/* Proxy Settings */
+define('WP_PROXY_HOST', '<%= @wp_proxy_host %>');
+<% if @wp_proxy_port and ! @wp_proxy_port.empty? %>
+define('WP_PROXY_PORT', '<%= @wp_proxy_port %>');
+<% end %>
+<% end %>
+
+<% if @wp_site_url  %>
+define('WP_SITEURL', '<%= @wp_site_url %>');
+<% end %>
+
+<% if @wp_multisite %>
+/* Multisite */
+define('WP_ALLOW_MULTISITE', true);
+define('MULTISITE', true);
+define('SUBDOMAIN_INSTALL', true);
+define('DOMAIN_CURRENT_SITE', '<%= @wp_site_domain %>');
+define('PATH_CURRENT_SITE', '/');
+define('SITE_ID_CURRENT_SITE', 1);
+define('BLOG_ID_CURRENT_SITE', 1);
+<% end %>
+
+<% if @wp_additional_config != 'DEFAULT' -%>
+<%= scope.function_template([@wp_additional_config]) %>
+<% end -%>
+/* That's all, stop editing! Happy blogging. */
+
+/** Absolute path to the WordPress directory. */
+if ( !defined('ABSPATH') )
+        define('ABSPATH', dirname(__FILE__) . '/');
+
+/** Sets up WordPress vars and included files. */
+require_once(ABSPATH . 'wp-settings.php');
+

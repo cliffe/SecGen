@@ -1,0 +1,20 @@
+[
+    {
+        "Name": "none",
+        "Id": "23d26bed53a8c458e40268f559ce7b5bb40d1a9a090c7acfc931d9fc2c4eb169",
+        "Created": "2017-02-16T12:45:25.171935752-05:00",
+        "Scope": "local",
+        "Driver": "null",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": []
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Containers": {},
+        "Options": {},
+        "Labels": {}
+    }
+]

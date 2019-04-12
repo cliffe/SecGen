@@ -1,0 +1,21 @@
+{
+    <% if @dns %> "dns": <%= @dns_array.to_json %>,<% end -%>
+    <% if @dns_search %> "dns-search": <%= @dns_search_array.to_json %>,<% end -%>
+    <% if @log_driver %> "log-driver": "<%= @log_driver %>", <% end -%>
+    <% if @mtu %> "mtu": <%= @mtu %>, <% end -%>
+    <% if @tcp_bind %> "hosts": <%= @tcp_bind_array.to_json %>, <% end -%>
+    <% if @log_level %> "log-level": "<%= @log_level %>", <% end -%>
+    <% if @tls_enable %> "tlsverify": true, 
+    "tlscacert": "<%= @tls_cacert %>",
+    "tlscert": "<%= @tls_cert %>",
+    "tlskey": "<%= @tls_key %>",
+    <% end -%>
+    <% if @socket_group %>"group": "<%= @socket_group %>",<% end -%>
+    <% if @bridge %>"bridge": "<%= @bridge %>",<% end -%>
+    <% if @fixed_cidr %>"fixed-cidr": "<%= @fixed_cidr %>",<% end -%>
+    <% if @registry_mirror %>"registry-mirrors": ["<%= @registry_mirror%>"], <% end -%>
+    <% if @extra_parameters %><% @extra_parameters_array.each do |param| %>
+    <%= param %> ,<% end %>
+    <% end -%>
+    "labels": <%= @labels_array.to_json %>
+}

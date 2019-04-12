@@ -1,0 +1,3 @@
+#### Limitations of integrity checking
+
+Perhaps the greatest limitation to all of these approaches, is that if a system is compromised, you may not be able to trust any of the tools on the system, or even the operating system itself to behave as expected. In the case of a security compromise, your configuration files may have been altered, including any hashes you have stored locally, and tools may have been replaced by Trojan horses. For this reason it is safer to run tools over the network or from a removable drive, with read-only access to protect your backups and hashes. Even then, the OS/kernel/shell may not be telling you the truth about what is happening, since a rootkit could be concealing the truth from other programs.

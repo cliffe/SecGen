@@ -1,0 +1,27 @@
+# This file is managed by Puppet -- <%= @name %>
+#
+# Set the 'jvm_options' parameter on the logstash class to change this file.
+<%
+def set_default(options, match_string, default)
+  options.detect {|o| o.include?(match_string)} || options.push(default)
+end
+
+defaults = {
+  '-Xms' => '-Xms256m',
+  '-Xmx' => '-Xmx1g',
+  'UseParNewGC' => '-XX:+UseParNewGC',
+  'UseConcmarksweepgc' => '-XX:+UseConcMarkSweepGC',
+  'CMSInitiatingOccupancyFraction=' => '-XX:CMSInitiatingOccupancyFraction=75',
+  'UseCMSInitiatingOccupancyOnly' => '-XX:+UseCMSInitiatingOccupancyOnly',
+  'DisableExplicitGC' => '-XX:+DisableExplicitGC',
+  '-Djava.aws.headless=' => '-Djava.awt.headless=true',
+  '-Dfile.encoding=' => '-Dfile.encoding=UTF-8',
+  'HeapDumpOnOutOfMemoryError' => '-XX:+HeapDumpOnOutOfMemoryError',
+}
+
+defaults.each {|k,v| set_default(@jvm_options, k, v)}
+-%>
+
+<% @jvm_options.sort.each do |line| -%>
+<%= line %>
+<% end -%>

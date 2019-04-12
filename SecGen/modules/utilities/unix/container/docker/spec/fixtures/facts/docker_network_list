@@ -1,0 +1,4 @@
+d9e04c239a53        bridge               bridge              local
+ca5f5f36c8d7        host                 host                local
+23d26bed53a8        none                 null                local
+c5810f1e3113        dummyapp_default     bridge              local

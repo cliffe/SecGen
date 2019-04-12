@@ -1,0 +1,15 @@
+---
+# This file is managed via modulesync
+# https://github.com/voxpupuli/modulesync
+# https://github.com/voxpupuli/modulesync_config
+HOSTS:
+  debian-78-x64:
+    roles:
+      - master
+    platform: debian-7-amd64
+    box: puppetlabs/debian-7.8-64-nocm
+    hypervisor: vagrant
+CONFIG:
+  type: foss
+...
+# vim: syntax=yaml

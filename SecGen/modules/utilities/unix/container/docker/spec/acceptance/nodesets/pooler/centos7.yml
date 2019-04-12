@@ -1,0 +1,15 @@
+HOSTS:
+  centos7:
+    roles:
+      - default
+    platform: el-7-x86_64
+    hypervisor: vmpooler
+    template: Delivery/Quality Assurance/Templates/vCloud/centos-7-x86_64
+CONFIG:
+  nfs_server: none
+  consoleport: 443
+  datastore: instance0
+  folder: Delivery/Quality Assurance/Enterprise/Dynamic
+  resourcepool: delivery/Quality Assurance/Enterprise/Dynamic
+  pooling_api: http://vcloud.delivery.puppetlabs.net/
+  type: foss

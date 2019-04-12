@@ -1,0 +1,27 @@
+<?php
+	// This is taken from lauras code and modified slighty to line up with commando variables etc
+	//Start the Session
+	//php login code taken from http://codingcyber.org/simple-login-script-php-and-mysql-64/
+	require('connect.php');
+
+	//3. If the form is submitted or not.
+	//3.1 If the form is submitted
+	if (isset($_POST['username']) and isset($_POST['password'])){
+
+		//3.1.1 Assigning posted values to variables.
+		$username = $_POST['username'];
+		$password = $_POST['password'];
+
+		//3.1.2 Checking the values are existing in the database or not
+		$usernamequery = "SELECT * FROM `<%= @user_table_name %>` WHERE Username='$username' and Password='$password'";
+		$result = mysqli_query($conn2, $usernamequery);
+		$count = mysqli_num_rows($result);
+
+		if ($count == 1){
+				$_SESSION['username'] = $username;
+				header("location:profile.php");
+		}else{
+			header("location:".$_SERVER['HTTP_REFERER']."?LoginError=".urlencode("Username/Password incorrect. Please try login again."));
+		}
+	}
+?>

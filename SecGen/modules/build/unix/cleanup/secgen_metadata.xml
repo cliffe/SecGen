@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<build xmlns="http://www.github/cliffe/SecGen/build"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/build">
+  <name>Cleanup Module</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Cleanup module which remove traces left on the box during setup. </description>
+
+  <type>cleanup</type>
+  <platform>linux</platform>
+
+  <read_fact>remove_history</read_fact>
+  <read_fact>root_password</read_fact>
+  <read_fact>clobber_file_times</read_fact>
+  <read_fact>disable_ssh</read_fact>
+
+  <default_input into="remove_history">
+    <value>true</value>
+  </default_input>
+
+  <default_input into="root_password">
+    <generator module_path=".*strong_password.*"/>
+  </default_input>
+
+  <default_input into="clobber_file_times">
+    <value>false</value>
+  </default_input>
+
+  <default_input into="disable_ssh">
+    <value>false</value>
+  </default_input>
+
+  <requires>
+    <module_path>utilities/unix/system/accounts</module_path>
+  </requires>
+</build>

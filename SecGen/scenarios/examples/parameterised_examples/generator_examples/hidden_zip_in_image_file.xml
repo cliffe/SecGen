@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <system>
+    <system_name>test_box</system_name>
+    <base module_path=".*debian.*"/>
+
+    <service name=".*Website.*" read_fact="images_to_leak">
+      <input into="images_to_leak">
+        <generator type="hidden_zip_in_image_file"/>
+      </input>
+    </service>
+
+
+    <network module_path=".*private_network_1"/>
+  </system>
+
+</scenario>

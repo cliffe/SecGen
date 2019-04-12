@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>National Insurance Number</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>MIT</module_license>
+  <description>Generates a UK NIN (National Insurance Number).</description>
+
+  <type>national_insurance_number_generator</type>
+  <type>sensitive_personal</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <reference>https://codereview.stackexchange.com/questions/9464/national-insurance-number-generator</reference>
+
+  <output_type>sensitive_personal</output_type>
+</generator>

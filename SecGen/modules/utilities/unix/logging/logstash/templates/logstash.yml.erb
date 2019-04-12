@@ -1,0 +1,18 @@
+<%# By default, Logstash sets 'path.config' in 'logstash.yml', however -%>
+<%# when that setting is present, 'pipelines.yml' is ignored. If the user -%>
+<%# specified their own piplines, we'll make sure they are honoured by -%>
+<%# removing the 'path.config' setting. -%>
+<%# -%>
+<%# REF: https://github.com/elastic/logstash/issues/8420 -%>
+<% @settings.delete('path.config') unless @pipelines.empty? -%>
+<%# -%>
+<%# Similiarly, when using centralized pipeline management, path.config -%>
+<%# is an invalid setting, and should be removed. -%>
+<%# REF: https://github.com/elastic/puppet-logstash/issues/357 -%>
+<% @settings.delete('path.config') if @settings['xpack.management.enabled'] -%>
+<% begin -%>
+<%     @settings.delete('path.config') if @settings['xpack']['management']['enabled'] -%>
+<% rescue NoMethodError -%>
+<% end -%>
+<%# -%>
+<%= @settings.to_yaml %>

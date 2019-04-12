@@ -1,0 +1,22 @@
+<% if @organisation
+     $manager = @organisation['manager']
+     $business_name = @organisation['business_name']
+   end
+-%>
+
+<% @images_to_leak.each_with_index{ |_, counter| -%>
+[[attachment:image<%=counter + 1 %>.png|{{attachment:image<%=counter + 1 %>.png||width=100}}]]
+<% } -%>
+
+<% if $business_name %>
+Welcome to the <%= $business_name %> Wiki!
+<% end %>
+<% if $manager %>
+Manager:
+<%= $manager['name'] + "\n" %>
+<%= $manager['phone_number'] + "\n"  %>
+<%= $manager['email_address'] + "\n"  %>
+----
+<% end %>
+
+<%= @secgen_parameters['strings_to_leak'].join("\n----\n") %>

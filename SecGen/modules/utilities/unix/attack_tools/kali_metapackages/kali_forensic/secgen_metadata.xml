@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Kali Linux Metapackage: kali-linux-forensic</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>GPLv3</module_license>
+  <description>Installs a collection of software onto Kali.
+    kali-linux-forensic
+    If you are doing forensics work, you don’t want your analysis system to contain a bunch of unnecessary tools. To the rescue comes the kali-linux-forensic metapackage, which only contains the forensics tools in Kali.
+    Installation Size: 3.1 GB</description>
+
+  <type>attack_tools</type>
+  <platform>linux</platform>
+
+  <requires>
+    <name>Kali Light.*</name>
+    <type>attack</type>
+    <type>desktop</type>
+  </requires>
+  <requires>
+    <type>update</type>
+  </requires>
+</utility>

@@ -1,0 +1,26 @@
+# This file is managed by Puppet
+# Any modifications will be overwritten on the next run
+<%- if @sources and ! @sources.empty? -%>
+:sources:
+  - <%= Array(@sources).join("\n  - ") %>
+<%- end -%>
+<%- unless @update_sources.nil? -%>
+:update_sources: <%= @update_sources %>
+<%- end -%>
+<%- unless @verbose.nil? -%>
+:verbose: <%= @verbose %>
+<%- end -%>
+<%- unless @backtrace.nil? -%>
+:backtrace: <%= @backtrace %>
+<%- end -%>
+<%- if @gempath -%>
+:gempath: <%= Array(@gempath).join(':') %>
+<%- end -%>
+<%- unless @disable_default_gem_server.nil? -%>
+:disable_default_gem_server: <%= @disable_default_gem_server  %>
+<%- end -%>
+<%- if @gem_command and ! @gem_command.empty? -%>
+<%-   @gem_command.each do |command,options| -%>
+<%= command %>: --<%= Array(options).join(' --') %>
+<%-   end -%>
+<%- end -%>

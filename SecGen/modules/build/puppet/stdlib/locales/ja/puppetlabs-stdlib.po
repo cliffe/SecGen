@@ -1,0 +1,26 @@
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-03-21 14:19+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: 梅田智世 <c-umeda@nifty.com>, 2017\n"
+"Language-Team: Japanese (Japan) (https://www.transifex.com/puppet/teams/29089/ja_JP/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja_JP\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Translate Toolkit 2.0.0\n"
+
+#. metadata.json
+#: .summary
+msgid "Standard library of resources for Puppet modules."
+msgstr "Puppet モジュールのリソースの標準ライブラリ"
+
+#. metadata.json
+#: .description
+msgid "Standard Library for Puppet Modules"
+msgstr "Puppet モジュールの標準ライブラリ"

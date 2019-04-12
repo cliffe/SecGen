@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<!-- an example system with a string echo script challenge. -->
+	<system>
+		<system_name>echo_string_challenge</system_name>
+		<base platform="linux" type="server"/>
+
+		<!-- 1) Default uses an account and drops the challenge in the users home directory -->
+		<!--<vulnerability module_path=".*echo_string.*"/>-->
+
+        <vulnerability module_path=".*echo_string.*">
+          <input into="port">
+            <value>1337</value>
+          </input>
+        </vulnerability>
+
+		<network type="private_network" range="dhcp"/>
+	</system>
+
+</scenario>

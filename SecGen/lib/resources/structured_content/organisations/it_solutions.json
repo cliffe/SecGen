@@ -1,0 +1,47 @@
+{
+  "business_name": "Abacus Technology Solutions",
+  "business_motto": "Solving your problems so you don't have to.",
+  "business_address": "Unit 12, Lincoln St, Huddersfield HD1 6RX",
+  "domain": "abacus-technology.co.uk",
+  "office_telephone": "01484 850963",
+  "office_email": "office@abacus-technology.co.uk",
+  "industry": "IT Services",
+  "manager": {
+    "name": "Ellie Bosco",
+    "address": "Office 1, Unit 12, Lincoln St, Huddersfield HD1 6RX",
+    "phone_number": "07528 347828",
+    "email_address": "e.bosco@abacus-technology.co.uk",
+    "username": "ebosco",
+    "password": ""
+  },
+  "employees": [
+    {
+      "name": "Keara Harris",
+      "address": "Office 2, Unit 12, Lincoln St, Huddersfield HD1 6RX",
+      "phone_number": "07674 358645",
+      "email_address": "k.harris@abacus-technology.co.uk",
+      "username": "kharris",
+      "password": ""
+    },
+    {
+      "name": "Janessa Rempel",
+      "address": "Office 2, Unit 12, Lincoln St, Huddersfield HD1 6RX",
+      "phone_number": "07644 118595",
+      "email_address": "j.rempel@abacus-technology.co.uk",
+      "username": "jrempel",
+      "password": ""
+    },
+    {
+      "name": "Russell Ramirez",
+      "address": "Office 3, Unit 12, Lincoln St, Huddersfield HD1 6RX",
+      "phone_number": "01484 850963",
+      "email_address": "r.ramirez@abacus-technology.co.uk",
+      "username": "rramirez",
+      "password": ""
+    }
+  ],
+  "product_name": "IT Solutions",
+  "intro_paragraph": [
+    "Providers of cloud services, backups, data recovery, hardware, off-the-shelf and bespoke software. 24/7 technical support available. Custom design and installation based on your companies needs!"
+  ]
+}

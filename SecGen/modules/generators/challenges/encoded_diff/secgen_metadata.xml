@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Encoded Diff Challenge</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Generates a challenge which requires the diff tool to find the encoded flag. Returns two sets of data
+    that needs to sorting, diffing and converting from hex to ascii.
+  </description>
+
+  <type>ctf_challenge</type>
+  <type>string_generator</type>
+
+  <platform>linux</platform>
+
+  <hint>Sort the sets of strings alphabetically.</hint>
+  <solution>Check if there are any differences in content either manually or with the 'diff' utility.
+    Online tools available: https://www.diffchecker.com/
+  </solution>
+
+  <read_fact>random_data</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+
+  <default_input into="random_data">
+    <generator module_path="modules/generators/random/random_hex">
+      <input into="line_length">
+        <value>20</value>
+      </input>
+      <input into="number_of_lines">
+        <value>20</value>
+      </input>
+    </generator>
+  </default_input>
+
+  <!-- Uses string_to_leak[0] as the flag to hide. -->
+  <default_input into="strings_to_leak">
+    <encoder type="hex_encoder">
+      <input into="strings_to_encode">
+        <generator type="flag_generator"/>
+      </input>
+    </encoder>
+  </default_input>
+
+  <output_type>multiple_strings</output_type>
+</generator>

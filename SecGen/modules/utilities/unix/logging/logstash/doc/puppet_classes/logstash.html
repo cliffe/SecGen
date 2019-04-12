@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Puppet Class: logstash
+  
+    &mdash; Documentation by YARD 0.9.13
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "puppet_classes::logstash";
+  relpath = '../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../puppet_class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../_index.html">Index (l)</a> &raquo;
+    <span class='title'><span class='object_link'>Puppet Classes</span></span>
+     &raquo; 
+    <span class="title">logstash</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="puppet_class_list_link"
+        href="../puppet_class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Puppet Class: logstash</h1>
+<div class="box_info">
+  
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>
+      manifests/init.pp
+    </dd>
+  </dl>
+</div>
+
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    <p>This class manages installation, configuration and execution of Logstash 5.x.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
+      
+        <p class="example_title"><div class='inline'><p>Install Logstash, ensure the service is running and enabled.</p>
+</div></p>
+      
+      <pre class="example code"><code>class { &#39;logstash&#39;: }</code></pre>
+    
+      
+        <p class="example_title"><div class='inline'><p>Remove Logstash.</p>
+</div></p>
+      
+      <pre class="example code"><code>class { &#39;logstash&#39;:
+  ensure =&gt; &#39;absent&#39;,
+}</code></pre>
+    
+      
+        <p class="example_title"><div class='inline'><p>Install everything but disable the service.</p>
+</div></p>
+      
+      <pre class="example code"><code>class { &#39;logstash&#39;:
+  status =&gt; &#39;disabled&#39;,
+}</code></pre>
+    
+      
+        <p class="example_title"><div class='inline'><p>Configure Logstash settings.</p>
+</div></p>
+      
+      <pre class="example code"><code>class { &#39;logstash&#39;:
+  settings =&gt; {
+    &#39;http.port&#39; =&gt; &#39;9700&#39;,
+  }
+}</code></pre>
+    
+      
+        <p class="example_title"><div class='inline'><p>Configure Logstash startup options.</p>
+</div></p>
+      
+      <pre class="example code"><code>class { &#39;logstash&#39;:
+  startup_options =&gt; {
+    &#39;LS_USER&#39; =&gt; &#39;root&#39;,
+  }
+}</code></pre>
+    
+      
+        <p class="example_title"><div class='inline'><p>Set JVM memory options.</p>
+</div></p>
+      
+      <pre class="example code"><code>class { &#39;logstash&#39;:
+  jvm_options =&gt; [
+    &#39;-Xms1g&#39;,
+    &#39;-Xmx1g&#39;,
+  ]
+}</code></pre>
+    
+      
+        <p class="example_title"><div class='inline'><p>Configure multiple pipelines.</p>
+</div></p>
+      
+      <pre class="example code"><code>class { &#39;logstash&#39;:
+  pipelines =&gt; [
+    {
+      &quot;pipeline.id&quot; =&gt; &quot;my-pipeline_1&quot;,
+      &quot;path.config&quot; =&gt;  &quot;/etc/path/to/p1.config&quot;,
+    },
+    {
+      &quot;pipeline.id&quot; =&gt; &quot;my-other-pipeline&quot;,
+      &quot;path.config&quot; =&gt;  &quot;/etc/different/path/p2.cfg&quot;,
+    }
+  ]
+}</code></pre>
+    
+  </div>
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>ensure</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;present&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Controls if Logstash should be <code>present</code> or <code>absent</code>.</p>
+
+<p>If set to <code>absent</code>, the Logstash package will be
+uninstalled. Related files will be purged as much as possible. The
+exact behavior is dependant on the service provider, specifically its
+support for the &#39;purgable&#39; property.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>auto_upgrade</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>If set to <code>true</code>, Logstash will be upgraded if the package provider is
+able to find a newer version.  The exact behavior is dependant on the
+service provider, specifically its support for the &#39;upgradeable&#39; property.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>status</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;enabled&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The desired state of the Logstash service. Possible values:</p>
+
+<ul>
+<li><code>enabled</code>: Service running and started at boot time.</li>
+<li><code>disabled</code>: Service stopped and not started at boot time.</li>
+<li><code>running</code>: Service running but not be started at boot time.</li>
+<li><code>unmanaged</code>: Service will not be started at boot time. Puppet
+will neither stop nor start the service.</li>
+</ul>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>version</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The specific version to install, if desired.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>restart_on_change</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Restart the service whenever the configuration changes.</p>
+
+<p>Disabling automatic restarts on config changes may be desired in an
+environment where you need to ensure restarts occur in a
+controlled/rolling manner rather than during a Puppet run.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>package_url</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Explict Logstash package URL to download.</p>
+
+<p>Valid URL types are:</p>
+
+<ul>
+<li><code>http://</code></li>
+<li><code>https://</code></li>
+<li><code>ftp://</code></li>
+<li><code>puppet://</code></li>
+<li><code>file:/</code></li>
+</ul>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>package_name</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;logstash&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The name of the Logstash package in the package manager.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>download_timeout</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>600</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Timeout, in seconds, for http, https, and ftp downloads.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>logstash_user</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;logstash&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The user that Logstash should run as. This also controls file ownership.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>logstash_group</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;logstash&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The group that Logstash should run as. This also controls file group ownership.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>purge_config</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Purge the config directory of any unmanaged files,</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>service_provider</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Service provider (init system) to use. By Default, the module will try to
+choose the &#39;standard&#39; provider for the current distribution.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>settings</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>A collection of settings to be defined in <code>logstash.yml</code>.</p>
+
+<p>See: <a href="https://www.elastic.co/guide/en/logstash/current/logstash-settings-file.html">https://www.elastic.co/guide/en/logstash/current/logstash-settings-file.html</a></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>startup_options</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>A collection of settings to be defined in <code>startup.options</code>.</p>
+
+<p>See: <a href="https://www.elastic.co/guide/en/logstash/current/config-setting-files.html">https://www.elastic.co/guide/en/logstash/current/config-setting-files.html</a></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>jvm_options</span>
+      
+      
+        <span class='type'>(<tt>Array</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>[]</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>A collection of settings to be defined in <code>jvm.options</code>.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>pipelines</span>
+      
+      
+        <span class='type'>(<tt>Array</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>[]</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>A collection of settings to be defined in <code>pipelines.yml</code>.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>manage_repo</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Enable repository management. Configure the official repositories.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>config_dir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;/etc/logstash&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Path containing the Logstash configuration.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Author:</p>
+<ul class="author">
+  
+    <li>
+      
+      
+      
+      
+        
+        <div class='inline'><p><a href="https://github.com/elastic/puppet-logstash/graphs/contributors">https://github.com/elastic/puppet-logstash/graphs/contributors</a></p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><div class="method_details_list">
+  <table class="source_code">
+    <tr>
+      <td>
+        <pre class="lines">
+
+
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174</pre>
+      </td>
+      <td>
+        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 137</span>
+
+class logstash(
+  $ensure            = &#39;present&#39;,
+  $status            = &#39;enabled&#39;,
+  Boolean $restart_on_change = true,
+  Boolean $auto_upgrade       = false,
+  $version           = undef,
+  $package_url       = undef,
+  $package_name      = &#39;logstash&#39;,
+  Integer $download_timeout  = 600,
+  $logstash_user     = &#39;logstash&#39;,
+  $logstash_group    = &#39;logstash&#39;,
+  $config_dir         = &#39;/etc/logstash&#39;,
+  Boolean $purge_config = true,
+  $service_provider  = undef,
+  $settings          = {},
+  $startup_options   = {},
+  $jvm_options       = [],
+  Array $pipelines   = [],
+  Boolean $manage_repo   = true,
+)
+{
+  $home_dir = &#39;/usr/share/logstash&#39;
+
+  if ! ($ensure in [ &#39;present&#39;, &#39;absent&#39; ]) {
+    fail(&quot;\&quot;${ensure}\&quot; is not a valid ensure parameter value&quot;)
+  }
+
+  if ! ($status in [ &#39;enabled&#39;, &#39;disabled&#39;, &#39;running&#39;, &#39;unmanaged&#39; ]) {
+    fail(&quot;\&quot;${status}\&quot; is not a valid status parameter value&quot;)
+  }
+
+  if ($manage_repo == true) {
+    include elastic_stack::repo
+  }
+  include logstash::package
+  include logstash::config
+  include logstash::service
+}</pre>
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+
+      <div id="footer">
+     Generated by <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>.
+</div>
+
+    </div>
+  </body>
+</html>

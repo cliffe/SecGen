@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Pidgin
+GenericName=Pidign chat client autostart
+Comment=Autostart script
+Exec=/usr/bin/pidgin
+Terminal=false
+Type=Application
+X-GNOME-Autostart-enabled=true

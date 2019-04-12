@@ -1,0 +1,5 @@
+<!--form taken from https://www.w3schools.com/php/php_forms.asp and ammended (first form on the page)-->
+              <?php echo '<form  method="POST" action="'.$_SERVER['SCRIPT_NAME'].'">'; ?>
+              <input type="text" name="search">
+              <input type="submit" name="submit" value="Search"></form>
+              <?php

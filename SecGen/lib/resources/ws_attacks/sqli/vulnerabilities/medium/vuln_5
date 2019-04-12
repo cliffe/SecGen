@@ -1,0 +1,3 @@
+$blacklist = array('SELECT', 'UNION', 'FROM', 'DROP', 'SLEEP', 'TABLE');
+  $name=str_replace($blacklist, " ", $_GET['name']);
+  $question=filter_var($_GET['question'], FILTER_SANITIZE_ENCODED);

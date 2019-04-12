@@ -1,0 +1,25 @@
+#form-holder {
+	width: 320px;
+	margin: auto;
+	border: 1px solid #e2e2e2;
+	margin-top: 3em;
+	margin-bottom: 2em;
+	padding: 1em;
+	background-color: #f5f5f5;
+	border-radius: 4px;
+}
+
+#form-holder h3 {
+	padding-bottom: .5em;
+}
+
+#form-holder input[type=submit] {
+	padding: .5em;
+	border: none;
+	border-radius: 4px;
+	color: white;
+}
+
+#remember {
+	padding-top: .5em;
+}

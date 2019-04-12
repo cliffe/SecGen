@@ -1,0 +1,149 @@
+//Kendra Chalkley, New Beginnings 12/2016
+#include <stdio.h>
+#include <fcntl.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <string.h>
+#define USERDEF AAAAAA
+
+typedef void (*funcp)();
+
+typedef struct node{
+	char contents[20];
+	struct node * next;
+} node;
+
+node mynodearray[5];
+
+char msg[] = \
+  "This level is an exercise in tracking down segmentation faults.  In the\n"
+  "level, a linked list is being traversed.  Without the right password,\n"
+  "the final element will not point to NULL, but rather an uninitialized\n"
+  "memory location which will lead to a segmentation fault when followed.\n"
+  "Run GDB and use the command \"where\" to find the place in the level\n"
+  "where the segmentation fault happened.  Set a breakpoint and repeat\n"
+  "the level, tracing through the linked list traversal in assembly.\n"
+  "Find the address used in the penultimate link of the list (i.e. the one\n"
+  "before the segmentation fault).  Do so by tracking the values being moved\n"
+  "at each successive breakpoint that is hit.  Once you've found the\n"
+  "address, restart the level and enter this address in hexadecimal without\n"
+  "a preceding \"0x\" as the password, the program will then print the actual\n"
+  "password before seg faulting.  Run the program a final time with the\n"
+  "actual password to complete the level.\n\n";
+
+void dogs_before() ;
+void ferrets_before(unsigned long b) ;
+void cats (unsigned long b) ;
+
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg[i%len] + msg[(i+1)%len];
+    h2 += msg[(i+1)%len] + msg[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg);
+  else
+    printf("%s",msg);
+}
+
+void segv_handler(int sig) {
+        printf("Segmentation fault.  Try again.\n");
+        exit(0);
+}
+
+void print_good() {
+	printf("Good Job.\n");
+    printflag();
+    exit(0);
+}
+
+
+void dogs_before() {
+	node * curr, * orig;
+	curr=mynodearray;
+	orig=mynodearray;
+
+	for(int i=1;i<5;i++){
+		strcpy(curr->contents,"niceTry");
+
+		curr->next=&orig[i];
+		curr=curr->next;
+	}
+}
+
+void ferrets_before(unsigned long b) {
+	int password=USERDEF;
+	node * pointer=mynodearray;
+	if((int)b==password){
+		pointer[4].next=NULL;
+	}
+	else{
+		pointer[4].next=(node *) 3;
+	}
+	cats(b);
+}
+
+void cats (unsigned long b) {
+	node* pointer;
+	pointer=mynodearray;
+	while(pointer!=NULL){
+		if ((unsigned long *) b==(unsigned long *)mynodearray[3].next) {
+			printf("Congratulations! You're one step away. Try using %x as the password.\n",USERDEF);
+			exit(0);
+		}
+		pointer=pointer->next;
+
+	}
+	print_good();
+}
+void try_command() {
+    int i;
+    unsigned long b;
+
+    printf("Enter the password: ");
+    scanf("%lx",&b);
+
+    dogs_before();
+    ferrets_before(b);
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main() {
+    funcp fg=print_good;
+//	printf("the password is %i for debugging only\n\n", USERDEF);
+    signal(SIGSEGV, segv_handler);
+    print_msg();
+    try_command();
+    return 0;
+}
+

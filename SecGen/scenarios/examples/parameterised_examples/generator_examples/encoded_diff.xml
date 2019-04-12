@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+		  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		  xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<system>
+		<system_name>diff_challenge_box</system_name>
+		<base platform="linux" type="server"/>
+
+		<vulnerability name="NFS Share Leak">
+			<input into="strings_to_leak">
+				<generator name="Encoded Diff Challenge"/>
+			</input>
+		</vulnerability>
+	</system>
+</scenario>

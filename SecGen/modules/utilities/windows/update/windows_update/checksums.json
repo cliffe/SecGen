@@ -1,0 +1,18 @@
+{
+  "CHANGELOG.md": "67b60aea42ff4584c2bc30c036db8237",
+  "CONTRIBUTING.md": "d911815dd7d0d90b90bb35382a6e3298",
+  "Gemfile": "b7e8516f82d1f3a3ba932a94b569db78",
+  "Guardfile": "3ae8d9a61b870350cc1c8e0d6a9a36e7",
+  "LICENSE": "a2b09ed4caa4c6b8fb25c294f01b3fc2",
+  "README.md": "3def75e20d4bc80fb702e80ceb7725f2",
+  "Rakefile": "f8ca8f8a88de0adc8002b5a93b9dd1d6",
+  "manifests/init.pp": "a6b51ccbf3401239139304ed272cd30e",
+  "manifests/params.pp": "0fd056d1af4496a3c58786336289dcce",
+  "metadata.json": "d0c5880bd6a8ae56496facfc3803a5d3",
+  "spec/acceptance/nodesets/windows-2008R2-serverstandard-x64.yml": "50219eac8138cc5d1018c8a8b0ff2cdb",
+  "spec/classes/coverage_spec.rb": "5b6dfa0dd426aca0ccfae23c0a629f0b",
+  "spec/classes/windows_autoupdate_spec.rb": "8d34d7d02f06c9add9d3cdc1f698fe47",
+  "spec/spec.opts": "a600ded995d948e393fbe2320ba8e51c",
+  "spec/spec_helper.rb": "0db89c9a486df193c0e40095422e19dc",
+  "spec/spec_helper_acceptance.rb": "6891c7598940cfc71c2d8e6382b4780b"
+}

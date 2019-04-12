@@ -1,0 +1,1 @@
+include xfce::install

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Business Email Address Encoder</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Creates a formatted email address based on a name and business name using the Faker ruby gem.
+  </description>
+
+  <type>string_generator</type>
+  <type>email_address</type>
+  <type>business_email</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <reference>https://github.com/stympy/faker</reference>
+
+  <!-- Convert a name and business into a formatted email e.g. john.smith@company.org -->
+  <read_fact>name</read_fact>
+  <read_fact>business_name</read_fact>
+  <read_fact>domain</read_fact>  <!-- empty by default, used if provided.-->
+
+  <output_type>email_address</output_type>
+</generator>

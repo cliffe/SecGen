@@ -1,0 +1,32 @@
+nav {
+  background-color: #00bd9d;
+}
+
+.navbar-brand {
+  color: #8bd7d2 !important;
+}
+
+.nav-link {
+  color: #8bd7d2 !important;
+}
+
+.nav-item active {
+  color: #54defd !important;
+}
+
+#login-button, #submit-button {
+  background-color: #00bd9d;
+}
+
+footer li:first-of-type {
+ border-right: 1px solid #00bd9d;
+}
+
+#about {
+  background-color: #49c6e5;
+  color: #e1e6e1;
+}
+
+.product form input[type=submit] {
+ color: #54defd;
+}

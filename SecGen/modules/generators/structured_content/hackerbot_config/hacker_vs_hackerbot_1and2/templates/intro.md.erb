@@ -1,0 +1,119 @@
+# Hacker vs Hackerbot 2
+
+## Troubleshooting with oVirt during the test
+
+In the unlikely event you experience technical issues with our infrastructure during the test, please keep the following in mind.
+
+* If your Snort alert file fills with "BAD TRAFFIC" alerts, let us know asap and we can fix that for you by changing the network interface type.
+
+* If copy and paste stops working, simply copy your flags to a text file rather than the submission site, and let us know when you finish the test so we can help you submit these before you leave.
+
+* If a VM looses its IP addresses (particularly the IDS server), simply run `sudo ifconfig eth1 *IP_ADDRESS*`, where `*IP_ADDRESS*` is the expected IP address (listed in the section below).
+
+* If you experience any technical issues, which you believe to be outside your control, let us know before you leave the room. However, keep in mind we won't give hints for the actual test challenges.
+
+## Getting started
+### VMs in this lab
+
+==Start these VMs== (if you haven't already):
+
+- hackerbot_server (leave it running, you don't log into this)
+- ids_server (IP address: <%= $ids_server_ip %>)
+- web_server (IP address: <%= $web_server_ip %>)
+- desktop
+
+All of these VMs need to be running to complete the lab.
+
+### Your login details for the "desktop" and "backup_server" VMs
+User: <%= $main_user %>
+Password: <%= $main_password %>
+(You can copy-paste this password!)
+
+You won't login to the hackerbot_server, but all the VMs need to be running to complete the lab.
+
+### For marks in the module
+1. **You need to submit flags**. Note that the flags and the challenges in your VMs are different to other's in the class. Flags will be revealed to you as you complete challenges throughout the module. Flags look like this: ==flag{*somethingrandom*}==. Follow the link on the module page to submit your flags.
+
+## Hackerbot!
+![small-right](images/skullandusb.svg)
+
+This exercise involves interacting with Hackerbot, a chatbot who will task you to complete tasks and will attack your systems. If you satisfy Hackerbot by completing the challenges, she will reveal flags to you.
+
+---
+
+Some commands you may find useful include:
+* `rsync`
+* `chattr`
+* `lsattr`
+* `chmod`
+* `hashdeep`
+* `shasum`
+* `mount`
+* `umount`
+* `diff`
+* `tcpdump`
+* `wireshark`
+* `kdesudo`
+* `ssh`
+* `snort`
+* `sudo service snort stop`
+* `sudo service snort start`
+* `netstat`
+* `ps`
+* `lsof`
+* `top`
+
+Remember you can learn more about the commands by running: 
+```bash
+man *command*
+```
+
+## Getting Snort up and running
+
+**On the ids_server VM:**
+
+==Change Snort's output== to something more readable:
+
+```bash
+sudo vi /etc/snort/snort.conf
+```
+> (Remember: editing using vi involves pressing "i" to insert/edit text, then *Esc*,
+
+> ":wq" to write changes and quit)
+
+==Add the following lines:==
+`output alert_fast`
+
+`include $RULE_PATH/my.rules`
+
+==Create a new rules file:==
+
+```bash
+sudo touch /etc/snort/rules/my.rules
+```
+
+Let us edit the rules file without sudo:
+
+```bash
+sudo chown <%= $main_user %> /etc/snort/rules/my.rules
+```
+
+==Change Snort's interface== to the interface with IP address <%= $ids_server_ip %> (likely eth1), and set the local network to your IP address range (or "any"):
+
+```bash
+sudo vi /etc/snort/snort.debian.conf
+```
+> If you are not sure which interface to use, list the interfaces with `ifconfig` or `ip a s`
+> Set the interface and HOME network range, and exit vi (Esc, ":wq").
+
+==Restart Snort:==
+
+```bash
+sudo service snort stop
+sudo service snort start
+```
+> Using "reload" or "restart" may not update the interface.
+
+Snort should now be running, monitoring network traffic for activity.
+
+### Good luck!

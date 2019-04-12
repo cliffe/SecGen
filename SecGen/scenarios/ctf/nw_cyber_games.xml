@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+		  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		  xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<name>Basic Narrative</name>
+  <author>Thomas Shaw</author>
+  <description>Some basic decoding challenges.
+		The challenges are presented on a website on one of these VMs, separate from the CTF scoring.
+  </description>
+
+  <type>ctf</type>
+  <type>jeopardy-ctf</type>
+  <type>web-hints</type>
+  <difficulty>easy</difficulty>
+
+	<system>
+		<system_name>nw_cyber_games</system_name>
+		<base platform="linux" type="server"/>
+
+		<!-- comment describes using pseudo code (C#-like methods with named optional arguments) -->
+		<!-- vulnerability_nfs_share_leak(strings_to_leak: encoder_flag_generator() CONCAT encoder_ascii_reversible(strings_to_encode: encoder_flag_generator()) CONCAT ...) -->
+		<service name="Random Parameterised Website">
+			<input into="visible_tabs">
+				<generator type="html_snippet_generator" >
+					<input into="heading">
+						<value>Welcome to the Cyber Games!</value>
+					</input>
+					<input into="paragraphs" unique_module_list="unique_encoders">
+						<value>Hunt down the flags. There are more challenges than meets the eye.</value>
+						<value>There are vulnerabilities on the server.</value>
+						<value>Good luck, have fun!</value>
+					</input>
+				</generator>
+
+				<generator type="html_snippet_generator" >
+					<input into="heading">
+						<value>Challenge 1</value>
+					</input>
+					<input into="paragraphs" unique_module_list="unique_encoders">
+						<encoder type="ascii_reversible">
+							<input into="strings_to_encode">
+								<generator type="flag_generator" />
+							</input>
+						</encoder>
+					</input>
+				</generator>
+
+				<generator type="html_snippet_generator">
+					<input into="heading">
+						<value>Challenge 2</value>
+					</input>
+					<input into="paragraphs" unique_module_list="unique_encoders">
+						<encoder type="alpha_reversible">
+							<input into="strings_to_encode">
+								<generator type="flag_generator" />
+							</input>
+						</encoder>
+					</input>
+				</generator>
+
+				<generator type="html_snippet_generator">
+					<input into="heading">
+						<value>Challenge 3</value>
+					</input>
+					<input into="paragraphs" unique_module_list="unique_encoders">
+						<encoder type="ascii_reversible">
+							<input into="strings_to_encode">
+								<generator type="flag_generator" />
+							</input>
+						</encoder>
+					</input>
+				</generator>
+
+				<generator type="html_snippet_generator">
+					<input into="heading">
+						<value>Challenge 4</value>
+					</input>
+					<input into="paragraphs" unique_module_list="unique_encoders">
+						<encoder type="alpha_reversible">
+							<input into="strings_to_encode">
+								<generator type="flag_generator" />
+							</input>
+						</encoder>
+					</input>
+				</generator>
+
+				<generator type="html_snippet_generator">
+					<input into="heading">
+						<value>Challenge 5</value>
+					</input>
+					<input into="paragraphs" unique_module_list="unique_encoders">
+						<generator type="ctf_challenge" />
+					</input>
+				</generator>
+
+				<generator type="html_snippet_generator">
+					<input into="heading">
+						<value>Challenge 6</value>
+					</input>
+					<input into="paragraphs" unique_module_list="unique_encoders">
+						<generator type="ctf_challenge"/>
+					</input>
+				</generator>
+			</input>
+
+			<input into="hidden_tabs" unique_module_list="unique_encoders">
+				<generator type="flag_generator" />
+				<encoder type="ascii_reversible">
+					<input into="strings_to_encode" >
+						<generator type="flag_generator" />
+					</input>
+				</encoder>
+			</input>
+
+			<input into="images_to_leak" unique_module_list="unique_encoders">
+				<generator type="image_challenge_generator" />
+				<generator type="image_challenge_generator" />
+			</input>
+
+			<!-- No business facts. -->
+			<input into="organisation">
+				<value/>
+			</input>
+			<input into="main_page_paragraph_content">
+				<value/>
+			</input>
+		</service>
+
+		<vulnerability type="^((?!webapp).)*$" read_fact="strings_to_leak" access="remote" >
+			<input into="strings_to_leak">
+				<generator type="flag_generator" />
+			</input>
+		</vulnerability>
+
+		<network module_path=".*private_network_1"/>
+		<build type="cleanup">
+			<input into="root_password">
+				<generator type="strong_password_generator"/>
+			</input>
+		</build>
+	</system>
+
+</scenario>

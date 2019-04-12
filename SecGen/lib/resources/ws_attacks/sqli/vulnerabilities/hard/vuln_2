@@ -1,0 +1,10 @@
+//sqlmap block from https://stackoverflow.com/questions/1357983/how-to-block-some-of-http-user-agent-using-php
+$badAgents = array('sqlmap');
+if(in_array($_SERVER['HTTP_USER_AGENT'],$badAgents)) {
+    exit();
+}else{
+  $blacklist = array('SELECT', 'UNION', 'FROM', 'DROP', 'SLEEP', 'TABLE');
+  $name=htmlspecialchars(mysqli_real_escape_string($conn2, $_POST['name']));
+  $email=htmlspecialchars(mysqli_real_escape_string($conn2, $_POST2']));
+  $mobile=str_replace($blacklist, " ", htmlspecialchars($_POST['mobile']));
+  $question=htmlspecialchars(mysqli_real_escape_string($conn2, $_POST['question']));

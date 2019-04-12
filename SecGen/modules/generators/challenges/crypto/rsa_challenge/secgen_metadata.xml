@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>RSA Challenge Generator</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>RSA Generator.</description>
+
+  <type>rsa</type>
+  <type>challenge_generator</type>
+  <type>crypto_challenge_generator</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <!--<read_fact>base64_image</read_fact>-->
+
+  <!--<default_input into="base64_image">-->
+    <!--<generator type="random_image"/>-->
+  <!--</default_input>-->
+
+  <output_type>string_challenge</output_type>
+</generator>

@@ -1,0 +1,24 @@
+
+	<attack>
+<% $log_file = $log_files.first %>
+		<!-- topic: Protecting integrity with file attributes-->
+		<prompt>An attempt to overwrite /home/<%= $main_user %>/<%= $log_file %> is coming. Stop the attack by making the file append only.</prompt>
+
+		<post_command>echo 'your logs are gone!' > /home/<%= $main_user %>/<%= $log_file %>; echo 'appended!' >> /home/<%= $main_user %>/<%= $log_file %>; tail -n2 /home/<%= $main_user %>/<%= $log_file %>; echo $?</post_command>
+		<condition>
+			<output_not_matches>appended!</output_not_matches>
+			<message>:( You stopped anything from being appended to the file. What kind of log file do you think this is?</message>
+		</condition>
+		<condition>
+			<output_matches>Operation not permitted</output_matches>
+			<message>:) Well done! <%= $flags.pop %></message>
+			<trigger_next_attack>true</trigger_next_attack>
+		</condition>
+		<condition>
+			<output_matches>No such file or directory</output_matches>
+			<message>:( The file should exist!</message>
+		</condition>
+		<else_condition>
+			<message>:( Something was not right...</message>
+		</else_condition>
+	</attack>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Binary script container</name>
+  <author>Likai Liu</author>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Binary container module for script based challenges.</description>
+
+  <type>system</type>
+  <type>script_challenge_container</type>
+
+  <platform>linux</platform>
+
+  <reference>https://lifecs.likai.org/p/suid.html</reference>
+
+</utility>

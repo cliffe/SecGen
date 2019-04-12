@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<service xmlns="http://www.github/cliffe/SecGen/service"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
+  <name>PHP 5 Server - Wheezy Compatible</name>
+  <author>Thomas Shaw</author>
+  <module_license>Apache v2</module_license>
+  <description>An installation of PHP for Wheezy</description>
+
+  <type>web_server</type>
+  <platform>linux</platform>
+
+  <!--optional details-->
+  <reference>http://php.net</reference>
+  <software_name>php</software_name>
+  <software_license>PHP License v3.01</software_license>
+
+  <conflict>
+    <name>.*Kali.*</name>
+  </conflict>
+  <conflict>
+    <name>.*Stretch.*</name>
+  </conflict>
+  <requires>
+    <type>update</type>
+  </requires>
+  <requires>
+    <module_path>.*apache_wheezy.*</module_path>
+  </requires>
+  <requires>
+    <module_path>.*mysql_wheezy.*</module_path>
+  </requires>
+</service>

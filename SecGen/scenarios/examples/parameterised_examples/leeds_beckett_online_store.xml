@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <system>
+    <system_name>online_store</system_name>
+    <base platform="linux" type="server"/>
+
+    <vulnerability module_path=".*onlinestore">
+      <input into="domain">
+        <value>leedsbeckett.ac.uk</value>
+      </input>
+      <input into="accounts">
+        <generator type="person">
+          <input into="name">
+            <value>Cliffe Schreuders</value>
+          </input>
+          <input into="username">
+            <value>C.Schreuders</value>
+          </input>
+        </generator>
+        <generator type="person">
+          <input into="name">
+            <value>Emlyn Butterfield</value>
+          </input>
+          <input into="username">
+            <value>E.Butterfield</value>
+          </input>
+        </generator>
+        <generator type="person">
+          <input into="name">
+            <value>Gary Roper</value>
+          </input>
+          <input into="username">
+            <value>G.Roper</value>
+          </input>
+        </generator>
+        <generator type="person">
+          <input into="name">
+            <value>Maurice Calvert</value>
+          </input>
+          <input into="username">
+            <value>M.Calvert</value>
+          </input>
+        </generator>
+        <generator type="person">
+          <input into="name">
+            <value>Thomas Shaw</value>
+          </input>
+          <input into="username">
+            <value>T.Shaw</value>
+          </input>
+        </generator>
+      </input>
+      <input into="dealer_id" into_datastore="murderer_dealer_or_dead">
+        <encoder type="string_selector">
+          <input into="strings_to_encode">
+            <value>1</value>
+            <value>2</value>
+            <value>3</value>
+            <value>4</value>
+            <value>5</value>
+          </input>
+        </encoder>
+      </input>
+      <input into="murderer_id" into_datastore="murderer_dealer_or_dead">
+        <encoder type="string_selector">
+          <input into="strings_to_encode">
+            <value>1</value>
+            <value>2</value>
+            <value>3</value>
+            <value>4</value>
+            <value>5</value>
+          </input>
+        </encoder>
+      </input>
+      <input into="murdered_on">
+        <generator type="date_generator">
+          <input into="format">
+            <value>mysql_datetime</value>
+          </input>
+        </generator>
+      </input>
+      <input into="murdered_ids" into_datastore="murderer_dealer_or_dead">
+        <encoder type="string_selector_with_exclusions">
+          <input into="exclusion_list">
+            <datastore>murderer_dealer_or_dead</datastore>
+          </input>
+          <input into="strings_to_encode">
+            <value>1</value>
+            <value>2</value>
+            <value>3</value>
+            <value>4</value>
+            <value>5</value>
+          </input>
+        </encoder>
+        <encoder type="string_selector_with_exclusions">
+          <input into="exclusion_list">
+            <datastore>murderer_dealer_or_dead</datastore>
+          </input>
+          <input into="strings_to_encode">
+            <value>1</value>
+            <value>2</value>
+            <value>3</value>
+            <value>4</value>
+            <value>5</value>
+          </input>
+        </encoder>
+      </input>
+    </vulnerability>
+
+    <build type="cleanup">
+      <input into="root_password">
+        <generator type="medium_password_generator"/>
+      </input>
+      <input into="disable_ssh">
+        <value>true</value>
+      </input>
+    </build>
+
+    <network type="private_network" range="dhcp"/>
+  </system>
+
+</scenario>

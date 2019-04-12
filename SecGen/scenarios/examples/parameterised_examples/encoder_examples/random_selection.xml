@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+		  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		  xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<system>
+		<system_name>example_server</system_name>
+		<base platform="linux" type="server"/>
+
+		<!-- generate encode and leak multiple values -->
+
+		<!--select a vulnerability that leaks strings-->
+		<vulnerability read_fact="strings_to_leak">
+			<!--direct the output from below into strings_to_leak-->
+			<input into="strings_to_leak">
+				<!--and select a random string to leak-->
+				<encoder type="string_selector">
+					<input into="strings_to_encode">
+						<!--generate some random input-->
+						<generator/>
+						<!--and some more random input-->
+						<generator/>
+						<!--and also encode the following string-->
+						<value>Nothing to see here move along...</value>
+					</input>
+				</encoder>
+			</input>
+		</vulnerability>
+
+
+		<network type="private_network" range="dhcp"/>
+	</system>
+
+</scenario>

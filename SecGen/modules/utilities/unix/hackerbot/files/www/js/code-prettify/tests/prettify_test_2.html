@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Code Prettifier</title>
+<script type="text/javascript" src="prettify_test_2.js"></script>
+<script type="text/javascript" src="test_base.js"></script>
+<link rel="stylesheet" type="text/css" href="test_styles.css">
+<script type="text/javascript">
+(function () {
+  // keep track of when window.onload fires, this is to make sure that we dont
+  // miss it as it might occur before or after dynamic scripts are loaded
+  var isReady = false;
+  window.onload = function () { isReady = true; };
+
+  // run tests when page is fully loaded
+  function onReady() {
+    runTests(goldens);
+  }
+
+  // JS & CSS prettify files to load
+  var base = /[&?]loader\b/.test(location.search) ? '../loader/' : '../src/';
+  var sources = [
+    'lang-basic.js',
+    'lang-clj.js',
+    'lang-css.js',
+    'lang-dart.js',
+    'lang-ex.js',
+    'lang-kotlin.js',
+    'lang-lisp.js',
+    'lang-llvm.js',
+    'lang-matlab.js',
+    'lang-mumps.js',
+    'lang-n.js',
+    'lang-pascal.js',
+    'lang-r.js',
+    'lang-tcl.js',
+    'lang-tex.js',
+    'lang-xq.js'
+  ];
+  var styles = [
+    'prettify.css'
+  ];
+
+  // load skin(s)
+  while (styles.length) {
+    injectCSS(base + styles.shift());
+  }
+
+  // first load prettify.js
+  injectJS(base + 'prettify.js', function () {
+    // then load all lang-*.js concurrently
+    while (sources.length) {
+      injectJS(base + sources.shift(),
+        (sources.length) ? undefined : function () {
+          // then after last one is loaded, run tests when page is ready
+          // (piggyback on window.onload if it hasn't already fired)
+          if (isReady) {
+            onReady();
+          } else {
+            window.onload = onReady;
+          }
+        });
+    }
+  });
+})();
+</script>
+</head>
+
+<body>
+<h1>Test Results</h1>
+<div id="report"></div>
+
+<hr>
+
+<h1>XQuery</h1>
+<p>From <code>http://www.patrick-wied.at/static/xquery/prettify/</code></p>
+<pre class="prettyprint lang-xq" id="xquery">
+(: 
+	Took some of Mike Brevoort's xquery code samples because they are nice and show common xquery syntax 
+:)
+ 
+  (:~
+   : Given a sequence of version URIs, publish all of these versions of each document
+   : If there is a version of the same document already published, unpublish it 1st
+   :
+   : When "publish" is referred to, we mean that it is put into the PUBLISHED collection
+   : unpublish removes content from this collection
+   : @param $version_uris - sequence of uris of versions of managed documents to publish
+   :)
+  declare function comoms-dls:publish($version_uris as item()*) {
+      for $uri in $version_uris
+      let $doc := fn:doc($uri)
+      let $managed_base_uri := $doc/node()/property::dls:version/dls:document-uri/text()
+      let $existing :=  comoms-dls:publishedDoc($managed_base_uri)
+      let $unpublishExisting := if($existing) then comoms-dls:unpublishVersion((xdmp:node-uri($existing)))  else ()
+      let $addPermissions := dls:document-add-permissions($uri, (xdmp:permission('mkp-anon', 'read')))
+      return
+          dls:document-add-collections($uri, ("PUBLISHED"))    
+  };
+ 
+  declare function comoms-dls:publishLatest($uri) {
+      (: TODO check if it's in the draft collection probably :)
+ 
+      let $latest_version_uri := comoms-dls:latestVersionUri($uri)
+      let $log:= xdmp:log(fn:concat("latest: ", $latest_version_uri))    
+      let $log:= xdmp:log(fn:concat("uri: ", $uri))            
+      return comoms-dls:publish($latest_version_uri)    
+ 
+  };
+ 
+  declare function comoms-dls:latestVersionUri($uri) {
+      let $latest_version_num :=
+          (
+          for $version in dls:document-history($uri)/dls:version
+          order by fn:number($version//dls:version-id/text()) descending
+          return $version//dls:version-id/text()
+          )[1]
+ 
+ 
+      return dls:document-version-uri($uri, $latest_version_num)
+  };
+ 
+  declare function comoms-dls:unpublish($uris as item()*) {
+      for $uri in $uris
+      return
+          let $published_doc := comoms-dls:publishedDoc($uri)
+          return
+              if($published_doc) then
+                  let $published_version_uri := xdmp:node-uri($published_doc)
+                  return comoms-dls:unpublishVersion($published_version_uri)        
+              else
+                  ()
+  };
+ 
+  declare function comoms-dls:latestPublishedDocAuthor($uri) {
+      let $author_id := doc($uri)/property::dls:version/dls:author/text()
+      return
+          if($author_id) then
+              comoms-user:getUsername($author_id)
+          else
+              ()
+ 
+  };
+ 
+  (:~
+   : Given a sequence of version URIs, unpublish all of these versions of each document
+   :)
+  declare function comoms-dls:unpublishVersion($version_uris as item()*) {
+      for $uri in $version_uris
+      return
+          let $removePermissions := dls:document-remove-permissions($uri, (xdmp:permission('mkp-anon', 'read')))
+          return dls:document-remove-collections($uri, ("PUBLISHED"))        
+  };
+ 
+  (:~
+   : Given the base URI of a managed piece of content, return the document of the node
+   : of the version that is published
+   :)
+  declare function comoms-dls:publishedDoc($uri) {
+      fn:collection("PUBLISHED")[property::dls:version/dls:document-uri = $uri]
+  };
+ 
+ 
+  (:~
+   : Test if any version of the managed document is published
+   :)
+  declare function comoms-dls:isPublished($uri) {
+      if( comoms-dls:publishedDoc($uri)) then
+          fn:true()
+      else
+          fn:false()
+  };
+ 
+ 
+  declare function comoms-dls:publishedState($uri) {
+      let $doc := comoms-dls:publishedDoc($uri)
+      let $published_uri := if($doc) then xdmp:node-uri($doc) else ()
+      let $latest := comoms-dls:latestVersionUri($uri)
+      return
+          if($doc) then
+              if($latest ne $published_uri) then
+                  "stale"
+              else
+                  "published"
+          else
+              "unpublished"
+  };
+ 
+ 
+  declare function comoms-dls:getManagedDocUri($uri) {
+      let $doc := fn:doc($uri)
+      let $managed_uri := $doc/property::dls:version/dls:document-uri/text()
+      let $managed_uri := if($managed_uri) then $managed_uri else $uri
+      return $managed_uri
+  };
+ 
+  (:~
+   : Given a manage content url (e.g. /content/123456.xml) return the appropriate
+   : version of the document based on what stage collection is being viewed and
+   : what's published
+   :
+   : @param $uri a manage content url (e.g. /content/123456.xml) - NOT A VERSIONED URI
+   :)
+  declare function comoms-dls:doc($uri) {
+      let $doc := fn:root(comoms-dls:collection()[property::dls:version/dls:document-uri = $uri][1])
+      return
+          if($doc) then
+              $doc
+          else
+              let $managedDocInCollection := comoms-dls:collection-name() = xdmp:document-get-collections($uri)
+              return
+                  if($managedDocInCollection) then
+                      fn:doc($uri)
+                  else
+                      ()
+  };
+ 
+  (:~
+   : Get the collection to be used when querying for content
+   : THIS or comoms-dls:collection-name() SHOULD BE USED WHEN BUILDING ANY QUERY FOR MANAGED CONTENT
+   :)
+  declare function comoms-dls:collection()  {
+      fn:collection( comoms-dls:collection-name() )
+  };
+ 
+  (:~
+   : Get the collection nameto be used when querying for content
+   : THIS or comoms-dls:collection() SHOULD BE USED WHEN BUILDING ANY QUERY FOR MANAGED CONTENT
+   :)
+  declare function comoms-dls:collection-name() as xs:string {
+      let $default_collection := "PUBLISHED"
+      return
+          if(comoms-user:isAdmin()) then
+              let $pub_stage_collection_cookie := comoms-util:getCookie("COMOMS_COLLECTION")
+              return
+                  if($pub_stage_collection_cookie) then
+                      $pub_stage_collection_cookie
+                  else
+                      $default_collection
+          else
+              $default_collection
+  };
+ 
+  (:~
+   : Check if the published collection is being viewed
+   :)
+  declare function comoms-dls:isViewingPublished() {
+      if(comoms-dls:collection-name() = "PUBLISHED") then
+          fn:true()
+      else
+          fn:false()
+  };
+ 
+  (:~
+   : Get the best URL for the content URI.
+   : This is either the default URI based on detail type or should also take
+   : into account friendly urls and navigation structures to figure out the
+   : best choice
+   :)
+  declare function comoms-dls:contentUrl($uri) {
+ 
+      (: TODO: add friendly URL and nav structure logic 1st :)
+ 
+      let $doc := fn:doc($uri)
+      let $managedDocUri := $doc/property::dls:version/dls:document-uri
+      let $uri := if($managedDocUri) then $managedDocUri else $uri
+      let $type := $doc/node()/fn:name()
+      let $content_id := fn:tokenize( fn:tokenize($uri, "/")[3], "\.")[1]
+      return
+          fn:concat("/", $type, "/", $content_id)
+  };
+ 
+  (:
+   :
+   :  gets list of doc versions and uri.
+   :
+   :)
+  declare function comoms-dls:versionHistory($uri) {
+      let $published_doc := comoms-dls:publishedDoc($uri)
+      let $published_uri := if($published_doc) then xdmp:node-uri($published_doc) else ()
+      return
+      &lt;versions&gt;
+          {
+          for $version in dls:document-history($uri)/dls:version
+            let $version_num := $version/dls:version-id/text()
+            let $created := $version/dls:created/text()
+            let $author_id := $version/dls:author/text()
+            let $author := comoms-user:getUsername($author_id)
+ 
+ 
+            let $note := $version/dls:annotation/text()
+            let $version_uri := xdmp:node-uri(dls:document-version($uri, $version_num))
+            let $published := $published_uri eq $version_uri
+            return
+              &lt;version&gt;
+                  &lt;version-number&gt;{$version_num}&lt;/version-number&gt;
+                  &lt;created&gt;{$created}&lt;/created&gt;                
+                  &lt;author&gt;{$author}&lt;/author&gt;
+                  &lt;published&gt;{$published}&lt;/published&gt;
+                  &lt;version-uri&gt;{$version_uri}&lt;/version-uri&gt;
+              &lt;/version&gt;  
+          }        
+      &lt;/versions&gt;
+  };
+ 
+ 
+ 
+ 
+ 
+ 
+  (: ########################################################################### :)
+  (: PRIVATE FUNCTIONS :)
+  (: ########################################################################### :)
+ 
+  declare function comoms-dls:_import() {
+      "xquery version '1.0-ml';
+       import module namespace dls = 'http://marklogic.com/xdmp/dls' at '/MarkLogic/dls.xqy'; "
+  };  
+ 
+(: ----
+---- :)
+xquery version '1.0-ml';
+declare variable $URI as xs:string external;
+ 
+declare function local:document-move-forest($uri as xs:string, $forest-ids as xs:unsignedLong*)
+{
+  xdmp:document-insert(
+    $uri,
+    fn:doc($uri),
+    xdmp:document-get-permissions($uri),
+    xdmp:document-get-collections($uri),
+    xdmp:document-get-quality($uri),
+    $forest-ids
+  )
+};
+ 
+let $xml :=
+  &lt;xml att="blah" att2="blah"&gt;
+    sdasd&lt;b&gt;asdasd&lt;/b&gt;
+  &lt;/xml&gt;
+(: -------- :)
+for $d in fn:doc("depts.xml")/depts/deptno
+let $e := fn:doc("emps.xml")/emps/emp[deptno = $d]
+where fn:count($e) &gt;= 10
+order by fn:avg($e/salary) descending
+return
+   &lt;big-dept&gt;
+      {
+      $d,
+      &lt;headcount&gt;{fn:count($e)}&lt;/headcount&gt;,
+      &lt;avgsal&gt;{fn:avg($e/salary)}&lt;/avgsal&gt;
+      }
+   &lt;/big-dept&gt;
+(: -------- :)
+declare function local:depth($e as node()) as xs:integer
+{
+   (: A node with no children has depth 1 :)
+   (: Otherwise, add 1 to max depth of children :)
+   if (fn:empty($e/*)) then 1
+   else fn:max(for $c in $e/* return local:depth($c)) + 1
+};
+ 
+local:depth(fn:doc("partlist.xml"))
+ 
+(: -------- :)
+&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+{
+  for $act in doc("hamlet.xml")//ACT
+  let $speakers := distinct-values($act//SPEAKER)
+  return
+    &lt;div&gt;{ string($act/TITLE) }&lt;/h1&gt;
+      &lt;ul&gt;
+      {
+        for $speaker in $speakers
+        return &lt;li&gt;{ $speaker }&lt;/li&gt;
+      }
+      &lt;/ul&gt;
+    &lt;/div&gt;
+}
+&lt;/body&gt;&lt;/html&gt;
+(: -------- :)
+{
+	for $book in doc("books.xml")//book
+        return
+	if (contains($book/author/text(),"Herbert") or contains($book/author/text(),"Asimov"))
+		then $book
+	else $book/text()
+	
+	let $let := &lt;x&gt;"test"&lt;/x&gt;
+	return element element {
+	attribute attribute { 1 },
+	element test { 'a' },
+	attribute foo { "bar" },
+	fn:doc()[ foo/@bar eq $let ],
+	//x }
+}
+(: -------- :)
+&lt;bib&gt;
+ {
+  for $b in doc("http://bstore1.example.com/bib.xml")/bib/book
+  where $b/publisher = "Addison-Wesley" and $b/@year &gt; 1991
+  return
+    &lt;book year="{ $b/@year }"&gt;
+     { $b/title }
+    &lt;/book&gt;
+ }
+&lt;/bib&gt;
+(: -------- :)
+</pre>
+
+<h1>Nemerle</h1>
+<pre class="prettyprint lang-nemerle" id="nemerle">
+class Set ['a]
+{
+  mutable storage : list ['a] = [];
+  public Add (e : 'a) : void
+  {
+    when (! Contains (e))
+      storage ::= e;
+  }
+  public Contains (e : 'a) : bool
+  {
+    storage.Contains (e)
+  }
+}
+ 
+def s1 = Set ();
+s1.Add (3);
+s1.Add (42);
+assert (s1.Contains (3));
+// s1.Add ("foo"); // error here!
+def s2 = Set ();
+s2.Add ("foo");
+assert (s2.Contains ("foo"));
+</pre>
+
+<h1>LaTeX</h1>
+<pre class="prettyprint lang-tex" id="latex">% resume.tex
+% vim:set ft=tex spell:
+\documentclass[10pt,letterpaper]{article}
+\usepackage[letterpaper,margin=0.8in]{geometry}
+\usepackage{mdwlist}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\pagestyle{empty}
+\setlength{\tabcolsep}{0em}
+</pre>
+
+<h1>Escaped quotes in Bash</h1>
+<p><a href="https://github.com/google/code-prettify/issues/144">Issue #144</a></p>
+<pre class="prettyprint" id="issue144">
+#! /bin/bash
+# toascii.sh
+for i in $(echo $* | fold -w 1);do
+  printf "%x " \'$i;
+done;
+echo
+</pre>
+
+<h1>Regular expression in &lt;SCRIPT&gt; body</h1>
+<p><a href="https://github.com/google/code-prettify/issues/145">Issue #145</a></p>
+<pre class="prettyprint" id="issue145">
+&lt;script type="text/javascript"&gt;
+&lt;!--
+        var target = $$.css('backgroundImage').replace(/^url[\(\)'"]/g, '');
+
+        // nice long chain: wrap img element in span
+        $$.wrap('&lt;span style="position: relative;"&gt;&lt;/span&gt;')
+--&gt;
+&lt;/script&gt;
+</pre>
+
+<h1>Clojure</h1>
+<pre class="prettyprint lang-clj" id="clojure">
+; Clojure test comment
+(ns test
+ (:gen-class))
+
+(def foo "bar")
+(defn bar [arg1 arg2 &amp; args]
+  "sample function"
+  (for [arg args]
+    (prn arg)))
+
+(bar "foo" "bar" "blah" :baz)
+</pre>
+
+<h1>HTML5 language on CODE</h1>
+<p>The text is specified to be <em>lisp</em> by the class attribute.
+Semicolon is normally a valid punctuation character but
+in lisp it is a comment so should be colored as a comment
+if the className is being properly parsed.</p>
+<code class="prettyprint language-lisp" id="html5conv1">; foo</code>
+
+<h1>HTML5 language on nested CODE element</h1>
+<p>The language is attached to a CODE element inside a PRE.</p>
+<pre class="prettyprint" id="html5conv2"
+><code class="language-lisp">; foo</code></pre>
+
+<h1>HTML5 language on nested CODE element not foiled by space</h1>
+<p>The language is attached to a CODE element inside a PRE and there
+is space between the PRE element's tags and CODE element's tags.</p>
+<pre class="prettyprint" id="html5conv3">
+<code class="language-lisp">
+; foo
+</code>
+</pre>
+
+<h1>HTML5 nested CODE element language ignored if not only content</h1>
+<p>The below is not treated as lisp despite there being a lisp
+language specifier on the contained CODE element, the CODE element
+does not wrap all non-space content.</p>
+<pre class="prettyprint" id="html5conv4">
+before CODE
+<code class="language-lisp">; foo</code>
+</pre>
+
+<h1>Language using XML processing instrution</h1>
+<p>The language is attached to an HTML5 comment that looks like an XML
+processing instruction.</p>
+<?prettify lang=lisp?>
+<pre class="prettyprint" id="procinstr1">; foo</pre>
+
+<h1>Language and line numbers using HTML comment</h1>
+<p>The language is attached to a regular HTML5 comment that looks like an XML
+processing instruction.</p>
+<!--prettify linenums=4 lang=lisp-->
+<pre class="prettyprint" id="procinstr2">; foo</pre>
+
+<h1>Language and line numbers using HTML comment</h1>
+<p>The language is attached to a regular HTML5 comment that looks like an XML
+processing instruction.</p>
+<!--prettify linenums=true lang=lisp-->
+<pre class="prettyprint" id="procinstr3">; foo</pre>
+
+<h1>Language and line numbers using HTML comment</h1>
+<p>The language is attached to a regular HTML5 comment that looks like an XML
+processing instruction.</p>
+<!--prettify linenums=false lang=lisp-->
+<pre id="procinstr4">; foo</pre>
+
+<h1>Don't reprettify prettified content</h1>
+<p><a href="https://github.com/google/code-prettify/issues/185">Issue #185</a></p>
+<code class="prettyprint prettyprinted" id="issue185"
+><span class="str">"No tag backs."</span></code>
+
+<p><a href="https://github.com/google/code-prettify/issues/261">Issue #261</a></p>
+<pre class="prettyprint prettyprinted linenums" id="issue261"
+><ol class="linenums"><li class="L0"><span class="str">"No tag backs."</span></li></ol></pre>
+
+<h1>C type not full word</h1>
+<p><a href="https://github.com/google/code-prettify/issues/201">Issue #201</a></p>
+<code class="prettyprint lang-c" id="issue201"
+>static Persistent&lt;String&gt; listeners_symbol;</code>
+
+<h1>Pascal</h1>
+<pre class="prettyprint lang-pascal" id="pascal_lang">
+(* some comment here *)
+PROCEDURE TestCase.AssertEquals(msg:String; expect, act:Longint);
+VAR ex, ac:String;
+BEGIN
+  IF expect &lt;&gt; act THEN
+  BEGIN
+    Str(expect, ex);
+    Fail(Concat(msg,' expected ',ex,' but was ',ac));
+  END;
+
+  factors := new(ArrayListPtr, Init);
+
+  FOR candidate := 2 TO i DO
+  BEGIN
+    WHILE i MOD candidate = 0 DO
+    BEGIN
+      factors^.Add(candidate);
+      i := i DIV candidate;
+    END;
+  END;
+END;
+</pre>
+
+<h1>BASIC</h1>
+<pre class="prettyprint lang-basic" id="basic_lang">
+200 REM ----- method teardown
+210 PRINT "green"
+220 RETURN
+470 IF af=0 THEN GOTO 520
+480 FOR j=1 TO af
+500 ac=pf(j) : me$=STR$(j)+". factor" : GOSUB 100
+510 NEXT
+530 RETURN
+1000 DATA "one", 1, 0
+</pre>
+
+<h1>Dart</h1>
+<pre class="prettyprint lang-dart" id="dart">
+part of myLib;
+
+part 'something.dart';
+
+import 'dart:math' as test show foo, bar;
+
+class Point {
+  final num x, y;
+
+  Point(this.x, this.y);
+  Point.zero() : x = 0, y = 0;  // Named constructor
+                                // with an initializer list.
+
+  num distanceTo(Point other) {
+    var dx = x - other.x;
+    var dy = y - other.y;
+    return sqrt(dx * dx + dy * dy);
+  }
+}
+
+// This is a single-line comment.
+
+/*
+This is a
+multiline comment.
+*/
+
+main() {
+  Point p = new Point(7, 12);
+  String thing = 'It\'s awesome!';
+  String thing2 = '''
+This is a test! \'''
+This is the end of the test''';
+  String thing3 = r"""
+This is a raw
+multiline string!""";
+  num x = 0x123ABC;
+  num y = 1.8e-12;
+  bool flag = false;
+  String raw = r"This is a raw string, where \n doesn't matter";
+}
+</pre>
+
+<h1>TCL</h1>
+<pre class="prettyprint lang-tcl" id="tcl_lang">#!/bin/tclsh
+proc fib {n} {
+    set a 0
+    set b 1
+    while {$n &gt; 0} {
+        set tmp $a
+        set a [expr $a + $b]
+        set b $tmp
+        incr n -1
+    }
+    return $a
+}
+</pre>
+
+<h1>R, S</h1>
+<pre class="prettyprint lang-r" id="r_lang">
+### Example R script for syntax highlighting
+
+# This is a comment
+
+## Valid names
+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUV0123456789._a &lt;- NULL
+.foo_ &lt;- NULL
+._foo &lt;- NULL
+
+## Invalid names
+0abc &lt;- NULL
+.0abc &lt;- NULL
+abc+cde &lt;- NULL
+
+## Reserved Words
+NA
+NA_integer_
+NA_real_
+NA_character_
+NA_complex_
+NULL
+NaN
+Inf
+## Not reserved
+NULLa &lt;- NULL
+NULL1 &lt;- NULL
+NULL. &lt;- NULL
+NA_foo_ &lt;- NULL
+
+## Numbers
+12345678901
+123456.78901
+123e3
+123E3
+1.23e-3
+1.23e3
+1.23e-3
+## integer constants
+123L
+1.23L
+## imaginary numbers
+123i
+-123i
+123e4i
+123e-4i
+## Hex numbers
+0xabcdefABCDEF01234
+0xabcp123
+0xabcP123
+## Not hex
+0xg
+
+## Special operators %xyz%
+## %xyz%
+1 %% 2
+diag(2) %*% diag(2)
+1 %/% 2
+1 %in% 1:10
+diag(2) %o% diag(2)
+diag(2) %x% diag(2)
+`%foo bar%` &lt;- function(x, y) x + y
+1 %foo bar% 2
+
+## Control Structures (3.2) and Function
+## if, else
+if (TRUE) print("foo") else print("bar")
+## For, in
+for(i in 1:5) {
+    print(i)
+}
+## While, break
+i &lt;- 1
+while (TRUE) {
+    i &lt;- i + 1
+    if (i &gt; 3) break
+}
+## Repeat
+repeat {1+1}
+## Switch
+x &lt;- 3
+switch(x, 2+2, mean(1:10), rnorm(5))
+## Function, dot-dot-dot, return
+foo &lt;- function(...) {
+    return(sum(...))
+}
+# Not keywords
+functiona &lt;- 2 + 2
+function. &lt;- 2 + 2
+function1 &lt;- 2 + 2
+
+
+## Grouping Tokens 10.3.7
+## Parentheses
+1 + (2 + 3)
+## brackets
+foo &lt;- function(a) {
+    a + 1
+}
+
+## Indexing 10.3.8
+## []
+bar &lt;- 1:10
+bar[3]
+## [[]]
+foo &lt;- list(a=1, b=2, c=3)
+foo[["a"]]
+## $
+foo$a
+foo$"a"
+
+## Operators
+2 - 2
+2 + 2
+2 ~ 2
+! TRUE
+?"help"
+1:2
+2 * 2
+2 / 2
+2^2
+2 &lt; 2
+2 &gt; 2
+2 == 2
+2 &gt;= 2
+2 &lt;= 2
+2 != 2
+TRUE &amp; FALSE
+TRUE &amp;&amp; FALSE
+TRUE | FALSE
+TRUE || FALSE
+foo &lt;- 2 + 2
+foo = 2 + 2
+2 + 2 -&gt; foo
+foo &lt;&lt;- 2 + 2
+2 + 2 -&gt;&gt; foo
+base:::sum
+base::sum
+
+## Strings
+foo &lt;- "hello, world!"
+foo &lt;- 'hello, world!'
+foo &lt;- "Hello, 'world!"
+foo &lt;- 'Hello, "world!'
+foo &lt;- 'Hello, \'world!\''
+foo &lt;- "Hello, \"world!\""
+foo &lt;- "Hello,
+world!"
+foo &lt;- 'Hello,
+world!'
+
+## Backtick strings
+`foo123 +!"bar'baz` &lt;- 2 + 2
+</pre>
+
+<h1>MUMPS</h1>
+<pre class="prettyprint lang-mumps" id="mumps">
+HDR ; -- prt/display header
+ N X,I
+ I '$D(VALMHDR) X:$G(VALM("HDR"))]"" VALM("HDR")
+ ; -- prt hdr line
+ W:'$D(VALMPG1) @IOF K VALMPG1
+ W:VALMCC $C(13)_IOUON_$C(13)_IOINHI_$C(13)       ; -- turn on undln/hi
+ I $E(IOST,1,2)="C-" D IOXY^VALM4(0,0)            ; -- position cursor
+ W $E(VALM("TITLE"),1,30)                         ; -- prt title
+ W:VALMCC IOINORM,IOUON                           ; -- turn off hi
+ W $J("",30-$L(VALM("TITLE")))                    ; -- fill in w/blanks
+ I $E(IOST,1,2)="C-" W $C(13) D IOXY^VALM4(30,0)  ; -- position cursor
+ W $J("",((VALMWD-80)/2)),$$HTE^XLFDT($H,1),$J("",10+((VALMWD-80)/2)),"Page: ",$J(VALMPGE,4)," of ",$J($$PAGE^VALM4(VALMCNT,VALM("LINES")),4)_$S($D(VALMORE):"+",1:" ") ; -- prt rest of hdr
+ W:VALMCC IOUOFF I $E(IOST,1,2)="C-" D IOXY^VALM4(0,0) ; -- turn off undln
+ F I=1:1:VALM("TM")-3 W !,$S('$D(VALMHDR(I)):"",$L(VALMHDR(I))&gt;(VALMWD-1):$$EXTRACT^VALM4($G(VALMHDR(I))),1:VALMHDR(I)) ; -- prt hdr
+ Q
+</pre>
+
+<h1>LLVM</h1>
+<p><a href="http://llvm.org/docs/LangRef.html">Hello world module</a></p>
+<pre class="prettyprint lang-llvm" id="llvm">
+; Declare the string constant as a global constant.
+@.str = private unnamed_addr constant [13 x i8] c"hello world\0A\00"
+
+; External declaration of the puts function
+declare i32 @puts(i8* nocapture) nounwind
+
+; Definition of main function
+define i32 @main() {   ; i32()*
+  ; Convert [13 x i8]* to i8  *...
+  %cast210 = getelementptr [13 x i8]* @.str, i64 0, i64 0
+
+  ; Call puts function to write out the string to stdout.
+  call i32 @puts(i8* %cast210)
+  ret i32 0
+}
+
+; Named metadata
+!1 = metadata !{i32 42}
+!foo = !{!1, null}
+</pre>
+
+<h1>Regex following '!'</h1>
+<p><a href="https://github.com/google/code-prettify/issues/217">Issue #217</a></p>
+<pre class="prettyprint lang-js" id="issue217">
+if(!/^https?:\/\//i.test(val) &amp;&amp; foo == 'bar') {
+    val = 'http://' + val;
+}
+</pre>
+
+<h1>MATLAB</h1>
+<p><a href="https://github.com/google/code-prettify/issues/32">Issue #32</a></p>
+<pre class="prettyprint lang-matlab" id="matlab">
+%%%%%%%%%%%%%%%%%% DATA TYPES %%%%%%%%%%%%%%%%%%
+
+v = [1,2,3;4,5,6];
+v(v&gt;4) = 0;
+
+s = struct('key',1, 'key2','string');
+s.key = 2;
+
+C = cell(1,2);
+C{1,1} = 0:9;
+
+double(1)
+single(1)
+uint8(1)
+int8(1)
+
+%%%%%%%%%%%%%%%%%% STRINGS &amp; TRANSPOSE %%%%%%%%%%%%%%%%%%
+
+plot(data');
+legend(labels)
+
+str = 'asdasd';     % this is a string
+str = 'asdas';
+str = 'sdasd''sdasd';
+
+str = ['one' 'two' 'three'];
+str = strcat('one', 'two', 'three');
+
+% matrix transpose
+M = rand(3,3)';
+x = M.';
+x = [10 20; 30, 40]';
+disp(x')
+fprintf('%d\n', x(:)')      % with comment
+{1,2}'                      % another comment
+
+%%%%%%%%%%%%%%%%%% LINE CONTINUATION %%%%%%%%%%%%%%%%%%
+
+[1 20; ...
+30 4]
+
+['gdgsd'...
+'sdfs']
+
+{...
+'sdasd' ;
+'asdsad'}
+
+%%%%%%%%%%%%%%%%%% SYSTEM COMMANDS %%%%%%%%%%%%%%%%%%
+
+!touch file.txt
+
+%%%%%%%%%%%%%%%%%% COMMAND OUTPUT %%%%%%%%%%%%%%%%%%
+
+&gt;&gt; 1+1
+ans =
+     2
+
+&gt;&gt; 1+1
+
+ans =
+
+     2
+
+%%%%%%%%%%%%%%%%%% KEYWORDS %%%%%%%%%%%%%%%%%%
+
+function ret = fcn(in)
+	ret = sum(in.^2);
+end
+
+classdef CC &lt; handle
+	properties (SetAccess = public)
+		x = 0;
+	end
+	methods
+		function this = CC(varargin)
+			this.x = 9;
+		end
+	end
+end
+
+x = [];
+parfor i=1:10
+	x[i] = i;
+end
+
+true ~= false
+
+if x==1
+	true
+elseif
+	false
+else
+	return
+end
+
+while true
+	continue
+	break
+end
+
+try
+	error('aa:aa', 'asdasd')
+catch ME
+	warning(ME)
+end
+
+switch x
+	case 1
+		disp(1)
+	otherwise
+		0
+end
+
+%%%%%%%%%%%%%%%%%% NUM LITERALS %%%%%%%%%%%%%%%%%%
+
+1
+1.
+.1
+1.0
+-1
+-1.
+-.1
+-1.0
++10
++01.
++.1
++1.0
+1e1
+1e-1
+1.e1
+1.e-1
+1.0e1
+1.0e-1
+.1e1
+.1e-1
+-.1e+1
++1.e-1
+
+1i
+.10j
+-1.001i
++1e-100j
+-.10e-01i
+
+% unary vs binary operators
+1+1
+1+ 1
+1 +1
+1 + 1
++1+1
++1+ 1
++1 +1
++1 + 1
+
+%%%%%%%%%%%%%%%%%% COMMENTS %%%%%%%%%%%%%%%%%%
+
+% % comment % %
+   % comment
+% comment
+%# comment
+%% comment
+%#x = sum(x);
+
+%{
+block comment
+%}
+
+%{
+%}
+
+%{
+
+%}
+
+%{
+1
+2
+%}
+
+%{
+% sdf {}
+sdf
+%asda{}
+sfds
+%}
+
+    %{
+dsf
+        %}
+
+%{%}
+
+%{ zzz=10; %}
+
+%{%x=10;%}
+
+%{  x
+a=10;
+%}
+
+%{
+%a=10;
+%}   x
+
+% nested block comments fail
+%{
+dfsdf
+%{
+xxx
+%}
+dfsdf
+%}
+
+% fails here!
+%{
+x=10;
+%%{
+%%}
+y=20;
+%}
+</pre>
+
+<h1>Elixir</h1>
+<pre class="prettyprint lang-ex" id="elixir">
+defmodule Foo.Bar do
+  @moduledoc """
+  Tests syntax highlighting for Elixir
+  """
+
+  use Bitwise
+  require Logger
+  alias __MODULE__, as: This
+
+  @default_token_length 10_000
+
+
+  @spec token(length :: integer) :: String.t
+
+  def token(length \\ @default_token_length), do: String.duplicate("x", length)
+
+
+  defp _not_exported(), do: 0xFF + 0xF_F - 0xff
+
+
+  def other(foo, bar) do
+    fun = fn{_a, b} -&gt; b + 1_3.1_4 end
+    fun.(1.0e+20)
+    _str = "string without #{inspect(42)} interpolation" &lt;&gt; " some more
+    with newlines \
+    and newlines"
+    charlist = 'some\'chars
+    with newlines \
+    and newlines'
+    &lt;&lt;x::utf8, _y::size(8), data::binary&gt;&gt; = "fooo"
+    ls = [1 | [2, 3]]
+    map = %{"baz" =&gt; "ban"}
+    map = %{foo: :bar, "yes, this compiles": :"also an atom"}
+    :erlang.time()
+    case {foo, bar} do
+      {1, 2} -&gt; 3
+      _something_else -&gt; :error
+      _ -&gt; :"this won't match"
+    end
+    r = 2
+    _bitwise_not = ~~~r
+
+    ~r/foo/iu # regex sigils are treated as normal ones
+    ~S|we have "quotes" and 'quotes' and| &lt;&gt; " more string"
+    ~c"custom sigil char \"is\" fine too"
+    ~r'hello'
+    ~w[hell\] #o] #sigil does not expand to the comment
+    ~w{hello}
+    ~C&lt;hello&gt;
+  end
+
+end
+</pre>
+
+<h1>Kotlin</h1>
+<pre class="prettyprint lang-kotlin" id="kotlin">
+package test;
+
+import kotlin.Int
+
+// Single line comment
+/*
+ * Multiline
+ * comment
+ */
+
+typealias SomeNumber = Int
+
+val number: Long = 1_000L
+var float: Float = 12.34f
+0xFF_FF
+3.14
+
+314e-2
+0.314e1
+
+protected override fun ifBoolean(condition: Boolean? = null) {}
+
+::ifBoolean
+
+constructor() : super()
+
+"\"true\""
+'a'
+
+"""
+aaaaaaaaaaa
+"""
+
+loop@ for()
+
+break @loop
+
+enum class `true`
+
+data class Person(val name: String)
+
+enum class Size {
+    BIG, MEDIUM, SMALL
+}
+
+class Ball(val color: String, val size: Size) {
+    companion object {}
+
+    fun isBig() = size == Size.BIG
+
+    val isMedium: Boolean
+        get() = size == Size.MEDIUM
+}
+
+fun Boolean?.isNull(): Boolean = this == null
+
+fun Boolean?.getOrThrow(): Boolean = this ?: throw Exception()
+</pre>
+</body>
+</html>

@@ -1,0 +1,43 @@
+# This file is managed by Puppet -- <%= @name %>
+#
+# Set the 'jvm_options' parameter on the elasticsearch class to change this file.
+<%
+def set_default(options, match_string, default)
+  options.detect {|o| o.include?(match_string)} || options.push(default)
+end
+
+defaults = {
+  '-Xms' => '-Xms2g',
+  '-Xmx' => '-Xmx2g',
+  'UseConcMarkSweepGC' => '-XX:+UseConcMarkSweepGC',
+  'CMSInitiatingOccupancyFraction=' => '-XX:CMSInitiatingOccupancyFraction=75',
+  'UseCMSInitiatingOccupancyOnly' => '-XX:+UseCMSInitiatingOccupancyOnly',
+  'AlwaysPreTouch' => '-XX:+AlwaysPreTouch',
+  'server' => '-server',
+  '-Xss' => '-Xss1m',
+  '-Djava.awt.headless=' => '-Djava.awt.headless=true',
+  '-Dfile.encoding=' => '-Dfile.encoding=UTF-8',
+  '-Djna.nosys=' => '-Djna.nosys=true',
+  'OmitStackTraceInFastThrow' => '-XX:-OmitStackTraceInFastThrow',
+  '-Dio.netty.noUnsafe' => '-Dio.netty.noUnsafe=true',
+  '-Dio.netty.noKeySetOptimization' => '-Dio.netty.noKeySetOptimization=true',
+  '-Dio.netty.recycler.maxCapacityPerThread' => '-Dio.netty.recycler.maxCapacityPerThread=0',
+  '-Dlog4j.shutdownHookEnabled' => '-Dlog4j.shutdownHookEnabled=false',
+  '-Dlog4j2.disable.jmx' => '-Dlog4j2.disable.jmx=true',
+  'HeapDumpOnOutOfMemoryError' => '-XX:+HeapDumpOnOutOfMemoryError',
+  'PrintGCDetails' => '-XX:+PrintGCDetails',
+  'PrintGCDateStamps' => '-XX:+PrintGCDateStamps',
+  'PrintTenuringDistribution' => '-XX:+PrintTenuringDistribution',
+  'PrintGCApplicationStoppedTime' => '-XX:+PrintGCApplicationStoppedTime',
+  'Xloggc' => "-Xloggc:#{@logdir}/gc.log",
+  'UseGCLogFileRotation' => '-XX:+UseGCLogFileRotation',
+  'NumberOfGCLogFiles' => '-XX:NumberOfGCLogFiles=32',
+  'GCLogFileSize' => '-XX:GCLogFileSize=64m',
+}
+defaults.each {|k,v| set_default(@jvm_options, k, v)}
+
+-%>
+
+<% @jvm_options.sort.each do |line| -%>
+<%= line %>
+<% end -%>

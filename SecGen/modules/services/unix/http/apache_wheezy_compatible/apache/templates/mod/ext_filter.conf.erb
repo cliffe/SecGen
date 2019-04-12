@@ -1,0 +1,6 @@
+# mod_ext_filter definitions
+<%- if @ext_filter_define.length >= 1 -%>
+<%- @ext_filter_define.keys.sort.each do |name| -%>
+ExtFilterDefine <%= name %> <%= @ext_filter_define[name] %>
+<%- end -%>
+<%- end -%>

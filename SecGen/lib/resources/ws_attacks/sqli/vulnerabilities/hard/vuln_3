@@ -1,0 +1,9 @@
+$badAgents = array('sqlmap');
+if(in_array($_SERVER['HTTP_USER_AGENT'],$badAgents)) {
+    exit();
+}else{
+  $blacklist = array("'", "SELECT", "FROM", "DROP", "TABLE", 'SLEEP');
+    $name=htmlspecialchars(mysqli_real_escape_string($conn2, $_POST['name']));
+    $email=htmlspecialchars(mysqli_real_escape_string($conn2, $_POST['email]));
+    $mobile=htmlspecialchars(mysqli_real_escape_string($conn2, $_POST['mobile']));
+    $question=str_replace($blacklist, "", htmlspecialchars($_POST['question']));

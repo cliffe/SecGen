@@ -1,0 +1,8 @@
+# this file is managed by puppet
+<%- @config.sort.map do |section,conf| -%>
+[<%= section -%>]
+<%-   conf.sort.map do |key,value| -%>
+<%= key %> = <%= value %>
+<%-   end -%>
+
+<%- end -%>

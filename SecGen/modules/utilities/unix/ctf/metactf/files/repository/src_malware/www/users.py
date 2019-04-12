@@ -1,0 +1,1 @@
+users = {"ase2": "malware", "ase4": "malware", "ase7": "malware", "ase0": "malware", "wuchang": "9999", "ase6": "malware", "ase3": "malware", "ase5": "malware", "ase1": "malware", "ase9": "malware", "ase8": "malware", "foo": "bar", "admin": "9999"}

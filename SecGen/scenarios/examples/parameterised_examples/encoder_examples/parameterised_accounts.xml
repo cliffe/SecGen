@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+		  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		  xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+	<!-- an example remote storage system with an account generated using the parameterised_accounts module -->
+	<system>
+		<system_name>storage_server</system_name>
+		<base platform="linux" distro="Debian 7.8"/>
+
+		<utility module_path=".*parameterised_accounts">
+			<input into="accounts">
+				<generator type="account">
+					<input into="username">
+						<value>example_username</value>
+					</input>
+					<input into="password">
+						<value>password</value>
+					</input>
+					<input into="super_user">
+						<value>true</value>
+					</input>
+					<input into="strings_to_leak">
+						<value>Here is a message! stored in a text file within the users home directory</value>
+						<value>I'm stored in a text file within the users home directory</value>
+						<value>Using the filename below: /home/example_username/file_with_a_message </value>
+					</input>
+					<input into="leaked_filenames">
+						<value>file_with_a_message</value>
+					</input>
+				</generator>
+			</input>
+		</utility>
+		
+		<network type="private_network" range="dhcp"/>
+	</system>
+</scenario>

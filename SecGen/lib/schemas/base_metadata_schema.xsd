@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.github/cliffe/SecGen/base"
+           xmlns="http://www.github/cliffe/SecGen/base"
+           elementFormDefault="qualified">
+
+  <xs:simpleType name="platformOptions">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="linux"/>
+      <xs:enumeration value="unix"/>
+      <xs:enumeration value="windows"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:element name="base">
+    <xs:complexType>
+      <xs:sequence>
+        <!--required SecGen module details-->
+        <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="author" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+        <xs:element name="module_license" minOccurs="1" maxOccurs="unbounded">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="MIT"/>
+              <xs:enumeration value="Apache v2"/>
+              <xs:enumeration value="GPLv3"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name="description" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="cpu_word_size" minOccurs="1" maxOccurs="1">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="32-bit"/>
+              <xs:enumeration value="64-bit"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name="type" minOccurs="1" maxOccurs="unbounded">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="server"/>
+              <xs:enumeration value="desktop"/>
+              <xs:enumeration value="attack"/>
+              <xs:enumeration value="cli"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+
+        <xs:element name="platform" type="platformOptions" minOccurs="1" maxOccurs="unbounded"/>
+        <xs:element name="distro" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="url" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="esxi_url" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="ovirt_template" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+
+        <xs:element name="packerfile_path" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="product_key" type="xs:string" minOccurs="0" maxOccurs="1"/>
+
+        <!--optional details-->
+        <xs:element name="reference" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="software_name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="software_license" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+
+        <!-- cannot co-exist with a system matching ALL of the optionally specified values (can be repeated for OR)-->
+        <xs:element name="conflict" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="module_path" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="author" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="module_license" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="type" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+
+              <xs:element name="platform" type="platformOptions" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="distro" type="platformOptions" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="url" type="platformOptions" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="vagrantbase" type="platformOptions" minOccurs="0" maxOccurs="unbounded"/>
+
+              <xs:element name="reference" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="software_license" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <!-- must co-exist with a system matching ALL of the optionally specified values (can be repeated for OR)-->
+        <!-- if a scenario does not include one already, the first match (randomly) found will be added-->
+        <xs:element name="requires" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="module_path" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="author" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="module_license" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="type" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+
+              <xs:element name="platform" type="platformOptions" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="distro" type="platformOptions" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="url" type="platformOptions" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="vagrantbase" type="platformOptions" minOccurs="0" maxOccurs="unbounded"/>
+
+              <xs:element name="reference" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="software_license" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

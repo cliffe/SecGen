@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>NFS Read-write Access to FS</name>
+  <author>Lewis Ardern</author>
+  <module_license>MIT</module_license>
+  <description>NFS misconfigured to be mountable from anyone that can interact with it, with full read write access to /.</description>
+
+  <type>nfs</type>
+  <privilege>root_rw</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>images_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+
+  <default_input into="strings_to_leak">
+    <value>Plain text from the metadata default, destined for strings_to_leak...</value>
+    <encoder type="string_encoder">
+      <input into="strings_to_encode">
+        <!--encode the following strings-->
+        <value>Encoded text from the metadata default, destined for strings_to_leak...</value>
+        <value>More encoded text from the metadata default, destined for strings_to_leak...</value>
+        <generator module_path=".*random.*"/>
+      </input>
+    </encoder>
+    <generator type="message_generator"/>
+  </default_input>
+
+  <!-- File-name which contains strings_to_leak -->
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+    <generator type="filename_generator"/>
+  </default_input>
+
+  <!--optional vulnerability details-->
+  <!--<cve></cve>-->
+  <cvss_base_score>9.3</cvss_base_score>
+  <cvss_vector>AV:N/AC:M/Au:N/C:C/I:C/A:C</cvss_vector>
+  <reference>http://nfs.sourceforge.net/#section_c</reference>
+  <software_name>nfsd</software_name>
+  <software_license>GPLv2</software_license>
+
+  <!--optional hints-->
+  <hint>A filesharing misconfiguration</hint>
+  <solution>NFS can be mounted to access files</solution>
+
+  <conflict>
+    <type>nfs</type>
+  </conflict>
+
+</vulnerability>

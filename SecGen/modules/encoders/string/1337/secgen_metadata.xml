@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<encoder xmlns="http://www.github/cliffe/SecGen/encoder"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/encoder">
+  <name>L337 Encoder</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>MIT</module_license>
+  <description>Basic substitution.</description>
+
+  <type>string_encoder</type>
+  <type>alpha_reversible</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>strings_to_encode</read_fact>
+
+  <output_type>encoded_strings</output_type>
+  
+</encoder>

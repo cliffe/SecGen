@@ -1,0 +1,158 @@
+/* Derived from Leila Hawana's CTF level New Beginnings 12/2016 */
+#include <stdio.h>
+#include <fcntl.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+#include <sys/ptrace.h>
+#define USERDEF "AAAAAA"
+
+char msg[] = \
+"In this level, you will be converting from ASCII to hexadecimal, decimal,\n"
+"and octal.  Most often, students look up a table online and directly\n"
+"convert. An easier way is to use a tool such as \"showkey\".  In this\n"
+"level, use \"showkey -a\" to discover the representations of\n"
+"an ASCII string.  You will be given the password represented as a string,\n"
+"but you will need to supply 3 arguments which represent the password in\n"
+"its hexadecimal, decimal, and octal codes.  For hexadecimal, use 2 digits.\n"
+"For decimal and octal, use 3 digits and zero pad on the left for codes\n"
+"below 100.  For example, a password string of ab% would yield a password\n"
+"of 616225 097098037 141142045\n\n";
+
+void detectTrace(void) __attribute__((constructor));
+void detectTrace (void) {
+    if(ptrace(PTRACE_TRACEME, 0, 1, 0) < 0) {
+        printf("No tracing");
+        exit(1);
+    };
+};
+
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg[i%len] + msg[(i+1)%len];
+    h2 += msg[(i+1)%len] + msg[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg);
+  else
+    printf("%s",msg);
+}
+
+int hexcmp(const char *pass, const char *buff)
+{
+    int len = strlen(pass);
+    char *hexed_string = malloc(sizeof(char[2*len+1]));
+    hexed_string[2*len] = '\0'; //  null-terminate
+    for (int i = 0; i < len; i++)
+    {
+        sprintf(hexed_string, "%X", pass[i]);
+        hexed_string += 2;
+    }
+    hexed_string -= 2*len;
+    int res = strcmp(hexed_string, buff);
+    free(hexed_string);
+    return res;
+}
+
+int intcmp(const char *pass, const char *buff)
+{
+    int count = 0;
+    int len = strlen(pass);
+    char *int_string = malloc(sizeof(char[(3*len)+1]));
+    int_string[3*len] = '\0'; //  null-terminate
+    for (int i = 0; i < len; i++)
+    {
+        sprintf(int_string, "%03d", pass[i]);
+        int_string += 3;
+    }
+    int_string -= 3*len;
+    int res = strcmp(int_string, buff);
+    free(int_string);
+    return res;
+}
+
+int octcmp(const char *pass, const char *buff)
+{
+    int count = 0;
+    int len = strlen(pass);
+    char *oct_string = malloc(sizeof(char[(3*len)+1]));
+    oct_string[3*len] = '\0'; //  null-terminate
+    for (int i = 0; i < len; i++)
+    {
+        sprintf(oct_string, "%03o", pass[i]);
+        oct_string += 3;
+    }
+    oct_string -= 3*len;
+    int res = strcmp(oct_string, buff);
+    free(oct_string);
+    return res;
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main(int argc, char* argv[]) {
+    char pass[20];
+    char hexbuff[30];
+    char decbuff[30];
+    char octbuff[30];
+    char c;
+    int i, hres, dres, ores;
+
+    print_msg();
+
+    for (i=0; i < 20; i++)
+	pass[i] = 0;
+    strncpy(pass,USERDEF,strlen(USERDEF));
+    c = pass[0];
+    pass[0] = pass[1];
+    pass[1] = c;
+    printf("The password as a string is %s\n", pass);
+    printf("Enter the password: ");
+    scanf("%30s %30s %30s", hexbuff, decbuff, octbuff);
+    for (i=0; i<30; i++) {
+        hexbuff[i] = toupper(hexbuff[i]);
+        decbuff[i] = toupper(decbuff[i]);
+        octbuff[i] = toupper(octbuff[i]);
+    }
+    hres = hexcmp(pass, hexbuff);
+    dres = intcmp(pass, decbuff);
+    ores = octcmp(pass, octbuff);
+    if (hres || dres || ores) {
+       printf("Hex OK? %d   Dec OK? %d  Oct OK?  %d\n",!hres,!dres,!ores);
+       printf("Try again.\n");
+    } else {
+    	printf("Good Job.\n");
+       printflag();
+    }
+    return 0;
+}

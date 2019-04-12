@@ -1,0 +1,3 @@
+include vsftpd_234_backdoor::install
+include vsftpd_234_backdoor::config
+include vsftpd_234_backdoor::service

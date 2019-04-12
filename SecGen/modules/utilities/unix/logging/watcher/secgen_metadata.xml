@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Watcher</name>
+  <author>Thomas Shaw</author>
+  <author>Elastic</author>
+  <module_license>Apache v2</module_license>
+  <description>TODO</description>
+
+  <type>log_tool</type>
+  <platform>linux</platform>
+
+  <read_fact>elasticsearch_ip</read_fact>
+  <read_fact>elasticsearch_port</read_fact>
+
+  <default_input into="elasticsearch_ip">
+    <value>localhost</value>
+  </default_input>
+
+  <default_input into="elasticsearch_port">
+    <value>9200</value>
+  </default_input>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+  <requires>
+    <module_path>.*elasticsearch</module_path>
+  </requires>
+
+</utility>

@@ -1,0 +1,8 @@
+<!--Taken from lauras code and edited-->
+<div class="row" id="review-form">
+  <?php echo '<form  method="GET" action="'.$_SERVER['SCRIPT_NAME'].'">'; ?>
+    <input  type="text" name="name" size="20" placeholder="Company"><br><br>
+    <input  type="text" name="question" size="40" placeholder="Please enter your review!"><br><br>
+    <input  type="submit" name="go" value="Submit" id="submit-button">
+  </form>
+</div>

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<base xmlns="http://www.github/cliffe/SecGen/base"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/base">
+  <name>Kali Light, MSF, XFCE and Puppet</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>GPLv3</module_license>
+  <description>Kali Light 2017.1 XFCE minimal install, with metasploit framework and puppet.</description>
+  <cpu_word_size>64-bit</cpu_word_size>
+  <type>attack</type>
+  <type>desktop</type>
+
+  <platform>linux</platform>
+  <platform>unix</platform>
+  <distro>Kali Linux 2018.3</distro>
+  <url>https://app.vagrantup.com/secgen/boxes/kali_light_msf/versions/1.0/providers/virtualbox.box</url>
+  <esxi_url></esxi_url>
+  <ovirt_template>kali_linux_msf</ovirt_template>
+  
+
+  <reference>https://app.vagrantup.com/secgen</reference>
+  <software_license>various</software_license>
+
+</base>

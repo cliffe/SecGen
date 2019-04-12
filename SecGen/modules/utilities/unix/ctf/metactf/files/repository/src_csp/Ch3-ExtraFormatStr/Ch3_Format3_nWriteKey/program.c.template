@@ -1,0 +1,114 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
+#define USERDEF AAAAAA
+
+// Introduction message
+char msg[] =
+"In the previous level, you only needed to change the value of a variable\n"
+"using a targeted %n specifier.  You can control what you write into that\n"
+"variable by having a variable number of characters in the format string\n"
+"before calling %n.  (e.g. aa%n will write 2, while aaaa%n will write 4).\n"
+"Format specifiers can also contain length arguments that control how many\n"
+"characters are used to output the parameter.  For example %8x informs\n"
+"printf to ensure the output is formatted to 8 characters while %100x informs\n"
+"printf to use 100 characters.  In general, if the format string contains\n"
+"%<number_of_chars>x%<parameter_number>$n, then the number <number_of_chars>\n"
+"will be written at the address specified in parameter <parameter_number>\n"
+"For example: %100x%3$n will result in 100 being written to the address\n"
+"contained in the third parameter. %100x will output 100 characters for\n"
+"the first parameter and the subequent %3$n will store the amount of bytes\n"
+"written (100) into the address specified in the third parameter. In this\n"
+"problem, an address to variable key is stored on the stack.  Write a\n"
+"the valued specified into it.\n\n";
+
+// Print introduction message
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg[i%len] + msg[(i+1)%len];
+    h2 += msg[(i+1)%len] + msg[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg);
+  else
+    printf("%s",msg);
+}
+
+// Vulnerable format string function
+int format_string(char input[]) {
+
+	// Give a pointer to key
+	int key = 0;
+	int *ptr = &key;
+
+	printf("You input: ");
+	printf(input);
+	printf("\n");
+
+	return key;
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main() {
+	char input[51];
+	int i;
+
+	// Initializing input
+	for(i = 0; i < 51; i++) {
+		input[i] = 0;
+	}
+
+	// Print introduction message
+	print_msg();
+
+	// Get user input
+	printf("The key should equal to %d.\n", USERDEF);
+	printf("Enter the password: ");
+	//fgets(input, 51, stdin);
+	scanf("%50s",input);
+
+	// Check if key from format_string is equal to random int
+
+	int key = format_string(input);	
+	printf("The key is equal to %d.\n", key);
+
+	if(key == USERDEF){
+    	printf("Good Job.\n");
+		printflag();
+	} else {
+		printf("Try again.\n");
+	}
+
+	return 0;
+}

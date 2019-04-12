@@ -1,0 +1,4 @@
+$name=htmlspecialchars(mysqli_real_escape_string($conn2, $_POST['name']));
+$email=htmlspecialchars(mysqli_real_escape_string($conn2, $_POST['email']));
+$mobile=htmlspecialchars(mysqli_real_escape_string($conn2, $_POST['mobile']));
+$question=htmlspecialchars(mysqli_real_escape_string($conn2, $_POST['question']));

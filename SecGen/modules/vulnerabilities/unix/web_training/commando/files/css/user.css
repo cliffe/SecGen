@@ -1,0 +1,28 @@
+#pp {
+	border-radius: 50%;
+	border: 1px solid #e2e2e2;
+	height: 128px;
+	display: block;
+    margin: 0 auto;
+}
+
+#pp-holder {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+  margin-top: 3em;
+}
+
+#welcome {
+	border-radius: 1em;
+	border: 1px solid #e2e2e2;
+	background-color: #F8F9FA;
+	padding: .75em;
+	color: #808080;
+	margin: 1em;
+}
+
+#details {
+	margin-left: 2em;
+}

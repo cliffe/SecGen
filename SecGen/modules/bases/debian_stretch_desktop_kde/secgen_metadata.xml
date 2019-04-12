@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<base xmlns="http://www.github/cliffe/SecGen/base"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/base">
+  <name>Debian 9 Stretch Desktop KDE</name>
+  <author>Thomas Shaw</author>
+  <module_license>GPLv3</module_license>
+  <description>Debian 9.5.0 Stretch Desktop KDE amd64. For testing purposes, the default root password is puppet.</description>
+  <cpu_word_size>64-bit</cpu_word_size>
+  <type>desktop</type>
+
+  <platform>linux</platform>
+  <platform>unix</platform>
+  <distro>Debian 9.5.0 Stretch amd64</distro>
+  <url>https://app.vagrantup.com/secgen/boxes/debian_stretch_desktop_kde/versions/1.2/providers/virtualbox.box</url>
+  <esxi_url>https://app.vagrantup.com/redwiz666/boxes/debian_stretch_desktop_kde/versions/1.0.0/providers/vmware.box</esxi_url>
+  <ovirt_template>stretch_desktop_kde_301118</ovirt_template>
+
+  <reference>https://atlas.hashicorp.com/puppetlabs</reference>
+  <software_license>various</software_license>
+</base>

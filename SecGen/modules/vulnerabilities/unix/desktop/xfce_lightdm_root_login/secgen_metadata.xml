@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>XFCE w/ LightDM Root Login</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Configures XFCE w/ LightDM to automatically login as root without a password.</description>
+
+  <type>desktop_environment</type>
+  <privilege>root_rwx</privilege>
+  <access>physical</access>
+  <platform>linux</platform>
+
+  <conflict>
+    <!-- This module is based on lightdm; Stretch base has sddm pre-installed -->
+    <name>Debian 9 Stretch Desktop KDE</name>
+  </conflict>
+
+  <requires>
+    <type>update</type>
+  </requires>
+  <requires>
+    <module_path>modules/utilities/unix/desktop/xfce</module_path>
+  </requires>
+</vulnerability>

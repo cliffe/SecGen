@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Security Audit Remit Generator</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>MIT</module_license>
+  <description>Generates a markdown message describing a security audit.</description>
+
+  <type>string_generator</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+  
+  <read_fact>business_name</read_fact>
+  <read_fact>business_location</read_fact>
+  <read_fact>local_backup</read_fact>
+  <read_fact>remote_backup</read_fact>
+  <read_fact>physical_security</read_fact>
+
+  <default_input into="business_name">
+    <generator type="business_name_generator"/>
+  </default_input>
+  <default_input into="business_location">
+    <encoder type="string_selector">
+      <input into="strings_to_encode">
+        <value>the top level (level 2) of Caedmon Hall at Leeds Beckett University, Headingly Campus</value>
+        <value>the level 1 of Caedmon Hall at Leeds Beckett University, Headingly Campus</value>
+        <value>the ground level of Caedmon Hall at Leeds Beckett University, Headingly Campus</value>
+        <value>the ground level of Priestly Hall at Leeds Beckett University, Headingly Campus</value>
+      </input>
+    </encoder>
+  </default_input>
+  <default_input into="local_backup">
+    <encoder type="string_selector">
+      <input into="strings_to_encode">
+        <value>our own data storage server</value>
+        <value>a USB thumb drive</value>
+        <value>a permanent spare hard disk</value>
+        <value>an employee personal FTP server</value>
+        <value>RAID 5</value>
+      </input>
+    </encoder>
+  </default_input>
+  <default_input into="remote_backup">
+    <encoder type="string_selector">
+      <input into="strings_to_encode">
+        <value>Amazon Glacier, overwriting any previous backups</value>
+        <value>Amazon Glacier, with snapshot backups</value>
+        <value>Dropbox</value>
+        <value>Mega</value>
+        <value>CrashPlan</value>
+        <value>SpiderOak</value>
+        <value>Google Drive</value>
+        <value>GitHub private repository</value>
+        <value>GitHub public repository</value>
+      </input>
+    </encoder>
+  </default_input>
+  
+  <!-- lots of insecure options -->
+  <default_input into="physical_security">
+    <encoder type="string_selector">
+      <input into="strings_to_encode">
+        <value>RFID access controls</value>
+        <value>extra pin tumbler locks</value>
+        <value>padlocks</value>
+        <value>Onity programmable key card locks</value>
+        <value>Quicklock Doorlock</value>
+        <value>Quicklock Padlock</value>
+        <value>iBluLock Padlock</value>
+        <value>Plantraco Phantomlock</value>
+        <value>Ceomate Bluetooth Smart Doorlock</value>
+        <value>Elecycle EL797</value>
+        <value>Elecycle E797G</value>
+        <value>Vians Bluetooth Smart Doorlock</value>
+        <value>Lagute Sciener Smart Doorlock</value>
+        <value>Okidokey Smart Doorlock</value>
+        <value>Meshmotion Bitlock Doorlock</value>
+      </input>
+    </encoder>
+  </default_input>
+  
+  <output_type>generated_strings</output_type>
+
+
+</generator>

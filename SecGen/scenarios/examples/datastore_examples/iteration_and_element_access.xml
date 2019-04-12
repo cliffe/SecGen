@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+		  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		  xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<!--This scenario demonstrates stepping through elements of a datastore-->
+
+	<system>
+		<system_name>example_server</system_name>
+		<base platform="linux" type="server"/>
+
+		<!--pre-calculate all flags at once, and store in flags datastore-->
+		<input into_datastore="flags">
+			<generator type="flag_generator" />
+			<generator type="flag_generator" />
+			<generator type="flag_generator" />
+			<generator type="flag_generator" />
+		</input>
+
+		<!--here we step through leaking the first two flags-->
+		<vulnerability read_fact="strings_to_leak">
+			<input into="strings_to_leak">
+				<datastore access="next">flags</datastore>
+				<datastore access="next">flags</datastore>
+			</input>
+		</vulnerability>
+
+		<!--next (third flag)-->
+		<vulnerability read_fact="strings_to_leak">
+			<input into="strings_to_leak">
+				<datastore access="next">flags</datastore>
+			</input>
+		</vulnerability>
+
+		<!--stepping back to the second flag using "previous", then explicitly to index 0 (first flag), and forward to the second one-->
+		<vulnerability read_fact="strings_to_leak">
+			<input into="strings_to_leak">
+				<datastore access="previous">flags</datastore>
+				<datastore access="0">flags</datastore>
+				<datastore access="next">flags</datastore>
+				<datastore access="next">flags</datastore>
+			</input>
+		</vulnerability>
+
+		<!--by default, all values in the datastore get passed in-->
+		<vulnerability read_fact="strings_to_leak">
+			<input into="strings_to_leak">
+				<datastore>flags</datastore>
+			</input>
+		</vulnerability>
+
+		<network type="private_network" range="dhcp"/>
+	</system>
+
+</scenario>

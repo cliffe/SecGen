@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+
+  <name>SQLi Vulnerability Generator</name>
+  <author>Joshua Hickling</author>
+  <module_license>MIT</module_license>
+  <description>Generates a php template with a vector that is vulnerable to SQL injection attacks</description>
+
+  <type>web_application_vulnerability</type>
+  <type>sqli</type>
+  <type>form_vulnerability</type>
+  <platform>unix</platform>
+
+  <read_fact>table_headings</read_fact>
+  <read_fact>difficulty</read_fact>
+
+  <default_input into="table_headings">
+    <generator module_path=".*question_table" />
+  </default_input>
+
+  <output_type>generated_attack_template</output_type>
+</generator>

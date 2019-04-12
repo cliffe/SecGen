@@ -1,0 +1,19 @@
+# this file checks the status of the Windows Docker package using the DockerMsftProvider powershell provider
+$dockerProviderName="DockerMsftProvider"
+
+Write-Information "Checking Docker package."
+$package=Get-Package <%= @docker_ee_package_name %> -ProviderName $dockerProviderName -ErrorAction Ignore
+if ($package -ne $null) { 
+    Exit 1
+}
+
+$service = Get-Service "docker" -ErrorAction Ignore
+if ($service -ne $null) {
+    exit 1
+} 
+
+if (Test-Path -Path "$env:ProgramFiles\docker") {
+    exit 1
+}
+
+exit 0

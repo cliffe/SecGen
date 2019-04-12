@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>Shellshock + Apache CGI</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Shellshock + Apache CGI wrapper module, enables a remote root_rwx vulnerability.
+  </description>
+
+  <type>bash</type>
+  <privilege>root_rwx</privilege>
+  <access>remote</access>
+  <platform>unix</platform>
+
+  <!--optional vulnerability details-->
+  <difficulty>high</difficulty>
+  <cve>CVE-2014-6271</cve>
+  <cvss_base_score>10</cvss_base_score>
+  <cvss_vector>AV:N/AC:L/Au:N/C:C/I:C/A:C</cvss_vector>
+
+  <reference>https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2014-6271</reference>
+  <reference>http://www.symantec.com/connect/blogs/shellshock-all-you-need-know-about-bash-bug-vulnerability</reference>
+  <software_name>bash</software_name>
+  <software_license>GPLv3+</software_license>
+
+  <msf_module>exploit/multi/apache_mod_cgi_bash_env_exec</msf_module>
+  <hint>On remote exploitation of the apache server you will have a user_rwx shell as www-data. It is then possible to
+    escalate using a different exploit that targets the same vulnerability locally.</hint>
+
+  <requires>
+    <module_path>vulnerabilities/unix/bash/shellshock</module_path>
+  </requires>
+  <requires>
+    <module_path>services/unix/http/apache_bash_cgi</module_path>
+  </requires>
+
+</vulnerability>

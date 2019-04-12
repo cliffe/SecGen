@@ -1,0 +1,23 @@
+Listen <%= @ip %>:<%= @port %>
+<VirtualHost <%= @ip %>:<%= @port %>>
+  <Location />
+    Order deny,allow
+    Deny from all
+    Allow from <%= @allowed_network %>
+  </Location>
+
+  KeepAliveTimeout <%= @keep_alive_timeout %>
+  MaxKeepAliveRequests <%= @max_keep_alive_requests %>
+  EnableMCPMReceive <%= scope.function_bool2httpd([@enable_mcpm_receive]) %>
+
+  ManagerBalancerName <%= @balancer_name %>
+  ServerAdvertise <%= scope.function_bool2httpd([@server_advertise]) %>
+
+  <Location /mod_cluster_manager>
+    SetHandler mod_cluster-manager
+    Order deny,allow
+    Deny from all
+    Allow from <%= @manager_allowed_network %>
+  </Location>
+
+</VirtualHost>

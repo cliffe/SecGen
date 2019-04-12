@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Handy CLI Tools</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>Apache v2</module_license>
+  <description>Installs some handy tools that make life at CLI better.</description>
+
+  <type>cli_tools</type>
+  <platform>linux</platform>
+
+  <requires>
+    <type>update</type>
+  </requires>
+</utility>

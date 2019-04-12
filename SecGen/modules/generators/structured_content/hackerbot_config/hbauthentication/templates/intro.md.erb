@@ -1,0 +1,300 @@
+# Authentication
+
+## Getting started
+### VMs in this lab
+
+==Start these VMs== (if you haven't already):
+- hackerbot_server (leave it running, you don't log into this)
+- desktop (you can sudo to get superuser access)
+- server (<%= $server_ip %>, you can ssh to this machine, but you don't have superuser access)
+- kali_cracker (user: root, password: toor, you will use this to crack the hashes you find)
+
+### Your login details for the "desktop" and "server" VMs
+User: <%= $main_user %>
+Password: tiaspbiqe2r (**t**his **i**s **a** **s**ecure **p**assword **b**ut **i**s **q**uite **e**asy **2** **r**emember)
+
+You won't login to the hackerbot_server, but the VM needs to be running to complete the lab.
+
+### For marks in the module
+1. **You need to submit flags**. Note that the flags and the challenges in your VMs are different to other's in the class. Flags will be revealed to you as you complete challenges throughout the module. Flags look like this: ==flag{*somethingrandom*}==. Follow the link on the module page to submit your flags.
+2. **You need to document the work and your solutions in a Log Book**. This needs to include screenshots (including the flags) of how you solved each Hackerbot challenge and a writeup describing your solution to each challenge, and answering any "Log Book Questions". The Log Book will be submitted later in the semester.
+
+## Meet Hackerbot!
+![small-right](images/skullandusb.svg)
+
+This exercise involves interacting with Hackerbot, a chatbot who will attack your system. If you satisfy Hackerbot by completing the challenges she will reveal flags to you.
+
+**On the desktop VM:**
+
+==Open Pidgin and send some messages to Hackerbot:==
+
+- Try asking Hackerbot some questions
+- Send "help"
+- Send "list"
+- Send "hello"
+
+> If Hackerbot seems to be waiting or halted, simply say 'hi'
+
+Work through the below exercises, completing the Hackerbot challenges as noted.
+
+---
+
+## Introduction to authentication
+
+Authentication plays the important role of verifying an identity. For example, when someone gets into an airplane, sits down at a computer, picks up a mobile device, or uses a website, authentication is what is used to confirm that the person is who they claim to be. Authentication is an important first step *before* deciding how the system should act and what to allow.
+
+## Identity: users and groups
+
+Most computer systems have the concept of a user account. Although some devices such as mobile phones typically only have one user account, most modern computers can support having multiple users, each with their own identity. For example, a computer can have a separate account for each person that uses it, and if configured to do so may enable each user to have their own account preferences, and access to different resources.
+
+On Unix/Linux systems every user account is identified by a user ID number (UID), which is a 32-bit integer (whole number), and can have one or more user names, which are human readable strings of text.
+
+**On the desktop VM:**
+
+Open a terminal console.
+
+Assuming you have already logged in, you have already authenticated yourself on this system.
+
+==Log Book Question: When and how did you authenticate yourself?==
+
+Use these commands to find out about your current identity (or more accurately the identity of the software you are interacting with):
+
+```bash
+whoami
+
+groups
+
+id
+```
+
+==Make a note of your UID and username.==
+
+Note that your account is also a member of one or more groups. A primary group, and a list of other groups. Some Linux systems, such as Debian, create a new seperate primary group for each user, others such as openSUSE have a shared group (named "users") that all normal users are a member of. Similar to the relationship between user names and UIDs, each group has a group name, and a group ID (GID).
+
+Information about user accounts is stored in the /etc/passwd file, which typically all users can read.
+
+==View the /etc/passwd file:==
+
+```bash
+less /etc/passwd
+```
+
+==Find the line that describes your user account.==
+
+This line defines the username, password (well, it used to be stored here... we will come back to this), UID, primary group GID, full name, home directory, and shell for your account.
+
+Confirm this matches the information you recorded earlier.
+
+==Find the line that describes the root user account.==
+
+==Where is the root user's home directory?==
+
+> Press 'q' to quit less.
+
+==View the /etc/group file:==
+
+```bash
+less /etc/group
+```
+
+Groups are defined in this file, along with which users are members.
+
+==Which users are members of the audio group?==
+
+Remember, primary groups do not appear in this file; for example, on openSUSE the "users" group, which all normal users are a member of, may not appear in the /etc/group file.
+
+The "su" program can be used to run a program (usually a shell; that is, a command prompt) as another user, effectively enabling users to switch between user accounts at the command prompt.
+
+==Change your identity to root==. Run:
+
+```bash
+su -
+```
+
+Enter the root password.
+
+Use these commands to ==find out about your new identity:==
+
+```bash
+whoami
+
+groups
+
+id
+```
+
+==What is the UID of root? What does this mean about this user?==
+
+==Lab Book Question: What gives this user special privileges: the name of the account, or the UID?==
+
+==Use the useradd command to create a new user account "fred"==
+
+> Hint: refer to the man page for useradd, by running "man useradd".
+
+==Set a password for the user fred.==
+
+> Hint: `sudo passwd fred`
+
+==Change identity to fred.==
+
+> Hint: `su - fred`
+
+==Run:(after su)==
+
+```bash
+id
+```
+
+==Compare the result to the previous output.==
+
+==How does this compare to your other normal user account? What is different, and what about it is the same?==
+
+Run the single command "id" as root:
+
+```bash
+sudo id
+```
+
+==Log Book Question: What is the difference between sudo and su? Which is most likely protect against accidental damage and also log the commands used?==
+
+## Users and SSH
+
+==Log in to the server via ssh:==
+
+```bash
+ssh <%= $main_user %>@<%= $server_ip %>
+```
+
+==Display details of all users logged on to the system:==
+
+```bash
+who
+```
+
+==List all the processes run by all users:==
+
+```bash
+ps -eo user,comm
+```
+
+==List all the processes running as root:==
+
+```bash
+ps -o user,comm -u root
+```
+
+==Run a command to list all the processes running as *your* normal user.==
+
+==Lab Book Question: How is this server authenticating users? What user accounts exist?==
+
+## Passwords, hashes and salt
+
+Given that important security decisions are made based on the user accounts, it is important to authenticate users, to ensure that the subjects are associated with the correct identity.
+
+==What are the kinds of factors that can be used to verify a user's identity? Hint: for example, "something they have".==
+
+==Which category of authentication factors is a password considered to be?==
+
+Originally passwords were stored "in the clear" (not enciphered). For example, Multics stored passwords in a file, and once at MIT a software bug caused the password file to be copied to the motd file (message of the day), which was printed every time anyone logged into the system. A solution is not to store the password in the clear. Instead a hash can be computed, using a one way hash function, and stored. When the user enters a password, a new hash is computed and compared to the original.
+
+On Linux, the command "shasum" can be used to check the integrity of files (hash functions have many uses), and works on the same principle. We can use it to generate a hash for any given string, for example a password:
+
+```bash
+shasum
+```
+
+> Type "hello" without the quotes. Press Ctrl-D (which indicates "EOF"; that is, end of input).
+
+Repeat the above, with the same password ("hello"), and with a slight difference ("hello.").
+
+Are the outputs the same?
+
+Are the different hashes similar?
+
+Is this good? Why?
+
+Which one-way hash function does the shasum program use? Would this be a good option for hashing passwords?
+
+For password authentication, the hash still needs to be stored. On Unix, password hashes were once stored in the world-readable file /etc/passwd, now they are typically stored in /etc/shadow, which only root (the superuser) can access.
+
+==View the shadow file:==
+
+```bash
+sudo less /etc/shadow
+```
+
+The format of the shadow file is:
+
+> username:**password**:last-changed(since 1-1-1970):days-until-may-change:days-until-must-change:days-warning-notice:days-since-expired-account-disabled:date-disable:reserved-field
+
+==Find the hash of your user account's password.==
+
+> Exit less ("q").
+
+Use the passwd command to ==change your password:==
+
+```bash
+passwd
+```
+
+> When prompted, enter a new password of your choosing.
+
+View the shadow file, and confirm that the stored password has changed.
+
+With reference to the shadow file, and the man page for crypt (Hint: "man crypt"), ==answer these Log Book questions==:
+
+-   On Linux, the password hash stored in /etc/shadow has a prefix that specifies the hash function used.\
+    > ==What hash function is used for your password?==
+    > Hint: the `hash-identifier` command line tool may also help.
+
+-   ==When was the root password last changed?==
+
+-   ==Do any accounts have a setting that will force a password change at a specific date?==
+
+A salt is a random string, used as further input into a one-way hash function (concatenated to the password). The salt is typically stored along with the hash. As a result the same password will have different hashes, so long as the salt is different.
+
+Why is that a good thing?
+
+What kind of attack does a salt defend against?
+
+What is the current salt for your account? Hint: it is stored after the second "\$".
+
+## Password weaknesses
+
+The strength of a password depends on its entropy: its degree of randomness. If a user chooses a word from a dictionary, it would not take long to attempt every dictionary word until finding one that results in the same hash.
+
+Try your hand at cracking passwords using the Kali virtual machine.
+
+**On your desktop VM:**
+Add some new users with these passwords:
+> hello
+>
+> hellothere
+>
+> password1
+
+**On your Kali VM:**
+==Use John the Ripper (or Johnny a GUI for the John the Ripper) to crack the passwords.==
+> Hint: `man john`, on the Kali Linux system.
+> You will need to combine the passwd and shadow files (manually or with the kali `unshadow` command.)
+> Tip: you can make a copy of the passwd and shadow files on the desktop (to your <%= $main_user %> home directory), then from the Kali VM scp them over (`ssh <%= $main_user %>@DESKTOP_IP:FILENAME .`), run unshadow, then start cracking them with your software of choice.
+
+==Log Book Questions:==
+- Which passwords are cracked the fastest?
+
+- How long did they take?
+
+
+## Conclusion
+
+At this point you have:
+
+- Applied authentication concepts to Unix/Linux
+
+- Experimented with user accounts and identity
+
+- Experimented with one-way hash functions, salts, and password storage
+
+- Cracked passwords with low entropy using dictionary attacks
+
+Well done!

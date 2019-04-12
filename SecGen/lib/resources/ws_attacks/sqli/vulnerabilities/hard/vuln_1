@@ -1,0 +1,8 @@
+$badAgents = array('sqlmap');
+if(in_array($_SERVER['HTTP_USER_AGENT'],$badAgents)) {
+    exit();
+}else{
+$name=htmlspecialchars(mysqli_real_escape_string($conn2, $_POST['name']));
+$email=str_replace("'", "''", htmlspecialchars($_POST['email']));
+$mobile=htmlspecialchars(mysqli_real_escape_string($conn2, $_POST['mobile']));
+$question=htmlspecialchars(mysqli_real_escape_string($conn2, $_POST['question']));

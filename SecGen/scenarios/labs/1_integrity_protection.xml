@@ -1,0 +1,237 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<name>Integrity protection Hackerbot lab</name>
+  <author>Z. Cliffe Schreuders</author>
+  <description>A Hackerbot lab. Work through the labsheet, then when prompted interact with Hackerbot. Topics covered: Protecting integrity with file attributes; Protecting integrity with read-only filesystems.</description>
+
+  <type>ctf-lab</type>
+  <type>hackerbot-lab</type>
+  <type>lab-sheet</type>
+  <difficulty>intermediate</difficulty>
+
+	<system>
+		<system_name>desktop</system_name>
+		<base distro="Debian 9" type="desktop" name="KDE"/>
+
+		<input into_datastore="IP_addresses">
+			<value>172.16.0.2</value>
+			<value>172.16.0.3</value>
+		</input>
+
+		<!--generate two accounts, YOU and someone else-->
+		<input into_datastore="accounts">
+			<generator type="account">
+				<input into="username">
+					<generator type="random_word_generator">
+						<input into="wordlist">
+							<value>mythical_creatures</value>
+						</input>
+					</generator>
+				</input>
+				<input into="password">
+					<value>tiaspbiqe2r</value>
+				</input>
+				<input into="super_user">
+					<value>true</value>
+				</input>
+				<input into="leaked_filenames">
+					<value>trade_secrets/code.pl</value>
+					<value>trade_secrets/credit_card</value>
+					<value>personal_secrets/credit_card</value>
+					<value>logs/log1</value>
+					<value>personal_secrets/address_book</value>
+				</input>
+				<input into="strings_to_leak">
+					<value>no warnings; `$=`;$_=\%!;($_)=/(.)/;$==++$|;($.,$/,$,,$\,$",$;,$^,$#,$~,$*,$:,@%)=(
+						$!=~/(.)(.).(.)(.)(.)(.)..(.)(.)(.)..(.)......(.)/,$"),$=++;$.++;$.++;
+						$_++;$_++;($_,$\,$,)=($~.$"."$;$/$%[$?]$_$\$,$:$%[$?]",$"&amp;$~,$#,);$,++
+						;$,++;$^|=$";`$_$\$,$/$:$;$~$*$%[$?]$.$~$*${#}$%[$?]$;$\$"$^$~$*.>&amp;$=`</value>
+					<value>Visa	4111 1111 1111 1111
+American Express	3400 0000 0000 009
+Diner's Club	3000 0000 0000 04</value>
+					<value>MasterCard	5500 0000 0000 0004</value>
+					<value>[80380.876359] usb 3-1: USB disconnect, device number 3
+[80382.626853] usb 3-1: new full-speed USB device number 4 using xhci_hcd
+[80382.755813] usb 3-1: New USB device found, idVendor=096e, idProduct=0858
+[80382.755819] usb 3-1: New USB device strings: Mfr=1, Product=2, SerialNumber=0
+[80382.755822] usb 3-1: Product: U2F CCID KBOARD
+[80382.755825] usb 3-1: Manufacturer: FT
+[80382.757386] hid-generic 0003:096E:0858.0004: hiddev0,hidraw0: USB HID v1.00 Device [FT U2F CCID KBOARD] on usb-0000:00:14.0-1/input0
+[80383.925811] usb 3-1: USB disconnect, device number 4
+					</value>
+					<generator type="person" />
+				</input>
+			</generator>
+			<generator type="account">
+				<input into="username">
+					<generator type="random_word_generator">
+						<input into="wordlist">
+							<value>mythical_creatures</value>
+						</input>
+					</generator>
+				</input>
+				<input into="password">
+					<value>test</value>
+				</input>
+				<input into="super_user">
+					<value>false</value>
+				</input>
+				<input into="leaked_filenames">
+					<value></value>
+				</input>
+				<input into="strings_to_leak">
+					<value></value>
+				</input>
+			</generator>
+			<generator type="account">
+				<input into="username">
+					<generator type="random_word_generator">
+						<input into="wordlist">
+							<value>mythical_creatures</value>
+						</input>
+					</generator>
+				</input>
+				<input into="password">
+					<value>test</value>
+				</input>
+				<input into="super_user">
+					<value>false</value>
+				</input>
+				<input into="leaked_filenames">
+					<value></value>
+				</input>
+				<input into="strings_to_leak">
+					<value></value>
+				</input>
+			</generator>
+		</input>
+
+		<input into_datastore="desktop_root_password">
+			<generator type="strong_password_generator"/>
+		</input>
+
+		<!--Create the users-->
+		<utility module_path=".*parameterised_accounts">
+			<input into="accounts">
+				<datastore>accounts</datastore>
+			</input>
+		</utility>
+
+		<utility module_path=".*kde_minimal">
+			<input into="autologin_user">
+				<datastore access="0" access_json="['username']">accounts</datastore>
+			</input>
+			<input into="accounts">
+				<datastore>accounts</datastore>
+			</input>
+			<input into="autostart_konsole">
+				<value>true</value>
+			</input>
+		</utility>
+		<utility module_path=".*handy_cli_tools"/>
+		<utility module_path=".*hash_tools"/>
+
+		<utility module_path=".*iceweasel">
+			<input into="accounts">
+				<datastore>accounts</datastore>
+			</input>
+			<input into="autostart">
+				<value>true</value>
+			</input>
+			<input into="start_page">
+				<datastore access="1">IP_addresses</datastore>
+			</input>
+		</utility>
+
+		<utility module_path=".*pidgin">
+			<input into="server_ip">
+				<datastore access="1">IP_addresses</datastore>
+			</input>
+			<input into="accounts">
+				<datastore access="0">accounts</datastore>
+			</input>
+		</utility>
+
+		<vulnerability module_path=".*ssh_root_login">
+			<input into="root_password">
+				<datastore>desktop_root_password</datastore>
+			</input>
+		</vulnerability>
+
+		<network type="private_network">
+			<input into="IP_address">
+				<datastore access="0">IP_addresses</datastore>
+			</input>
+		</network>
+	</system>
+
+	<!--<system>-->
+		<!--<system_name>server</system_name>-->
+		<!--<base platform="linux" distro="Debian 7.8"/>-->
+
+		<!--<utility module_path=".*parameterised_accounts">-->
+			<!--<input into="accounts">-->
+				<!--<datastore>accounts</datastore>-->
+			<!--</input>-->
+		<!--</utility>-->
+
+		<!--<vulnerability module_path=".*ssh_root_login">-->
+			<!--<input into="root_password">-->
+				<!--<value>randompassword</value>-->
+			<!--</input>-->
+		<!--</vulnerability>-->
+
+		<!--&lt;!&ndash;TODO: parameterise with business details&ndash;&gt;-->
+		<!--&lt;!&ndash;TODO: weechat config&ndash;&gt;-->
+		<!--<utility module_path=".*weechat"/>-->
+
+		<!--<service module_path="services/unix/http/parameterised_website"/>-->
+		<!--<service type="ftp"/>-->
+
+		<!--<network type="private_network" range="172.16.0.0"/>-->
+	<!--</system>-->
+
+	<system>
+		<system_name>hackerbot_server</system_name>
+		<base distro="Kali" name="MSF"/>
+
+		<service type="ircd"/>
+
+		<utility module_path=".*metasploit_framework"/>
+		<utility module_path=".*nmap"/>
+		<utility module_path=".*handy_cli_tools"/>
+
+		<service type="httpd"/>
+
+		<utility module_path=".*hackerbot">
+			<input into="hackerbot_configs">
+				<generator module_path=".*integrity_protection">
+					<input into="accounts">
+						<datastore>accounts</datastore>
+					</input>
+					<input into="root_password">
+						<datastore>desktop_root_password</datastore>
+					</input>
+				</generator>
+			</input>
+		</utility>
+
+        <network type="private_network" >
+         	<input into="IP_address">
+        		<datastore access="1">IP_addresses</datastore>
+         	</input>
+        </network>
+
+		<build type="cleanup">
+			<input into="root_password">
+				<generator type="strong_password_generator"/>
+			</input>
+		</build>
+		<!--TODO: reboot VM to fix networking?-->
+	</system>
+
+</scenario>

@@ -1,0 +1,47 @@
+{
+  "business_name": "Northern Banking",
+  "business_motto": "We'll keep your money safe!",
+  "business_address": "123 The Headrow, Leeds, LS1 5RD",
+  "domain": "northernbanking.co.uk",
+  "office_telephone": "0113 000 0123",
+  "office_email": "enquiries@northernbanking.co.uk",
+  "industry": "Finance",
+  "manager": {
+    "name": "Heather Schmidt",
+    "address": "800 Bogisich Avenue, Oswaldohaven, Leeds, LS9 6NB",
+    "phone_number": "07836 581948",
+    "email_address": "h.schmidt@northernbanking.co.uk",
+    "username": "h_schmidt",
+    "password": ""
+  },
+  "employees": [
+    {
+      "name": "Zion Jacobson",
+      "address": "104 Cole Square, ",
+      "phone_number": "07880 057670",
+      "email_address": "z.jacobson@northernbanking.co.uk",
+      "username": "z_jacobson",
+      "password": ""
+    },
+    {
+      "name": "Jonathan Ray",
+      "address": "644 Jackson Path, Leeds, LS2 4AJ",
+      "phone_number": "07893 001623",
+      "email_address": "j.ray@northernbanking.co.uk",
+      "username": "j_ray",
+      "password": ""
+    },
+    {
+      "name": "Virginia Sullivan",
+      "address": "23 Jane Street, Harrogate, HG1 4DJ",
+      "phone_number": "07826 576277",
+      "email_address": "v.sullivan@northernbanking.co.uk",
+      "username": "v_sullivan",
+      "password": ""
+    }
+  ],
+  "product_name": "Financial Services",
+  "intro_paragraph": [
+    "About Northern Bank","With roots back to its establishment in Huddersfield, West Yorkshire in 1805. Northern bank has a strong personal customer base and business banking capability though a UK-wide network. Northern Bank is a trading name of Big Bank PLC."
+  ]
+}

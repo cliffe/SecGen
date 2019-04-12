@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <!-- Access control misconfigurations, with a a bunch of user accounts with some weak passwords
+       username: user, password: toor -->
+  <system>
+    <system_name>access_control_misconfigurations</system_name>
+    <base platform="linux" type="server"/>
+    
+    <vulnerability type="access_control_misconfiguration"/>
+    <vulnerability type="access_control_misconfiguration"/>
+
+    <utility module_path=".*parameterised_accounts">
+      <input into="accounts">
+        <generator type="account">
+          <input into="username">
+            <value>user</value>
+          </input>
+          <input into="password">
+            <value>toor</value>
+          </input>
+          <input into="super_user">
+            <value>true</value>
+          </input>
+        </generator>
+        <generator type="account">
+          <input into="username">
+            <value>user1</value>
+          </input>
+          <input into="password">
+            <generator type="password_generator"/>
+          </input>
+        </generator>
+        <generator type="account">
+          <input into="username">
+            <value>user2</value>
+          </input>
+          <input into="password">
+            <generator type="weak_password_generator"/>
+          </input>
+        </generator>
+        <generator type="account">
+          <input into="username">
+            <value>user3</value>
+          </input>
+          <input into="password">
+            <generator type="weak_password_generator"/>
+          </input>
+        </generator>
+        <generator type="account">
+          <input into="username">
+            <value>user4</value>
+          </input>
+          <input into="password">
+            <generator type="medium_password_generator"/>
+          </input>
+        </generator>
+        <generator type="account">
+          <input into="username">
+            <value>user5</value>
+          </input>
+          <input into="password">
+            <generator type="strong_password_generator"/>
+          </input>
+        </generator>
+      </input>
+    </utility>
+
+    <network type="private_network" range="dhcp"/>
+    
+  </system>
+
+</scenario>

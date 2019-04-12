@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>XFCE Desktop Environment</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>Apache v2</module_license>
+  <description>Installs XFCE for a desktop environment</description>
+
+  <type>desktop_environment</type>
+  <platform>linux</platform>
+
+  <requires>
+    <type>update</type>
+  </requires>
+</utility>

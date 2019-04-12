@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>MoinMoin v1.9.5</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>
+    Moin v1.9.5 released in December 2012 contains multiple vulnerabilities.
+    Remote code execution possible in MoinMoin v1.9.5 twikidraw and anywikidraw modules.
+    Path traversal found in AttachFile.
+  </description>
+
+  <type>webapp</type>
+  <type>in_the_wild</type>
+  <privilege>user_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>medium</difficulty>
+
+  <read_fact>port</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>images_to_leak</read_fact>
+  <read_fact>site_name</read_fact>
+  <read_fact>default_page</read_fact>
+
+  <!-- No organisation by default, overrides other values if provided through scenario. -->
+  <read_fact>organisation</read_fact>
+
+  <default_input into="port">
+    <value>80</value>
+  </default_input>
+
+  <default_input into="strings_to_leak">
+    <value>This is some leaked data.</value>
+    <generator type="message_generator"/>
+  </default_input>
+
+  <default_input into="images_to_leak">
+    <generator type="image_generator"/>
+  </default_input>
+
+  <default_input into="site_name">
+    <value>Example site name!</value>
+  </default_input>
+
+  <default_input into="default_page">
+    <value>Default Page Test</value>
+  </default_input>
+
+  <!--optional vulnerability details-->
+  <cve>CVE-2012-6080</cve>
+  <cve>CVE-2012-6081</cve>
+
+  <cvss_base_score>6</cvss_base_score>
+  <cvss_vector>AV:N/AC:M/Au:S/C:P/I:P/A:P</cvss_vector>
+  <reference>https://moinmo.in/SecurityFixes</reference>
+  <reference>http://hg.moinmo.in/moin/1.9/rev/7e7e1cbb9d3f</reference>
+  <reference>https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2012-6081</reference>
+  <software_name>moinmoin</software_name>
+  <software_license>GPL</software_license>
+
+  <!--optional hints-->
+  <msf_module>exploit/unix/webapp/moinmoin_twikidraw</msf_module>
+  <solution>
+    Remote code execution possible in twikidraw and anywikidraw modules.
+    Path traversal found in AttachFile module.
+  </solution>
+
+  <conflict>
+    <name>.*Stretch.*</name>
+  </conflict>
+
+  <requires>
+    <module_path>.*apache.*</module_path>
+    <type>httpd</type>
+  </requires>
+
+
+</vulnerability>

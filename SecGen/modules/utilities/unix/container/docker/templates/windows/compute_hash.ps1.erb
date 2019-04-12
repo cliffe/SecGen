@@ -1,0 +1,10 @@
+#file computes the 512SHA for a given string and writes it to a file
+
+$String = $env:docker_auth
+$HashName = "SHA512"
+$StringBuilder = New-Object System.Text.StringBuilder 
+[System.Security.Cryptography.HashAlgorithm]::Create($HashName).ComputeHash([System.Text.Encoding]::UTF8.GetBytes($String))|%{ 
+[Void]$StringBuilder.Append($_.ToString("x2")) 
+} 
+
+$StringBuilder.ToString() | Out-File <%= @passfile %>

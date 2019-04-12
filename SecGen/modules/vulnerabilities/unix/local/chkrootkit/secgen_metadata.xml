@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability ">
+  <name>chkrootkit 0.49 privilege escalation</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>
+    chkrootkit 0.49 and earlier contain a local privilege escalation vulnerability allowing a non-root user to place a
+    script in /tmp that will be executed as root when chkrootkit is run. This module adds a cronjob to run chkrootkit
+    periodically for exploitability.
+  </description>
+
+  <type>privilege_escalation</type>
+  <privilege>root_rwx</privilege>
+  <access>local</access>
+  <platform>linux</platform>
+  <difficulty>high</difficulty>
+
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+  <read_fact>cron_frequency</read_fact>
+
+  <default_input into="strings_to_leak">
+    <generator type="flag_generator"/>
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+  </default_input>
+
+  <!-- Run cron every: 1_minute, 5_minutes, 15_minutes or 30_minutes -->
+  <default_input into="cron_frequency">
+    <value>1_minute</value>
+  </default_input>
+
+  <!--optional vulnerability details-->
+  <cve>CVE-2014-0476</cve>
+  <cvss_base_score>3.7</cvss_base_score>
+  <reference>https://www.rapid7.com/db/modules/exploit/unix/local/chkrootkit</reference>
+  <reference>http://seclists.org/oss-sec/2014/q2/430</reference>
+  <software_name>chkrootkit</software_name>
+  <software_license>MIT</software_license>
+
+  <!--optional hints-->
+  <msf_module>exploit/unix/local/chkrootkit</msf_module>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+</vulnerability>

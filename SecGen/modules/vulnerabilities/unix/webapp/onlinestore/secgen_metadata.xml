@@ -1,0 +1,157 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>Online store website</name>
+  <author>Mihai Ordean</author>
+  <module_license>MIT</module_license>
+  <description>Online store website</description>
+
+  <type>webapp</type>
+  <privilege>info_leak</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+
+  <read_fact>port</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>db_password</read_fact>
+  <read_fact>accounts</read_fact>
+  <read_fact>domain</read_fact>
+  <read_fact>dealer_id</read_fact>
+  <read_fact>murderer_id</read_fact>
+  <read_fact>murdered_on</read_fact>
+  <read_fact>murdered_ids</read_fact>
+
+  <default_input into="port">
+    <value>80</value>
+  </default_input>
+
+  <!-- TODO: These flags should be passed into another parameter, since strings_to_leak may end up having only 1 flag passed in -->
+  <!--strings_to_leak contains the following flags: -->
+  <default_input into="strings_to_leak">
+    <generator type="flag_generator"/> <!-- [0]: db_flag -->
+    <generator type="flag_generator"/> <!-- [1]: admin_flag -->
+    <generator type="flag_generator"/> <!-- [2]: root_file_flag  -->
+    <generator type="flag_generator"/> <!-- [3]: black_market_flag  -->
+    <generator type="flag_generator"/> <!-- [4]: adminToken_flag  -->
+  </default_input>
+
+  <default_input into="db_password">
+    <generator type="strong_password_generator"/>
+  </default_input>
+
+  <!-- Requires 5 user accounts -->
+  <default_input into="accounts">
+    <generator type="person">
+      <input into="name">
+        <value>tom</value>
+      </input>
+      <input into="username">
+        <value>tom</value>
+      </input>
+      <input into="password">
+        <value>tom</value>
+      </input>
+    </generator>
+    <generator type="person">
+      <input into="name">
+        <value>John Saxon</value>
+      </input>
+      <input into="username">
+        <value>j.t.saxon</value>
+      </input>
+      <input into="password">
+        <value>*DC917E8329C06E9E7735775F8E8F5CF2F2AE1505</value>
+      </input>
+    </generator>
+    <generator type="person">
+      <input into="name">
+        <value>Tom Chothia</value>
+      </input>
+      <input into="username">
+        <value>t.chothia</value>
+      </input>
+      <input into="password">
+        <value>*D13C4744CA50C108313F76D56E7C1C23F8844026</value>
+      </input>
+    </generator>
+    <generator type="person">
+      <input into="name">
+        <value>Chris Novakovic</value>
+      </input>
+      <input into="username">
+        <value>c.novakovic</value>
+      </input>
+      <input into="password">
+        <value>*9C5B7560B497DFA8B05F1ED9E0D163FF1809DF7A</value>
+      </input>
+    </generator>
+    <generator type="person">
+      <input into="name">
+        <value>Ian Batten</value>
+      </input>
+      <input into="username">
+        <value>i.batten</value>
+      </input>
+      <input into="password">
+        <value>*4A0F50F04E783107E072358BEB80DFD2CE206ABC</value>
+      </input>
+    </generator>
+    <generator type="person">
+      <input into="name">
+        <value>Andreea Radu</value>
+      </input>
+      <input into="username">
+        <value>a.i.radu</value>
+      </input>
+      <input into="password">
+        <value>*D03F2141E072304885CF0BB96B8E93B2F2F079E5</value>
+      </input>
+    </generator>
+  </default_input>
+
+  <default_input into="domain">
+    <value>bham.ac.uk</value>
+  </default_input>
+
+  <default_input into="dealer_id">
+    <value>4</value>
+  </default_input>
+
+  <default_input into="murderer_id">
+    <value>4</value>
+  </default_input>
+
+  <default_input into="murdered_on">
+    <value>2015-01-02 16:39:01</value>
+    <value>2016-11-12 07:29:15</value>
+  </default_input>
+
+  <default_input into="murdered_ids">
+    <value>2</value>
+    <value>3</value>
+  </default_input>
+
+  <hint>The authors of this website forgot to sanitise their database inputs!</hint>
+  <hint>The product page's filter form is vulnerable to SQL injection attacks. SQL Injection tutorial: http://www.unixwiz.net/techtips/sql-injection.html</hint>
+  <hint>There are automated tools, such as sqlmap, that will probe database through the web application and retrieve the data. </hint>
+  <solution>You can dump the database with the following command: 'sqlmap --url=http://url:port/product?filter=* --dump' and follow the instructions when prompted.</solution>
+
+  <conflict>
+    <module_path>modules/bases/kali.*</module_path>
+  </conflict>
+
+  <requires>
+    <module_path>.*apache.*compatible.*</module_path>
+  </requires>
+
+  <requires>
+    <module_path>.*mysql.*compatible.*</module_path>
+  </requires>
+
+  <requires>
+    <module_path>.*php_5.*compatible.*</module_path>
+  </requires>
+
+</vulnerability>

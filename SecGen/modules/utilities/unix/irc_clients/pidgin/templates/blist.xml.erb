@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<purple version='1.0'>
+	<blist>
+		<group>
+			<setting name='collapsed' type='bool'>0</setting>
+			<contact>
+				<buddy account='<%=@username-%>@<%=@ip%>' proto='prpl-irc'>
+					<name>Hackerbot</name>
+				</buddy>
+				<setting name="custom_buddy_icon" type="string">skullandusb.svg</setting>
+			</contact>
+		</group>
+	</blist>
+	<privacy>
+		<account proto='prpl-irc' name='<%=@username-%>@<%=@ip%>' mode='4'>
+				<block>irc.localhost</block>
+		</account>
+	</privacy>
+</purple>

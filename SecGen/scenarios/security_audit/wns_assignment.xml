@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <!-- Security audit of an in the wild web application -->
+  <system>
+    <system_name>web_server</system_name>
+    <base platform="linux" type="server" module_path=".*stretch.*"/>
+
+    <input into_datastore="IP_addresses">
+      <value>172.16.0.2</value>
+    </input>
+
+    <vulnerability type="in_the_wild" module_path=".*webapp.*">
+      <input into="IP_address">
+        <datastore access="0">IP_addresses</datastore>
+      </input>
+    </vulnerability>
+
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="0">IP_addresses</datastore>
+      </input>
+    </network>
+  </system>
+</scenario>

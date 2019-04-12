@@ -1,0 +1,109 @@
+{
+  "name": "pcfens-filebeat",
+  "version": "3.2.2",
+  "author": "pcfens",
+  "summary": "A module to install and manage the filebeat log shipper",
+  "license": "Apache-2.0",
+  "source": "https://github.com/pcfens/puppet-filebeat",
+  "project_page": "https://github.com/pcfens/puppet-filebeat",
+  "issues_url": "https://github.com/pcfens/puppet-filebeat/issues",
+  "dependencies": [
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">=4.13.0 <5.0.0"
+    },
+    {
+      "name": "puppetlabs/apt",
+      "version_requirement": ">=2.0.0 <7.0.0"
+    },
+    {
+      "name": "puppetlabs/powershell",
+      "version_requirement": ">= 1.0.1 < 3.0.0"
+    },
+    {
+      "name": "puppet/archive",
+      "version_requirement": ">= 0.5.0 < 3.0.0"
+    }
+  ],
+  "data_provider": null,
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "OracleLinux",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Scientific",
+      "operatingsystemrelease": [
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "8"
+      ]
+    },
+    {
+      "operatingsystem": "OpenBSD",
+      "operatingsystemrelease": [
+        "6.1",
+        "6.2",
+        "6.3"
+      ]
+    },
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "14.04",
+        "16.04",
+        "18.04"
+      ]
+    },
+    {
+      "operatingsystem": "windows",
+      "operatingsystemrelease": [
+        "2012",
+        "2012 R2"
+      ]
+    },
+    {
+      "operatingsystem": "Archlinux"
+    }
+  ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 4.0.0 < 6.0.0"
+    }
+  ],
+  "tags": [
+    "filebeat",
+    "logstash",
+    "elasticsearch",
+    "elastic"
+  ],
+  "pdk-version": "1.7.0",
+  "template-url": "file:///opt/puppetlabs/pdk/share/cache/pdk-templates.git",
+  "template-ref": "1.7.0-0-g57412ed"
+}

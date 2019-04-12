@@ -1,0 +1,1 @@
+require ssh_leaked_keys::init

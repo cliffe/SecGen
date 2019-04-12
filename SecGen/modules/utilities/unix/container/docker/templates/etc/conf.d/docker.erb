@@ -1,0 +1,56 @@
+# This file is managed by Puppet and local changes
+# may be overwritten
+
+DOCKER="/usr/bin/<%= @docker_start_command %>"
+
+other_args="<% -%>
+<% if @root_dir %><%= @root_dir_flag %> <%= @root_dir %><% end -%>
+<% if @tcp_bind %><% @tcp_bind_array.each do |param| %> -H <%= param %><% end %> <% end -%>
+<% if @tls_enable %> --tls<% if @tls_verify -%> --tlsverify<% end -%> --tlscacert=<%= @tls_cacert %> --tlscert=<%= @tls_cert %> --tlskey=<%= @tls_key %><% end -%>
+<% if @socket_bind %> -H <%= @socket_bind %><% end -%>
+ --ip-forward=<%= @ip_forward -%>
+ --iptables=<%= @iptables -%>
+ --ip-masq=<%= @ip_masq -%>
+<% unless @icc == nil %> --icc=<%= @icc %><% end -%>
+<% if @fixed_cidr %> --fixed-cidr <%= @fixed_cidr %><% end -%>
+<% if @default_gateway %> --default-gateway <%= @default_gateway %><% end -%>
+<% if @bridge %> --bridge <%= @bridge %><% end -%>
+<% if @log_level %> -l <%= @log_level %><% end -%>
+<% if @log_driver %> --log-driver <%= @log_driver %><% end -%>
+<% if @log_driver %><% if @log_opt %><% @log_opt.each do |param| %> --log-opt <%= param %><% end %><% end -%><% end -%>
+<% if @selinux_enabled %> --selinux-enabled=<%= @selinux_enabled %><% end -%>
+<% if @socket_group %> -G <%= @socket_group %><% end -%>
+<% if @dns %><% @dns_array.each do |address| %> --dns <%= address %><% end %><% end -%>
+<% if @dns_search %><% @dns_search_array.each do |domain| %> --dns-search <%= domain %><% end %><% end -%>
+<% if @execdriver %> -e <%= @execdriver %> <% end -%>
+<% if @storage_driver %> --storage-driver=<%= @storage_driver %><% end -%>
+<% if @storage_driver == 'devicemapper' -%>
+  <%- if @dm_basesize %> --storage-opt dm.basesize=<%= @dm_basesize %><% end -%>
+  <%- if @dm_fs %> --storage-opt dm.fs=<%= @dm_fs %><% end -%>
+  <%- if @dm_mkfsarg %> --storage-opt "dm.mkfsarg=<%= @dm_mkfsarg %>"<% end -%>
+  <%- if @dm_mountopt %> --storage-opt dm.mountopt=<%= @dm_mountopt %><% end -%>
+  <%- if @dm_blocksize %> --storage-opt dm.blocksize=<%= @dm_blocksize %><% end -%>
+  <%- if @dm_loopdatasize %> --storage-opt dm.loopdatasize=<%= @dm_loopdatasize %><% end -%>
+  <%- if @dm_loopmetadatasize %> --storage-opt dm.loopmetadatasize=<%= @dm_loopmetadatasize %><% end -%>
+  <%- if @dm_thinpooldev %> --storage-opt dm.thinpooldev=<%= @dm_thinpooldev -%>
+  <%- else -%>
+    <%- if @dm_datadev %> --storage-opt dm.datadev=<%= @dm_datadev %><% end -%>
+    <%- if @dm_metadatadev %> --storage-opt dm.metadatadev=<%= @dm_metadatadev %><% end -%>
+  <%- end -%>
+  <%- if @dm_use_deferred_removal %> --storage-opt dm.use_deferred_removal=<%= @dm_use_deferred_removal %><% end -%>
+  <%- if @dm_use_deferred_deletion %> --storage-opt dm.use_deferred_deletion=<%= @dm_use_deferred_deletion %><% end -%>
+  <%- if @dm_blkdiscard %> --storage-opt dm.blkdiscard=<%= @dm_blkdiscard %><% end -%>
+  <%- if @dm_override_udev_sync_check %> --storage-opt dm.override_udev_sync_check=<%= @dm_override_udev_sync_check %><% end -%>
+<% elsif @storage_driver == 'overlay2' -%>
+  <%- if @overlay2_override_kernel_check %> --storage-opt overlay2.override_kernel_check=<%= @overlay2_override_kernel_check %><% end -%>
+<% end -%>
+<% @labels.each do |label| %> --label <%= label %><% end -%>
+<% if @extra_parameters %><% @extra_parameters_array.each do |param| %> <%= param %><% end %><% end -%>
+"
+<% if @proxy %>export http_proxy='<%= @proxy %>'
+export https_proxy='<%= @proxy %>'<% end %>
+<% if @no_proxy %>export no_proxy='<%= @no_proxy %>'<% end %>
+# This is also a handy place to tweak where Docker's temporary files go.
+export TMPDIR="<%= @tmp_dir %>"
+<% if @shell_values %><% @shell_values_array.each do |param| %>
+<%= param %><% end %><% end -%>

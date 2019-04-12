@@ -1,0 +1,19 @@
+	<attack>
+<% $file = SecureRandom.hex(2) %>
+		<prompt>An attempt to write /tmp/<%= $file %> is coming from user <%= $second_user %>. Stop the attack by creating the file without permission for other users to write to the file.</prompt>
+
+		<post_command>sudo -u <%= $second_user %> bash -c 'echo boom > /tmp/<%= $file %>'; echo $?</post_command>
+		<condition>
+			<output_matches>Permission denied</output_matches>
+			<message>:) Well done! <%= $flags.pop %></message>
+			<trigger_next_attack>true</trigger_next_attack>
+		</condition>
+		<condition>
+			<output_equals>0</output_equals>
+			<message>:( We managed to write to your file! You need to use access controls to protect the file. Create a new file.</message>
+		</condition>
+		<else_condition>
+			<message>:( Something was not right...</message>
+		</else_condition>
+
+	</attack>

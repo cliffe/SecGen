@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Hidden Strings in Image File</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Makes use of a random image, encodes a string_to_leak (flag) then inserts the data to decode into the end
+    of the image file in ascii.
+  </description>
+
+  <type>hidden_data_in_image_file</type>
+  <type>image_generator</type>
+  <type>image_challenge_generator</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <hint>Inspect the file's raw hex. Example tools: hexedit/hexeditor</hint>
+  <solution>Look at the end of the file for something to decode. </solution>
+
+  <read_fact>base64_image</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+
+  <default_input into="base64_image">
+    <generator type="random_image"/>
+  </default_input>
+
+  <default_input into="strings_to_leak">
+    <encoder type="ascii_reversible">
+      <input into="strings_to_encode">
+        <generator type="flag_generator"/>
+      </input>
+    </encoder>
+  </default_input>
+
+  <output_type>generated_image</output_type>
+</generator>

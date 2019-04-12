@@ -1,0 +1,29 @@
+
+	<attack>
+<% $log_file = $log_files.sample %>
+		<!-- topic: Protecting integrity with file attributes-->
+		<prompt>An attempt to delete /home/<%= $main_user %>/<%= $log_file %> is coming. Stop the attack using file attributes.</prompt>
+
+		<post_command>rm --interactive=never /home/<%= $main_user %>/<%= $log_file %>; echo $?</post_command>
+		<condition>
+			<output_matches>Operation not permitted</output_matches>
+			<message>:) Well done! <%= $flags.pop %></message>
+			<trigger_next_attack>true</trigger_next_attack>
+		</condition>
+		<condition> <!-- TODO: chmod to defeat the defense? -->
+			<output_matches>Permission denied</output_matches>
+			<message>:( You did protect the file, but not using file attributes.</message>
+		</condition>
+		<condition>
+			<output_equals>0</output_equals>
+			<message>:( We managed to delete your file! You need to use file attributes to protect the file.  Create a new file.</message>
+		</condition>
+		<condition>
+			<output_matches>No such file or directory</output_matches>
+			<message>:( The file should exist!</message>
+		</condition>
+		<else_condition>
+			<message>:( Something was not right...</message>
+		</else_condition>
+
+	</attack>

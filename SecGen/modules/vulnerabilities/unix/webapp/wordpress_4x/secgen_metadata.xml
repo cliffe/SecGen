@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>WordPress 4x</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>wordpress</description>
+
+  <type>webapp</type>
+  <type>in_the_wild</type>
+  <privilege>various</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+
+  <read_fact>https</read_fact>
+  <read_fact>version</read_fact>
+  <read_fact>IP_address</read_fact> <!-- Installation requires the IP address of the network card apache is serving on. -->
+  <read_fact>port</read_fact>
+  <read_fact>blog_title</read_fact>
+  <read_fact>admin_email</read_fact>
+  <read_fact>admin_password</read_fact>
+  <read_fact>username</read_fact>
+
+  <default_input into="https">
+    <generator type="boolean_generator"/>
+  </default_input>
+
+  <default_input into="version">
+    <generator module_path=".*wordpress_4x"/>
+  </default_input>
+
+  <default_input into="IP_address">
+    <value>172.16.0.2</value>
+  </default_input>
+
+  <default_input into="port">
+    <value>80</value>
+  </default_input>
+
+  <default_input into="blog_title">
+    <value>New blog!</value>
+  </default_input>
+
+  <default_input into="admin_email">
+    <value>admin@wordpress.org</value>
+  </default_input>
+
+  <default_input into="admin_password">
+    <generator type="password_generator"/>
+  </default_input>
+
+  <default_input into="username">
+    <generator type="username_generator"/>
+  </default_input>
+
+  <requires>
+    <module_path>.*/puppet_module/wordpress</module_path>
+  </requires>
+
+  <requires>
+    <module_path>.*/handy_cli_tools</module_path>
+  </requires>
+
+  <requires>
+    <module_path>.*apache.*compatible.*</module_path>
+  </requires>
+
+  <requires>
+    <module_path>.*mysql.*compatible.*</module_path>
+  </requires>
+
+  <requires>
+    <module_path>.*php_5.*compatible.*</module_path>
+  </requires>
+
+</vulnerability>

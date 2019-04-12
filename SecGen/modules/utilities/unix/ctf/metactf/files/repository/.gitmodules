@@ -1,0 +1,4 @@
+[submodule "src_angr"]
+	path = src_angr
+	url = https://github.com/jakespringer/angr_ctf
+	branch = cs492

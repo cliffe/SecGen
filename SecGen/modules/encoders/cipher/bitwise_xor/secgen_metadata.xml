@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<encoder xmlns="http://www.github/cliffe/SecGen/encoder"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/encoder">
+  <name>Bitwise XOR Challenge encoder</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Binary bitwise XOR operation module. Takes a string input, generates a random bitstream of equal length.,
+    XOR's the 2 strings, outputs the binary streams joined with an underscore.
+  </description>
+
+  <type>ctf_challenge</type>
+  <type>ascii_reversible</type>
+  <type>string_encoder</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+  <difficulty>high</difficulty>
+
+  <hint>Perform a bitwise XOR on both strings - https://www.youtube.com/watch?v=YtghBxoBxpA</hint>
+  <solution>Example bitwise XOR tool:
+    http://www.mobilefish.com/services/big_number_bitwise_calculation/big_number_bitwise_calculation.php
+    Decode the result into it's ASCII representation.
+  </solution>
+
+  <read_fact>strings_to_encode</read_fact>
+
+  <default_input into="strings_to_encode">
+    <generator type="flag_generator"/>
+  </default_input>
+
+  <output_type>generated_strings</output_type>
+
+</encoder>

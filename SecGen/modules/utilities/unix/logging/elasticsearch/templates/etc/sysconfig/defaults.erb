@@ -1,0 +1,6 @@
+<%- unless @new_init_defaults.key? 'CONF_FILE' -%>
+rm CONF_FILE
+<%- end -%>
+<% @new_init_defaults.sort.map do |key, value| -%>
+set <%= key %> '<%= value %>'
+<% end -%>

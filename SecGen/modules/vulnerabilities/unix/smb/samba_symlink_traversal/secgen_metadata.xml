@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability ">
+  <name>Samba Symlink Traversal</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Samba file server configured with a public anonymously accessible share with read / write permissions
+    and the unix extensions = yes, wide links = yes and allow insecure wide links = yes settings. </description>
+
+  <type>samba</type>
+  <privilege>user_rw</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+  <read_fact>images_to_leak</read_fact>
+  <read_fact>share_name</read_fact>
+  <read_fact>share_comment</read_fact>
+  <read_fact>storage_directory</read_fact>
+  <read_fact>read_only_share</read_fact>
+  <read_fact>guests_allowed</read_fact>
+
+  <!-- No organisation by default, overrides other values if provided through scenario. -->
+  <read_fact>organisation</read_fact>
+
+  <!-- drops 2 flags, one in the store and one in the root directory-->
+  <default_input into="strings_to_leak">
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+    <generator type="filename_generator"/>
+  </default_input>
+
+  <default_input into="share_name">
+    <value>public</value>
+  </default_input>
+
+  <default_input into="share_comment">
+    <value>Public Share</value>
+  </default_input>
+
+  <default_input into="storage_directory">
+    <generator type="storage_directory_generator"/>
+  </default_input>
+
+  <default_input into="read_only_share">
+    <value>false</value>
+  </default_input>
+
+  <default_input into="guests_allowed">
+    <value>true</value>
+  </default_input>
+
+  <!--optional details-->
+  <reference>https://www.samba.org/samba/news/symlink_attack.html</reference>
+  <reference>https://www.rapid7.com/db/modules/auxiliary/admin/smb/samba_symlink_traversal</reference>
+  <software_name>smbd</software_name>
+  <software_license>MIT</software_license>
+
+  <!--optional hints-->
+  <msf_module>auxiliary/admin/smb/samba_symlink_traversal</msf_module>
+
+  <conflict>
+    <name>.*Stretch.*</name>
+  </conflict>
+  <conflict>
+    <name>.*Kali.*</name>
+  </conflict>
+
+  <conflict>
+    <module_path>vulnerabilities/unix/smb/samba_public_writable_share</module_path>
+  </conflict>
+
+  <requires>
+    <module_path>modules/services/unix/smb/samba</module_path>
+  </requires>
+
+</vulnerability>

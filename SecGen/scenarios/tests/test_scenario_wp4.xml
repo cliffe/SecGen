@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+  <system>
+    <system_name>wp_4x_stretch_https</system_name>
+    <base platform="linux" distro="Debian 9" type="server"/>
+
+    <input into_datastore="IP_addresses">
+      <value>172.16.0.2</value>
+      <value>172.16.0.3</value>
+    </input>
+
+    <vulnerability module_path=".*wordpress_4x.*">
+      <input into="https">
+        <value>true</value>
+      </input>
+      <input into="IP_address">
+        <datastore access="0">IP_addresses</datastore>
+      </input>
+    </vulnerability>
+
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="0">IP_addresses</datastore>
+      </input>
+    </network>
+  </system>
+
+  <system>
+    <system_name>wp_4x_stretch_http</system_name>
+    <base platform="linux" distro="Debian 9" type="server"/>
+
+    <vulnerability module_path=".*wordpress_4x.*">
+      <input into="https">
+        <value>false</value>
+      </input>
+      <input into="IP_address">
+        <datastore access="1">IP_addresses</datastore>
+      </input>
+    </vulnerability>
+
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="1">IP_addresses</datastore>
+      </input>
+    </network>
+  </system>
+
+</scenario>

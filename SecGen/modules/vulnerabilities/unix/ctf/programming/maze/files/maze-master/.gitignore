@@ -1,0 +1,4 @@
+/build
+/goxz
+.golint.txt
+/vendor

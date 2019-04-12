@@ -1,0 +1,42 @@
+  <!--Email login attempt
+  Tries a port scan, then connects twice once with caps, then lower, first with actual user, then incorrect creds, last 2 should trigger the rule
+  -->
+	<attack>
+<% $rand_alert4 = SecureRandom.hex(3)
+   $flag1 = $flags.pop
+   $flag2 = $flags.pop
+   $flag3 = $flags.pop
+%>
+		<pre_shell>sshpass -p <%= $root_password %> scp -prv -oStrictHostKeyChecking=no root@<%= $ids_server_ip %>:/var/log/snort/alert /tmp/snort_alert_before; stat1=$?; nmap -sT -p 110 <%= $web_server_ip %> > /dev/null; (sleep 1; echo "USER <%= $main_user %>"; echo "PASS <%= $main_user_pass %>"; echo "STAT"; echo "QUIT"; sleep 2; killall -9 nc ) | nc <%= $web_server_ip %> 110; (sleep 1; echo "user test"; echo "pass test"; echo "stat"; echo "quit"; sleep 2; killall -9 nc ) | nc <%= $web_server_ip %> 110; stat2=$?; sshpass -p <%= $root_password %> scp -prv -oStrictHostKeyChecking=no root@<%= $ids_server_ip %>:/var/log/snort/alert /tmp/snort_alert_after; stat3=$?; echo --$stat1$stat2$stat3; diff -n /tmp/snort_alert_before /tmp/snort_alert_after | tail -n 5</pre_shell>
+		<get_shell>false</get_shell>
+		<post_command></post_command>
+
+		<prompt>Create a Snort rule that detects any unencrypted POP3 email *user authentication attempt* (someone trying to log in), to a mail server on <%= $web_server_ip %>. The alert must include the message "<%= $rand_alert4 %>". Up to three flags will be awarded, based on the quality of the rule.</prompt>
+
+		<condition>
+			<output_matches>^--1</output_matches>
+			<message>:( Failed to scp to your system.</message>
+		</condition>
+		<condition>
+			<output_matches>^--0.*<%= $rand_alert4 %>.*<%= $rand_alert4 %>.*<%= $rand_alert4 %></output_matches>
+			<message>:( Almost, but your rule triggered too many times. Are you inspecting the content of the connection?</message>
+		</condition>
+		<condition>
+			<output_matches>^--0.*<%= $rand_alert4 %>.*Classification.*User.*<%= $rand_alert4 %></output_matches>
+			<message>:-D Well done! ALL THREE FLAGS!: <%= $flag1 %>, <%= $flag2 %>, <%= $flag3 %>.</message>
+			<trigger_next_attack />
+		</condition>
+		<condition>
+			<output_matches>^--0.*<%= $rand_alert4 %>.*<%= $rand_alert4 %></output_matches>
+			<message>8-) Well done! Two flags: <%= $flag1 %>, <%= $flag2 %>. Could be further improved with a classification.</message>
+			<trigger_next_attack />
+		</condition>
+		<condition>
+			<output_matches>^--0.*<%= $rand_alert4 %></output_matches>
+			<message>:) Well done! <%= $flag1 %>. The alert did get triggered, but it fired only under some conditions. Is your rule caps sensitive? More flags are to be had from a better rule ;-)</message>
+			<trigger_next_attack />
+		</condition>
+		<else_condition>
+			<message>:( Your rule didn't get triggered (or didn't include the right message).</message>
+		</else_condition>
+	</attack>

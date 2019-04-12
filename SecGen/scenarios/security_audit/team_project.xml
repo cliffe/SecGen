@@ -1,0 +1,220 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>Fictional organisation security audit</name>
+  <author>Thomas Shaw</author>
+  <author>Z. Cliffe Schreuders</author>
+  <description>A set of VMs for a randomly generated fictional organisation, with a desktop system, webserver, and intranet server.
+    Note that the intranet server has a security remit, with instructions on performing a security audit of these systems. The desktop system can access the intranet to access the remit, but the attacker VM (for example, Kali) can be connected to the NIC only shared by the Web server to simulate the need to pivot attacks through the Web server, as they can't connect to the intranet system directly. The "marking guide" is in the form of the output scenario.xml in the project directory, which provides the details of the systems generated.
+  </description>
+
+  <type>blind-audit</type>
+  <difficulty>intermediate</difficulty>
+
+  <!-- TODO: update the oVirt plugin to work with multiple NICs and re-introduce pivoting -->
+
+  <!-- Web Server on NIC1 and NIC2 -->
+  <system>
+    <system_name>web</system_name>
+    <base platform="linux" distro="Debian 7.8" type="server"/>
+
+    <input into_datastore="IP_addresses">
+      <value>172.10.0.2</value>
+      <value>172.10.0.3</value>
+      <value>172.10.0.4</value>
+      <value>172.10.0.5</value>
+      <value>172.10.0.6</value>
+    </input>
+
+    <service module_path="services/unix/http/parameterised_website">
+      <input into="organisation" into_datastore="organisation">
+        <encoder type="line_selector">
+          <input into="file_path">
+            <value>lib/resources/structured_content/organisations/json_organisations</value>
+          </input>
+        </encoder>
+      </input>
+      <input into="theme" into_datastore="theme">
+        <generator type="website_theme"/>
+      </input>
+    </service>
+
+    <vulnerability module_path="" privilege="user_rwx" access="remote" type="(?!.*webapp).*">
+      <input into="organisation">
+        <datastore>organisation</datastore>
+      </input>
+      <input into="strings_to_leak">
+        <value/>
+      </input>
+    </vulnerability>
+
+    <vulnerability privilege="root_rwx" access="local">
+      <input into="organisation">
+        <datastore >organisation</datastore>
+      </input>
+      <input into="strings_to_leak">
+        <value/>
+      </input>
+    </vulnerability>
+
+    <build type="cleanup">
+      <input into="root_password">
+        <generator type="password_generator"/>
+      </input>
+    </build>
+
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="next">IP_addresses</datastore>
+      </input>
+    </network>
+    <!--<network module_path=".*private_network_1"/>-->
+    <!--<network module_path=".*private_network_2"/>-->
+  </system>
+
+  <!-- Intranet Server on NIC 2 -->
+  <system>
+    <system_name>intranet</system_name>
+    <base platform="linux" type="server"/>
+
+    <!-- Web server hosting acceptable use policy and security audit remit -->
+    <service module_path="services/unix/http/parameterised_website">
+      <input into="host_acceptable_use_policy">
+        <value>true</value>
+      </input>
+      <input into="security_audit">
+        <encoder type="markdown_to_html_encoder">
+          <input into="strings_to_encode">
+            <generator module_path=".*security_audit_remit">
+              <input into="business_name">
+                <datastore access_json="['business_name']">organisation</datastore>
+              </input>
+            </generator>
+          </input>
+        </encoder>
+      </input>
+      <input into="organisation">
+        <datastore>organisation</datastore>
+      </input>
+      <input into="theme">
+        <datastore>theme</datastore>
+      </input>
+    </service>
+
+    <!-- Create accounts for the 3 employees -->
+    <utility module_path=".*parameterised_accounts">
+      <input into="accounts">
+        <generator type="account">
+          <input into="username">
+            <datastore access_json="['manager']['username']">organisation</datastore>
+          </input>
+        </generator>
+        <generator type="account">
+          <input into="username">
+            <datastore access_json="['employees'][0]['username']">organisation</datastore>
+          </input>
+        </generator>
+        <generator type="account">
+          <input into="username">
+            <datastore access_json="['employees'][1]['username']">organisation</datastore>
+          </input>
+        </generator>
+        <generator type="account">
+          <input into="username">
+            <datastore access_json="['employees'][2]['username']">organisation</datastore>
+          </input>
+        </generator>
+      </input>
+    </utility>
+
+    <vulnerability access="remote" type="(?!.*webapp).*">
+    <input into="organisation">
+        <datastore>organisation</datastore>
+      </input>
+      <input into="strings_to_leak">
+        <value/>
+      </input>
+    </vulnerability>
+
+    <vulnerability type="(?!.*webapp).*">
+      <input into="organisation" >
+        <datastore>organisation</datastore>
+      </input>
+      <input into="strings_to_leak">
+        <value/>
+      </input>
+    </vulnerability>
+
+    <service/>
+    <service/>
+
+    <build type="cleanup">
+      <input into="root_password">
+        <generator type="password_generator"/>
+      </input>
+    </build>
+
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="next">IP_addresses</datastore>
+      </input>
+    </network>
+    <!--<network module_path=".*private_network_2"/>-->
+  </system>
+
+   <!--Desktop Client on NIC2 -->
+  <system>
+    <system_name>desktop</system_name>
+    <!-- Starts as a server base, and installs XFCE via a vulnerability -->
+    <base platform="linux" distro="Debian 9" type="server"/>
+
+    <utility module_path=".*parameterised_accounts">
+      <input into="accounts">
+         <datastore access_json="['manager']">organisation</datastore>
+      </input>
+    </utility>
+
+    <vulnerability module_path=".*xfce_lightdm_root_login"/>
+
+    <utility module_path=".*iceweasel">
+      <input into="accounts">
+        <datastore access_json="['manager']">organisation</datastore>
+      </input>
+    </utility>
+
+    <utility module_path=".*handy_cli_tools"/>
+
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="next">IP_addresses</datastore>
+      </input>
+    </network>
+    <!--<network module_path=".*private_network_2"/>-->
+  </system>
+
+  <system>
+    <system_name>attack_vm_1</system_name>
+    <base distro="Kali" name="MSF"/>
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="next">IP_addresses</datastore>
+      </input>
+    </network>
+  <!--<network module_path=".*private_network_2"/>-->
+  </system>
+
+  <system>
+    <system_name>attack_vm_2</system_name>
+    <base distro="Kali" name="MSF"/>
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="next">IP_addresses</datastore>
+      </input>
+    </network>
+  <!--<network module_path=".*private_network_2"/>-->
+  </system>
+
+</scenario>

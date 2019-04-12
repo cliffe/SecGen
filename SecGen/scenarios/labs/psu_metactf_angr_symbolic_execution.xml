@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <system>
+    <system_name>metactf</system_name>
+    <base platform="linux" type="desktop" distro="Stretch"/>
+
+    <utility type="reversing_tools"/>
+
+    <utility module_path=".*parameterised_accounts">
+      <input into="accounts" into_datastore="account">
+        <generator type="account">
+          <input into="username">
+            <value>challenger</value>
+          </input>
+          <input into="password">
+            <value>password</value>
+          </input>
+          <input into="strings_to_leak">
+            <value/>
+          </input>
+          <input into="leaked_filenames">
+            <value/>
+          </input>
+          <input into="super_user">
+            <value>false</value>
+          </input>
+
+        </generator>
+      </input>
+    </utility>
+
+    <utility module_path=".*metactf">
+      <input into="challenge_list">
+        <value>src_angr/00_angr_find</value>
+        <value>src_angr/01_angr_avoid</value>
+        <value>src_angr/02_angr_find_condition</value>
+        <value>src_angr/03_angr_symbolic_registers</value>
+        <value>src_angr/04_angr_symbolic_stack</value>
+        <value>src_angr/05_angr_symbolic_memory</value>
+        <value>src_angr/06_angr_symbolic_dynamic_memory</value>
+        <value>src_angr/07_angr_symbolic_file</value>
+        <value>src_angr/08_angr_constraints</value>
+        <value>src_angr/09_angr_hooks</value>
+        <value>src_angr/10_angr_simprocedures</value>
+        <value>src_angr/11_angr_sim_scanf</value>
+        <value>src_angr/12_angr_veritesting</value>
+        <value>src_angr/13_angr_static_binary</value>
+        <value>src_angr/14_angr_shared_library</value>
+        <value>src_angr/15_angr_arbitrary_read</value>
+        <value>src_angr/16_angr_arbitrary_write</value>
+        <value>src_angr/17_angr_arbitrary_jump</value>
+      </input>
+      <input into="groups">
+        <value>challenge00</value>
+        <value>challenge01</value>
+        <value>challenge02</value>
+        <value>challenge03</value>
+        <value>challenge04</value>
+        <value>challenge05</value>
+        <value>challenge06</value>
+        <value>challenge07</value>
+        <value>challenge08</value>
+        <value>challenge09</value>
+        <value>challenge10</value>
+        <value>challenge11</value>
+        <value>challenge12</value>
+        <value>challenge13</value>
+        <value>challenge14</value>
+        <value>challenge15</value>
+        <value>challenge16</value>
+        <value>challenge17</value>
+      </input>
+
+      <input into="flags">
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+      </input>
+      <input into="account">
+        <datastore>account</datastore>
+      </input>
+      <input into="include_chapters">
+        <value>true</value>
+      </input>
+      <input into="include_scaffolding">
+        <value>true</value>
+      </input>
+    </utility>
+
+    <network type="private_network" range="dhcp"/>
+  </system>
+
+</scenario>

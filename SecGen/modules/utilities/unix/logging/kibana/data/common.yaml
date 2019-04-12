@@ -1,0 +1,7 @@
+---
+kibana::ensure: present
+kibana::config: {}
+kibana::manage_repo: true
+kibana::oss: false
+kibana::package_source: ~
+kibana::status: enabled

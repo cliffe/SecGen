@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Thunderbird Email Client</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Installs Thunderbird Email Client</description>
+
+  <type>email_client</type>
+  <platform>linux</platform>
+
+  <software_name>Thunderbird</software_name>
+  <software_license>GPL</software_license>
+
+  <read_fact>accounts</read_fact>
+  <read_fact>autostart</read_fact>
+  <read_fact>start_page</read_fact>
+
+  <default_input into="autostart">
+    <value>true</value>
+  </default_input>
+
+  <default_input into="start_page">
+    <value>leedsbeckett.ac.uk/csi</value>
+  </default_input>
+
+  <requires>
+    <type>update</type>
+  </requires>
+  <requires>
+    <type>desktop_environment</type>
+  </requires>
+</utility>

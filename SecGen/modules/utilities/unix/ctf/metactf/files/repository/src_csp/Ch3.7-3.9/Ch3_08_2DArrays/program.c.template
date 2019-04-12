@@ -1,0 +1,98 @@
+/*  Derived from level by Parker Harris Emerson New Beginnings 2014 */
+#include <stdio.h>
+#include <fcntl.h>
+#include <string.h>
+#define USERDEF AAAAAABBBBBBCCCCCC
+
+unsigned long fakeArray1[31][31];
+unsigned long fakeArray2[28][28];
+unsigned long firstArray[AAAAAA][AAAAAA];
+unsigned long fakeArray3[52][52];
+unsigned long fakeArray4[45][45];
+unsigned long fakeArray5[67][67];
+unsigned long secondArray[BBBBBB][BBBBBB];
+unsigned long fakeArray6[91][91];
+unsigned long fakeArray7[86][86];
+unsigned long thirdArray[CCCCCC][CCCCCC];
+unsigned long fakeArray8[40][40];
+
+char msg[] =
+ "Multi-dimensional arrays are allocated in row-major order.  That is, all of\n"
+ "the elements of a row are stored contiguously starting from the first row.\n"
+ "In this level, there are three 2-dimensional arrays of long integers that\n"
+ "are each square with varying dimensions.  Locate the function that inserts\n"
+ "DEADBEEF into each of the three arrays.  In the first array, it is placed\n"
+ "at location [15][15].  In the second array, it is placed at location\n"
+ "[20][20].  Finally, in the third array, it is placed at location [25][25].\n"
+ "Use objdump and the array indexing formula to calculate the dimension of\n"
+ "each array.  The password to unlock the level is the decimal number AABBCC\n"
+ "where AA is the 2-digit dimension of the first array, BB is the 2-digit\n"
+ "dimension of the second array, and CC is the 2-digit dimension of the third\n"
+ "array.  For example, if the dimensions of the three arrays is 30x30, 40x40,\n"
+ "and 50x50, then the password is 304050.\n\n";
+
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg[i%len] + msg[(i+1)%len];
+    h2 += msg[(i+1)%len] + msg[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg);
+  else
+    printf("%s",msg);
+}
+
+void add_cells() {
+	firstArray[0][JUMPAA] = 0xDEADBEEF;
+	secondArray[0][JUMPBB] = 0xDEADBEEF;
+	thirdArray[0][JUMPCC] = 0xDEADBEEF;
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main(int argc, char* argv[])
+{
+    long ans=0;
+
+    print_msg();
+    add_cells();
+
+    printf("Enter the password: ");
+
+    if ((scanf("%ld",&ans) != 1) || (ans != USERDEF)) {
+        printf("Try again.\n");
+    } else {
+	    printf("Good Job.\n");
+        printflag();
+    }
+    return 0;
+}

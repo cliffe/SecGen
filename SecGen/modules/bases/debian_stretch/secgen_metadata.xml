@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<base xmlns="http://www.github/cliffe/SecGen/base"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/base">
+  <name>Debian 9 Stretch Server</name>
+  <author>Thomas Shaw</author>
+  <module_license>GPLv3</module_license>
+  <description>Debian 9.5.0 Stretch Server amd64. For testing purposes, the default root password is puppet.</description>
+  <cpu_word_size>64-bit</cpu_word_size>
+  <type>server</type>
+  <type>cli</type>
+
+  <platform>linux</platform>
+  <platform>unix</platform>
+  <distro>Debian 9.5.0 Stretch amd64</distro>
+  <url>https://app.vagrantup.com/secgen/boxes/debian_stretch_server/versions/1.3/providers/virtualbox.box</url>
+  <esxi_url>https://app.vagrantup.com/redwiz666/boxes/debian_stretch_server/versions/1.0.0/providers/vmware.box</esxi_url>
+  <ovirt_template>debian_stretch_server_291118</ovirt_template>
+
+  <software_license>various</software_license>
+</base>

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Business Motto Generator</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Business motto generator using the Faker ruby gem.</description>
+
+  <type>string_generator</type>
+  <type>message_generator</type>
+  <type>motto_generator</type>
+  <type>motto</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <reference>https://github.com/stympy/faker</reference>
+
+  <output_type>motto</output_type>
+</generator>

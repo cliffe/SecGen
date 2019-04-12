@@ -1,0 +1,99 @@
+${
+import random, os
+random.seed(os.urandom(8))
+}$
+
+#include <stdio.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+#define USERDEF "${ userdef }$"
+
+char msg[] = "${ description }$";
+
+char buffer[17];
+char password[16];
+int equals;
+
+void print_msg() {
+  printf("%s", msg);
+}
+
+int complex_function(int value, int i) {
+#define LAMBDA 23
+  if (!('A' <= value && value <= 'Z')) {
+    printf("Try again.\n");
+    exit(1);
+  }
+  return ((value - 'A' + (LAMBDA * i)) % ('Z' - 'A' + 1)) + 'A';
+}
+
+int check_equals_${ userdef }$(char* to_check, size_t length) {
+  uint32_t num_correct = 0;
+  for (int i=0; i<length; ++i) {
+    if (to_check[i] == password[i]) {
+      num_correct += 1;
+    }
+  }
+  return num_correct == length;
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main(int argc, char* argv[]) {
+  //print_msg();
+
+  memcpy(password, USERDEF, 16);
+  memset(buffer, 0, 17);
+
+  printf("Enter the password: ");
+  scanf("%16s", buffer);
+
+  for (int i=0; i<16; ++i) {
+    buffer[i] = complex_function(buffer[i], -i+18);
+  }
+
+  equals = check_equals_${ userdef }$(buffer, 16);
+
+  for (int i=0; i<16; ++i) {
+    password[i] = complex_function(password[i], i+9);
+  }
+
+  scanf("%16s", buffer);
+
+  equals = equals && !strncmp(buffer, password, 16);
+  if (!equals) {
+    printf("Try again.\n");
+  } else {
+    printf("Good Job.\n");
+    printflag();
+  }
+}

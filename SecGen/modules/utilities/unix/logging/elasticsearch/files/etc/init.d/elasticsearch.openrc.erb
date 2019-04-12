@@ -1,0 +1,90 @@
+#!/sbin/runscript
+
+name="Elasticsearch"
+description=""
+
+ES_USER=${ES_USER:="elasticsearch"}
+ES_INSTANCE=${SVCNAME#*.}
+
+if [ -n "${ES_INSTANCE}" ] && [ ${SVCNAME} != "elasticsearch" ]; then
+    PIDFILE="/run/elasticsearch/elasticsearch.${ES_INSTANCE}.pid"
+    ES_HOME="/var/lib/elasticsearch/${ES_INSTANCE}"
+    CONF_DIR="/etc/elasticsearch/${ES_INSTANCE}"
+    LOG_DIR="/var/log/elasticsearch/${ES_INSTANCE}"
+else
+    PIDFILE="/run/elasticsearch/elasticsearch.pid"
+    ES_HOME="/var/lib/elasticsearch/_default"
+    CONF_DIR="/etc/elasticsearch"
+    LOG_DIR="/var/log/elasticsearch/_default"
+fi
+
+DATA_DIR="${ES_HOME}/data"
+WORK_DIR="${ES_HOME}/work"
+MAX_MAP_COUNT=262144
+
+export ES_INCLUDE="/usr/share/elasticsearch/bin/elasticsearch.in.sh"
+export JAVA_OPTS
+export ES_JAVA_OPTS
+export ES_JVM_OPTIONS
+export ES_HEAP_SIZE
+export ES_HEAP_NEWSIZE
+export ES_DIRECT_SIZE
+export ES_USE_IPV4
+
+server_command="/usr/share/elasticsearch/bin/elasticsearch"
+server_args=" -p ${PIDFILE} <%= opt_flags.join(' ') %>"
+
+depend() {
+    use net
+}
+
+start() {
+    [ ! -f "${ES_INCLUDE}" ] && {
+        eerror "${ES_INCLUDE} must be copied into place"
+        return 1
+    }
+
+    local conf
+    local conf_file
+    for conf in elasticsearch.yml logging.yml; do
+        conf_file="${CONF_DIR}/${conf}"
+        if [ ! -f "${conf_file}" ]; then
+            eerror "${conf_file} must be copied into place"
+            return 1
+        fi
+    done
+
+    ebegin "Starting ${SVCNAME}"
+
+    if [ -n "${ES_MAX_FD}" ]; then
+        ulimit -n ${ES_MAX_FD}
+        einfo "Max open filedescriptors  : ${ES_MAX_FD}"
+    fi
+
+    if [ -n "${MAX_MAP_COUNT}" -a -f /proc/sys/vm/max_map_count ]; then
+        sysctl -q -w vm.max_map_count=$MAX_MAP_COUNT
+    fi
+
+    checkpath -d -o "${ES_USER}" -m750 "/var/lib/elasticsearch"
+    checkpath -d -o "${ES_USER}" -m750 "/var/log/elasticsearch"
+    checkpath -d -o "${ES_USER}" -m750 "$(dirname "${PIDFILE}")"
+    checkpath -d -o "${ES_USER}" -m750 "${ES_HOME}"
+    checkpath -d -o "${ES_USER}" -m750 "${LOG_DIR}"
+
+    start-stop-daemon --start \
+        --background \
+        --chdir "${ES_HOME}" \
+        --user="${ES_USER}" \
+        --pidfile="${PIDFILE}" \
+        --exec ${server_command} -- ${server_args}
+    eend $?
+}
+
+stop() {
+    ebegin "Stopping ${SVCNAME}"
+    start-stop-daemon --stop \
+        --pidfile=${PIDFILE} \
+        --user="${ES_USER}" \
+        --retry=TERM/20/KILL/5
+    eend $?
+}

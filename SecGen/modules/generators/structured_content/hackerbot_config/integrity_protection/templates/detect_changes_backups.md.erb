@@ -1,0 +1,87 @@
+### Detecting changes to resources using backups
+
+One technique is to compare files to a backup known to represent the system or resources in a clean state. One advantage of this approach is that we detect that files have changed, and also see *exactly* how they differ.
+
+Make a directory to store your backups. ==Run:==
+
+```bash
+mkdir /home/<%= $main_user %>/backups/
+```
+
+==Make a backup copy of your /etc/passwd file:==
+
+```bash
+cp /etc/passwd /home/<%= $main_user %>/backups/
+```
+
+This file (/etc/passwd) is an important file on Unix systems, which lists the user accounts on the system. Although historically the hashes of passwords were once stored here, they are now typically stored in /etc/shadow. Changes to the /etc/passwd file are usually infrequent (such as when new user accounts are created) and changes should only be made for authorised purposes.
+
+==Add a new user== to your computer...
+
+```bash
+sudo useradd new-username
+```
+> Where ==*new-username*==, is some new name.
+
+To make things even more interesting, ==edit the /etc/passwd file== and move the new user account line somewhere other than right at the bottom, so that it is less obvious:
+
+```bash
+sudo vi /etc/passwd
+```
+> Move the cursor onto the line representing your new account (probably at the bottom).
+>
+> In vi type:
+> :m *-==number==*
+>
+> Where ==*number*== is the number of lines to move up, for example: ':m -20' will move the currently selected line up 20 lines, 'hiding' the new user account amongst the others.
+>
+> Save your changes and exit vi by typing:
+>
+> :wq
+
+Look at the changes in your accounts made on your computer, and try to spot the new user account:
+
+```bash
+less /etc/passwd
+```
+> (q to exit)
+
+It's not as easy as it sounds, especially if your system has lots of user accounts.
+
+Since you have a backup of your passwd file, you can compare the backup with the current passwd file to determine it has been modified. One such tool for determining changes is diff. Diff is a standard Unix command.
+
+==Run:==
+
+```bash
+diff -q /home/<%= $main_user %>/backups/passwd /etc/passwd
+```
+Diff should report that the two files differ. Diff can also produce an easy to read description of exactly how the file has changed. This is a popular format used by programmers for sharing changes to source code:
+
+```bash
+diff -u /home/<%= $main_user %>/backups/passwd /etc/passwd
+```
+
+The diff program can compare entire mirrored directory structures to each other. For example, if you wanted to know exactly what changes have happened since a backup.
+
+Make a backup of your personal_secrets. ==Run:==
+
+```bash
+cp -r <%= $example_dir %> /home/<%= $main_user %>/backups/personal
+```
+> The -r tells cp to copy directories and their contents recursively (including sub-directories)
+
+==Make a change to a file== in <%= $example_dir %>
+
+Then ==compare using diff:==
+
+```bash
+diff -r -u <%= $example_dir %> /home/<%= $main_user %>/backups/personal/
+```
+> -r instructs diff to do a recursive comparison (searching through sub-directories)
+> You can add *--suppress-common-lines* to reduce the amount of output
+
+There are many advantages to the comparison of backups approach to detecting changes, but it also has its limitations. To apply this approach to an entire system, you will need a large amount of either local or network shared storage, and writes need to be controlled to protect the backups, yet written to whenever authorised changes are made to keep the backup up-to-date. Also, when the comparisons are made **substantial disk/network access is involved**, since both both sources need to be read at the same time in order to do the comparison.
+
+In the example above, the backup was stored on the same computer. Did you think as an attacker of editing the backup passwd file? This is related to a major issue when checking for changes to the system: if your system has been compromised, then you can't necessarily trust any of the local software or files, since they may have been replaced or modified by an attacker. For that reason, it can be safer to run software (such as diff) from a separate read-only storage. Yet that still may not be enough, the entire operating system could be infected by a rootkit.
+
+> Aside: Filesystems, such as btrfs, that support history and snapshots can also be helpful for investigating breaches in integrity.

@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <string.h>
+#define USERDEF "AAAAAA"
+
+char msg[] =
+ "In this level, you will experiment with basic static analysis of binaries.\n"
+ "Your goal is to find the password that unlocks the program so it prints\n"
+ "\"Good Job\".  While you can solve this level many ways, try using the\n"
+ "\"readelf -a <binary>\" to find the section number where the password might\n"
+ "be stored, then use \"readelf -x <section_number> <binary>\" to list the\n"
+ "contents of the section which likely has the password in it.  You may also\n"
+ "use the command \"objdump -j\" on the appropriate section of the binary\n"
+ "or \"objdump -s\" to solve it.\n\n";
+
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg[i%len] + msg[(i+1)%len];
+    h2 += msg[(i+1)%len] + msg[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg);
+  else
+    printf("%s",msg);
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main(int argc, char* argv[])
+{
+    char buff[9];
+
+    print_msg();
+
+    printf("Enter the password: ");
+    scanf("%8s",buff);
+
+    if (strcmp(buff,USERDEF)) {
+        printf("Try again.\n");
+    } else {
+    	printf("Good Job.\n");
+        printflag();
+    }
+    return 0;
+}

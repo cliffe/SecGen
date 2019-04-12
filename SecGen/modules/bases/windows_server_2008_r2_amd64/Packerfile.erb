@@ -1,0 +1,55 @@
+{
+"builders": [{
+"type": "virtualbox-iso",
+"headless": <%= !(@options.has_key?(:gui_output)) %>,
+"vboxmanage": [
+<%= if (@options.has_key? :memory_per_vm)
+      "[ \"modifyvm\", \"{{.Name}}\", \"--memory\", \"#{@options[:memory_per_vm]}\" ],"
+    elsif (@options.has_key? :total_memory)
+      "[ \"modifyvm\", \"{{.Name}}\", \"--memory\", \"#{@options[:total_memory]/@systems.length}\" ],"
+    end %>
+<%= if (@options.has_key? :cpu_cores)
+      "[ \"modifyvm\", \"{{.Name}}\", \"--cpus\", \"#{@options[:cpu_cores]}\" ],"
+    end %>
+<%= if (@options.has_key? :max_cpu_usage)
+      "[ \"modifyvm\", \"{{.Name}}\", \"--cpuexecutioncap\", \"#{@options[:max_cpu_usage]}\" ],"
+    end %>
+[ "modifyvm", "{{.Name}}", "--natpf1", "winrm,tcp,,5985,,5985" ]
+],
+"guest_os_type": "Windows2008_64",
+"disk_size": 61440,
+"iso_url": "http://download.microsoft.com/download/7/5/E/75EC4E54-5B02-42D6-8879-D8D3A25FBEF7/7601.17514.101119-1850_x64fre_server_eval_en-us-GRMSXEVAL_EN_DVD.iso",
+"iso_checksum": "4263be2cf3c59177c45085c0a7bc6ca5",
+"iso_checksum_type": "md5",
+"communicator": "winrm",
+"winrm_username": "vagrant",
+"winrm_password": "vagrant",
+"winrm_port": "5985",
+"winrm_timeout": "5h",
+"guest_additions_mode": "attach",
+"guest_additions_path": "Z:",
+"shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+"shutdown_timeout": "1h",
+"floppy_files": [
+"Autounattend.xml"
+]
+}],
+"provisioners": [
+{
+"type": "windows-shell",
+"script": "<%= 'virtualbox_guest_install/windows.bat' -%>"
+},
+{
+"type": "powershell",
+"environment_vars": "PuppetVersion=<%= PUPPET_VERSION -%>",
+"script": "<%= 'puppet_install/windows.ps1' -%>"
+}
+],
+"post-processors": [
+{
+"type": "vagrant",
+"keep_input_artifact": false,
+"output": "<%= "#{VAGRANT_BASEBOX_STORAGE}/windows_2008_64_virtualbox.box" -%>"
+}
+]
+}

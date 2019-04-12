@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+<name>Commando - random vulnerable website generator</name>
+<author>Joshua Hickling</author><!--Add the lady who wrote the code's name here!!!-->
+<module_license>MIT</module_license>
+<description>Randomised website based on --- code, desgined for website security training</description>
+
+<type>web_training_platform</type>
+<privilege>info_leak</privilege>
+<access>remote</access>
+<platform>linux</platform>
+
+<read_fact>sqli</read_fact>
+<read_fact>question_table</read_fact>
+<read_fact>search</read_fact>
+<read_fact>database</read_fact>
+<read_fact>organisation</read_fact>
+
+<default_input into="port">
+	<value>80</value>
+</default_input>
+
+<default_input into="db_password">
+  <generator type="strong_password_generator" />
+</default_input>
+
+<default_input into="organisation">
+  <generator type="realistic_organisation" />
+</default_input>
+
+<default_input into="admin_account">
+  <generator module_path=".*vulnerable_php_admin_account" />
+</default_input>
+
+<default_input into="xss_string_to_leak">
+  <generator type="flag_generator" />
+</default_input>
+
+<default_input into="default_admin_string_to_leak">
+  <generator type="flag_generator" />
+</default_input>
+
+<default_input into="default_admin_deactivation">
+  <value>false</value>
+</default_input>
+
+<default_input into="strong_password">
+  <generator type="strong_password_generator" />
+</default_input>
+
+<default_input into="alternate_username">
+  <generator type="username_generator" />
+</default_input>
+
+<default_input into="verbose_error_deactivation">
+  <value>false</value>
+</default_input>
+
+<default_input into="user">
+  <generator type="person" />
+</default_input>
+
+<default_input into="theme">
+  <generator module_path=".*css_theme" />
+</default_input>
+
+<default_input into="user_table_name">
+  <generator module_path=".*users_table_name" />
+</default_input>
+
+<conflict>
+	<module_path>.*commando</module_path>
+</conflict>
+
+<requires>
+  <module_path>.*/apache.*</module_path>
+</requires>
+<requires>
+  <module_path>.*mysql.*compatible.*</module_path>
+</requires>
+
+</vulnerability>

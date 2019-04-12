@@ -1,0 +1,10 @@
+HOSTS:
+  centos-7-x64:
+    roles:
+      - agent
+      - default
+    platform: el-7-x86_64
+    hypervisor: vagrant
+    box: puppetlabs/centos-7.2-64-nocm
+CONFIG:
+  type: foss

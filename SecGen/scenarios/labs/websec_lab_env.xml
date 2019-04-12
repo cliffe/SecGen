@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<name>Web security lab environment</name>
+  <author>Z. Cliffe Schreuders</author>
+  <description>An environment for web security labs. Debian Stretch desktop with Damn Vulnerable Web App server, and Kali Linux. </description>
+
+  <type>lab-environment</type>
+
+	<system>
+		<system_name>kali</system_name>
+		<base distro="Kali" name="MSF"/>
+
+		<input into_datastore="IP_addresses">
+			<value>172.16.0.2</value>
+			<value>172.16.0.3</value>
+			<value>172.16.0.4</value>
+		</input>
+
+		<input into_datastore="kali_root_account">
+			<value>{"username":"root","password":"toor","super_user":"","strings_to_leak":[],"leaked_filenames":[]}</value>
+		</input>
+
+		<utility module_path=".*kali_web"/>
+		<utility module_path=".*metasploit_framework"/>
+		<utility module_path=".*handy_cli_tools"/>
+		<utility module_path=".*nmap"/>
+
+		<utility module_path=".*iceweasel">
+			<input into="accounts">
+				<datastore>kali_root_account</datastore>
+			</input>
+			<input into="autostart">
+				<value>true</value>
+			</input>
+			<input into="start_page">
+				<value>http://127.0.0.1/login.php</value>
+			</input>
+		</utility>
+
+		<vulnerability module_path=".*dvwa" />
+
+		<network type="private_network" >
+			<input into="IP_address">
+				<datastore access="1">IP_addresses</datastore>
+			</input>
+		</network>
+	</system>
+
+</scenario>

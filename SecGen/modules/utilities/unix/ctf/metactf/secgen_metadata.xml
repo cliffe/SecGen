@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>MetaCTF Reverse Engineering Challenge Generator</name>
+  <author>Thomas Shaw</author>
+  <author>Wu-Chang Feng</author>
+  <author>Jake Springer</author>
+  <module_license>GPLv3</module_license>
+  <description>MetaCTF is a polymorphic reverse engineering challenge generation platform developed at Portland State University.</description>
+
+  <type>ctf_generator</type>
+  <platform>linux</platform>
+
+  <reference>https://thefengs.com/wuchang/papers/3gse15metactf.pdf</reference>
+  <reference>https://bitbucket.org/wuchangfeng/metactf</reference>
+
+  <!-- Note - Scenarios must provide the same number of flags as challenges and groups in the challenge_list -->
+  <read_fact>challenge_list</read_fact>
+  <read_fact>flags</read_fact>
+  <read_fact>groups</read_fact>
+  <read_fact>account</read_fact>
+  <read_fact>include_chapters</read_fact>
+  <read_fact>include_scaffolding</read_fact>
+
+  <default_input into="challenge_list">
+    <value>src_angr/00_angr_find</value>
+    <value>src_angr/01_angr_avoid</value>
+    <value>src_angr/02_angr_find_condition</value>
+    <!--<generator type="metactf_challenge"/>-->
+    <!--<generator type="metactf_challenge"/>-->
+    <!--<generator type="metactf_challenge"/>-->
+  </default_input>
+
+  <default_input into="flags">
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>  
+  </default_input>
+
+  <default_input into="groups">
+    <value>challenge01</value>
+    <value>challenge02</value>
+    <value>challenge03</value>
+  </default_input>
+
+  <default_input into="include_chapters">
+    <value>false</value>
+  </default_input>
+
+  <!-- src_angr challenges have scaffolded example python files, optionally include them. -->
+  <default_input into="include_scaffolding">
+    <value>true</value>
+  </default_input>
+
+  <conflict>
+    <name>Wheezy</name>
+  </conflict>
+  <requires>
+    <type>update</type>
+  </requires>
+
+</utility>

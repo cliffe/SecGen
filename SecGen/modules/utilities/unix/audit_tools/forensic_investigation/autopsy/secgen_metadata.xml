@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Autopsy Forensic Browser</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>Apache v2</module_license>
+  <description>Forensic Analysis Tool.</description>
+
+  <type>utility</type>
+  <platform>linux</platform>
+
+  <!--optional details-->
+  <reference>https://www.sleuthkit.org/autopsy/v2/</reference>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+</utility>

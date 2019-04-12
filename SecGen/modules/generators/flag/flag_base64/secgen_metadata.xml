@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Base64 Flag Generator</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>MIT</module_license>
+  <description>Uses Ruby's SecureRandom to generate a flag made up of "flag:" + base64 digits (A-Z, a-z, 0-9, +, / and =).</description>
+
+  <type>flag_generator</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <reference>http://ruby-doc.org/stdlib-2.2.2/libdoc/securerandom/rdoc/SecureRandom.html#method-c-base64</reference>
+
+  <output_type>generated_strings</output_type>
+  
+</generator>

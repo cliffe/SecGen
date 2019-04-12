@@ -1,0 +1,2 @@
+class snort::service{
+}

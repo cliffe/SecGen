@@ -1,0 +1,463 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>Basic Narrative</name>
+  <author>Thomas Shaw</author>
+  <description>Single system narrative-based CTF challenge.
+  </description>
+
+  <type>ctf</type>
+  <type>attack-ctf</type>
+  <type>web-hints</type>
+  <difficulty>intermediate</difficulty>
+
+  <system>
+    <system_name>target</system_name>
+    <base distro="Debian 7.8" platform="linux" type="server"/>
+
+    <input into_datastore="IP_addresses">
+      <value>172.10.0.2</value>
+      <value>172.10.0.3</value>
+    </input>
+
+    <input into_datastore="accounts">
+      <!-- [0]: Entry account -->
+      <generator type="account">
+        <input into="leaked_filenames">
+          <value>missing_persons_report</value>
+        </input>
+        <input into="strings_to_leak">
+          <value>*** Missing Persons Report ***</value>
+          <value>Two individuals are missing. No names or dates attached to the report.</value>
+          <value>If you can find out who has gone missing and when, you will be rewarded for your efforts.</value>
+          <value>Enter their names in the format flag{Firstname Lastname YYYY-MM-DD HH:MM:SS}</value>
+          <value>If you find any more evidence, such as the name of a suspect, use the format flag{Firstname Lastname}</value>
+        </input>
+        <input into="password">
+          <generator type="medium_password_generator"/>
+        </input>
+      </generator>
+
+      <!-- [1]: Passwordless account -->
+      <generator type="account">
+        <input into="password">
+          <value/>
+        </input>
+        <input into="strings_to_leak">
+          <generator type="flag_generator"/>
+        </input>
+      </generator>
+
+      <!-- [2]: Third account accessible through vulnerability exploitation -->
+      <generator type="account">
+        <input into="strings_to_leak">
+          <value/>
+        </input>
+      </generator>
+    </input>
+
+    <!-- Create @person's for user2 and user3 and the 3 other store_person db entries -->
+    <input into_datastore="people">
+      <!-- [0]: User 2-->
+      <generator type="person">
+        <input into="account">
+          <datastore access="1">accounts</datastore>
+        </input>
+      </generator>
+      <!-- [1]: User 3 -->
+      <generator type="person">
+        <input into="account">
+          <datastore access="2">accounts</datastore>
+        </input>
+      </generator>
+      <!-- [2]: Store User 1 -->
+      <generator type="person"/>
+      <!-- [3]: Store User 2 -->
+      <generator type="person"/>
+      <!-- [4]: Store User 3 -->
+      <generator type="person"/>
+    </input>
+
+    <!-- Web Store data: dealer, murderer, victims and timestamps -->
+    <input into_datastore="store_domain">
+      <value>dangerous_store.co.uk</value>
+    </input>
+
+    <input into_datastore="dealer_id">
+      <encoder type="string_selector">
+        <input into="strings_to_encode">
+          <value>3</value>
+          <value>4</value>
+          <value>5</value>
+        </input>
+      </encoder>
+    </input>
+
+    <input into_datastore="murderer_id">
+      <encoder type="string_selector">
+        <input into="strings_to_encode">
+          <value>2</value>
+          <value>3</value>
+          <value>4</value>
+          <value>5</value>
+        </input>
+      </encoder>
+    </input>
+
+    <input into_datastore="murderer">
+      <encoder type="string_selector">
+        <input into="strings_to_encode">
+          <datastore access="0">people</datastore>
+          <datastore access="1">people</datastore>
+          <datastore access="2">people</datastore>
+          <datastore access="3">people</datastore>
+          <datastore access="4">people</datastore>
+        </input>
+        <input into="position">
+          <datastore>murderer_id</datastore>
+        </input>
+      </encoder>
+    </input>
+
+    <input into_datastore="murdered_ids">
+      <encoder type="string_selector_with_exclusions">
+        <input into="exclusion_list">
+          <datastore>murderer_id</datastore>
+          <datastore>dealer_id</datastore>
+        </input>
+        <input into="strings_to_encode">
+          <value>2</value>
+          <value>3</value>
+          <value>4</value>
+          <value>5</value>
+        </input>
+      </encoder>
+      <encoder type="string_selector_with_exclusions">
+        <input into="exclusion_list">
+          <datastore>murderer_id</datastore>
+          <datastore>dealer_id</datastore>
+          <datastore>murdered_ids</datastore>
+        </input>
+        <input into="strings_to_encode">
+          <value>2</value>
+          <value>3</value>
+          <value>4</value>
+          <value>5</value>
+        </input>
+      </encoder>
+    </input>
+
+    <input into_datastore="murdered_names">
+      <encoder type="string_selector">
+        <input into="strings_to_encode">
+          <datastore access="0" access_json="['name']">people</datastore>
+          <datastore access="1" access_json="['name']">people</datastore>
+          <datastore access="2" access_json="['name']">people</datastore>
+          <datastore access="3" access_json="['name']">people</datastore>
+          <datastore access="4" access_json="['name']">people</datastore>
+        </input>
+        <input into="position">
+          <datastore access="0">murdered_ids</datastore>
+        </input>
+      </encoder>
+      <encoder type="string_selector">
+        <input into="strings_to_encode">
+          <datastore access="0" access_json="['name']">people</datastore>
+          <datastore access="1" access_json="['name']">people</datastore>
+          <datastore access="2" access_json="['name']">people</datastore>
+          <datastore access="3" access_json="['name']">people</datastore>
+          <datastore access="4" access_json="['name']">people</datastore>
+        </input>
+        <input into="position">
+          <datastore access="1">murdered_ids</datastore>
+        </input>
+      </encoder>
+    </input>
+
+    <input into_datastore="murder_timestamps">
+      <generator type="date_generator">
+        <input into="format">
+          <value>mysql_datetime</value>
+        </input>
+      </generator>
+      <generator type="date_generator">
+        <input into="format">
+          <value>mysql_datetime</value>
+        </input>
+      </generator>
+    </input>
+
+    <!-- Murder flags: 1x murderer, 2x murdered w/ timestamp -->
+    <input into="murderer_flag">
+      <generator type="concat_flag.*">
+        <input into="strings_to_join">
+          <datastore access_json="['name']">murderer</datastore>
+        </input>
+      </generator>
+    </input>
+    <input into="murdered_flags">
+      <generator type="concat_flag.*">
+        <input into="strings_to_join">
+          <datastore access="0">murdered_names</datastore>
+          <datastore access="0">murder_timestamps</datastore>
+        </input>
+      </generator>
+      <generator type="concat_flag.*">
+        <input into="strings_to_join">
+          <datastore access="1">murdered_names</datastore>
+          <datastore access="1">murder_timestamps</datastore>
+        </input>
+      </generator>
+    </input>
+
+
+    <!-- Scenario Modules -->
+    <utility module_path=".*parameterised_accounts">
+      <input into="accounts">
+        <datastore access="0">accounts</datastore>
+      </input>
+    </utility>
+
+    <vulnerability module_path=".*hidden_file">
+      <input into="account">
+        <datastore access="0">accounts</datastore>
+      </input>
+      <input into="strings_to_leak">
+        <generator type="flag_generator"/>
+        <value>Make a note of the technique used to solve this challenge as it will come in handy again soon.</value>
+      </input>
+    </vulnerability>
+
+    <vulnerability module_path=".*passwordless_user_account.*">
+      <input into="accounts">
+        <datastore access="1">accounts</datastore>
+      </input>
+    </vulnerability>
+
+    <service name="Random Parameterised Website">
+      <input into="theme">
+        <value>journal.min.css</value>
+      </input>
+      <input into="main_page_paragraph_content">
+        <generator type="html_snippet_generator">
+          <input into="heading">
+            <value>We need your help!</value>
+          </input>
+          <input into="paragraphs" unique_module_list="unique_encoders">
+            <value>You have received a strange message. Can you decode it to read the contents?</value>
+            <!--<encoder type="string_encoder">-->
+            <encoder type="caesar_cipher">
+              <input into="strings_to_encode">
+                <value>Log into the server and check your mail.</value>
+                <value>Here's a flag for your efforts.</value>
+                <generator type="flag_generator"/>
+                <generator type="concat_paragraph">
+                  <input into="data">
+                    <value>Username:</value>
+                    <datastore access="0" access_json="['username']">accounts</datastore>
+                  </input>
+                </generator>
+                <generator type="concat_paragraph">
+                  <input into="data">
+                    <value>Password:</value>
+                    <datastore access="0" access_json="['password']">accounts</datastore>
+                  </input>
+                </generator>
+              </input>
+            </encoder>
+          </input>
+        </generator>
+      </input>
+
+      <input into="strings_to_leak">
+        <generator type="flag_generator"/>
+        <value>&lt;a href="oops.html"/&gt;</value>
+      </input>
+
+      <input into="additional_page_filenames">
+        <value>oops.html</value>
+      </input>
+
+      <input into="additional_pages">
+        <generator type="html_snippet_generator">
+          <input into="heading">
+            <value/>
+          </input>
+          <input into="paragraphs">
+            <generator type="flag_generator"/>
+          </input>
+        </generator>
+      </input>
+
+      <input into="white_text">
+        <generator type="flag_generator"/>
+      </input>
+
+      <input into="visible_tabs">
+        <value/>
+      </input>
+      <input into="images_to_leak">
+        <value/>
+      </input>
+
+      <input into="organisation">
+        <value/>
+      </input>
+    </service>
+
+    <utility module_path=".*system/mail.*">
+      <input into="mail">
+        <generator type="mail_message">
+          <input into="sender_user">
+            <value>detective_jones</value>
+          </input>
+          <input into="sender_domain">
+            <value>police.gov.uk</value>
+          </input>
+          <input into="recipient_user">
+            <datastore access="0" access_json="['username']">accounts</datastore>
+          </input>
+          <input into="subject">
+            <value>Investigation Information</value>
+          </input>
+          <input into="content">
+            <value>To whom this may concern,</value>
+            <value>Now that you're on the server, we need your help with our investigation.</value>
+            <value>We've managed to hide this account on the server for you. Criminal activity has been taking place, particularly over port 1337.</value>
+            <value>Our initial examinations lead us to believe that the perpetrators use poor security practices.</value>
+            <value>Find out if the suspects have user accounts on this server and see if you can break in.</value>
+            <value>We need all the evidence we can get. In the form of flags. The more you collect the stronger our case will be.</value>
+            <value>Godspeed,</value>
+            <value>Detective Jones.</value>
+          </input>
+          <input into="sent_datetime">
+            <generator type="date_generator">
+              <input into="date">
+                <value>12/06/2017 14:51:03</value>
+              </input>
+              <input into="format">
+                <value>mail</value>
+              </input>
+            </generator>
+          </input>
+        </generator>
+
+        <generator type="mail_message">
+          <input into="sender_user">
+            <datastore access="2" access_json="['username']">accounts</datastore>
+          </input>
+          <input into="sender_domain">
+            <datastore>store_domain</datastore>
+          </input>
+          <input into="recipient_user">
+            <datastore access="1" access_json="['username']">accounts</datastore>
+          </input>
+          <input into="subject">
+            <value>New order required</value>
+          </input>
+          <input into="content">
+            <value>Good news, I've been getting rid of loads of gear lately. The customers are mad for it.</value>
+            <value>We're going to need a new order ASAP!</value>
+          </input>
+          <input into="sent_datetime">
+            <generator type="date_generator">
+              <input into="date">
+                <value>17/06/2017 20:12:35</value>
+              </input>
+              <input into="format">
+                <value>mail</value>
+              </input>
+            </generator>
+          </input>
+        </generator>
+
+        <generator type="mail_message">
+          <input into="sender_user">
+            <datastore access="0" access_json="['username']">murderer</datastore>
+          </input>
+          <input into="sender_domain">
+            <datastore>store_domain</datastore>
+          </input>
+          <input into="recipient_user">
+            <datastore access="2" access_json="['username']">accounts</datastore>
+          </input>
+          <input into="subject">
+            <value>Offed the last one</value>
+          </input>
+          <input into="content">
+            <value>Job done! The last one on the list is now swimming with the fishes.</value>
+            <value>It wasn't clean though, I think I saw someone watching in the distance.</value>
+            <value>Not that it matters. They'll never catch us!</value>
+          </input>
+          <input into="sent_datetime">
+            <generator type="date_generator">
+              <input into="date">
+                <value>19/06/2017 23:58:12</value>
+              </input>
+              <input into="format">
+                <value>mail</value>
+              </input>
+            </generator>
+          </input>
+        </generator>
+      </input>
+    </utility>
+
+    <!-- Account 3 vulnerability-->
+    <vulnerability module_path=".*ssh_leaked_keys">
+      <input into="accounts">
+        <datastore access="2">accounts</datastore>
+      </input>
+    </vulnerability>
+
+    <vulnerability module_path=".*onlinestore.*">
+      <input into="port">
+        <value>1337</value>
+      </input>
+      <input into="domain">
+        <datastore>store_domain</datastore>
+      </input>
+      <input into="accounts">
+        <datastore>people</datastore>
+      </input>
+      <input into="dealer_id">
+        <datastore>dealer_id</datastore>
+      </input>
+      <input into="murderer_id">
+        <datastore>murderer_id</datastore>
+      </input>
+      <input into="murdered_on">
+        <datastore>murder_timestamps</datastore>
+      </input>
+      <input into="murdered_ids">
+        <datastore>murdered_ids</datastore>
+      </input>
+    </vulnerability>
+
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="next">IP_addresses</datastore>
+      </input>
+    </network>
+
+    <build type="cleanup">
+      <input into="root_password">
+        <generator type="strong_password_generator"/>
+      </input>
+    </build>
+  </system>
+
+  <system>
+    <system_name>attack_vm</system_name>
+    <base distro="Kali" name="MSF"/>
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="next">IP_addresses</datastore>
+      </input>
+    </network>
+  </system>
+
+</scenario>

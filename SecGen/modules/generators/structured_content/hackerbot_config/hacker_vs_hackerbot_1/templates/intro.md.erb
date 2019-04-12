@@ -1,0 +1,48 @@
+# Hacker vs Hackerbot 1
+
+## Getting started
+### VMs in this lab
+
+==Start these VMs== (if you haven't already):
+
+- hackerbot_server (leave it running, you don't log into this)
+- backup_server (IP address: <%= $backup_server_ip %>)
+- desktop
+
+All of these VMs need to be running to complete the lab.
+
+### Your login details for the "desktop" and "backup_server" VMs
+User: <%= $main_user %>
+Password: <%= $main_password %>
+(You can copy-paste this password!)
+
+You won't login to the hackerbot_server, but all the VMs need to be running to complete the lab.
+
+### For marks in the module
+1. **You need to submit flags**. Note that the flags and the challenges in your VMs are different to other's in the class. Flags will be revealed to you as you complete challenges throughout the module. Flags look like this: ==flag{*somethingrandom*}==. Follow the link on the module page to submit your flags.
+
+## Hackerbot!
+![small-right](images/skullandusb.svg)
+
+This exercise involves interacting with Hackerbot, a chatbot who will task you to complete tasks and will attack your systems. If you satisfy Hackerbot by completing the challenges, she will reveal flags to you.
+
+---
+
+Some commands you may find useful include:
+* `rsync`
+* `chattr`
+* `lsattr`
+* `chmod`
+* `hashdeep`
+* `shasum`
+* `mount`
+* `umount`
+* `diff`
+* `tcpdump`
+* `kdesudo`
+* `wireshark`
+
+Remember you can learn more about the commands by running:
+```bash
+man *command*
+```

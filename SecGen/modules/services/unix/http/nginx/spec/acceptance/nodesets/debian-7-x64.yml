@@ -1,0 +1,11 @@
+HOSTS:
+  debian-7-x64:
+    roles:
+      - master
+    platform: debian-7-amd64
+    box : puppetlabs/debian-7.8-64-nocm
+    box_url : http://vagrantcloud.com/puppetlabs/debian-7.8-64-nocm
+    hypervisor : vagrant
+CONFIG:
+  log_level: debug
+  type: git

@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<!-- an example single system containing a ELK stack instance
+		TODO : Configure a scenario where another system can use the logstash client + push to the ELK instance
+		TODO : Can we set the memory per vm at scenario level? the elk stack requires 4gb of ram. Just use command line option for now
+	-->
+
+	<system>
+		<system_name>elk</system_name>
+		<base platform="linux" type="server" distro=".*Ubuntu.*"/>
+
+		<input into_datastore="IP_address">
+			<value>172.16.0.2</value>
+		</input>
+
+		<input into_datastore="elasticsearch_port">
+			<value>9200</value>
+		</input>
+
+		<input into_datastore="logstash_port">
+			<value>5044</value>
+		</input>
+
+		<input into_datastore="kibana_port">
+			<value>5601</value>
+		</input>
+
+		<utility module_path=".*elasticsearch.*">
+			<input into="elasticsearch_ip">
+				<datastore access="0">IP_address</datastore>
+			</input>
+			<input into="elasticsearch_port">
+				<datastore access="0">elasticsearch_port</datastore>
+			</input>
+		</utility>
+
+		<utility module_path=".*logstash.*">
+			<input into="logstash_port">
+				<datastore access="0">logstash_port</datastore>
+			</input>
+			<input into="elasticsearch_ip">
+				<datastore access="0">IP_address</datastore>
+			</input>
+			<input into="elasticsearch_port">
+				<datastore access="0">elasticsearch_port</datastore>
+			</input>
+		</utility>
+
+		<utility module_path=".*kibana.*">
+			<input into="kibana_ip">
+				<datastore access="0">IP_address</datastore>
+			</input>
+			<input into="kibana_port">
+				<datastore access="0">kibana_port</datastore>
+			</input>
+			<input into="elasticsearch_ip">
+				<datastore access="0">IP_address</datastore>
+			</input>
+			<input into="elasticsearch_port">
+				<datastore access="0">elasticsearch_port</datastore>
+			</input>
+		</utility>
+
+		<utility module_path=".*filebeat.*">
+			<input into="logstash_ip">
+				<datastore access="0">IP_address</datastore>
+			</input>
+			<input into="logstash_port">
+				<datastore access="0">logstash_port</datastore>
+			</input>
+		</utility>
+
+		<utility module_path=".*auditbeat.*">
+			<input into="logstash_ip">
+				<datastore access="0">IP_address</datastore>
+			</input>
+			<input into="logstash_port">
+				<datastore access="0">logstash_port</datastore>
+			</input>
+		</utility>
+
+		<network type="private_network" >
+			<input into="IP_address">
+				<datastore access="0">IP_address</datastore>
+			</input>
+		</network>
+	</system>
+
+	<!--<system>-->
+		<!--<system_name>auditpusher</system_name>-->
+		<!--<base platform="linux" type="server" distro=".*Ubuntu.*"/>-->
+
+		<!--<utility module_path=".*auditbeat.*">-->
+			<!--<input into="logstash_ip">-->
+				<!--<value>172.16.0.2</value>-->
+			<!--</input>-->
+			<!--&lt;!&ndash; TODO: rename to elasticsearch port if it works smoothly&ndash;&gt;-->
+			<!--<input into="logstash_port">-->
+				<!--<value>9200</value>-->
+			<!--</input>-->
+		<!--</utility>-->
+
+		<!--<network type="private_network" >-->
+			<!--<input into="IP_address">-->
+				<!--<value>172.16.0.3</value>-->
+			<!--</input>-->
+		<!--</network>-->
+	<!--</system>-->
+
+	<!--TODO: Test this system afterwards. Save as another example.xml -->
+	<!--<system>-->
+		<!--<system_name>escalation</system_name>-->
+		<!--<base platform="linux" type="server" distro=".*Ubuntu.*"/>-->
+
+		<!--<input into_datastore="IP_address">-->
+			<!--<value>172.16.0.2</value>-->
+		<!--</input>-->
+
+		<!--<utility module_path=".*elasticsearch.*"/>-->
+		<!--<utility module_path=".*logstash.*"/>-->
+		<!--<utility module_path=".*kibana.*"/>-->
+		<!--<utility module_path=".*filebeat.*"/>-->
+
+		<!--<network type="private_network" >-->
+			<!--<input into="IP_address">-->
+				<!--<datastore access="0">IP_address</datastore>-->
+			<!--</input>-->
+		<!--</network>-->
+	<!--</system>-->
+
+</scenario>

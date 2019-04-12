@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Mail Module</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Parameterised linux system mail creation module.</description>
+
+  <type>system</type>
+  <platform>linux</platform>
+
+  <read_fact>mail</read_fact>
+
+  <default_input into="mail">
+    <generator type="mail_message"/>
+    <generator type="mail_message"/>
+  </default_input>
+
+</utility>

@@ -1,0 +1,71 @@
+# This file is managed by Puppet, do not edit manually, your changes *will* be overwritten!
+#
+# Please see the source file for context and more information:
+#
+# https://github.com/elasticsearch/elasticsearch/blob/master/config/logging.yml
+#
+
+es.logger.level: <%= @logging_level %>
+rootLogger: <%= @logging_level %>, console, file
+
+# ----- Configuration set by Puppet ---------------------------------------------
+
+<% @logging_hash.sort.each do |key,value| %>
+logger.<%= key %>: <%= value %>
+<% end %>
+
+<% if @deprecation_logging -%>
+logger.deprecation: <%= @deprecation_logging_level %>, deprecation_log_file
+<% end -%>
+
+# -------------------------------------------------------------------------------
+
+additivity:
+  index.search.slowlog: false
+  index.indexing.slowlog: false
+
+appender:
+  console:
+    type: console
+    layout:
+      type: consolePattern
+      conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"
+
+  file:
+    type: <%= @file_rolling_type %>
+    file: ${path.logs}/${cluster.name}.log
+    <%- if @file_rolling_type == 'dailyRollingFile' -%>
+    datePattern: <%= @daily_rolling_date_pattern %>
+    <%- elsif @file_rolling_type == 'rollingFile' -%>
+    maxBackupIndex: <%= @rolling_file_max_backup_index %>
+    maxFileSize: <%= @rolling_file_max_file_size %>
+    <%- end -%>
+    layout:
+      type: pattern
+      conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"
+
+  index_search_slow_log_file:
+    type: dailyRollingFile
+    file: ${path.logs}/${cluster.name}_index_search_slowlog.log
+    datePattern: "'.'yyyy-MM-dd"
+    layout:
+      type: pattern
+      conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"
+
+  index_indexing_slow_log_file:
+    type: dailyRollingFile
+    file: ${path.logs}/${cluster.name}_index_indexing_slowlog.log
+    datePattern: "'.'yyyy-MM-dd"
+    layout:
+      type: pattern
+      conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"
+
+<% if @deprecation_logging -%>
+  deprecation_log_file:
+    type: dailyRollingFile
+    file: ${path.logs}/${cluster.name}_deprecation.log
+    datePattern: "'.'yyyy-MM-dd"
+    layout:
+      type: pattern
+      conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"
+<% end %>

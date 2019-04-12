@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<account version='1.0'>
+	<account>
+		<protocol>prpl-irc</protocol>
+		<name><%=@username-%>@<%=@ip%></name>
+		<statuses>
+			<status type='available' name='Available' active='true'>
+				<attributes/>
+			</status>
+			<status type='away' name='Away' active='false'>
+				<attributes/>
+			</status>
+			<status type='offline' name='Offline' active='false'>
+				<attributes/>
+			</status>
+		</statuses>
+		<settings>
+			<setting name='encoding' type='string'>UTF-8</setting>
+			<setting name='auth_plain_in_clear' type='bool'>0</setting>
+			<setting name='sasl' type='bool'>0</setting>
+			<setting name='autodetect_utf8' type='bool'>0</setting>
+			<setting name='ssl' type='bool'>0</setting>
+			<setting name='port' type='int'>6667</setting>
+			<setting name='realname' type='string'></setting>
+			<setting name='username' type='string'></setting>
+		</settings>
+		<settings ui='gtk-gaim'>
+			<setting name='auto-login' type='bool'>1</setting>
+		</settings>
+		<current_error/>
+	</account>
+</account>

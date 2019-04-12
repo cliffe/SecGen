@@ -1,0 +1,125 @@
+-- MySQL dump 10.13  Distrib 5.7.17, for Linux (i686)
+--
+-- Host: 127.0.0.1    Database: database
+-- ------------------------------------------------------
+-- Server version	5.7.17
+
+-- phpMyAdmin SQL Dump
+-- version 4.8.5
+-- https://www.phpmyadmin.net/
+--
+-- Host: josh-hickling.com.mysql.service.one.com:3306
+-- Generation Time: Mar 20, 2019 at 09:31 AM
+-- Server version: 10.3.12-MariaDB-1:10.3.12+maria~bionic
+-- PHP Version: 7.2.15-0ubuntu0.18.04.1
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `josh_hickling_com`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `<%= @user_table_name %>` (
+  `ID` int(6) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `address` varchar(200) NOT NULL,
+  `mobile` varchar(100) NOT NULL,
+  `Email` varchar(150) NOT NULL,
+  `Username` varchar(100) NOT NULL,
+  `Password` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `<%= @user_table_name %>` (`ID`, `name`, `address`, `mobile`, `Email`, `Username`, `Password`) VALUES
+(1, '<%= @admin_name %>', '<%= @admin_address %>', 'Admin', 'Admin', '<%= @admin_username%>', '<%= @admin_password%>'),
+(2, '<%= @user_name %>', '<%= @user_address %>', '<%= @user_mobile %>', '<%= @user_email %>', '<%= @user_username %>', '<%= @user_password %>');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `<%= @user_table_name %>`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `<%= @user_table_name %>`
+  MODIFY `ID` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+COMMIT;
+
+--
+-- Table structure for table `users1`
+--
+
+CREATE TABLE `<%= @user_table_name %>1` (
+  `ID` int(6) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `address` varchar(200) NOT NULL,
+  `mobile` varchar(100) NOT NULL,
+  `Email` varchar(150) NOT NULL,
+  `Username` varchar(100) NOT NULL,
+  `Password` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `users1`
+--
+
+INSERT INTO `<%= @user_table_name %>1` (`ID`, `name`, `address`, `mobile`, `Email`, `Username`, `Password`) VALUES
+(1, '<%= @admin_name %>', '<%= @admin_address %>', 'Admin', 'Admin', '<%= @admin_username%>', '<%= @admin_password%>'),
+(2, '<%= @user_name %>', '<%= @user_address %>', '<%= @user_mobile %>', '<%= @user_email %>', '<%= @user_username %>', '<%= @user_password %>');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `users1`
+--
+ALTER TABLE `<%= @user_table_name %>1`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `users1`
+--
+ALTER TABLE `<%= @user_table_name %>1`
+  MODIFY `ID` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+<% @php_database.each { |php_database| -%>
+                                   <%= php_database %>
+                                 <%} -%>

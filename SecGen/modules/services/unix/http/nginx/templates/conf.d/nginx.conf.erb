@@ -1,0 +1,158 @@
+# MANAGED BY PUPPET
+<% if @super_user -%>
+user <%= @daemon_user %>;
+<% end -%>
+worker_processes <%= @worker_processes %>;
+<% if @worker_rlimit_nofile -%>
+worker_rlimit_nofile <%= @worker_rlimit_nofile %>;
+<% end -%>
+
+<% if @pid -%>
+pid        <%= @pid %>;
+<% end -%>
+error_log  <%= @nginx_error_log %> <%= @nginx_error_log_severity %>;
+
+<% if @nginx_cfg_prepend -%>
+<%- field_width = @nginx_cfg_prepend.inject(0) { |l,(k,v)| k.size > l ? k.size : l } -%>
+<%- @nginx_cfg_prepend.sort_by{|k,v| k}.each do |key,value| -%>
+<%- Array(value).each do |asubvalue| -%>
+<%= sprintf("%-*s", field_width, key) %> <%= asubvalue %>;
+<%- end -%>
+<%- end -%>
+<% end -%>
+
+events {
+  worker_connections <%= @worker_connections -%>;
+  <%- if @multi_accept == 'on' -%>
+    multi_accept on;
+  <%- end -%>
+  <%- if @events_use -%>
+    use <%= @events_use %>;
+  <%- end -%>
+}
+
+http {
+  include       <%= @conf_dir %>/mime.types;
+  default_type  application/octet-stream;
+<% if @log_format -%>
+<% @log_format.sort_by{|k,v| k}.each do |key,value| -%>
+  log_format <%= key %> '<%= value %>';
+<% end -%>
+<% end -%>
+
+  access_log  <%= @http_access_log %>;
+
+<% if @sendfile == 'on' -%>
+  sendfile    on;
+  <%- if @http_tcp_nopush == 'on' -%>
+  tcp_nopush on;
+  <%- end -%>
+<% end -%>
+
+  server_tokens <%= @server_tokens %>;
+
+  types_hash_max_size <%= @types_hash_max_size %>;
+  types_hash_bucket_size <%= @types_hash_bucket_size %>;
+
+  server_names_hash_bucket_size <%= @names_hash_bucket_size %>;
+  server_names_hash_max_size <%= @names_hash_max_size %>;
+
+  keepalive_timeout  <%= @keepalive_timeout %>;
+  tcp_nodelay        <%= @http_tcp_nodelay %>;
+
+<% if @gzip == 'on' -%>
+  gzip              on;
+<% if @gzip_buffers -%>
+  gzip_buffers      <%= @gzip_buffers %>;
+<% end -%>
+  gzip_comp_level   <%= @gzip_comp_level %>;
+<% if @gzip_disable -%>
+  gzip_disable      <%= @gzip_disable %>;
+<% end -%>
+  gzip_min_length   <%= @gzip_min_length %>;
+  gzip_http_version <%= @gzip_http_version %>;
+<% if @gzip_proxied -%>
+  gzip_proxied      <%= @gzip_proxied %>;
+<% end -%>
+  gzip_types        <%= @gzip_types.kind_of?(Array) ? @gzip_types.join(' ') : @gzip_types %>;
+  gzip_vary         <%= @gzip_vary %>;
+<% end -%>
+
+<% if @client_body_temp_path -%>
+  client_body_temp_path   <%= @client_body_temp_path %>;
+<% end -%>
+<% if @client_max_body_size -%>
+  client_max_body_size    <%= @client_max_body_size %>;
+<% end -%>
+<% if @client_body_buffer_size -%>
+  client_body_buffer_size <%= @client_body_buffer_size %>;
+<% end -%>
+<% if @proxy_redirect -%>
+  proxy_redirect          <%= @proxy_redirect %>;
+<% end -%>
+<% if @proxy_temp_path -%>
+  proxy_temp_path         <%= @proxy_temp_path %>;
+<% end -%>
+<% if @proxy_connect_timeout -%>
+  proxy_connect_timeout   <%= @proxy_connect_timeout %>;
+<% end -%>
+<% if @proxy_send_timeout -%>
+  proxy_send_timeout      <%= @proxy_send_timeout %>;
+<% end -%>
+<% if @proxy_read_timeout -%>
+  proxy_read_timeout      <%= @proxy_read_timeout %>;
+<% end -%>
+<% if @proxy_buffers -%>
+  proxy_buffers           <%= @proxy_buffers %>;
+<% end -%>
+<% if @proxy_buffer_size -%>
+  proxy_buffer_size       <%= @proxy_buffer_size %>;
+<% end -%>
+<% if @proxy_http_version -%>
+  proxy_http_version      <%= @proxy_http_version %>;
+<% end -%>
+<% @proxy_set_header.each do |header| -%>
+  proxy_set_header        <%= header %>;
+<% end -%>
+<% if @proxy_headers_hash_bucket_size -%>
+  proxy_headers_hash_bucket_size <%= @proxy_headers_hash_bucket_size %>;
+<% end -%>
+<% if @proxy_cache_path.is_a?(Hash) -%>
+<% @proxy_cache_path.sort_by{|k,v| k}.each do |key,value| -%>
+  proxy_cache_path        <%= key %> keys_zone=<%= value %> levels=<%= @proxy_cache_levels %> max_size=<%= @proxy_cache_max_size %> inactive=<%= @proxy_cache_inactive %>;
+<% end -%>
+<% elsif @proxy_cache_path -%>
+  proxy_cache_path        <%= @proxy_cache_path %> levels=<%= @proxy_cache_levels %> keys_zone=<%= @proxy_cache_keys_zone %> max_size=<%= @proxy_cache_max_size %> inactive=<%= @proxy_cache_inactive %>;
+<% end -%>
+<% if @fastcgi_cache_path -%>
+  fastcgi_cache_path    	<%= @fastcgi_cache_path %> levels=<%= @fastcgi_cache_levels %> keys_zone=<%= @fastcgi_cache_keys_zone %> max_size=<%= @fastcgi_cache_max_size %> inactive=<%= @fastcgi_cache_inactive %>;
+<% end -%>
+<% if @fastcgi_cache_key -%>
+  fastcgi_cache_key		    <%= @fastcgi_cache_key %>;
+<% end -%>
+<% if @fastcgi_cache_use_stale -%>
+  fastcgi_cache_use_stale <%= @fastcgi_cache_use_stale %>;
+<% end -%>
+<% if @http_cfg_append -%>
+
+  <%- field_width = @http_cfg_append.inject(0) { |l,(k,v)| k.size > l ? k.size : l } -%>
+  <%- @http_cfg_append.sort_by{|k,v| k}.each do |key,value| -%>
+  <%- Array(value).each do |asubvalue| -%>
+  <%= sprintf("%-*s", field_width, key) %> <%= asubvalue %>;
+  <%- end -%>
+  <%- end -%>
+<% end -%>
+
+  include <%= @conf_dir %>/conf.d/*.conf;
+  include <%= @conf_dir %>/sites-enabled/*;
+}
+<% if @mail -%>
+mail {
+  include <%= @conf_dir %>/conf.mail.d/*.conf;
+}
+<% end -%>
+<% if @stream -%>
+stream {
+  include <%= @conf_dir %>/conf.stream.d/*.conf;
+}
+<% end -%>

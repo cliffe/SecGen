@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>SQLMap</name>
+  <author>Thomas Shaw</author>
+  <author>Jonathan Gazeley</author>
+  <module_license>Apache v2</module_license>
+  <description>An installation of SQLMap. Puppetforge module by Jonathan Gazely.</description>
+
+  <type>sqlmap</type>
+  <platform>linux</platform>
+
+  <!--optional details-->
+  <software_name>sqlmap</software_name>
+  <software_license>Apache v2</software_license>
+
+  <requires>
+    <name>Git VCS</name>
+  </requires>
+
+</utility>

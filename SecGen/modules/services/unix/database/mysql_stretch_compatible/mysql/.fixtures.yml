@@ -1,0 +1,7 @@
+fixtures:
+  repositories:
+    "stdlib": "https://github.com/puppetlabs/puppetlabs-stdlib"
+    "staging": "https://github.com/voxpupuli/puppet-staging"
+    "translate": "https://github.com/puppetlabs/puppetlabs-translate"
+  symlinks:
+    "mysql": "#{source_dir}"

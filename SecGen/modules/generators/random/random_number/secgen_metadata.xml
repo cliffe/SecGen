@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Random Number Generator</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Random number generator.</description>
+
+  <type>random_number_generator</type>
+  <type>number_generator</type>
+  <type>number</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <read_fact>minimum</read_fact>
+  <read_fact>maximum</read_fact>
+  <read_fact>zero_padding</read_fact>
+
+  <default_input into="minimum">
+    <value>0</value>
+  </default_input>
+
+  <default_input into="maximum">
+    <value>1000000</value>
+  </default_input>
+
+  <default_input into="zero_padding">
+    <value>false</value>
+  </default_input>
+
+  <output_type>number</output_type>
+</generator>

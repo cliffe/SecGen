@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Random from Range Encoder</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Random number between an upper and lower bound.</description>
+
+  <type>random_from_range_encoder</type>
+  <type>number_range</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <read_fact>lower_bound</read_fact>
+  <read_fact>upper_bound</read_fact>
+
+  <default_input into="lower_bound">
+    <value>2</value>
+  </default_input>
+  <default_input into="upper_bound">
+    <value>5</value>
+  </default_input>
+
+  <output_type>integer</output_type>
+</generator>

@@ -1,0 +1,14 @@
+{
+  "description": "Updates an existing service.",
+  "input_method": "stdin",
+  "parameters": {
+    "service": {
+      "description": "The service to update",
+      "type": "String[1]"
+    },
+      "image": {
+          "description": "The new image to use for the service",
+          "type": "String[1]"
+      }
+  }
+}

@@ -1,0 +1,25 @@
+<head>
+  <%# Complete rework of lauras code %>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- CSS -->
+  <%# The selected theme %>
+  <link rel="stylesheet" type="text/css" href="css/<%= @theme %>">
+  <%# bootstrap remote css files, this is taken from: https://getbootstrap.com/docs/4.0/getting-started/download/ %>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <%# css files for indiviual files referencing, found under css directory %>
+  <link rel="stylesheet" type="text/css" href="css/index.css">
+  <link rel="stylesheet" type="text/css" href="css/user.css">
+  <link rel="stylesheet" type="text/css" href="css/login.css">
+  <link rel="stylesheet" type="text/css" href="css/about.css">
+
+  <!-- Font links -->
+  <%# font link taken from: https://fonts.google.com/specimen/Ubuntu %>
+  <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+
+  <!-- Page title -->
+  <%# this variable is set on each page to display in browser %>
+  <title><%= $page_title %></title>
+</head>

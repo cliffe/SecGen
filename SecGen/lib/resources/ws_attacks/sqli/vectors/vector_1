@@ -1,0 +1,10 @@
+<!--Taken from lauras code and edited-->
+<div class="col-12" id="review-form">
+  <?php echo '<form  method="POST" action="'.$_SERVER['SCRIPT_NAME'].'">'; ?>
+    <input  type="text" name="name" maxlength="15" placeholder="Name">
+    <input  type="text" name="number" size="30" placeholder="Phone Number" id="right-box"> <br><br>
+    <input  type="text" name="email" size="55" placeholder="Email"> <br><br>
+    <input  type="text" name="question" size="55" placeholder="Please enter your question!"> <br><br>
+    <input  type="submit" name="go" value="Submit" id="submit-button">
+  </form>
+</div>

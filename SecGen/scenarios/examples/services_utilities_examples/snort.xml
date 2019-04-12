@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<system>
+		<system_name>ids_snoop</system_name>
+		<base distro="Debian 9" type="desktop" name="KDE"/>
+
+		<input into_datastore="IP_addresses">
+			<value>172.16.0.2</value>
+		</input>
+
+		<input into_datastore="accounts">
+			<generator type="account">
+				<input into="username">
+					<generator type="random_word_generator">
+						<input into="wordlist">
+							<value>mythical_creatures</value>
+						</input>
+					</generator>
+				</input>
+				<input into="password">
+					<value>tiaspbiqe2r</value>
+				</input>
+				<input into="super_user">
+					<value>true</value>
+				</input>
+				<input into="leaked_filenames">
+					<value></value>
+				</input>
+				<input into="strings_to_leak">
+					<value></value>
+				</input>
+			</generator>
+		</input>
+
+		<!--Create the users-->
+		<utility module_path=".*parameterised_accounts">
+			<input into="accounts">
+				<datastore>accounts</datastore>
+			</input>
+		</utility>
+
+		<utility module_path=".*handy_cli_tools"/>
+		<utility module_path=".*nmap"/>
+
+		<network type="private_network" >
+			<input into="IP_address">
+				<datastore access="0">IP_addresses</datastore>
+			</input>
+		</network>
+		<utility module_path=".*snort"/>
+		<utility module_path=".*wireshark"/>
+
+	</system>
+
+</scenario>

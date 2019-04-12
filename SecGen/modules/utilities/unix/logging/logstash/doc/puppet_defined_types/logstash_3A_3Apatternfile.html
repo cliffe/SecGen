@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Defined Type: logstash::patternfile
+  
+    &mdash; Documentation by YARD 0.9.13
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "puppet_defined_types::logstash::patternfile";
+  relpath = '../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../puppet_defined_type_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../_index.html">Index (l)</a> &raquo;
+    <span class='title'><span class='object_link'>Defined Types</span></span>
+     &raquo; 
+    <span class="title">logstash::patternfile</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="puppet_class_list_link"
+        href="../puppet_class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Defined Type: logstash::patternfile</h1>
+<div class="box_info">
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>
+      manifests/patternfile.pp
+    </dd>
+  </dl>
+</div>
+
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    <p>This type represents a Grok pattern file for Logstash.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
+      
+        <p class="example_title"><div class='inline'><p>Define a pattern file.</p>
+</div></p>
+      
+      <pre class="example code"><code>logstash::patternfile { &#39;mypattern&#39;:
+  source =&gt; &#39;puppet:///path/to/my/custom/pattern&#39;
+}</code></pre>
+    
+      
+        <p class="example_title"><div class='inline'><p>Define a pattern file with an explicit destination filename.</p>
+</div></p>
+      
+      <pre class="example code"><code>logstash::patternfile { &#39;mypattern&#39;:
+  source   =&gt; &#39;puppet:///path/to/my/custom/pattern&#39;,
+  filename =&gt; &#39;custom-pattern-name&#39;
+}</code></pre>
+    
+  </div>
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>source</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>File source for the pattern file. eg. <code>puppet://[...]</code> or <code>file://[...]</code></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>filename</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Optionally set the destination filename.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Author:</p>
+<ul class="author">
+  
+    <li>
+      
+      
+      
+      
+        
+        <div class='inline'><p><a href="https://github.com/elastic/puppet-logstash/graphs/contributors">https://github.com/elastic/puppet-logstash/graphs/contributors</a></p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><div class="method_details_list">
+  <table class="source_code">
+    <tr>
+      <td>
+        <pre class="lines">
+
+
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40</pre>
+      </td>
+      <td>
+        <pre class="code"><span class="info file"># File 'manifests/patternfile.pp', line 22</span>
+
+define logstash::patternfile ($source = undef, $filename = undef) {
+  require logstash::config
+
+  validate_re($source, &#39;^(puppet|file)://&#39;,
+    &#39;Source must begin with &quot;puppet://&quot; or &quot;file://&quot;)&#39;
+  )
+
+  if($filename) { $destination = $filename }
+  else          { $destination = basename($source) }
+
+  file { &quot;${logstash::config_dir}/patterns/${destination}&quot;:
+    ensure =&gt; file,
+    source =&gt; $source,
+    owner  =&gt; &#39;root&#39;,
+    group  =&gt; $logstash::logstash_group,
+    mode   =&gt; &#39;0640&#39;,
+    tag    =&gt; [&#39;logstash_config&#39;],
+  }
+}</pre>
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+
+      <div id="footer">
+     Generated by <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>.
+</div>
+
+    </div>
+  </body>
+</html>

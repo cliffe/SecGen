@@ -1,0 +1,15 @@
+---
+# This file is managed via modulesync
+# https://github.com/voxpupuli/modulesync
+# https://github.com/voxpupuli/modulesync_config
+HOSTS:
+  ubuntu-server-1204-x64:
+    roles:
+      - master
+    platform: ubuntu-12.04-amd64
+    box: puppetlabs/ubuntu-12.04-64-nocm
+    hypervisor: vagrant
+CONFIG:
+  type: foss
+...
+# vim: syntax=yaml

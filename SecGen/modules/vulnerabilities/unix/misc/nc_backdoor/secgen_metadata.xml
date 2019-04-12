@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>Netcat Backdoor</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>MIT</module_license>
+  <description>A netcat backdoor (acts as a bind shell -- listens on a port and serves a shell).</description>
+
+  <type>simple_backdoor</type>
+  <type>bind_shell</type>
+  <privilege>root_rwx</privilege>
+  <access>remote</access>
+  <platform>unix</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>port</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+
+  <default_input into="port">
+    <generator module_path=".*random_unregistered_port" />
+  </default_input>
+
+  <default_input into="strings_to_leak">
+    <generator type="message_generator"/>
+    <generator type="message_generator"/>
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+    <generator type="filename_generator"/>
+  </default_input>
+
+  <!--optional vulnerability details-->
+  <cvss_base_score>10</cvss_base_score>
+  <cvss_vector>AV:N/AC:L/Au:N/C:C/I:C/A:C</cvss_vector>
+  <software_name>nc</software_name>
+
+  <!--optional hints-->
+  <hint>Connect to a port</hint>
+  <solution>Simply connecting to the right port will give you a root shell.</solution>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+</vulnerability>

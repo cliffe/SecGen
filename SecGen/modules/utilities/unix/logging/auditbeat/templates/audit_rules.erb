@@ -1,0 +1,7 @@
+<% audit_rules = ''
+
+   @files_to_audit.each {|file|
+     audit_rules << "-w #{file} -p rwa -k identity\n"
+   }
+-%>
+<%= audit_rules -%>

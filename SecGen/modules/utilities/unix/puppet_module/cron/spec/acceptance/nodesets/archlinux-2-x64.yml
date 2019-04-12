@@ -1,0 +1,13 @@
+---
+# This file is managed via modulesync
+# https://github.com/voxpupuli/modulesync
+# https://github.com/voxpupuli/modulesync_config
+HOSTS:
+  archlinux-2-x64:
+    roles:
+      - master
+    platform: archlinux-2-x64
+    box: archlinux/archlinux
+    hypervisor: vagrant
+CONFIG:
+  type: foss

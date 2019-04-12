@@ -1,0 +1,84 @@
+<?php
+include('connect.php');
+
+<%#
+Note, these pages use multiple bootstap templates chopped up and rebuilt
+and can be found at: https://getbootstrap.com/docs/4.0/getting-started/introduction/
+
+As well as using Lauras code as a base template, however this is heavily edited
+%>
+
+  //IF statement taken from https://stackoverflow.com/questions/15088470/how-to-make-an-page-only-accessible-when-logged-in-php
+if(!isset($_SESSION['username'])){
+ header("Location:login.php");
+}
+  //end of code from https://stackoverflow.com/questions/15088470/how-to-make-an-page-only-accessible-when-logged-in-php
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<% $page_title = "User-Portal" %>
+<%= scope.function_template(['commando/subtemplates/header.html.erb']) %>
+
+<body>
+
+  <%= scope.function_template(['commando/subtemplates/nav.html.erb']) %>
+  <div class="container">
+    <div class="row">
+      <div id="pp-holder">
+        <img src="images/icon.png" alt="avi" id="pp">
+      </div>
+    </div>
+
+    <div class="row" id="sucess">
+      Welcome <?php echo $_SESSION['username'];?>
+    </div>
+
+    <div id="details">
+      <h3>Your Account:</h3>
+      <?php
+      $user = $_SESSION['username'];
+      $info="SELECT  * FROM <%= @user_table_name %> WHERE Username='$user'";
+      $result=mysqli_query($conn2, $info);
+      while ($row=mysqli_fetch_assoc($result)){
+        $id = $row['ID'];
+        ?>
+        <div>
+          <ul>
+          <li>ID: <?php echo $row['ID']; ?></li>
+          <li>Name: <?php echo $row['name'];?></li>
+          <li>Address: <?php echo $row['address']; ?></li>
+          <li>Mobile: <?php echo $row['mobile']; ?></li>
+          <li>Email: <?php echo $row['Email']; ?></li>
+          </ul>
+        </div>
+        <?php
+      }
+      <%#
+      This is the default admin login credentials which is a new concept not using
+      lauras code, however it does utilse her verbose error message vulnerability and takes
+      inspiration from Secuirty Shepard: https://www.owasp.org/index.php/Top_10_2013-A5-Security_Misconfiguration
+      %>
+      $admin_uname = "<%= @admin_username %>";
+      if ($user == $admin_uname) {
+        ?>
+      <div id="sucess">
+        Well Done, you have logged into an admin account!<br />
+        This account had default Log-in Credentials! Keep hunting!<br />
+        Heres a flag: <div id="flag"><%= @default_login_flag %></div>
+      </div>
+        <?php
+      }
+      ?>
+      <a href="login.php">Logout</a>
+  </div>
+
+  <%# This is taken from: https://getbootstrap.com/docs/4.0/getting-started/introduction/%>
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+  </body>
+  </html>

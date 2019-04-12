@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+          <system>
+            <system_name>careless_box</system_name>
+            <base type="server" distro="Debian 9"/>
+
+            <input into_datastore="IP_addresses">
+              <value>172.10.0.6</value>
+            </input>
+
+            <service module_path=".*proftpd" />
+
+            <network type="private_network">
+              <input into="IP_address">
+                <datastore access="0">IP_addresses</datastore>
+              </input>
+            </network>
+
+            <build type="cleanup">
+              <input into="root_password">
+                <value>pass</value>
+              </input>
+            </build>
+          </system>
+
+          <system>
+            <system_name>desktop</system_name>
+            <base platform="linux" type="desktop" distro="Stretch"/>
+
+            <utility module_path=".*parameterised_accounts">
+              <input into="accounts" into_datastore="accounts">
+                <generator type="account" />
+              </input>
+            </utility>
+
+            <service module_path=".*proftpd" />
+
+          <!-- auto login the player -->
+          <utility module_path=".*kde_minimal">
+            <input into="accounts">
+              <datastore>accounts</datastore>
+            </input>
+            <input into="autostart_konsole">
+              <value>true</value>
+            </input>
+            <input into="autologin_user">
+              <datastore access="0" access_json="['username']">accounts</datastore>
+            </input>
+          </utility>
+
+          <network type="private_network">
+            <input into="IP_address">
+              <datastore access="0">IP_addresses</datastore>
+            </input>
+          </network>
+
+        </system>
+</scenario>

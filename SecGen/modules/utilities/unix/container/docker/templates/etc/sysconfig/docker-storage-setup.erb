@@ -1,0 +1,30 @@
+# This file is managed by Puppet and local changes
+# may be overwritten
+
+# Edit this file to override any configuration options specified in
+# /usr/lib/docker-storage-setup/docker-storage-setup.
+#
+# For more details refer to "man docker-storage-setup"
+
+<% if @storage_driver %>STORAGE_DRIVER=<%= @storage_driver %>
+<% end -%>
+<% if @storage_devs %>DEVS="<%= @storage_devs %>"
+<% end -%>
+<% if @storage_vg %>VG=<%= @storage_vg %>
+<% end -%>
+<% if @storage_root_size %>ROOT_SIZE=<%= @storage_root_size %>
+<% end -%>
+<% if @storage_data_size %>DATA_SIZE=<%= @storage_data_size %>
+<% end -%>
+<% if @storage_min_data_size %>MIN_DATA_SIZE=<%= @storage_min_data_size %>
+<% end -%>
+<% if @storage_chunk_size %>CHUNK_SIZE=<%= @storage_chunk_size %>
+<% end -%>
+<% if @storage_growpart %>GROWPART=<%= @storage_growpart %>
+<% end -%>
+<% if @storage_auto_extend_pool %>AUTO_EXTEND_POOL=<%= @storage_auto_extend_pool %>
+<% end -%>
+<% if @storage_pool_autoextend_threshold %>POOL_AUTOEXTEND_THRESHOLD=<%= @storage_pool_autoextend_threshold %>
+<% end -%>
+<% if @storage_pool_autoextend_percent %>POOL_AUTOEXTEND_PERCENT=<%= @storage_pool_autoextend_percent %>
+<% end -%>

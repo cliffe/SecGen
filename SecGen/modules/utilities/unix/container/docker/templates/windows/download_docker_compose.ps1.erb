@@ -1,0 +1,22 @@
+try {
+$WebClient = New-Object System.Net.WebClient
+<%if @proxy %>
+$uri = New-Object Uri("<%= @proxy %>")
+if ($uri.UserInfo -eq $null) {
+  $WebProxy = New-Object System.Net.WebProxy("<%= @proxy %>",$true)
+  $WebClient.Proxy = $WebProxy
+} 
+else {
+  $user,$password = $uri.UserInfo -split (':')
+  $proxyAddress = $uri.Scheme + "://" + $uri.Host + ":" + $uri.Port + $uri.PathAndQuery
+  $WebProxy = New-Object System.Net.WebProxy($uri,$true)
+  $WebClient.Proxy = $WebProxy
+  $WebClient.Proxy.Credentials = New-Object System.Net.NetworkCredential($user, $password)
+}
+<% end %>
+  $WebClient.DownloadFile("<%= @docker_compose_url %>","<%= @docker_compose_location_versioned %>")
+}
+catch {
+    exit 1
+}
+exit 0

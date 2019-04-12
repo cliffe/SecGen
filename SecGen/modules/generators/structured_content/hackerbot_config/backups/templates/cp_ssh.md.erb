@@ -1,0 +1,86 @@
+
+## Uptime
+
+At a console, ==run:==
+
+```bash
+uptime
+```
+`15:32:38 up 4 days, 23:50,  4 users,  load average: 1.01, 1.24, 1.17`
+
+A common goal is to aim for "five nines" availability (99.999%). If you only have one server, that means keeping it running constantly, other than for scheduled maintenance.
+
+==In your log book, list a few legitimate security reasons for performing off-line maintenance.==
+
+## Copy
+
+The simplest of Unix copy commands, is `cp`. `cp` takes a local source and destination, and can recursively copy contents from one file or directory to another.
+
+Make a directory to store your backups. ==Run:==
+
+```bash
+mkdir /home/<%= $main_user %>/backups/
+```
+
+==Make a backup copy of your /etc/passwd file:==
+
+```bash
+cp /etc/passwd /home/<%= $main_user %>/backups/
+```
+
+We have made a backup of a source file (/etc/passwd), to our destination directory (/home/<%= $main_user %>/backups/). Note that we lost the metadata associated with the file, including file ownership and permissions:
+
+```bash
+ls -la /home/<%= $main_user %>/backups/passwd
+ls -la /etc/passwd
+```
+Note and take the time to ==understand the differences in the output== from these two commands. Notably the backup file is now owned by <%= $main_user %> (and also belongs to that user's primary group).
+
+## SSH (secure shell) and SCP (secure copy)
+
+Using SSH (secure shell), `scp` (secure copy) can transfer files securely (encrypted) over a network.
+> This replaces the old insecure rcp command, which sends files over the network in-the-clear (not encrypted). Rcp should never be used.
+
+==Backup your /etc/ directory to the backup_server== computer using `scp`:
+
+```bash
+sudo scp -pr /etc/ <%= $main_user %>@<%= $server_ip %>:/home/<%= $main_user %>/ssh_backup/
+```
+> You will be prompted for your local password, to confirm the hosts fingerprint ("yes"), and the remote password (which is the same).
+> This copy may take some time, feel free to open another terminal console (Ctrl-T), to read the scp man page while you wait.
+
+Read the scp man page to ==determine what the `-p` and `-r` flags do==.
+
+> Hint: "`man scp`", press "q" to quit.
+
+Now, lets add a file to /etc, and repeat the backup:
+
+```bash
+sudo bash -c 'echo > /etc/hi'
+sudo scp -pr /etc/ <%= $main_user %>@<%= $server_ip %>:/home/<%= $main_user %>/ssh_backup/
+```
+
+Note that the program re-copies all of the files entirely, regardless of whether (or how much) they have changed.
+
+==SSH to your backup_server system==, to look at your backup files:
+
+> `ssh *username*@*server-ip-address*` will log you in with *username* on the system. Assuming the remote computer has the same user account available (as is the case with the VMs provided), you can omit "username", and just run "`ssh *ip-address*`", and you will be prompted to provide authentication for your own account, as configured on their system.
+
+So, that is:
+```bash
+ssh <%= $server_ip %>
+```
+> Enter your password when prompted
+
+List the files that have been backed up:
+
+```bash
+ls -la ssh_backup/
+```
+
+**Exit ssh**:
+> `exit`
+>
+> (Or Ctrl-D)
+>
+> Note, this command will close your bash shell, if you are not logged in via ssh.

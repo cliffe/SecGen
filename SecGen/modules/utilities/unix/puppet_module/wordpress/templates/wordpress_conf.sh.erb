@@ -1,0 +1,26 @@
+#!/bin/bash
+<% require 'uri'
+   $url_base = "#{@https ? 'https' : 'http'}://#{@ip_address}:#{@https ? '443' : @port}"
+   $params = ''
+   $params += 'weblog_title=' + URI::encode(@blog_title)
+   $params += '&admin_email=' + URI::encode(@admin_email)
+  if @version[0].to_i >= 3
+    $params += '&user_name=' + @username
+    $params += '&admin_password=' + @admin_password
+    $params += '&admin_password2=' + @admin_password
+  elsif (@version[0].to_i == 4) and (@version[2].to_i >= 3)
+    $params += '&pw_weak=on'
+    $params += '&pass1-text=' + @admin_password
+  end
+  if @version[0].to_i == 1 and @version[2].to_i == 5
+    $params += '&Submit=Continue+to+Second+Step+%C2%BB'
+  else
+    $params += '&blog_public=1'
+    $params += '&Submit=Install+WordPress'
+    $params += '&language='
+  end
+-%>
+sudo curl -L <%= @https ? '-k ': '' %><%= $url_base %>
+sleep 10
+sudo curl -L --data '<%= $params %>' <%= @https ? '-k ': '' %><%= $url_base %>/wp-admin/install.php?step=2
+sleep 10

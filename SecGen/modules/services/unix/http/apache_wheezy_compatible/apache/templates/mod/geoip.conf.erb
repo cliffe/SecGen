@@ -1,0 +1,25 @@
+GeoIPEnable <%= scope.function_bool2httpd([@enable]) %>
+
+<%- if @db_file and ! [ false, 'false', '' ].include?(@db_file) -%>
+    <%- if @db_file.kind_of?(Array) -%>
+      <%- Array(@db_file).each do |file| -%>
+GeoIPDBFile <%= file %> <%= @flag %>
+      <%- end -%>
+    <%- else -%>
+GeoIPDBFile <%= @db_file %> <%= @flag %>
+    <%- end -%>
+<%- end -%>
+GeoIPOutput <%= @output %>
+<% if ! @enable_utf8.nil? -%>
+GeoIPEnableUTF8 <%= scope.function_bool2httpd([@enable_utf8]) %>
+<% end -%>
+<% if ! @scan_proxy_headers.nil? -%>
+GeoIPScanProxyHeaders <%= scope.function_bool2httpd([@scan_proxy_headers]) %>
+<% end -%>
+<% if ! @scan_proxy_header_field.nil? -%>
+GeoIPScanProxyHeaderField <%= @scan_proxy_header_field %>
+<% end -%>
+<% if ! @use_last_xforwarededfor_ip.nil? -%>
+GeoIPUseLastXForwardedForIP <%= scope.function_bool2httpd([@use_last_xforwarededfor_ip]) %>
+<% end -%>
+

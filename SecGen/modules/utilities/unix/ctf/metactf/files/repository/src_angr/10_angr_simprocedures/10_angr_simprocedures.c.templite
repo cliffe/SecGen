@@ -1,0 +1,121 @@
+${
+import random, os
+random.seed(os.urandom(8))
+
+def generate_true_statement(variable, value):
+  random_int = random.randint(0, 0xFFFFFFFF)
+  value_xor_int = value ^ random_int
+  return '(!(' + variable + ' ^ ' + str(random_int) + ' ^ ' + str(value_xor_int) + '))'
+
+def recursive_if_else(variable, value, end_statement, depth):
+  if depth == 0:
+    write(end_statement)
+  else:
+    if_true = random.choice([True, False])
+    if (if_true):
+      write('if (' + generate_true_statement(variable, value) + ') {')
+      recursive_if_else(variable, value, end_statement, depth - 1)
+      write('} else {')
+      recursive_if_else(variable, value, end_statement, depth - 1)
+      write('}')
+    else:
+      write('if (!' + generate_true_statement(variable, value) + ') {')
+      recursive_if_else(variable, value, end_statement, depth - 1)
+      write('} else {')
+      recursive_if_else(variable, value, end_statement, depth - 1)
+      write('}')
+}$
+
+#include <stdio.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+#define USERDEF "${ userdef }$"
+
+char msg[] = "${ description }$";
+
+char password[17];
+
+void print_msg() {
+  printf("%s", msg);
+}
+
+int complex_function(int value, int i) {
+#define LAMBDA 29
+  if (!('A' <= value && value <= 'Z')) {
+    printf("Try again.\n");
+    exit(1);
+  }
+  return ((value - 'A' + (LAMBDA * i)) % ('Z' - 'A' + 1)) + 'A';
+}
+
+int check_equals_${ userdef }$(char* to_check, size_t length) {
+  uint32_t num_correct = 0;
+  for (int i=0; i<length; ++i) {
+    if (to_check[i] == password[i]) {
+      num_correct += 1;
+    }
+  }
+  return num_correct == length;
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main(int argc, char* argv[]) {
+  unsigned int x = 0xDEADBEEF;
+  char buffer[17];
+  int equals = 17;
+
+  //print_msg();
+
+  memcpy(password, USERDEF, 16);
+  memset(buffer, 0, 17);
+
+  printf("Enter the password: ");
+  scanf("%16s", buffer);
+
+  for (int i=0; i<16; ++i) {
+    buffer[i] = complex_function(buffer[i], -i+18);
+  }
+
+  ${
+  statement = 'equals = check_equals_%s(buffer, 16);' % (userdef,)
+  }$
+
+  ${ recursive_if_else('x', 0xDEADBEEF, statement, 8) }$
+
+  if (!equals) {
+    printf("Try again.\n");
+  } else {
+    printf("Good Job.\n");
+    printflag();
+  }
+}

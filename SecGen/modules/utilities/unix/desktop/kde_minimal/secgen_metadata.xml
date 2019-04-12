@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>KDE minimal desktop environment</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>MIT</module_license>
+  <description>Installs KDE desktop environment</description>
+
+  <type>desktop_environment</type>
+  <platform>linux</platform>
+
+  <read_fact>autologin_user</read_fact>
+  <read_fact>accounts</read_fact>
+  <read_fact>autostart_konsole</read_fact>
+
+  <default_input into="autologin_user">
+    <value>false</value>
+  </default_input>
+
+  <default_input into="autostart_konsole">
+    <value>true</value>
+  </default_input>
+
+  <requires>
+    <type>update</type>
+  </requires>
+</utility>

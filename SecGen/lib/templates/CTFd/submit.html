@@ -1,0 +1,136 @@
+<div class="jumbotron">
+	<div class="container">
+		<h1>Flag submission</h1>
+	</div>
+</div>
+
+<div class="modal-dialog" role="document">
+    <div class="modal-content" style='border:none;'>
+        <div class="modal-body">
+            <div role="tabpanel">
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane fade show active" id="challenge">
+                        <div class="chal-tags text-center"></div>
+                        <p>This will submit your flag against a set of challenges (such as a VM). Navigate to <a href="challenges">Challenges</a> for hints for specific flags.</p>
+                        </br>
+                        <strong><p class="text-primary">Flags will be in the form of: flag{something}</p></strong>
+                        </br>
+                        <p class="text-danger">Note: The system has a limit of 10 flag submissions per minute. If you submit more, this screen will pause for 60 seconds and then continue. Please do not try submitting again during this time.</p>
+                    </div>
+                    <div class="row submit-row">
+                        <div class="col-md-12 form-group">
+                            <input class="form-control" type="text" name="answer" id="answer-input" placeholder="Flag" />
+                        </div>
+                        <div class="col-md-12 form-group">
+                          <select id="challenge_set" class="form-control" style="height:60px;">
+                          </select>
+                        </div>
+                        <div class="col-md-12 form-group key-submit">
+                            <button type="submit" onclick="submitflags()" id="submit-key" tabindex="5" class="btn btn-md btn-outline-secondary float-right">Submit</button>
+                        </div>
+                    </div>
+                    <div class="row notification-row">
+                        <div class="col-md-12">
+                            <div id="result-notification" class="alert alert-dismissable text-center w-100" role="alert">
+                              <strong id="result-message"></strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // pause submitting, due to rate limits?
+    var cont = true;
+    // stop submitting
+    var abort = false;
+    var challenge_list;
+    // retrieve the list of challenges and add VMs options to selection box on load
+    function loadoptions() {
+      var chal_list = $.get(window.location.origin + "/api/v1/challenges", {}, function (json) {
+        // get the challenge list from the server, and store it for later
+        challenge_list = json;
+        // for each challenge, add the category to the selection box, if it's not been added already
+        $.each(json.data, function (i, item) {
+          if (!$("#challenge_set option[value='" + item.category + "']").length) {
+            $('#challenge_set').append($('<option>', {
+              value: item['category'],
+              text : item['category']
+            }));
+          }
+        });
+        $('#challenge_set').append($('<option>', {
+              value: 'All',
+              text : 'All'
+        }));
+      }, 'json');
+    }
+    window.onload = loadoptions;
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    // Spams the challenge submission with flags.
+    // This is necessary since with SecGen flags it's not always known which # challenge they are completing.
+    // Since this is all done client-side (all easily importable into CTFd), we have to pause when we hit rate limits.
+    // This involves some timing between asynchronous threads.
+    async function submitflags() {
+        var answer = $('#answer-input').val();
+        var nonce = csrf_nonce;
+        var url = window.location.origin + "/api/v1/challenges/attempt";
+        $( "#result-message" ).empty();
+        cont = true;
+        abort = false;
+        var process_count = 0;
+        var delayed = [];
+        $.each(challenge_list.data, async function (i, item) {
+          var selected = $( "#challenge_set option:selected" ).text();
+          if (selected == "All" || selected == item["category"]) {
+            process_count++;
+            await sleep(process_count * 1000); // asynchronous spacing of queries
+            var chal_id = item["id"];
+            if (abort == true) {
+              return;
+            } else if (cont == false) {
+              await sleep(60000);
+              cont = true; // on waking this currently clobbers any subsequent pause
+            }
+            var result_message = $( '#result-message' );
+            result_message.append( 'Challenge #' + chal_id + ' : ' );
+            var retval = $.post(url, {
+              challenge_id: chal_id,
+              submission: answer,
+              nonce: nonce
+            }, function (json) {
+              var result = json.data;
+              if (result.status === "incorrect") { //Incorrect Key
+                result_message.append( '<p class="text-danger">' + result.message + '</p></br>' );
+              } else if (result.status === "correct") { //Challenge Solved
+                result_message.append( '<p class="text-success">' + result.message + '</p></br>' );
+                abort = true;
+              } else if (result.status === "already_solved") { //Challenge Already Solved
+                result_message.append( '<p class="text-warning">' + result.message + '</p></br>' );
+              }
+            }, 'json');
+            retval.fail(function(xhr, status, text) {
+              var result = xhr.responseJSON.data;
+              if (xhr.status === 429) { //Keys per minute too high
+                result_message.append( '<p class="text-danger">' + result.message + ' Pausing for 60 seconds. Do not hit Submit again.</p></br>' );
+                delayed.push(chal_id);
+                cont = false;
+              } else if (xhr.status === 403) {
+                if (result.status === "paused") { //CTF is paused
+                  result_message.append( '<p class="text-danger">' + result.message + ' (Aborting...)</p></br>' );
+                  abort = true;
+                } else if (result.status === "authentication_required") { //User is logged out
+                  window.location = script_root + "/login?next=" + script_root + window.location.pathname + window.location.hash;
+                  return
+                }
+              }
+            });
+          }
+        });
+    }
+</script>

@@ -1,0 +1,93 @@
+// Johnny Pham, New Beginnings 12/2016
+#include <stdio.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
+#define USERDEF "AAAAAA"
+#define DEFAULT "REPLACE"
+
+char msg[] = \
+"When receiving input from a user, it is important to limit the number\n"
+"of characters accepted so that the input buffer does not overflow.\n"
+"This level has the following code that is vulnerable to a buffer overflow.\n"
+"    char buff[N];\n"
+"    char guess[N];\n"
+"    strncpy(guess,\"REPLACE\",8));\n"
+"    .....\n"
+"    scanf(\"%s\",buff);\n"
+"    if(strcmp(guess,password)==0)\n"
+"In the code, the password variable stores the password and the guess\n"
+"variable is filled in with the string REPLACE.  The strcmp is thus setup\n"
+"to always fail.  However, the user's input buffer (buff) is vulnerable to\n"
+"overflow since the scanf does not have a length delimiter associated\n"
+"with it.  In this case, characters beyond buff will end up in guess.\n"
+"Using the debugger, find what the password is, then determine the number\n"
+"of bytes needed to overflow the buffer.  Finally, generate an input that\n"
+"will overflow buff to place the password in guess.\n\n";
+
+void user_input(char *pass)
+{
+    char buff[8];
+    char ret[8];
+    strncpy(ret,"REPLACE",strlen("REPLACE"));
+    printf("Enter the password: ");
+    scanf("%s",buff);
+    if(strcmp(ret,pass)==0) {
+	    printf("Good Job.\n");
+		printflag();
+	} else {
+		printf("Try again\n");
+	}
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main()
+{
+
+	char pass[8];
+	char fake[8];
+	char fake2[8];
+	int i, size;
+
+	for(i=0;i<8;i++)
+	{
+		pass[i] = 0;
+		fake[i] = 0;
+		fake2[i] = 0;
+	}
+	size =strlen(USERDEF);
+	strncpy(pass,USERDEF,size);
+	strncpy(fake,"X67v0f",size);
+	strncpy(fake2,"B6F3Sn",size);
+
+	printf("%s",msg);
+	user_input(pass);
+	return 0;
+}

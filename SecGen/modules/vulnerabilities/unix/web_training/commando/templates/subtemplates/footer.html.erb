@@ -1,0 +1,26 @@
+<%#
+Standard footer used on all pages other than the user portal
+
+The if statements make sure that the active page is not shown in the footer for
+styling/continuity purposes.
+%>
+<footer>
+  <div>
+      <ul>
+        <li>
+          <% if $page_title.eql? 'Home'%>
+          <a href="information.php" id="right">About</a>
+          <% else %>
+          <a href="index.php" id="right">Home</a>
+          <% end %>
+        </li>
+        <li>
+          <% if $page_title.eql? 'Log-In'%>
+          <a href="information.php">About</a>
+          <% else %>
+          <a href="login.php">Log-in</a>
+          <% end %>
+        </li>
+    </ul>
+  </div>
+</footer>

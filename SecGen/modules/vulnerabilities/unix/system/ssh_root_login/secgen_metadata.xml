@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>SSH root login</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>MIT</module_license>
+  <description>Enables root login to ssh. Adds a weak crackable root password by default, which can be overwritten.</description>
+
+  <type>system</type>
+  <privilege>root_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+
+  <challenge_type>pwn</challenge_type>
+  <challenge_subtype>others</challenge_subtype>
+
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>root_password</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+
+
+  <default_input into="root_password">
+    <generator module_path=".*weak_password.*"/>
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+  </default_input>
+
+  <cvss_vector>AV:N/AC:L/Au:S/C:C/I:C/A:C</cvss_vector>
+
+  <hint>Look for remote access with weak or known passwords.</hint>
+  <solution>Use a ssh bruteforce/dictionary cracker, connect with ssh root@victim-IP-address
+  </solution>
+
+  <!--<attack>-->
+    <!--<required_attack_software>sshpass</required_attack_software>-->
+    <!--<command>sshpass -p {{root_password}} ssh -oStrictHostKeyChecking=no root@{{IP_address}}</command>-->
+  <!--</attack>-->
+  <!--<attack_command>sshpass -p {{root_password}} ssh -oStrictHostKeyChecking=no root@{{IP_address}}</attack_command>-->
+
+  <requires>
+    <type>update</type>
+  </requires>
+</vulnerability>

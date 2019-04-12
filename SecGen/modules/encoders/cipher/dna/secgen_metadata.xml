@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+
+<encoder xmlns="http://www.github/cliffe/SecGen/encoder"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/encoder">
+  <name>DNA Cipher</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>
+  </description>
+
+  <type>alpha_reversible</type>
+  <type>dna_encoder</type>
+  <type>cipher_encoder</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+  <difficulty>medium</difficulty>
+
+  <reference>https://www.semanticscholar.org/paper/Innovative-field-of-cryptography-%3A-DNA-cryptography-Soni-Soni/5efcd2ab63e103fd8d158eaa2e30ca3de7d99fcb/figure/2</reference>
+
+  <hint>Guanine, Adenine, Thymine and Cytosine</hint>
+  <hint>DNA cryptography is a new instinctive cryptographic field emerged with the research of DNA computing, in which DNA is used as information shipper...</hint>
+  <solution>https://ai2-s2-public.s3.amazonaws.com/figures/2017-08-08/5efcd2ab63e103fd8d158eaa2e30ca3de7d99fcb/8-Table2-1.png</solution>
+
+  <read_fact>strings_to_encode</read_fact>
+
+  <default_input into="strings_to_encode">
+    <generator type="flag_generator"/>
+  </default_input>
+
+  <output_type>encoded_string</output_type>
+</encoder>

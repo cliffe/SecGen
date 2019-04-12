@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<system>
+		<system_name>course_vm</system_name>
+		<!--base platform="linux" distro="Debian 8.2"/-->
+		<base platform="linux" distro="Debian 7.8"/>
+
+		<!--utility module_path=".*gnome"/-->
+		<!--utility module_path=".*xfce"/-->
+		<!--utility module_path=".*user_accounts"/-->
+
+		<utility module_path=".*parameterised_accounts">
+			<input into="accounts">
+				<generator type="account">
+					<input into="username">
+						<value>admin</value>
+					</input>
+					<input into="password">
+						<value>test</value>
+					</input>
+					<input into="super_user">
+						<value>true</value>
+					</input>
+					<input into="leaked_filenames">
+						<value></value>
+					</input>
+					<input into="strings_to_leak">
+						<value></value>
+					</input>
+				</generator>
+			</input>
+		</utility>
+
+		<vulnerability module_path=".*ssh_leaked_keys">
+			<input into="accounts">
+				<generator type="account">
+					<input into="username">
+						<value>davebakon</value>
+					</input>
+					<input into="password">
+						<generator module_path="modules/generators/random/random_base64"/>
+					</input>
+					<input into="leaked_filenames">
+						<value>flag.txt</value>
+					</input>
+					<input into="strings_to_leak">
+						<generator module_path="modules/generators/random/random_base64"/>
+					</input>
+				</generator>
+			</input>
+		</vulnerability>
+		
+		<vulnerability module_path=".*two_shell_calls">
+			<input into="accounts">
+				<generator type="account">
+					<input into="username">
+						<value>jakkinkade</value>
+					</input>
+					<input into="password">
+						<generator module_path="modules/generators/random/random_base64"/>
+					</input>
+					<input into="leaked_filenames">
+						<value>flag.txt</value>
+					</input>
+						<input into="strings_to_leak">
+							<generator module_path="modules/generators/random/random_base64"/>
+						</input>
+				</generator>
+				<generator type="account">
+					<input into="username">
+						<value>nickadler</value>
+					</input>
+					<input into="password">
+						<generator module_path="modules/generators/random/random_base64"/>
+					</input>
+					<input into="strings_to_leak">
+						<value>none</value>
+					</input>
+					<input into="leaked_filenames">
+						<value></value>
+					</input>
+				</generator>
+			</input>
+		</vulnerability>
+
+		<vulnerability module_path=".*symlinks" />
+		<vulnerability module_path=".*onlinestore" />
+
+		<network type="private_network" range="dhcp"/>
+	</system>
+
+</scenario>

@@ -1,0 +1,43 @@
+<IfModule mod_security2.c>
+<% if @modsec_disable_vhost -%>
+  SecRuleEngine Off
+<% end -%>
+<% if @modsec_audit_log_destination -%>
+  SecAuditLog "<%= @modsec_audit_log_destination %>"
+<% end -%>
+<% if @_modsec_disable_ids.is_a?(Hash) -%>
+<%   @_modsec_disable_ids.each do |location,rules| -%>
+  <LocationMatch <%= location %>>
+<%     Array(rules).each do |rule| -%>
+    SecRuleRemoveById <%= rule %>
+<%     end -%>
+  </LocationMatch>
+<%   end -%>
+<% end -%>
+<% ips = Array(@modsec_disable_ips).join(',') %>
+<% if ips != '' %>
+  SecRule REMOTE_ADDR "<%= ips %>" "nolog,allow,id:1234123455"
+  SecAction  "phase:2,pass,nolog,id:1234123456"
+<% end -%>
+<% if @_modsec_disable_msgs.is_a?(Hash) -%>
+<%   @_modsec_disable_msgs.each do |location,rules| -%>
+  <LocationMatch <%= location %>>
+<%     Array(rules).each do |rule| -%>
+    SecRuleRemoveByMsg "<%= rule %>"
+<%     end -%>
+  </LocationMatch>
+<%   end -%>
+<% end -%>
+<% if @_modsec_disable_tags.is_a?(Hash) -%>
+<%   @_modsec_disable_tags.each do |location,rules| -%>
+  <LocationMatch <%= location %>>
+<%     Array(rules).each do |rule| -%>
+    SecRuleRemoveByTag "<%= rule %>"
+<%     end -%>
+  </LocationMatch>
+<%   end -%>
+<% end -%>
+<% if @modsec_body_limit -%>
+  SecRequestBodyLimit <%= @modsec_body_limit %>
+<% end -%>
+</IfModule>

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>Writable Group File</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Changes permissions on /etc/group file to 0777, local users can escalate to root by adding account to
+    sudo. </description>
+
+  <type>access_control_misconfiguration</type>
+  <privilege>root_rw</privilege>
+  <access>local</access>
+  <platform>linux</platform>
+
+  <!--optional vulnerability details-->
+  <difficulty>medium</difficulty>
+  <cvss_base_score>6.6</cvss_base_score>
+  <cvss_vector>AV:L/AC:M/Au:S/C:C/I:C/A:C</cvss_vector>
+
+  <hint>An access control misconfiguration</hint>
+  <solution>Edit the /etc/group file and add user account to sudo group.</solution>
+
+</vulnerability>

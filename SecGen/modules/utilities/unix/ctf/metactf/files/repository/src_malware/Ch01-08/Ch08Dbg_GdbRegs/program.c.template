@@ -1,0 +1,95 @@
+/* Derived from CTF level by Blair Davis New Beginnings Fall 2015 */
+#include <stdio.h>
+#include <fcntl.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+#define USERDEF AAAAAA
+
+char msg[] =
+ "When a function returns an integer value of any size (char, short, int,\n"
+ "or long), it places the value into register a (%al, %ax, %eax, or %rax).\n"
+ "In this level, use gdb to locate the function retval_in_rax().  At the\n"
+ "end of the function, set a breakpoint at the retq instruction using a\n"
+ "command similar to \"break *0x400300\" or \"break *retval_in_rax+30\".\n"
+ "Run the program.  The password is the return value from the function\n"
+ "retval_in_rax().  Use the print command to reveal it (e.g. p $rax)\n\n";
+
+void print_good() {
+	printf("Good Job.\n");
+    printflag();
+    exit(0);
+}
+
+void print_nogood() {
+    printf("Try again.\n");
+    exit(0);
+}
+
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg[i%len] + msg[(i+1)%len];
+    h2 += msg[(i+1)%len] + msg[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg);
+  else
+    printf("%s",msg);
+}
+
+long retval_in_rax() {
+	int i,j;
+	srand(USERDEF);
+	for (i=0; i < 10; i++)
+		j=rand();
+	return j;
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main () {
+    print_msg();
+    int usercode;
+    int passcode;
+    sleep(1);
+    printf("Enter the password: ");
+    scanf("%d", &usercode);
+
+    passcode = retval_in_rax();
+    if (usercode == passcode)
+	print_good();
+    else
+        print_nogood();
+
+    return 0;
+}

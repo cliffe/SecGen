@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Mail Message Generator</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Mail message generator, can be fed into the utilities/mail module to create system mail messages between
+    user accounts.
+  </description>
+
+  <type>mail_message</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+
+  <read_fact>sender_user</read_fact>
+  <read_fact>recipient_user</read_fact>
+  <read_fact>sender_domain</read_fact>
+  <read_fact>recipient_domain</read_fact>
+  <read_fact>sent_datetime</read_fact>
+  <read_fact>subject</read_fact>
+  <read_fact>content</read_fact>
+  <read_fact>id</read_fact>
+  <read_fact>message_id</read_fact>
+
+  <default_input into="sender_user">
+    <generator type="username_generator"/>
+  </default_input>
+
+  <default_input into="recipient_user">
+    <value>root</value>
+  </default_input>
+
+  <default_input into="sender_domain">
+    <value>localhost</value>
+  </default_input>
+
+  <default_input into="recipient_domain">
+    <value>localhost</value>
+  </default_input>
+
+  <default_input into="sent_datetime">
+    <generator type="date_generator">
+      <input into="format">
+        <value>mail</value>
+      </input>
+    </generator>
+  </default_input>
+
+  <default_input into="subject">
+    <generator type="message_generator"/>
+  </default_input>
+
+  <default_input into="content">
+    <value>Here is some content.</value>
+    <generator type="message_generator"/>
+    <value>Here is some more content.</value>
+    <generator type="message_generator"/>
+  </default_input>
+
+  <default_input into="id">
+    <generator type="mail_id"/>
+  </default_input>
+
+  <default_input into="message_id">
+    <generator type="mail_id"/>
+  </default_input>
+
+  <output_type>mail_message_hash</output_type>
+</generator>

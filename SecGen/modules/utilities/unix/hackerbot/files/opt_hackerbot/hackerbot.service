@@ -1,0 +1,13 @@
+[Unit]
+Description=Hackerbot IRC attack chatbot (SecGen project)
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/ruby /opt/hackerbot/hackerbot.rb
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+WorkingDirectory=/opt/hackerbot
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

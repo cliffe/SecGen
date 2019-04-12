@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<system>
+		<system_name>xinetd_script</system_name>
+		<base platform="linux" type="server"/>
+
+		<vulnerability module_path=".*ruby_challenge_example.*">
+			<input into="port">
+				<value>1337</value>
+			</input>
+		</vulnerability>
+
+	</system>
+</scenario>

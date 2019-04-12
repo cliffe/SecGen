@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Filebeat</name>
+  <author>Thomas Shaw</author>
+  <author>Elastic</author>
+  <module_license>Apache v2</module_license>
+  <description>TODO</description>
+
+  <type>log_tool</type>
+  <platform>linux</platform>
+
+  <read_fact>logstash_ip</read_fact>
+  <read_fact>logstash_port</read_fact>
+
+  <default_input into="logstash_ip">
+    <value>localhost</value>
+  </default_input>
+
+  <default_input into="logstash_port">
+    <value>5044</value>
+  </default_input>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+</utility>

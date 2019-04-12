@@ -1,0 +1,29 @@
+---
+# This file is managed via modulesync
+# https://github.com/voxpupuli/modulesync
+# https://github.com/voxpupuli/modulesync_config
+#
+# Additional ~/.fog config file with AWS EC2 credentials
+# required.
+#
+# see: https://github.com/puppetlabs/beaker/blob/master/docs/how_to/hypervisors/ec2.md
+#
+HOSTS:
+  windows-2016-base-x64:
+    roles:
+      - master
+    platform: windows-2016-64
+    hypervisor: ec2
+    # refers to image_tempaltes.yaml AMI[vmname] entry:
+    vmname: windows-2016-base-eu-central-1
+    # refers to image_tempaltes.yaml entry inside AMI[vmname][:image]:
+    snapshot: aio
+    # t2.micro is free tier eligible (https://aws.amazon.com/en/free/):
+    amisize: t2.micro
+    # required so that beaker sanitizes sshd_config and root authorized_keys:
+    user: ec2-user
+CONFIG:
+  type: aio
+  :ec2_yaml: spec/acceptance/nodesets/ec2/image_templates.yaml
+...
+# vim: syntax=yaml

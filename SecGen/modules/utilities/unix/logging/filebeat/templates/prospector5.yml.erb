@@ -1,0 +1,181 @@
+---
+filebeat:
+  prospectors:
+    - <% if scope.function_versioncmp([scope.lookupvar('filebeat::major_version'), '6']) >= 0 %>type<% else %>input_type<% end %>: <%= @input_type %>
+      paths:
+        <%- @paths.each do |log_path| -%>
+        - <%= log_path %>
+        <%- end -%>
+      <%- if @encoding -%>
+      encoding: <%= @encoding %>
+      <%- end -%>
+      <%- if @include_lines.length > 0 -%>
+      include_lines:
+        <%- @include_lines.each do |include_line| -%>
+        - '<%= include_line %>'
+        <%- end -%>
+      <%- end -%>
+      <%- if @exclude_lines.length > 0 -%>
+      exclude_lines:
+        <%- @exclude_lines.each do |exclude_line| -%>
+        - '<%= exclude_line %>'
+        <%- end -%>
+      <%- end -%>
+      <%- if @exclude_files.length > 0 -%>
+      exclude_files:
+        <%- @exclude_files.each do |exclude_file| -%>
+        - <%= exclude_file %>
+        <%- end -%>
+      <%- end -%>
+      <%- if @fields.length > 0 -%>
+      fields:
+        <%- @fields.each_pair do |k, v| -%>
+        <%= k %>: <%= v %>
+        <%- end -%>
+      <%- end -%>
+      fields_under_root: <%= @fields_under_root %>
+      <%- if @tags.length > 0 -%>
+      tags:
+        <%- @tags.each do |tag| -%>
+        - <%= tag %>
+        <%- end -%>
+      <%- end -%>
+      <%- if @ignore_older -%>
+      ignore_older: <%= @ignore_older %>
+      <%- end -%>
+      <%- if @doc_type -%>
+      document_type: <%= @doc_type %>
+      <%- end -%>
+      <%- if @scan_frequency -%>
+      scan_frequency: <%= @scan_frequency %>
+      <%- end -%>
+      <%- if @harvester_buffer_size -%>
+      harvester_buffer_size: <%= @harvester_buffer_size %>
+      <%- end -%>
+      <%- if @max_bytes -%>
+      max_bytes: <%= @max_bytes %>
+      <%- end -%>
+      <%- if @symlinks -%>
+      symlinks: <%= @symlinks %>
+      <%- end -%>
+      <%- if @close_older -%>
+      close_older: <%= @close_older %>
+      <%- end -%>
+      <%- if @force_close_files -%>
+      force_close_files: <%= @force_close_files %>
+      <%- end -%>
+      <%- if @pipeline -%>
+      pipeline: <%= @pipeline %>
+      <%- end -%>
+
+      <%- if @json.length > 0 -%>
+      ### JSON configuration
+      json:
+          # Decode JSON options. Enable this if your logs are structured in JSON.
+          # JSON key on which to apply the line filtering and multiline settings. This key
+          # must be top level and its value must be string, otherwise it is ignored. If
+          # no text key is defined, the line filtering and multiline features cannot be used.
+          <%- if @json['message_key'] != nil-%>
+          message_key: '<%= @json['message_key'] %>'
+          <%- end -%>
+
+          # By default, the decoded JSON is placed under a "json" key in the output document.
+          # If you enable this setting, the keys are copied top level in the output document.
+          <%- if @json['keys_under_root'] != nil -%>
+          keys_under_root: <%= @json['keys_under_root'] %>
+          <%- end -%>
+
+          # If keys_under_root and this setting are enabled, then the values from the decoded
+          # JSON object overwrite the fields that Filebeat normally adds (type, source, offset, etc.)
+          # in case of conflicts.
+          <%- if @json['overwrite_keys'] != nil -%>
+          overwrite_keys: <%= @json['overwrite_keys'] %>
+          <%- end -%>
+
+          # If this setting is enabled, Filebeat adds a "json_error" key in case of JSON
+          # unmarshaling errors or when a text key is defined in the configuration but cannot
+          # be used.
+          <%- if @json['add_error_key'] != nil -%>
+          add_error_key: <%= @json['add_error_key'] %>
+          <%- end -%>
+      <%- end -%>
+
+      <%- if @multiline.length > 0 -%>
+      multiline:
+        <%- if @multiline['pattern'] -%>
+        pattern: '<%= @multiline['pattern'] %>'
+        <%- end -%>
+        <%- if @multiline['negate'] -%>
+        negate: <%= @multiline['negate'] %>
+        <%- end -%>
+        <%- if @multiline['match'] -%>
+        match: <%= @multiline['match'] %>
+        <%- end -%>
+        <%- if @multiline['max_lines'] -%>
+        max_lines: <%= @multiline['max_lines'] %>
+        <%- end -%>
+        <%- if @multiline['timeout'] -%>
+        timeout: <%= @multiline['timeout'] %>
+        <%- end -%>
+      <%- end -%>
+      tail_files: <%= @tail_files %>
+
+      # Experimental: If symlinks is enabled, symlinks are opened and harvested. The harvester is openening the
+      # original for harvesting but will report the symlink name as source.
+      #symlinks: false
+
+      <%- if @backoff -%>
+      backoff: <%= @backoff %>
+      <%- end -%>
+      <%- if @max_backoff -%>
+      max_backoff: <%= @max_backoff %>
+      <%- end -%>
+      <%- if @backoff_factor -%>
+      backoff_factor: <%= @backoff_factor %>
+      <%- end -%>
+
+      # Experimental: Max number of harvesters that are started in parallel.
+      # Default is 0 which means unlimited
+      #harvester_limit: 0
+
+      ### Harvester closing options
+
+      # Close inactive closes the file handler after the predefined period.
+      # The period starts when the last line of the file was, not the file ModTime.
+      # Time strings like 2h (2 hours), 5m (5 minutes) can be used.
+      <%- if @close_inactive -%>
+      close_inactive: <%= @close_inactive %>
+      <%- end -%>
+
+      # Close renamed closes a file handler when the file is renamed or rotated.
+      # Note: Potential data loss. Make sure to read and understand the docs for this option.
+      close_renamed: <%= @close_renamed %>
+
+      # When enabling this option, a file handler is closed immediately in case a file can't be found
+      # any more. In case the file shows up again later, harvesting will continue at the last known position
+      # after scan_frequency.
+      close_removed: <%= @close_removed %>
+
+      # Closes the file handler as soon as the harvesters reaches the end of the file.
+      # By default this option is disabled.
+      # Note: Potential data loss. Make sure to read and understand the docs for this option.
+      close_eof: <%= @close_eof %>
+
+      ### State options
+
+      # Files for the modification data is older then clean_inactive the state from the registry is removed
+      # By default this is disabled.
+      <%- if @clean_inactive -%>
+      clean_inactive: <%= @clean_inactive %>
+      <%- end -%>
+
+      # Removes the state for file which cannot be found on disk anymore immediately
+      clean_removed: <%= @clean_removed %>
+
+      # Close timeout closes the harvester after the predefined time.
+      # This is independent if the harvester did finish reading the file or not.
+      # By default this option is disabled.
+      # Note: Potential data loss. Make sure to read and understand the docs for this option.
+      <%- if @close_timeout -%>
+      close_timeout: <%= @close_timeout %>
+      <%- end -%>

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<!-- an example of a system with static IP address resolution. -->
+	<system>
+		<system_name>storage_server</system_name>
+		<base platform="linux" type="server"/>
+		<network type="private_network" range="172.16.0.0"/>
+	</system>
+
+	<system>
+		<system_name>another_system</system_name>
+		<base platform="linux" type="server"/>
+		<network type="private_network" range="172.16.0.0"/>
+	</system>
+
+</scenario>

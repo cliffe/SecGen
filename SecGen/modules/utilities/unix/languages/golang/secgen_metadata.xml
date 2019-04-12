@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Go programming language</name>
+  <author>Darren Coxall</author>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>An installation of the Go programming language</description>
+
+  <type>language</type>
+  <type>go</type>
+  <platform>linux</platform>
+
+  <!--optional details-->
+  <reference>https://forge.puppet.com/dcoxall/golang</reference>
+  <software_name>golang</software_name>
+  <software_license>MIT</software_license>
+
+  <requires>
+    <type>update</type>
+  </requires>
+</utility>

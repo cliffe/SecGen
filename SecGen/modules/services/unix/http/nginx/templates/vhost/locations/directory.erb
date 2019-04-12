@@ -1,0 +1,13 @@
+<% if defined? @www_root -%>
+    root      <%= @www_root %>;
+<% end -%>
+<% if defined? @autoindex -%>
+
+    autoindex <%= @autoindex %>;
+<% end -%>
+<% if @index_files.count > 0 -%>
+    index    <% Array(@index_files).each do |i| %> <%= i %><% end %>;
+<% end -%>
+<% if @try_files -%>
+    try_files<% @try_files.each do |try| -%> <%= try %><% end -%>;
+<% end -%>

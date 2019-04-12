@@ -1,0 +1,17 @@
+#Database Management
+DBDriver <%= @authn_dbd_dbdriver %>
+
+#Connection string: database name and login credentials
+DBDParams "<%= @authn_dbd_params %>"
+
+#Parameters for Connection Pool Management
+DBDMin     <%= @authn_dbd_min %>
+DBDMax     <%= @authn_dbd_max %>
+DBDKeep    <%= @authn_dbd_keep %>
+DBDExptime <%= @authn_dbd_exptime %>
+
+<%- if @authn_dbd_alias -%>
+<AuthnProviderAlias dbd <%= @authn_dbd_alias %>>
+  AuthDBDUserPWQuery "<%= @authn_dbd_query %>"
+</AuthnProviderAlias>
+<%- end -%>

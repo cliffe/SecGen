@@ -1,0 +1,108 @@
+#left-side-columns {
+	border-right: 1px solid #f2f2f2;
+	margin-top: 1em;
+}
+
+#left-side-columns input[type=text] {
+    float: none;
+    display: block;
+    text-align: left;
+    width: 100%;
+    margin: 0;
+    padding: 10px;
+  }
+
+  .product-grid {
+  	margin: 1em;
+  }
+
+  .product {
+  	width: 30%;
+  	display: inline-block;
+  	margin-top: 2em;
+  }
+
+  .sizes {
+  	color: #cccccc;
+  }
+
+ html {
+ 	font-family: 'Ubuntu', sans-serif;
+ }
+
+ .product form input[type=number] {
+ 	width: 40px;
+ 	text-align: center;
+ }
+
+ .product form input[type=submit] {
+ 	float: right;
+ 	background-color: inherit;
+ 	color: orange;
+ 	border: 1px solid #cccccc;
+ 	padding: 4px;
+ }
+
+ .product form {
+ 	width: 50%;
+ }
+
+ footer ul {
+ 	list-style: none;
+ 	color: #4d4d4d;
+	margin-left: 31%;
+ }
+
+ footer li {
+ 	display: inline-block;
+ 	padding-left: 1em;
+ 	padding-right: 1em;
+ }
+
+ footer div:first-of-type {
+ 		width: 50%;
+ 		margin: auto;
+ }
+
+#basket {
+	float: right;
+}
+
+#r-banner p {
+	padding-top: .5em;
+}
+
+#r-banner {
+	margin-top: 1em;
+	border-top: 1px solid #e6e6e6;
+	border-bottom: 1px solid #e6e6e6;
+}
+
+#search-box {
+	border: none;
+	border-bottom: 1px solid #e6e6e6;
+}
+
+.col-3 form input[type=submit] {
+	margin-top: .5em;
+}
+
+.error {
+	border-radius: 1em;
+	border: 1px solid #FABABC;
+	background-color: #FADFE0;
+	padding: .75em;
+	color: #7F1C12;
+	margin: 1em;
+	width: 100%;
+	text-align: center;
+}
+
+#sucess {
+	border-radius: 1em;
+	border: 1px solid #4F8A10;
+	background-color: #DFF2BF;
+	padding: .75em;
+	color: #4F8A10;
+	margin: 1em
+}

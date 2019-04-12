@@ -1,0 +1,63 @@
+# Managed by https://github.com/voxpupuli/modulesync_configs
+#
+# Hooks are only enabled if you take action.
+#
+# To enable the hooks run:
+#
+# ```
+# bundle exec overcommit --install
+# # ensure .overcommit.yml does not harm to you and then
+# bundle exec overcommit --sign
+# ```
+#
+# (it will manage the .git/hooks directory):
+#
+# Examples howto skip a test for a commit or push:
+#
+# ```
+# SKIP=RuboCop git commit
+# SKIP=PuppetLint git commit
+# SKIP=RakeTask git push
+# ```
+#
+# Don't invoke overcommit at all:
+#
+# ```
+# OVERCOMMIT_DISABLE=1 git commit
+# ```
+#
+# Read more about overcommit: https://github.com/brigade/overcommit
+#
+# To manage this config yourself in your module add
+#
+# ```
+# .overcommit.yml:
+#   unmanaged: true
+# ```
+#
+# to your modules .sync.yml config
+---
+PreCommit:
+  RuboCop:
+    enabled: true
+    description: 'Runs rubocop on modified files only'
+    command: ['bundle', 'exec', 'rubocop']
+  PuppetLint:
+    enabled: true
+    description: 'Runs puppet-lint on modified files only'
+    command: ['bundle', 'exec', 'puppet-lint']
+  YamlSyntax:
+    enabled: true
+  JsonSyntax:
+    enabled: true
+  TrailingWhitespace:
+    enabled: true
+
+PrePush:
+  RakeTarget:
+    enabled: true
+    description: 'Run rake targets'
+    targets:
+      - 'test'
+      - 'rubocop'
+    command: [ 'bundle', 'exec', 'rake' ]

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>CSS File Selector Generator</name>
+  <author>Joshua Hickling</author>
+  <module_license>MIT</module_license>
+  <description>CSS file selector for the commando module.</description>
+
+  <type>css_file</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <output_type>string</output_type>
+
+</generator>

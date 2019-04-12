@@ -1,0 +1,65 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <string.h>
+
+char pwd[] = "AAAAAA";
+char msg[] =
+ "In 64-bit x86, the first six integer and pointer arguments to function\n"
+ "calls are passed in registers.  Use what you have learned in previous GDB\n"
+ "levels to find the function call in main in which a pointer to the password\n"
+ "is passed in register rdi, the register that is used to pass the first\n"
+ "function parameter.\n\n";
+
+void pwdFunction(char* p) {
+	int x = 1;
+	int y = 2;
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main(int argc, char* argv[]) {
+    int i;
+    char buf[20];
+    printf("%s",msg);
+    pwdFunction(pwd);
+    printf("Enter the password: ");
+    scanf("%19s",buf);
+    int len = strlen(pwd);
+    if (strlen(buf) != len) {
+	printf("Try again.\n");
+	return 0;
+    }
+    if (strcmp(buf, pwd) != 0) {
+	printf("Try again.\n");
+	return 0;
+    }
+	printf("Good Job.\n");
+    printflag();
+    return 0;
+}

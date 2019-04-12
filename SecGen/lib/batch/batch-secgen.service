@@ -1,0 +1,16 @@
+[Unit]
+Description=Batch Processing Service (SecGen Project)
+After=postgresql.service
+
+[Service]
+EnvironmentFile=/etc/environment
+ExecStart=/usr/bin/ruby /home/secgen/SecGen/lib/batch/batch_secgen.rb start
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+WorkingDirectory=/home/secgen/SecGen/
+Restart=always
+User=secgen
+Group=secgen
+
+[Install]
+WantedBy=multi-user.target

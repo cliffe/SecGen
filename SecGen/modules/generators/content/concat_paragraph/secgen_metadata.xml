@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Concatenated Paragraph</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Accepts data and concatenates, with the option of adding separator characters.</description>
+
+  <type>concat_paragraph</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <read_fact>data</read_fact>
+  <read_fact>separator</read_fact>
+
+  <default_input into="data">
+    <generator type="message"/>
+    <generator type="message"/>
+    <generator type="message"/>
+  </default_input>
+
+  <!-- Separator examples: <value> </value>, <value>\t</value>, <value>\n</value>, <value>\t\t\n</value> etc. -->
+  <default_input into="separator">
+    <value> </value>
+  </default_input>
+
+  <output_type>string</output_type>
+  
+</generator>

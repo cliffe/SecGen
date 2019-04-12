@@ -1,0 +1,105 @@
+/*  Derived from CTF level by Brandon Giatti New Beginnings Fall 2015 */
+#include <stdio.h>
+#include <fcntl.h>
+#include <string.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <unistd.h>
+#define USERDEF AAAAAA
+#define BIN_NUM 12
+
+typedef void (*funcp)();
+
+char msg[] =
+ "Many computer applications need a proper representation of negative\n"
+ "numbers.  The most common of these is the two's-complement form.\n"
+ "The form can be represented as a vector of length w bits:\n"
+ "   x = [x_w-1, x_w-2, ..., x_0].\n"
+ "The most significant bit x_w-1 has a value of -2^(w-1) while the rest\n"
+ "of the bits are positive powers of 2.  Thus if the most significant bit\n"
+ "is set, the number is negative, while if it is cleared, it is positive.\n"
+ "Learning to work with two's-complement is important due to overflow issues\n"
+ "and the improper casting between unsigned and signed values.  In this\n"
+ "level, the passcode is encoded as a 12-bit two's complement number.  Find\n"
+ "its signed decimal value to complete the level.\n\n";
+
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg[i%len] + msg[(i+1)%len];
+    h2 += msg[(i+1)%len] + msg[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg);
+  else
+    printf("%s",msg);
+}
+
+void print_good() {
+	printf("Good Job.\n");
+    printflag();
+    exit(0);
+}
+
+void print_nogood() {
+    printf("Try again.\n");
+}
+
+void try() {
+    int i, entry, A[BIN_NUM];
+
+    for(i = 0; i < BIN_NUM; i++) {
+        if( ((AAAAAA >> i) & 0x1) != 0) {
+       	    A[BIN_NUM - (i+1)] = 1;
+        } else {
+            A[BIN_NUM - (i+1)] = 0;
+        }
+    }
+    for(i = 0; i < BIN_NUM; i++)
+        printf("%d", A[i]);
+    printf("\n");
+
+    sleep(1);
+    printf("Enter the password: ");
+    scanf("%d",&entry);
+    if(entry == AAAAAA)
+        print_good();
+    else
+        print_nogood();
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main() {
+    print_msg();
+    try();
+    return 0;
+}

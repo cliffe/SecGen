@@ -1,0 +1,14 @@
+<% $page_title = @business_name != '' ? "#{@business_name} - #{$current_page}" : $current_page -%>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title><%= $page_title %></title>
+
+  <!-- Default stylesheet -->
+  <link rel="stylesheet" href="css/bootstrap.min.css" media="screen"/>
+  <link rel="stylesheet" href="css/<%= @theme %>" />
+  <link rel="stylesheet" href="css/default.css"/>
+
+</head>

@@ -1,0 +1,20 @@
+[
+    {
+        "Name": "host",
+        "Id": "ca5f5f36c8d7311d43a5f84147719b5437c8d3a80b502498a543cc279ee348f7",
+        "Created": "2017-02-16T12:45:25.180741832-05:00",
+        "Scope": "local",
+        "Driver": "host",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": []
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Containers": {},
+        "Options": {},
+        "Labels": {}
+    }
+]

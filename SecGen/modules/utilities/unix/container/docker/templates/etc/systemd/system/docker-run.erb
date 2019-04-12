@@ -1,0 +1,56 @@
+<%-
+	@after = [@service_name+".service"] +
+		@sanitised_after_array.map{ |s| "#{@service_prefix}#{s}.service"} +
+		@sanitised_depends_array.map{ |s| "#{@service_prefix}#{s}.service"} +
+		@depend_services_array.map{|s| "#{s}.service"}
+	@wants = @sanitised_after_array.map{ |a| "#{@service_prefix}#{a}.service"}
+	@requires = [@service_name+".service"] +
+		@sanitised_depends_array.map{ |d| "#{@service_prefix}#{d}.service"} +
+		@depend_services_array.map{|s| "#{s}.service"}
+-%>
+# This file is managed by Puppet and local changes
+# may be overwritten
+
+[Unit]
+Description=Daemon for <%= @title %>
+After=<%= @after.uniq.join(" ") %>
+Wants=<%= @wants.uniq.join(" ") %>
+Requires=<%= @requires.uniq.join(" ") %>
+
+[Service]
+Restart=<%= @systemd_restart %>
+StartLimitInterval=20
+StartLimitBurst=5
+TimeoutStartSec=0
+RestartSec=5
+Environment="HOME=/root"
+<%- if @_syslog_identifier -%>
+SyslogIdentifier=<%= @_syslog_identifier %>
+<%- end -%>
+<%- if @before_start %>ExecStartPre=-<%= @before_start %>
+<% end -%>
+ExecStartPre=-/usr/bin/<%= @docker_command %> kill <%= @sanitised_title %>
+<%- if @remove_container_on_start %>ExecStartPre=-/usr/bin/<%= @docker_command %> rm <% if @remove_volume_on_start %>-v<% end %> <%= @sanitised_title %>
+<% else %>ExecStartPre=-/usr/bin/<%= @docker_command %> create \
+    <%= @docker_run_flags %> \
+    --name <%= @sanitised_title %> \
+    <%= @image %> \
+    <% if @command %> <%= @command %><% end %>
+<% end -%>
+<% @extra_systemd_parameters.each do |key, value| -%><%= key %>=<%= value %>
+<% end -%>
+<%- if @pull_on_start %>ExecStartPre=-/usr/bin/<%= @docker_command %> pull <%= @image %>
+<% end -%>
+<%- if @remove_container_on_start %>
+ExecStart=/usr/local/bin/docker-run-<%= @sanitised_title %>.sh
+<% else %>
+ExecStart=/usr/bin/<%= @docker_command %> start -a <%= @sanitised_title %>
+<% end -%>
+<%- if @before_stop %>ExecStop=-<%= @before_stop %>
+<% end -%>
+ExecStop=-/usr/bin/<%= @docker_command %> stop --time=<%= @stop_wait_time %> <%= @sanitised_title %>
+<%- if @remove_container_on_stop %>ExecStop=-/usr/bin/<%= @docker_command %> rm <% if @remove_volume_on_stop %>-v<% end %> <%= @sanitised_title %>
+<% end -%>
+
+[Install]
+WantedBy=multi-user.target

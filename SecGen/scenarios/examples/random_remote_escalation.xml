@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<system>
+		<system_name>random_escalatable_server</system_name>
+		<base module_path="modules/bases/debian_puppet_32"/>
+		<vulnerability access="remote" privilege="user_rwx"/>
+		<vulnerability access="local" privilege="root_rwx"/>
+	</system>
+</scenario>

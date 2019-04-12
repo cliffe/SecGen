@@ -1,0 +1,82 @@
+<%#
+This is part of a bootstrap template which can be accessed at: https://getbootstrap.com/docs/4.0/components/navbar/
+
+This file is fairly repetitave, this reason for this is, te ruby code tests what the $page title is set to,
+this in turn then uses the navbar with the corresponding page title. This is so when a user is on a page the
+page is highlighted in the navbar. This uses the nav-item active and the span current which can be seen below.
+%>
+<% if $page_title.eql? "Home"%>
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <a class="navbar-brand" href="#">	<%= @business_name %> </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+     <span class="navbar-toggler-icon"></span>
+    </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+       <ul class="navbar-nav">
+         <li class="nav-item active">
+           <a class="nav-link" href="index.php">Home <span class="sr-only">(current)</span></a>
+         </li>
+         <li class="nav-item">
+           <a class="nav-link" href="information.php">About</a>
+         </li>
+         <li class="nav-item">
+           <a class="nav-link" href="login.php">Log-in</a>
+         </li>
+       </ul>
+      </div>
+  </nav>
+<% elsif $page_title.eql? "Information" %>
+<nav class="navbar navbar-expand-lg navbar-light">
+  <a class="navbar-brand" href="#">	<%= @business_name %> </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+   <span class="navbar-toggler-icon"></span>
+  </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+     <ul class="navbar-nav">
+       <li class="nav-item">
+         <a class="nav-link" href="index.php">Home</a>
+       </li>
+       <li class="nav-item active">
+         <a class="nav-link" href="information.php">About <span class="sr-only">(current)</span></a>
+       </li>
+       <li class="nav-item">
+         <a class="nav-link" href="login.php">Log-in</a>
+       </li>
+     </ul>
+    </div>
+</nav>
+<% elsif $page_title.eql? "User-Portal"%>
+<nav class="navbar navbar-expand-lg navbar-light">
+  <a class="navbar-brand" href="#">	<%= @business_name %></a>
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+ <span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="navbarNav">
+ <ul class="navbar-nav">
+   <li class="nav-item active">
+     <a class="nav-link" href="#">User Portal</a>
+   </li>
+ </ul>
+</div>
+</nav>
+<% else %>
+<nav class="navbar navbar-expand-lg navbar-light">
+  <a class="navbar-brand" href="#">	<%= @business_name %> </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+   <span class="navbar-toggler-icon"></span>
+  </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+     <ul class="navbar-nav">
+       <li class="nav-item">
+         <a class="nav-link" href="index.php">Home</a>
+       </li>
+       <li class="nav-item">
+         <a class="nav-link" href="information.php">About</a>
+       </li>
+       <li class="nav-item  active">
+         <a class="nav-link" href="login.php">Log-in<span class="sr-only">(current)</span></a>
+       </li>
+     </ul>
+    </div>
+</nav>
+<% end %>

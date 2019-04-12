@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>Access Control SUID root nano</name>
+  <author>Jason Keighley</author>
+  <module_license>Apache v2</module_license>
+  <description>Mis-configure nano file permissions to run with root privileges</description>
+
+  <type>access_control_misconfiguration</type>
+  <privilege>root_rw</privilege>
+  <access>local</access>
+  <platform>unix</platform>
+
+  <hint>Text editor permission misconfiguration</hint>
+  <solution>Nano text editor running as root user</solution>
+</vulnerability>

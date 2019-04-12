@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<encoder xmlns="http://www.github/cliffe/SecGen/encoder"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/encoder">
+  <name>Huffman Encoder</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Encodes a string with Huffman compression. Outputs a huffman string and png.</description>
+
+  <type>huffman_encoder</type>
+  <type>compression</type>
+  <type>misc</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+  <difficulty>high</difficulty>
+
+  <reference>https://github.com/nicanor/braille</reference>
+
+  <solution>Braille decoders are available online e.g. https://www.dcode.fr/braille-alphabet</solution>
+
+  <read_fact>strings_to_encode</read_fact>
+  <read_fact>subdirectory</read_fact>
+
+  <default_input into="strings_to_encode">
+    <generator type="flag_generator"/>
+  </default_input>
+
+  <default_input into="subdirectory">
+    <value>challenges</value>
+  </default_input>
+
+  <output_type>array</output_type>
+</encoder>

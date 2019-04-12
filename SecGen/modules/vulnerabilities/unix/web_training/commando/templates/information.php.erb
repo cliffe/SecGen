@@ -1,0 +1,61 @@
+<?php include 'connect.php';?>
+
+<%# Note, these pages use multiple bootstap templates chopped up and rebuilt
+and can be found at: https://getbootstrap.com/docs/4.0/getting-started/introduction/%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<% $page_title = 'Information' %>
+<%= scope.function_template(['commando/subtemplates/header.html.erb']) %>
+
+<body>
+
+  <%= scope.function_template(['commando/subtemplates/nav.html.erb']) %>
+
+    <div class="row" id="about">
+      <h3>About us:</h3>
+        <p>
+          <%# intro paragraph from the organisation JSON for more differentiation %>
+          <% @intro_paragraph.each { |intro_paragraph| -%>
+             <%= intro_paragraph %>
+          <%} -%>
+        </p>
+    </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-12" id="contact_info">
+        <%# This is where the differentiation for the business is displayed %>
+        <h3>For more information contact us:</h3><br>
+        <ul>
+          <li>Email: <%= @office_email %></li>
+          <li>Phone: <%= @office_telephone %></li>
+          <li>Address: <%= @business_address %></li>
+        </ul>
+
+        Or for a more specific enquiry contact <%= @manager_profile['name']%>, our manager:<br>
+        <p>Phone: <%= @manager_profile['phone_number'] %></p><br>
+        <p>Email: <%= @manager_profile['email_address'] %></p>
+      </div>
+    </div>
+
+      <%# The SQLi Vulnerability, this is a form which is succeptable to SQLi with accompanying php to display previous reviews etc %>
+      <% @sqli_attack.each { |sqli_attack| -%>
+        <%= sqli_attack %>
+      <%} -%>
+
+  </div>
+
+  <%# This is taken from: https://getbootstrap.com/docs/4.0/getting-started/introduction/%>
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+  </body>
+
+  <%= scope.function_template(['commando/subtemplates/footer.html.erb']) %>
+
+</html>

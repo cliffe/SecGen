@@ -1,0 +1,1 @@
+  server     <%= @server %>:<%= @port %>  fail_timeout=<%= @upstream_fail_timeout %><% if @upstream_max_fails -%> max_fails=<%=@upstream_max_fails %><% end %>;

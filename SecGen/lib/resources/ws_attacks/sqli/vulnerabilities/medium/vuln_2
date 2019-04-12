@@ -1,0 +1,5 @@
+$blacklist = array('SELECT', 'UNION', 'FROM', 'DROP', 'SLEEP', 'TABLE');
+$name=htmlspecialchars(mysqli_real_escape_string($conn2, $_POST['name']));
+$email=htmlspecialchars(mysqli_real_escape_string($conn2, $_POST['email']));
+$mobile=str_replace($blacklist, " ", $_POST['mobile']);
+$question=htmlspecialchars(mysqli_real_escape_string($conn2, $_POST['question']));

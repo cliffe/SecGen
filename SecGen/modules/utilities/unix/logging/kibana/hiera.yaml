@@ -1,0 +1,7 @@
+---
+version: 4
+datadir: data
+hierarchy:
+  - name: "Default values"
+    backend: yaml
+    path: "common"

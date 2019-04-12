@@ -1,0 +1,545 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>Data Encoding and Hash Challenges</name>
+  <author>Thomas Shaw</author>
+  <description>Single system basic crypto CTF challenge.
+    Single user account with automatic root login to a desktop system.
+    Automatic installation of handy_cli_utilities, hash_tools, hashcat and john the ripper.
+  </description>
+
+  <type>ctf</type>
+  <type>crypto-ctf</type>
+  <difficulty>easy</difficulty>
+
+  <!-- Challenge overview -->
+  <!-- 5x encoding challenges per challenger -->
+  <!-- 1: ascii|alpha reversible: low -->
+  <!-- 2: ascii|alpha reversible: medium -->
+  <!-- 3: asymmetric cipher: low -->
+  <!-- 4: double encoded ascii reversible: medium -->
+  <!-- 5: random compression: high -->
+
+  <!-- 5x hash challenges per challenger -->
+  <!-- 1: Unsalted word / common password  (low) -->
+  <!-- 2: Unsalted word / common password (medium) -->
+  <!-- 3: Unsalted word / common password (high) -->
+  <!-- 4: word/ password with hexadecimal salt provided -->
+  <!-- 	- concat salt on start/end -->
+  <!-- 5: word / password without salt provided  -->
+  <!-- 	- concat salt on start/end -->
+  <!-- 	- drop clue to what the salt is in text file (i.e. 3 digit string of numerical digits between 000-999) -->
+
+  <system>
+    <system_name>system</system_name>
+    <base platform="linux" type="desktop" distro="Stretch"/>
+
+    <input into_datastore="IP_addresses">
+      <value>172.16.0.12</value>
+    </input>
+
+    <input into_datastore="challenges" unique_module_list="unique_encoders">
+
+      <!--
+      [0]: Challenge 1: ascii|alpha reversible: low
+      [1]: Challenge 2: ascii|alpha reversible: medium
+      [2]: Challenge 4: double encoded ascii reversible: medium
+      [3]: Challenge 6: Unsalted word / common password (low)
+      [4]: Challenge 7: Unsalted word / common password (medium)
+      [5]: Challenge 8: Unsalted word / common password (high)
+      [6]: Challenge 9: word/ password with hexadecimal salt provided
+      [7]: Challenge 10: word / password without salt provided
+      [8]: n/a
+      -->
+
+      <!-- Encoders -->
+
+      <!-- 1: random easy encoder -->
+      <encoder type="^(ascii|alpha)_reversible$" difficulty="low">
+        <input into="strings_to_encode">
+          <generator type="flag_generator"/>
+        </input>
+      </encoder>
+
+      <!-- 2: random medium encoder -->
+      <encoder type="^(ascii|alpha)_reversible$" difficulty="medium">
+        <input into="strings_to_encode">
+          <generator type="flag_generator"/>
+        </input>
+      </encoder>
+
+      <!-- 4: random encoder double encoded -->
+      <encoder type="ascii_reversible">
+        <input into="strings_to_encode">
+          <encoder type="ascii_reversible">
+            <input into="strings_to_encode">
+              <generator type="flag_generator"/>
+            </input>
+          </encoder>
+        </input>
+      </encoder>
+
+      <!-- Hashes -->
+
+      <!-- 1: Unsalted dictionary word or common password - low difficulty hash  -->
+      <encoder type="hash" difficulty="low">
+        <input into="strings_to_encode" into_datastore="hash_flags">
+          <encoder type="string_selector">
+            <input into="strings_to_encode">
+              <generator type="random_word_generator">
+                <input into="max_length">
+                  <value>13</value>
+                </input>
+              </generator>
+              <generator type="crackable_password_generator"/>
+            </input>
+          </encoder>
+        </input>
+      </encoder>
+
+      <!-- 2: Unsalted dictionary word or common password - medium difficulty hash -->
+      <encoder type="hash" difficulty="medium">
+        <input into="strings_to_encode" into_datastore="hash_flags">
+          <encoder type="string_selector">
+            <input into="strings_to_encode">
+              <generator type="random_word_generator"/>
+              <generator type="crackable_password_generator"/>
+            </input>
+          </encoder>
+        </input>
+      </encoder>
+
+      <!-- 3: Unsalted dictionary word or common password - high difficulty hash -->
+      <encoder type="hash" difficulty="high">
+        <input into="strings_to_encode" into_datastore="hash_flags">
+          <encoder type="string_selector">
+            <input into="strings_to_encode">
+              <generator type="random_word_generator">
+                <input into="min_length">
+                  <value>6</value>
+                </input>
+                <input into="max_length">
+                  <value>6</value>
+                </input>
+              </generator>
+              <generator type="crackable_password_generator"/>
+            </input>
+          </encoder>
+        </input>
+      </encoder>
+
+      <!-- 4: Dictionary word - random hex salt - salt provided -->
+      <encoder type="hash" difficulty="low">
+        <input into="strings_to_encode" into_datastore="hash_flags">
+          <encoder type="string_selector">
+            <input into="strings_to_encode">
+              <generator type="random_word_generator">
+                <input into="min_length">
+                  <value>6</value>
+                </input>
+                <input into="max_length">
+                  <value>6</value>
+                </input>
+              </generator>
+              <generator type="crackable_password_generator"/>
+            </input>
+          </encoder>
+        </input>
+        <input into="salt">
+          <generator type="random_hex">
+            <input into="line_length">
+              <value>3</value>
+            </input>
+          </generator>
+        </input>
+        <input into="return_salts">
+          <value>true</value>
+        </input>
+      </encoder>
+
+      <!-- 5: Dictionary word - random padded number salt - salt provided-->
+      <encoder type="hash" difficulty="medium">
+        <input into="strings_to_encode" into_datastore="hash_flags">
+          <encoder type="string_selector">
+            <input into="strings_to_encode">
+              <generator type="random_word_generator">
+                <input into="min_length">
+                  <value>6</value>
+                </input>
+                <input into="max_length">
+                  <value>6</value>
+                </input>
+              </generator>
+              <generator type="crackable_password_generator"/>
+            </input>
+          </encoder>
+        </input>
+        <input into="salt">
+          <generator type="random_number_generator">
+            <input into="maximum">
+              <value>999</value>
+            </input>
+            <input into="zero_padding">
+              <value>true</value>
+            </input>
+          </generator>
+        </input>
+        <input into="return_salts">
+          <value>false</value>
+        </input>
+      </encoder>
+    </input>
+
+    <!-- Wrap hash_flags in flag{} so marker.xml picks them up -->
+    <input into_datastore="wrapped_hash_flags">
+      <generator type="concat_flag.*">
+        <input into="strings_to_join">
+          <datastore access="0">hash_flags</datastore>
+        </input>
+      </generator>
+      <generator type="concat_flag.*">
+        <input into="strings_to_join">
+          <datastore access="1">hash_flags</datastore>
+        </input>
+      </generator>
+      <generator type="concat_flag.*">
+        <input into="strings_to_join">
+          <datastore access="2">hash_flags</datastore>
+        </input>
+      </generator>
+      <generator type="concat_flag.*">
+        <input into="strings_to_join">
+          <datastore access="3">hash_flags</datastore>
+        </input>
+      </generator>
+      <generator type="concat_flag.*">
+        <input into="strings_to_join">
+          <datastore access="4">hash_flags</datastore>
+        </input>
+      </generator>
+    </input>
+
+    <input into_datastore="hash_instructions">
+      <value>For this challenge you will need to wrap the hashed word within the braces in the format 'flag{}' before submitting
+to Hacktivity.
+</value>
+      <value>
+Some inputs to the hash functions have been salted, when submitting the flag please omit the salt within your 'flag{}'
+string.
+
+Examples:
+
+Input asdf to md5
+
+[challenger@localhost ~]$ echo "asdf" | md5sum
+2b00042f7481c7b056c4b410d28f33cf -
+
+Input asdf with an appended random salt of 1234 to md5sum(asdf1234)
+
+[challenger@localhost ~]$ echo "asdf1234" | md5sum
+622d1280547ccb5b88e05a6540665ca0 -
+
+Input asdf with a prepended random salt of 1234 to md5sum(1234asdf)
+
+[challenger@localhost ~]$ echo "1234asdf" | md5sum
+885ac5cfada75f388bd79f3615d3f9c8 -
+
+The expected flag for all of the above is: flag{asdf}
+</value>
+      <value>Hint: This challenge applied a weak numerical salt to the string before it was fed into the hash function (between 000-999).
+      </value>
+    </input>
+
+    <input into_datastore="simple_encoding">
+       <value>
+A flag has been encoded with a simple encoding method that you may be able to reverse to reveal the flag.
+</value>
+    </input>
+
+    <!-- Local challenges -->
+    <utility module_path=".*parameterised_accounts">
+      <input into="accounts" into_datastore="accounts">
+        <generator type="account">
+          <input into="username">
+            <value>challenger</value>
+          </input>
+          <input into="password">
+            <value>tiaspbiqe2r</value>
+          </input>
+          <input into="super_user">
+            <value>true</value>
+          </input>
+          <input into="strings_to_leak">
+            <value>Welcome!
+
+This scenario involves solving a series of crypto / encoding / hash based challenges to find flags.
+The challenges can be found in the /home/challenger/challenges/ directory.
+
+The password for the challenger account is: tiaspbiqe2r
+
+Tools provided that you may find useful: hashcat, john the ripper
+`sudo john`
+`hashcat`
+
+Any flags you find whilst solving challenges should be submitted to Hacktivity to claim your points.
+
+Good luck and have fun!
+</value>
+          </input>
+          <input into="leaked_filenames">
+            <value>instructions.txt</value>
+          </input>
+          <input into="data_to_leak">
+
+            <!-- Encoders -->
+
+            <generator type="leaked_data">
+              <input into="data">
+                <datastore access="0">challenges</datastore>
+              </input>
+              <input into="filename">
+                <value>cipher</value>
+              </input>
+              <input into="subdirectory">
+                <value>challenges/challenge_01</value>
+              </input>
+            </generator>
+
+
+            <generator type="leaked_data">
+              <input into="data">
+                <datastore access="0">simple_encoding</datastore>
+              </input>
+              <input into="filename">
+                <value>hint</value>
+              </input>
+              <input into="subdirectory">
+                <value>challenges/challenge_01</value>
+              </input>
+            </generator>
+
+            <generator type="leaked_data">
+              <input into="data">
+                <datastore access="1">challenges</datastore>
+              </input>
+              <input into="filename">
+                <value>cipher</value>
+              </input>
+              <input into="subdirectory">
+                <value>challenges/challenge_02</value>
+              </input>
+            </generator>
+
+             <generator type="leaked_data">
+              <input into="data">
+                <datastore access="0">simple_encoding</datastore>
+              </input>
+              <input into="filename">
+                <value>hints</value>
+              </input>
+              <input into="subdirectory">
+                <value>challenges/challenge_02</value>
+              </input>
+            </generator>
+
+            <encoder type="asymmetric_cipher" difficulty="low">
+              <input into="strings_to_encode">
+                <generator type="flag_generator"/>
+              </input>
+              <input into="subdirectory">
+                <value>challenges/challenge_03</value>
+              </input>
+            </encoder>
+
+            <generator type="leaked_data">
+              <input into="data">
+                <datastore access="2">challenges</datastore>
+              </input>
+              <input into="filename">
+                <value>cipher</value>
+              </input>
+              <input into="subdirectory">
+                <value>challenges/challenge_04</value>
+              </input>
+            </generator>
+
+            <encoder type="compression" difficulty="high">
+              <input into="strings_to_encode">
+                <generator type="flag_generator"/>
+              </input>
+              <input into="subdirectory">
+                <value>challenges/challenge_05</value>
+              </input>
+            </encoder>
+
+            <!-- Hashes -->
+
+            <generator type="leaked_data">
+              <input into="data">
+                <datastore access="3">challenges</datastore>
+              </input>
+              <input into="filename">
+                <value>hash</value>
+              </input>
+              <input into="subdirectory">
+                <value>challenges/challenge_06</value>
+              </input>
+            </generator>
+
+            <generator type="leaked_data">
+              <input into="data">
+                <datastore access="0">hash_instructions</datastore>
+              </input>
+              <input into="filename">
+                <value>hint</value>
+              </input>
+              <input into="subdirectory">
+                <value>challenges/challenge_06</value>
+              </input>
+            </generator>
+
+            <generator type="leaked_data">
+              <input into="data">
+                <datastore access="4">challenges</datastore>
+              </input>
+              <input into="filename">
+                <value>hash</value>
+              </input>
+              <input into="subdirectory">
+                <value>challenges/challenge_07</value>
+              </input>
+            </generator>
+
+            <generator type="leaked_data">
+              <input into="data">
+                <datastore access="0">hash_instructions</datastore>
+              </input>
+              <input into="filename">
+                <value>hint</value>
+              </input>
+              <input into="subdirectory">
+                <value>challenges/challenge_07</value>
+              </input>
+            </generator>
+
+            <generator type="leaked_data">
+              <input into="data">
+                <datastore access="5">challenges</datastore>
+              </input>
+              <input into="filename">
+                <value>hash</value>
+              </input>
+              <input into="subdirectory">
+                <value>challenges/challenge_08</value>
+              </input>
+            </generator>
+
+            <generator type="leaked_data">
+              <input into="data">
+                <datastore access="0">hash_instructions</datastore>
+              </input>
+              <input into="filename">
+                <value>hint</value>
+              </input>
+              <input into="subdirectory">
+                <value>challenges/challenge_08</value>
+              </input>
+            </generator>
+
+            <generator type="leaked_data">
+              <input into="data">
+                <datastore access="6">challenges</datastore>
+              </input>
+              <input into="filename">
+                <value>hash</value>
+              </input>
+              <input into="subdirectory">
+                <value>challenges/challenge_09</value>
+              </input>
+            </generator>
+
+            <generator type="leaked_data">
+              <input into="data">
+                <datastore access="0">hash_instructions</datastore>
+                <datastore access="1">hash_instructions</datastore>
+              </input>
+              <input into="filename">
+                <value>hint</value>
+              </input>
+              <input into="subdirectory">
+                <value>challenges/challenge_09</value>
+              </input>
+            </generator>
+
+            <generator type="leaked_data">
+              <input into="data">
+                <datastore access="7">challenges</datastore>
+              </input>
+              <input into="filename">
+                <value>hash</value>
+              </input>
+              <input into="subdirectory">
+                <value>challenges/challenge_10</value>
+              </input>
+            </generator>
+
+            <generator type="leaked_data">
+              <input into="data">
+                <datastore access="2">hash_instructions</datastore>
+                <datastore access="0">hash_instructions</datastore>
+                <datastore access="1">hash_instructions</datastore>
+              </input>
+              <input into="filename">
+                <value>hint</value>
+              </input>
+              <input into="subdirectory">
+                <value>challenges/challenge_10</value>
+              </input>
+            </generator>
+
+          </input>
+        </generator>
+      </input>
+    </utility>
+
+    <utility module_path=".*handy_cli_tools"/>
+    <utility module_path=".*hash_tools"/>
+    <utility module_path=".*hashcat"/>
+    <utility module_path=".*johntheripper"/>
+
+    <utility module_path=".*iceweasel">
+      <input into="accounts">
+        <datastore>accounts</datastore>
+      </input>
+      <input into="autostart">
+        <value>true</value>
+      </input>
+      <input into="start_page">
+        <value>/home/challenger/instructions.txt</value>
+      </input>
+    </utility>
+
+    <utility module_path=".*kde_minimal">
+      <input into="accounts">
+        <datastore>accounts</datastore>
+      </input>
+      <input into="autostart_konsole">
+        <value>true</value>
+      </input>
+      <input into="autologin_user">
+        <datastore access="0" access_json="['username']">accounts</datastore>
+      </input>
+    </utility>
+
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="0">IP_addresses</datastore>
+      </input>
+    </network>
+
+  </system>
+
+</scenario>

@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Person Profile Generator</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Person profile hash builder / generator. Wrapper individually generated facts to create people.
+  </description>
+
+  <type>person</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <read_fact>name</read_fact>
+  <read_fact>address</read_fact>
+  <read_fact>phone_number</read_fact>
+  <read_fact>email_address</read_fact>
+  <read_fact>username</read_fact>
+  <read_fact>password</read_fact>
+
+  <!-- Takes account as a non-default value and fills in the missing fields with the randomly generated data. -->
+  <read_fact>account</read_fact>
+
+  <default_input into="name">
+    <generator type="name_generator"/>
+  </default_input>
+  <default_input into="address">
+    <generator module_path=".*address_uk"/>
+  </default_input>
+  <default_input into="phone_number">
+    <generator module_path=".*phone_number_uk"/>
+  </default_input>
+  <default_input into="email_address">
+    <generator type="email_address"/>
+  </default_input>
+  <default_input into="username">
+    <generator type="username_generator"/>
+  </default_input>
+  <default_input into="password">
+    <generator type="password_generator"/>
+  </default_input>
+  <default_input into="credit_card">
+    <generator type="credit_card_generator"/>
+  </default_input>
+  <default_input into="national_insurance_number">
+    <generator type="national_insurance_number_generator"/>
+  </default_input>
+
+  <output_type>person</output_type>
+</generator>

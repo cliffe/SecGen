@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Random Hex Generator</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>MIT</module_license>
+  <description>Uses Ruby's SecureRandom to generate a message made up of hex digits (a-f0-9).</description>
+
+  <type>string_generator</type>
+  <type>hex_generator</type>
+  <type>random_hex</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <reference>http://ruby-doc.org/stdlib-2.2.2/libdoc/securerandom/rdoc/SecureRandom.html#method-c-hex</reference>
+
+  <read_fact>line_length</read_fact>
+  <read_fact>number_of_lines</read_fact>
+
+  <!--Default behaviour returns 1 random hex string, override the read_facts for multi-line data. -->
+  <default_input into="line_length">
+    <value>16</value>
+  </default_input>
+
+  <default_input into="number_of_lines">
+    <value>1</value>
+  </default_input>
+
+  <output_type>generated_strings</output_type>
+  
+</generator>

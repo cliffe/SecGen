@@ -1,0 +1,43 @@
+#about {
+	padding: 2em;
+}
+
+#about p {
+	padding-top: 1em;
+	margin-top: 1em;
+}
+
+#review-form {
+	padding-bottom: 1em;
+	margin-bottom: 1em;
+	margin-top: 2em;
+}
+
+#right-box {
+	margin-left: .75em;
+}
+
+#left-by {
+	color: #a6a6a6;
+}
+
+#submit-button {
+	padding: .5em;
+	border: 0;
+}
+
+.other-review {
+	border-top: 1px solid #8c8c8c;
+	padding-top: 1em;
+	margin-top: 1em;
+	width: 100%;
+}
+
+.other-review:last-of-type {
+	border-bottom: 1px solid #8c8c8c;
+	margin-bottom: 1em;
+}
+
+#contact_info {
+	margin-top: 1em;
+}

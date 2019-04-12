@@ -1,0 +1,78 @@
+<%  require 'json'
+    $server_name = @secgen_parameters['server_name'].first
+    $server_desc = @secgen_parameters['server_desc'].first
+    $user = @secgen_parameters['user'].first
+    $group = @secgen_parameters['group'].first
+
+    if @organisation and @organisation[0] and @organisation[0] != ''
+      $admin = @organisation['manager']
+      $admins = [ $admin['username'] + ' <' + $admin['email_address'] + '>' ]
+      $server_name = @organisation['domain']
+      $server_desc = "Welcome to the #{@organisation['business_name']} IRC server!"
+    else
+      $admins = [ @secgen_parameters['admin_name'].first + ' <' + @secgen_parameters['admin_email'].first + '>' ]
+    end
+%>
+# Example UnrealIRCd 3.2.8.1 configuration file
+# Written by Mp5shooter for the SwiftIRC Wiki
+# http://wiki.SwiftIRC.net/
+
+/* If your server is running Linux, remove the two slashes in front of both of the following lines. */
+loadmodule "src/modules/commands.so";
+loadmodule "src/modules/cloak.so";
+
+/* If your server is running Windows, remove the two slashes in front of both of the following lines. */
+//loadmodule "modules/commands.dll";
+//loadmodule "modules/cloak.dll";
+
+# This is the me {} block
+me {
+	name "<%= $server_name %>";
+	info "<%= $server_desc %>";
+	numeric 1;
+};
+
+# This is the admin {} block
+admin {
+  <% $admins.each do |val| -%>
+     "<%= val %>";
+  <% end -%>
+};
+
+# Required
+class clients
+{
+    pingfreq 90;
+    maxclients 100;
+    sendq 100000;
+    recvq 8000;
+};
+class servers
+{
+    pingfreq 120;
+    maxclients 10;
+    sendq 1000000;
+    connfreq 100;
+};
+
+allow {
+   ip             *@*;
+   hostname       *@*;
+   class           clients;
+   maxperip 5;
+};
+
+alias NickServ { type services; };
+alias ChanServ { type services; };
+alias OperServ { type services; };
+alias HelpServ { type services; };
+
+include "help.conf";
+include "badwords.channel.conf";
+include "badwords.message.conf";
+include "badwords.quit.conf";
+include "spamfilter.conf";
+
+include "aliases/anope.conf";
+
+include "config/*.conf";

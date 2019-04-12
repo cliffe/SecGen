@@ -1,0 +1,39 @@
+$dockerLocation = Join-Path $env:TEMP "docker.zip"
+
+Invoke-webrequest -UseBasicparsing -Outfile $dockerLocation "<%= @docker_download_url %>"
+
+$cleanInstall = $false
+
+$service = Get-Service "docker" -ErrorAction Ignore
+if ( -not $service ) {
+    $cleanInstall = $true
+} elseif ( $service.Status -ne [ServiceProcess.ServiceControllerStatus]::Stopped ) {
+    $timeSpan = New-Timespan -Seconds 60
+    try {
+        $service.Stop()
+        $service.WaitForStatus([ServiceProcess.ServiceControllerStatus]::Stopped, $timeSpan)
+    }
+    catch [Management.Automation.MethodInvocationException],[ServiceProcess.TimeoutException] {
+        Write-Error "Failed to stop docker service"
+        exit 1
+    }
+}
+
+# Extract the archive.
+Expand-Archive -Force $dockerLocation -DestinationPath $Env:ProgramFiles
+
+# Install Docker. This will require rebooting.
+$null = Install-WindowsFeature containers
+
+if ($cleanInstall) {
+    # Add Docker to the path for the current session.
+    $env:path += ";$env:ProgramFiles\docker"
+
+    # Optionally, modify PATH to persist across sessions.
+    $newPath = "$env:ProgramFiles\docker;" + [Environment]::GetEnvironmentVariable("PATH", [EnvironmentVariableTarget]::Machine)
+
+    [Environment]::SetEnvironmentVariable("PATH", $newPath, [EnvironmentVariableTarget]::Machine)
+
+    # Register the Docker daemon as a service.
+    dockerd --register-service
+}

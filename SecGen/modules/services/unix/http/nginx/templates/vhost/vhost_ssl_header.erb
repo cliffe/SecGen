@@ -1,0 +1,136 @@
+# MANAGED BY PUPPET
+<% if @rewrite_www_to_non_www -%>
+<%- @server_name.each do |s| -%>
+server {
+  <%- if @listen_ip.is_a?(Array) then -%>
+    <%- @listen_ip.each do |ip| -%>
+  listen       <%= ip %>:<%= @ssl_port %> <% if @ssl_listen_option %>ssl<% end %><% if @http2 == 'on' %> http2<% end %><% if @spdy == 'on' %> spdy<% end %><% if @listen_options %> <%= @listen_options %><% end %>;
+    <%- end -%>
+  <%- else -%>
+  listen       <%= @listen_ip %>:<%= @ssl_port %> <% if @ssl_listen_option %>ssl<% end %><% if @http2 == 'on' %> http2<% end %><% if @spdy == 'on' %> spdy<% end %><% if @listen_options %> <%= @listen_options %><% end %>;
+  <%- end -%>
+<%# check to see if ipv6 support exists in the kernel before applying -%>
+  <%- if @ipv6_enable && (defined? @ipaddress6) -%>
+    <%- if @ipv6_listen_ip.is_a?(Array) then -%>
+      <%- @ipv6_listen_ip.each do |ipv6| -%>
+  listen [<%= ipv6 %>]:<%= @ssl_port %> ssl<% if @http2 == 'on' %> http2<% end %><% if @spdy == 'on' %> spdy<% end %><% if @ipv6_listen_options %> <%= @ipv6_listen_options %><% end %>;
+      <%- end -%>
+    <%- else -%>
+  listen       [<%= @ipv6_listen_ip %>]:<%= @ssl_port %> ssl<% if @http2 == 'on' %> http2<% end %><% if @spdy == 'on' %> spdy<% end %><% if @ipv6_listen_options %> <%= @ipv6_listen_options %><% end %>;
+    <%- end -%>
+  <%- end -%>
+  server_name  www.<%= s.gsub(/^www\./, '') %>;
+  return       301 https://<%= s.gsub(/^www\./, '') %>$request_uri;
+
+<%= scope.function_template(["nginx/vhost/vhost_ssl_settings.erb"]) %>
+
+}
+
+<% end -%>
+<% end -%>
+server {
+  <%- if @listen_ip.is_a?(Array) then -%>
+    <%- @listen_ip.each do |ip| -%>
+  listen       <%= ip %>:<%= @ssl_port %> <% if @ssl_listen_option %>ssl<% end %><% if @http2 == 'on' %> http2<% end %><% if @spdy == 'on' %> spdy<% end %><% if @listen_options %> <%= @listen_options %><% end %>;
+    <%- end -%>
+  <%- else -%>
+  listen       <%= @listen_ip %>:<%= @ssl_port %> <% if @ssl_listen_option %>ssl<% end %><% if @http2 == 'on' %> http2<% end %><% if @spdy == 'on' %> spdy<% end %><% if @listen_options %> <%= @listen_options %><% end %>;
+  <%- end -%>
+<%# check to see if ipv6 support exists in the kernel before applying -%>
+  <%- if @ipv6_enable && (defined? @ipaddress6) -%>
+    <%- if @ipv6_listen_ip.is_a?(Array) then -%>
+      <%- @ipv6_listen_ip.each do |ipv6| -%>
+  listen       [<%= ipv6 %>]:<%= @ssl_port %> ssl<% if @http2 == 'on' %> http2<% end %><% if @spdy == 'on' %> spdy<% end %><% if @ipv6_listen_options %> <%= @ipv6_listen_options %><% end %>;
+      <%- end -%>
+    <%- else -%>
+  listen       [<%= @ipv6_listen_ip %>]:<%= @ssl_port %> ssl<% if @http2 == 'on' %> http2<% end %><% if @spdy == 'on' %> spdy<% end %><% if @ipv6_listen_options %> <%= @ipv6_listen_options %><% end %>;
+    <%- end -%>
+  <%- end -%>
+  server_name  <%= @rewrite_www_to_non_www ? @server_name.join("  ").gsub(/(^| )(www\.)?(?=[a-z0-9])/, '') : @server_name.join(" ") %>;
+
+<%= scope.function_template(["nginx/vhost/vhost_ssl_settings.erb"]) %>
+<% if @maintenance -%>
+  <%= @maintenance_value %>;
+<% end -%>
+<% if Array(@resolver).count > 0 -%>
+  resolver                  <% Array(@resolver).each do |r| %> <%= r %><% end %>;
+<% end -%>
+<%- if instance_variables.any? { |iv| iv.to_s.include? 'auth_basic' } -%>
+  <% if defined? @auth_basic -%>
+  auth_basic                "<%= @auth_basic %>";
+  <% end -%>
+  <% if defined? @auth_basic_user_file -%>
+  auth_basic_user_file      "<%= @auth_basic_user_file %>";
+  <% end -%>
+<%- end -%>
+<%- if instance_variables.any? { |iv| iv.to_s.include? 'client_' } -%>
+  <%- if defined? @client_body_timeout -%>
+  client_body_timeout <%= @client_body_timeout %>;
+  <%- end -%>
+  <%- if defined? @client_header_timeout -%>
+  client_header_timeout <%= @client_header_timeout %>;
+  <%- end -%>
+  <%- if defined? @client_max_body_size -%>
+  client_max_body_size <%= @client_max_body_size %>;
+  <%- end -%>
+<% end -%>
+<% if defined? @gzip_types -%>
+  gzip_types <%= @gzip_types %>;
+<% end -%>
+<% if @index_files.count > 0 -%>
+  index <% Array(@index_files).each do |i| %> <%= i %><% end %>;
+<% end -%>
+
+  access_log            <%= @ssl_access_log_real %>;
+  error_log             <%= @ssl_error_log_real %>;
+
+<% if @vhost_cfg_prepend -%>
+  <%- @vhost_cfg_prepend.sort_by{ |k, v| k.to_s == 'allow' ? '' : k.to_s }.each do |key,value| -%>
+    <%- if value.is_a?(Hash) -%>
+      <%- value.sort_by {|k,v| k}.each do |subkey,subvalue| -%>
+        <%- Array(subvalue).each do |asubvalue| -%>
+  <%= key %> <%= subkey %> <%= asubvalue %>;
+        <%- end -%>
+      <%- end -%>
+    <%- else -%>
+      <%- Array(value).each do |asubvalue| -%>
+  <%= key %> <%= asubvalue %>;
+      <%- end -%>
+    <%- end -%>
+  <%- end -%>
+<% end -%>
+<% if @vhost_cfg_ssl_prepend -%>
+  <%- @vhost_cfg_ssl_prepend.sort_by{ |k, v| k.to_s == 'allow' ? '' : k.to_s }.each do |key,value| -%>
+    <%- if value.is_a?(Hash) -%>
+      <%- value.sort_by {|k,v| k}.each do |subkey,subvalue| -%>
+        <%- Array(subvalue).each do |asubvalue| -%>
+  <%= key %> <%= subkey %> <%= asubvalue %>;
+        <%- end -%>
+      <%- end -%>
+    <%- else -%>
+      <%- Array(value).each do |asubvalue| -%>
+  <%= key %> <%= asubvalue %>;
+      <%- end -%>
+    <%- end -%>
+  <%- end -%>
+<% end -%>
+<% Array(@raw_prepend).each do |line| -%>
+  <%= line %>
+<% end -%>
+<% if @root -%>
+  root <%= @root %>;
+<% end -%>
+<% Array(@passenger_cgi_param).each do |key,value| -%>
+  passenger_set_cgi_param  <%= key %> <%= value %>;
+<% end -%>
+<% Array(@passenger_set_header).each do |key,value| -%>
+  passenger_set_header  <%= key %> <%= value %>;
+<% end -%>
+<% Array(@passenger_env_var).each do |key,value| -%>
+  passenger_env_var  <%= key %> <%= value %>;
+<% end -%>
+<% if @add_header -%>
+  <%- @add_header.keys.sort.each do |key| -%>
+  add_header              <%= key %> <%= @add_header[key] %>;
+  <%- end -%>
+<% end -%>

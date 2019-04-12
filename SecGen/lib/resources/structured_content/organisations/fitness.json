@@ -1,0 +1,48 @@
+{
+  "business_name": "The Yorkshire Fitness Company",
+  "business_motto": "Get thi sen down't gym!",
+  "business_address": "15 Sheepscar Court, Leeds LS7 2BB",
+  "domain": "yorkshirefitco.co.uk",
+  "office_telephone": "0113 026 9999",
+  "office_email": "office@yorkshirefitco.co.uk",
+  "industry": "Health and Fitness",
+  "manager": {
+    "name": "Jerry Rivera",
+    "address": "15 Sheepscar Court, Leeds LS7 2BB",
+    "phone_number": "0113 026 9999",
+    "email_address": "jerry.rivera@yorkshirefitco.co.uk",
+    "username": "jerry_rivera",
+    "password": ""
+  },
+  "employees": [
+    {
+      "name": "Immanuel Bahringer IV",
+      "address": "15 Sheepscar Court, Leeds LS7 2BB",
+      "phone_number": "07688 112479",
+      "email_address": "immanuel.bahringer.iv@yorkshirefitco.co.uk",
+      "username": "immanuel_bahringer_iv",
+      "password": ""
+    },
+    {
+      "name": "Anne Hunter",
+      "address": "15 Sheepscar Court, Leeds LS7 2BB",
+      "phone_number": "07791 179177",
+      "email_address": "anne.hunter@yorkshirefitco.co.uk",
+      "username": "anne_hunter",
+      "password": ""
+    },
+    {
+      "name": "Katelin Langworth",
+      "address": "15 Sheepscar Court, Leeds LS7 2BB",
+      "phone_number": "07550 561978",
+      "email_address": "katelin.langworth@yorkshirefitco.co.uk",
+      "username": "katelin_langworth",
+      "password": ""
+    }
+  ],
+  "product_name": "",
+  "intro_paragraph": [
+    "Experience Yorkshire's leading health and fitness club in the not far from the city centre. Established in 1990 The Yorkshire Fitness Company is committed to getting you the results you want.",
+    "If you like classes, the gym or a combo of both, our dedicated professional team of coaches & teachers are always available to motivate you and guide you towards your goals."
+  ]
+}

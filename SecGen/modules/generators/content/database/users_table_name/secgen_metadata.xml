@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Users Table Name Generator</name>
+  <author>Joshua Hickling</author>
+  <module_license>MIT</module_license>
+  <description>Generates a name for a users table in a PHP web applicaiton</description>
+
+  <type>SQL_table_name</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <output_type>generated_table_name</output_type>
+</generator>

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<base xmlns="http://www.github/cliffe/SecGen/base"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.github/cliffe/SecGen/base">
+  <name>Windows 2008 Virtualbox puppet 64</name>
+  <author>Jason Keighley</author>
+  <module_license>Apache v2</module_license>
+  <description>Packer built basebox for windows server 2008 64 bit virtualbox </description>
+  <cpu_word_size>64-bit</cpu_word_size>
+  <type>server</type>
+
+  <platform>windows</platform>
+  <distro>Windows 2008 r2</distro>
+  <url>windows_2008_64_virtualbox.box</url> <!-- Check for this basebox first -->
+
+  <packerfile_path>windows_server_2008_r2_amd64/Packerfile.erb</packerfile_path> <!-- If basebox not found build new basebox via packerfile at path -->
+
+  <reference></reference>
+  <software_license>various</software_license>
+
+</base>

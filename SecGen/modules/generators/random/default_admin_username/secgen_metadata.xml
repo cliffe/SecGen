@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Default Admin Username Generator</name>
+  <author>Joshua Hickling</author>
+  <module_license>MIT</module_license>
+  <description>Selects a random username for an admin user</description>
+
+  <type>admin_username_generator</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <output_type>admin_generated_username</output_type>
+
+</generator>

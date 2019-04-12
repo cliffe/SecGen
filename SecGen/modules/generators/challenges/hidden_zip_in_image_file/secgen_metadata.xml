@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Hidden Zip in Image File</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Makes use of a random image, encodes a string_to_leak (flag) then inserts the data to decode into the end
+    of the image file in ascii.
+  </description>
+
+  <type>hidden_zip_in_image_file</type>
+  <type>image_generator</type>
+  <type>image_challenge_generator</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <hint>Inspect the file's raw hex. Example tools: hexedit/hexeditor. Some data has been appended to the image with a
+    file signature of: \x50\x4b\x03\x04 ("PK..")
+  </hint>
+  <solution>Extract the ZIP file's raw hex into a new file. Starting from the signature to the end of file. Unzip the
+    file.
+  </solution>
+
+  <read_fact>base64_image</read_fact>
+  <read_fact>zip_file</read_fact>
+
+  <default_input into="base64_image">
+    <generator type="random_image"/>
+  </default_input>
+
+  <default_input into="zip_file">
+    <generator type="zip_file"/>
+  </default_input>
+
+  <output_type>generated_image</output_type>
+</generator>

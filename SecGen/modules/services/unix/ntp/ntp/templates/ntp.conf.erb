@@ -1,0 +1,114 @@
+# ntp.conf: Managed by puppet.
+#
+<% if @tinker == true and (@panic or @stepout) -%>
+# Enable next tinker options:
+# panic - keep ntpd from panicking in the event of a large clock skew
+# when a VM guest is suspended and resumed;
+# stepout - allow ntpd change offset faster
+tinker<% if @panic -%> panic <%= @panic %><% end %><% if @stepout -%> stepout <%= @stepout %><% end %>
+<% end -%>
+
+<% if @disable_monitor == true -%>
+disable monitor
+<% end -%>
+<% if @disable_auth == true -%>
+disable auth
+<% end -%>
+<% if @disable_kernel == true -%>
+disable kernel
+<% end -%>
+
+<% if @restrict != [] -%>
+# Permit time synchronization with our time source, but do not
+# permit the source to query or modify the service on this system.
+<% @restrict.flatten.each do |restrict| -%>
+restrict <%= restrict %>
+<% end -%>
+<% end -%>
+
+<% if @interfaces != [] -%>
+<% if @interfaces_ignore != [] -%>
+<% @interfaces_ignore.flatten.each do |interface| -%>
+interface ignore <%= interface %>
+<% end -%>
+<% else -%>
+# Ignore wildcard interface and only listen on the following specified
+# interfaces
+interface ignore wildcard
+<% end -%>
+<% @interfaces.flatten.each do |interface| -%>
+interface listen <%= interface %>
+<% end -%>
+<% end -%>
+
+<% if @broadcastclient == true -%>
+broadcastclient
+<% end -%>
+
+# Set up servers for ntpd with next options:
+# server - IP address or DNS name of upstream NTP server
+# iburst - allow send sync packages faster if upstream unavailable
+# prefer - select preferrable server
+# minpoll - set minimal update frequency
+# maxpoll - set maximal update frequency
+<% [@servers].flatten.each do |server| -%>
+server <%= server %><% if @iburst_enable == true -%> iburst<% end %><% if @preferred_servers.include?(server) -%> prefer<% end %><% if @minpoll -%> minpoll <%= @minpoll %><% end %><% if @maxpoll -%> maxpoll <%= @maxpoll %><% end %>
+<% end -%>
+
+<% if @udlc -%>
+# Undisciplined Local Clock. This is a fake driver intended for backup
+# and when no outside source of synchronized time is available.
+server   127.127.1.0
+fudge    127.127.1.0 stratum <%= @udlc_stratum %>
+restrict 127.127.1.0
+<% end -%>
+
+# Driftfile.
+driftfile <%= @driftfile %>
+
+<% unless @logfile.nil? -%>
+# Logfile
+logfile <%= @logfile %>
+<% end -%>
+
+<% unless @ntpsigndsocket.nil? -%>
+# Enable signed packets
+ntpsigndsocket <%= @ntpsigndsocket %>
+<% end -%>
+
+<% unless @peers.empty? -%>
+# Peers
+<% [@peers].flatten.each do |peer| -%>
+peer <%= peer %>
+<% end -%>
+<% end -%>
+
+<% if @keys_enable -%>
+keys <%= @keys_file %>
+<% unless @keys_trusted.empty? -%>
+trustedkey <%= @keys_trusted.join(' ') %>
+<% end -%>
+<% if @keys_requestkey != '' -%>
+requestkey <%= @keys_requestkey %>
+<% end -%>
+<% if @keys_controlkey != '' -%>
+controlkey <%= @keys_controlkey %>
+<% end -%>
+
+<% end -%>
+<% [@fudge].flatten.each do |entry| -%>
+fudge <%= entry %>
+<% end -%>
+
+<% unless @leapfile.nil? -%>
+# Leapfile
+leapfile <%= @leapfile %>
+<% end -%>
+
+<% if @tos == true -%>
+tos <% if @tos_minclock -%> minclock <%= @tos_minclock %><% end %><% if @tos_minsane -%> minsane <%= @tos_minsane %><% end %><% if @tos_floor -%> floor <%= @tos_floor %><% end %><% if @tos_ceiling -%> ceiling <%= @tos_ceiling %><% end %><% if @tos_cohort -%> cohort <%= @tos_cohort %><% end %>
+<% end %>
+
+<% unless @authprov.nil? -%>
+authprov <%= @authprov %>
+<% end -%>

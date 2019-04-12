@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Blacklist Generator</name>
+  <author>Joshua Hickling</author>
+  <module_license>MIT</module_license>
+  <description>Generates an array to be used as blacklist for increased difficulty within a XSS attack</description>
+
+  <type>html_blacklist</type>
+  <platform>unix</platform>
+
+  <output_type>html_blacklist</output_type>
+</generator>

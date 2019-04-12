@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<network xmlns="http://www.github/cliffe/SecGen/network"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/network">
+  <name>Private Network #1</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>GPLv3</module_license>
+  <description>A network</description>
+
+  <type>private_network</type>
+  <range>172.16.0.0</range>
+
+</network>

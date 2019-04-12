@@ -1,0 +1,48 @@
+# this file install the Windows Docker package using the DockerMsftProvider powershell provider
+$dockerProviderName="DockerMsftProvider"
+
+$package=Get-Package <%= @docker_ee_package_name %> -ProviderName $dockerProviderName -ErrorAction Ignore
+If ($package -ne $null) { 
+    Write-Information "Uninstalling Docker Package"
+    $package=Uninstall-Package <%= @docker_ee_package_name %> -ProviderName $dockerProviderName -Force
+    <% if @version -%>
+    -RequiredVersion <%= @version %>
+    <% end -%>
+    If ($package -eq $null) { 
+        Write-Error "Failed to uninstall Docker Package"
+        Exit 1
+    }
+}
+
+$provider = Get-Module -ListAvailable -Name $dockerProviderName -ErrorAction Ignore
+If ($provider -ne $null) {
+    Write-Information "Uninstalling Docker Provider"
+    Uninstall-Module $dockerProviderName -Force
+
+    $provider = Get-Module -ListAvailable -Name $dockerProviderName -ErrorAction Ignore
+    If ($provider -ne $null) {
+        Write-Error "Failed to uninstall Docker Microsoft Provider"
+        Exit 1
+    }
+}
+
+$service = Get-Service "docker" -ErrorAction Ignore
+if ($service -ne $null) {
+    if ( $service.Status -ne [ServiceProcess.ServiceControllerStatus]::Stopped ) {
+        $timeSpan = New-Object Timespan 0,0,60
+        try {
+            $service.Stop()
+            $service.WaitForStatus([ServiceProcess.ServiceControllerStatus]::Stopped, 60)
+        }
+        catch [Management.Automation.MethodInvocationException],[ServiceProcess.TimeoutException] {
+            Write-Error "Failed to stop docker service"
+            exit 1
+        }
+    }
+
+    sc.exe delete "docker"
+} 
+
+if (Test-Path -Path "$env:ProgramFiles\docker") {
+    Remove-Item "$env:ProgramFiles\docker" -Recurse -Force
+}

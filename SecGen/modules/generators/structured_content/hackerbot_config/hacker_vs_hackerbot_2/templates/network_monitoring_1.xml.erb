@@ -1,0 +1,22 @@
+	<attack>
+<% $rand1 = SecureRandom.hex(2) %>
+		<pre_shell>curl -v -H 'Something-worth-noting: <%= $rand1 %>:<%= $flags.pop %>' <%= $web_server_ip %> > /dev/null; echo $? </pre_shell>
+		<get_shell>false</get_shell>
+		<post_command></post_command>
+
+		<prompt>#1 Monitor the network traffic using Tcpdump or Wireshark, and look out for a string starting with "<%= $rand1 %>".</prompt>
+
+		<condition>
+			<output_matches>0</output_matches>
+			<message>Hope you found the flag! Moving on...</message>
+			<trigger_next_attack>true</trigger_next_attack>
+		</condition>
+		<condition>
+			<output_matches>1</output_matches>
+			<message>:( Failed to talk to the web server (<%= $web_server_ip %>)</message>
+		</condition>
+		<else_condition>
+			<message>Ok, next up...</message>
+		</else_condition>
+
+	</attack>

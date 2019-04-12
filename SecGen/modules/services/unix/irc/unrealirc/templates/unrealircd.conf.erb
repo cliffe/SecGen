@@ -1,0 +1,63 @@
+# Example UnrealIRCd 3.2.8.1 configuration file
+# Written by Mp5shooter for the SwiftIRC Wiki
+# http://wiki.SwiftIRC.net/
+
+/* If your server is running Linux, remove the two slashes in front of both of the following lines. */
+loadmodule "src/modules/commands.so";
+loadmodule "src/modules/cloak.so";
+
+/* If your server is running Windows, remove the two slashes in front of both of the following lines. */
+//loadmodule "modules/commands.dll";
+//loadmodule "modules/cloak.dll";
+
+# This is the me {} block
+me {
+	name "<%= scope.lookupvar('unrealirc::servername') %>";
+	info "<%= scope.lookupvar('unrealirc::serverdesc') %>";
+	numeric 1;
+};
+
+# This is the admin {} block
+admin {
+  <% scope.lookupvar('unrealirc::admins').each do |val| -%>
+     "<%= val %>";
+  <% end -%>
+};
+
+# Required
+class clients
+{
+    pingfreq 90;
+    maxclients <%= scope.lookupvar('unrealirc::maxusers') %>;
+    sendq 100000;
+    recvq 8000;
+};
+class servers
+{
+    pingfreq 120;
+    maxclients <%= scope.lookupvar('unrealirc::maxservers') %>;
+    sendq 1000000;
+    connfreq 100;
+};
+
+allow {
+   ip             *@*;
+   hostname       *@*;
+   class           clients;
+   maxperip 5;
+};
+
+alias NickServ { type services; };
+alias ChanServ { type services; };
+alias OperServ { type services; };
+alias HelpServ { type services; };
+
+include "help.conf";
+include "badwords.channel.conf";
+include "badwords.message.conf";
+include "badwords.quit.conf";
+include "spamfilter.conf";
+
+include "aliases/anope.conf";
+
+include "config/*.conf";

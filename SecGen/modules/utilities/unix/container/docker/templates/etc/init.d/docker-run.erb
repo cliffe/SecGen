@@ -1,0 +1,173 @@
+<%-
+	@required_start = ["$network", "docker"] +
+		@sanitised_after_array.map{ |s| "#{@service_prefix}#{s}"} +
+		@sanitised_depends_array.map{ |s| "#{@service_prefix}#{s}"} +
+		@depend_services_array
+
+	@required_stop = ["$network", "docker"] +
+		@sanitised_depends_array.map{ |d| "#{@service_prefix}#{d}"} +
+		@depend_services_array
+-%>
+#!/bin/sh
+#
+# This file is managed by Puppet and local changes
+# may be overwritten
+#
+#    /etc/rc.d/init.d/<servicename>
+#
+#    Daemon for <%= @title %>
+#
+# chkconfig: 2345 97 15
+# description: Docker container for <%= @title %>
+
+### BEGIN INIT INFO
+# Provides:       <%= @service_prefix %><%= @sanitised_title %>
+# Required-Start: <%= @required_start.uniq.join(" ") %>
+# Required-Stop:  <%= @required_stop.uniq.join(" ") %>
+# Should-Start:
+# Should-Stop:
+# Default-Start: 2 3 4 5
+# Default-Stop:  0 1 6
+# Short-Description: start and stop docker container for <%= @title %>
+# Description: Docker container for <%= @title %>
+### END INIT INFO
+
+if [ -e /etc/init.d/functions ]; then
+    . /etc/init.d/functions
+elif [ -e /lib/lsb/init-functions ]; then
+    . /lib/lsb/init-functions
+    failure() {
+        log_failure_msg "$@"
+        return 1
+    }
+    success() {
+        log_success_msg "$@"
+        return 0
+    }
+else
+    failure() {
+        echo "fail: $@" >&2
+        exit 1
+    }
+    success() {
+        echo "success: $@" >&2
+        exit 0
+    }
+fi
+
+export HOME=/root/
+docker="/usr/bin/<%= @docker_command %>"
+prog="<%= @service_prefix %><%= @sanitised_title %>"
+if [ -d /var/lock/subsys ]; then
+    lockfile="/var/lock/subsys/$prog"
+else
+    unset lockfile
+fi
+
+start() {
+    [ -x $docker ] || exit 5
+
+    if [ "true" = "$($docker inspect --format='{{.State.Running}}' <%= @sanitised_title %> 2>/dev/null)" ]; then
+       failure
+       printf "Container <%= @sanitised_title %> is still running.\n"
+       exit 7
+    fi
+
+    printf "Starting $prog:\t"
+    <% if @before_start -%>
+        <%= @before_start %>
+    <% end -%>
+    <% if @remove_container_on_stop -%>
+        $docker rm <% if @remove_volume_on_start %>-v<% end %> <%= @sanitised_title %> >/dev/null 2>&1
+    <% else %>
+        $docker create \
+        <%= @docker_run_flags %> \
+        --name <%= @sanitised_title %> \
+        <%= @image %> \
+        <% if @command %> <%= @command %><% end %>
+    <% end -%>
+    <% if @pull_on_start -%>
+        $docker pull <%= @image %>
+    <% end -%>
+    <% if @remove_container_on_stop -%>
+    $docker run \
+    <%= @docker_run_flags %> \
+    --name <%= @sanitised_title %> \
+    <%= @image %> \
+    <% if @command %> <%= @command %><% end %>
+    <% else %>
+    $docker start -a <%= @sanitised_title %>
+    <% end -%>
+
+    retval=$?
+    echo
+    if [ $retval -eq 0 ]; then
+        success
+    else
+        failure
+    fi
+}
+
+stop() {
+    echo -n "Stopping $prog: "
+    <% if @before_stop -%>
+        <%= @before_stop %>
+    <% end -%>
+    $docker stop --time=<%= @stop_wait_time %> <%= @sanitised_title %>
+    <% if @remove_container_on_stop -%>
+        $docker rm <% if @remove_volume_on_stop %>-v<% end %> <%= @sanitised_title %>
+    <% end -%>
+    return $?
+}
+
+clean() {
+    if ! [ -f $cidfile ]; then
+        failure
+        echo
+        printf "$cidfile does not exist.\n"
+    else
+        cid="$(cat $cidfile)"
+        rm $cidfile
+        $docker rm -v -f $cid
+        retval=$?
+        return $retval
+    fi
+}
+
+case "$1" in
+    start)
+    start
+    ;;
+    stop)
+    stop
+    ;;
+    status)
+    if [ "true" = "$($docker inspect --format='{{.State.Running}}' <%= @sanitised_title %> 2>/dev/null)" ]; then
+        echo $prog is running
+        exit 0
+    else
+        echo $prog not running
+        exit 1
+    fi
+    ;;
+    restart|reload)
+    stop
+    start
+    ;;
+    clean)
+    clean
+    ;;
+    cleanRestart)
+    stop
+    clean
+    start
+    ;;
+    condrestart)
+    [ -f /var/lock/subsys/$prog ] && restart || :
+    ;;
+    *)
+    echo "Usage: $0 [start|stop|status|reload|restart|probe|clean|cleanRestart]"
+    exit 1
+    ;;
+esac
+exit $?

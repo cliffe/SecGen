@@ -1,0 +1,29 @@
+import java.io.PrintStream;
+import java.util.Scanner;
+
+public class Crackme
+{
+  public Crackme()
+  {
+  }
+
+  public static void main(String args[])
+  {
+    System.out.println("Please enter the password:");
+    Scanner scanner = new Scanner(System.in);
+    String s = scanner.next();
+    if(s.equals("<%= @password %>"))
+    {
+      System.out.println("Correct");
+      System.out.print("Your key is: ");
+      <% @flag.split('').each do |char|-%>
+      System.out.print("<%= char %>");
+      <% end %>
+      System.out.print("\n");
+    }
+    else
+    {
+      System.out.println("Wrong");
+    }
+  }
+}

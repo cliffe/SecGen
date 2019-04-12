@@ -1,0 +1,94 @@
+{
+  "name": "puppetlabs-java",
+  "version": "3.2.0",
+  "author": "puppetlabs",
+  "summary": "Installs the correct Java package on various platforms.",
+  "license": "Apache-2.0",
+  "source": "git://github.com/puppetlabs/puppetlabs-java",
+  "project_page": "https://github.com/puppetlabs/puppetlabs-java",
+  "issues_url": "https://tickets.puppet.com/CreateIssueDetails!init.jspa?pid=10707&issuetype=1&team=Modules&customfield_14200=14302&labels=triage&customfield_10005=2147&summary=Issue+found+with+module%3A+puppetlabs-java",
+  "dependencies": [
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 4.13.1 < 6.0.0"
+    },
+    {
+      "name": "puppet/archive",
+      "version_requirement": ">= 1.1.0 < 4.0.0"
+    }
+  ],
+  "data_provider": null,
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "OracleLinux",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Scientific",
+      "operatingsystemrelease": [
+        "6"
+      ]
+    },
+    {
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "8",
+        "9"
+      ]
+    },
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "14.04",
+        "16.04",
+        "18.04"
+      ]
+    },
+    {
+      "operatingsystem": "SLES",
+      "operatingsystemrelease": [
+        "11 SP1",
+        "11 SP2",
+        "11 SP3",
+        "11 SP4",
+        "12",
+        "12 SP1",
+        "12 SP2"
+      ]
+    },
+    {
+      "operatingsystem": "Solaris",
+      "operatingsystemrelease": [
+        "11"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 4.7.0 < 7.0.0"
+    }
+  ],
+  "template-url": "https://github.com/puppetlabs/pdk-templates",
+  "template-ref": "heads/master-0-g8fc95db",
+  "pdk-version": "1.7.0"
+}

@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <system>
+    <system_name>web_server</system_name>
+    <base module_path=".*debian_puppet_32"/>
+
+    <!-- Setting up two organisations with test data -->
+    <input into_datastore="organisation">
+      <generator type="organisation">
+        <input into="manager">
+          <generator type="person">
+            <input into="name">
+              <value>[0]: org 1 manager name</value>
+            </input>
+          </generator>
+        </input>
+        <input into="employees">
+          <generator type="person"/>
+          <generator type="person">
+            <input into="name">
+              <value>[2]: org 1 employee 2</value>
+            </input>
+          </generator>
+        </input>
+      </generator>
+      <generator type="organisation">
+        <input into="employees">
+          <generator type="person"/>
+          <generator type="person">
+            <input into="name">
+              <value>[1]: org 2 employee 2</value>
+            </input>
+          </generator>
+        </input>
+      </generator>
+    </input>
+
+    <!-- Accessing structured_content through json: [0]: name of the manager of 1st organisation,
+                                                    [1]: name of 2nd employee of 2nd organisation,
+                                                    [2]: name of 2nd employee of 1st organisation,
+                                                    [3]: the json object for the manager of the 1st organisation  -->
+    <vulnerability read_fact="strings_to_leak">
+      <input into="strings_to_leak">
+        <datastore access="0" access_json="['manager']['name']">organisation</datastore>
+        <datastore access="1" access_json="['employees'][1]['name']">organisation</datastore>
+        <!-- omitting access="" selects first element in datastore by default -->
+        <datastore access_json="['employees'][1]['name']">organisation</datastore>
+        <datastore access="0" access_json="['manager']">organisation</datastore>
+      </input>
+    </vulnerability>
+
+    <network module_path=".*private_network_1"/>
+  </system>
+</scenario>

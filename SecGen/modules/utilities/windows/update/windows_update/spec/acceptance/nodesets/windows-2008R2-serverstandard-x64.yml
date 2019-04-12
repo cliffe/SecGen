@@ -1,0 +1,14 @@
+HOSTS:
+  win-2008R2-std:
+    roles:
+      - default
+      - agent
+    platform: windows-server-amd64
+    box: opentable/win-2008r2-standard-amd64-nocm
+    hypervisor: vagrant
+    user: vagrant
+    ip: '10.255.33.129'
+    communicator: bitvise
+CONFIG:
+  log_level: verbose
+  type: git

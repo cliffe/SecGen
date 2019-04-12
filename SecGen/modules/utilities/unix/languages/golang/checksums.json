@@ -1,0 +1,9 @@
+{
+  "LICENSE": "f8a48fc881716de69a658fae9dbb50bf",
+  "README.markdown": "0950eadeb650c56ac6511e60b69a349e",
+  "examples/curl_conflict.pp": "7a4bcaddb50c6103fd61cd0380d72c46",
+  "examples/init.pp": "4de930091b7852fd738722ba9c944569",
+  "manifests/init.pp": "a23ed42a5f92e12961f0dd52ed5c9bf2",
+  "metadata.json": "b08b6b2baa8682ae8d500acdd2f2a81e",
+  "templates/golang.sh.erb": "e1394c9baa0deee28260a1ec2e34b48f"
+}

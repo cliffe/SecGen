@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+<encoder xmlns="http://www.github/cliffe/SecGen/encoder"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/encoder">
+  <name>Simple SSH Decryption Challenge</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Returns a private key and some encrypted ciphertext.</description>
+
+  <type>asymmetric</type>
+  <type>asymmetric_cipher</type>
+  <type>challenge_generator</type>
+  <type>crypto_challenge_generator</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <difficulty>low</difficulty>
+
+  <read_fact>strings_to_encode</read_fact>
+  <read_fact>ssh_key_pair</read_fact>
+  <read_fact>subdirectory</read_fact>
+
+  <default_input into="strings_to_encode">
+    <generator type="flag_generator"/>
+    <generator type="message_generator"/>
+    <generator type="message_generator"/>
+    <generator type="message_generator"/>
+  </default_input>
+
+  <default_input into="ssh_key_pair">
+    <generator type="ssh_key_pair"/>
+  </default_input>
+
+  <default_input into="subdirectory">
+    <generator type="challenges"/>
+  </default_input>
+
+  <output_type>array</output_type>
+</encoder>

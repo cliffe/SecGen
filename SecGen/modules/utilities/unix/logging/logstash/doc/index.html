@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  File: README
+  
+    &mdash; Documentation by YARD 0.9.13
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "";
+  relpath = '';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="puppet_class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: README</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="puppet_class_list_link"
+        href="puppet_class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><div id='filecontents'><h1>elastic/logstash</h1>
+
+<p>A Puppet module for managing and configuring <a href="http://logstash.net/">Logstash</a>.</p>
+
+<p><a href="https://travis-ci.org/elastic/puppet-logstash"><img src="https://travis-ci.org/elastic/puppet-logstash.png?branch=master" alt="Build Status"></a></p>
+
+<h2>Logstash Versions</h2>
+
+<p>This module, &quot;elastic/logstash&quot; supports only Logstash 5.x and 6.x. For earlier
+Logstash versions, support is provided by the legacy module
+&quot;elasticsearch/logstash&quot;.</p>
+
+<h2>Requirements</h2>
+
+<ul>
+<li>Puppet 4.6.1 or better.</li>
+<li>The <a href="https://forge.puppetlabs.com/puppetlabs/stdlib">stdlib</a> module.</li>
+<li>Logstash itself requires Java 8. The &quot;puppetlabs/java&quot; module is recommended
+for installing Java. This module will not install Java.</li>
+</ul>
+
+<p>Optional:</p>
+
+<ul>
+<li>The <a href="https://forge.puppetlabs.com/elastic/elastic_stack">elastic_stack</a> module
+when using automatic repository management.</li>
+<li>The <a href="https://forge.puppetlabs.com/puppetlabs/apt">apt</a> (&gt;= 2.0.0) module when
+using repo management on Debian/Ubuntu.</li>
+<li>The <a href="https://forge.puppetlabs.com/darin/zypprepo">zypprepo</a> module when using
+repo management on SLES/SuSE.</li>
+</ul>
+
+<h2>Quick Start</h2>
+
+<p>This minimum viable configuration ensures that Logstash is installed, enabled, and running:</p>
+
+<pre class="code puppet"><code class="puppet">include logstash
+
+# You must provide a valid pipeline configuration for the service to start.
+logstash::configfile { &#39;my_ls_config&#39;:
+  content =&gt; template(&#39;path/to/config.file&#39;),
+}
+</code></pre>
+
+<h2>Package and service options</h2>
+
+<h3>Choosing a Logstash minor version</h3>
+
+<pre class="code puppet"><code class="puppet">class { &#39;logstash&#39;:
+  version =&gt; &#39;6.0.0&#39;,
+}
+</code></pre>
+
+<h3>Choosing a Logstash major version</h3>
+
+<p>This module uses the related &quot;elastic/elastic_stack&quot; module to manage package
+repositories. Since there is a separate repository for each major version of
+the Elastic stack, if you don&#39;t want the default version (6), it&#39;s necessary
+to select which version to configure, like this:</p>
+
+<pre class="code puppet"><code class="puppet">class { &#39;elastic_stack::repo&#39;:
+  version =&gt; 5,
+}
+
+class { &#39;logstash&#39;:
+  version =&gt; &#39;5.6.4&#39;,
+}
+</code></pre>
+
+<h3>Manual repository management</h3>
+
+<p>You may want to manage repositories manually. You can disable
+automatic repository management like this:</p>
+
+<pre class="code puppet"><code class="puppet">class { &#39;logstash&#39;:
+  manage_repo =&gt; false,
+}
+</code></pre>
+
+<h3>Using an explicit package source</h3>
+
+<p>Rather than use your distribution&#39;s repository system, you can specify an
+explicit package to fetch and install.</p>
+
+<h4>From an HTTP/HTTPS/FTP URL</h4>
+
+<pre class="code puppet"><code class="puppet">class { &#39;logstash&#39;:
+  package_url =&gt; &#39;https://artifacts.elastic.co/downloads/logstash/logstash-5.1.1.rpm&#39;,
+}
+</code></pre>
+
+<h4>From a &#39;puppet://&#39; URL</h4>
+
+<pre class="code puppet"><code class="puppet">class { &#39;logstash&#39;:
+  package_url =&gt; &#39;puppet:///modules/my_module/logstash-5.1.1.rpm&#39;,
+}
+</code></pre>
+
+<h4>From a local file on the agent</h4>
+
+<pre class="code puppet"><code class="puppet">class { &#39;logstash&#39;:
+  package_url =&gt; &#39;file:///tmp/logstash-5.1.1.rpm&#39;,
+}
+</code></pre>
+
+<h3>Allow automatic point-release upgrades</h3>
+
+<pre class="code puppet"><code class="puppet">class { &#39;logstash&#39;:
+  auto_upgrade =&gt; true,
+}
+</code></pre>
+
+<h3>Do not run as a service</h3>
+
+<pre class="code puppet"><code class="puppet">class { &#39;logstash&#39;:
+  status =&gt; &#39;disabled&#39;,
+}
+</code></pre>
+
+<h3>Disable automatic restarts</h3>
+
+<p>Under normal circumstances, changing a configuration will trigger a restart of
+the service. This behaviour can be disabled:</p>
+
+<pre class="code puppet"><code class="puppet">class { &#39;logstash&#39;:
+  restart_on_change =&gt; false,
+}
+</code></pre>
+
+<h3>Disable and remove Logstash</h3>
+
+<pre class="code puppet"><code class="puppet">class { &#39;logstash&#39;:
+  ensure =&gt; &#39;absent&#39;,
+}
+</code></pre>
+
+<h2>Logstash config files</h2>
+
+<h3>Settings</h3>
+
+<p>Logstash uses several files to define settings for the service and associated
+Java runtime. The settings files can be configured with class parameters.</p>
+
+<h4><code>logstash.yml</code> with flat keys</h4>
+
+<pre class="code puppet"><code class="puppet">class { &#39;logstash&#39;:
+  settings =&gt; {
+    &#39;pipeline.batch.size&#39;  =&gt; 25,
+    &#39;pipeline.batch.delay&#39; =&gt; 5,
+  }
+}
+</code></pre>
+
+<h4><code>logstash.yml</code> with nested keys</h4>
+
+<pre class="code puppet"><code class="puppet">class { &#39;logstash&#39;:
+  settings =&gt; {
+    &#39;pipeline&#39; =&gt; {
+      &#39;batch&#39; =&gt; {
+        &#39;size&#39;  =&gt; 25,
+        &#39;delay&#39; =&gt; 5,
+      }
+    }
+  }
+}
+</code></pre>
+
+<h4><code>jvm.options</code></h4>
+
+<pre class="code puppet"><code class="puppet">class { &#39;logstash&#39;:
+  jvm_options =&gt; [
+    &#39;-Xms1g&#39;,
+    &#39;-Xmx1g&#39;,
+  ]
+}
+</code></pre>
+
+<h4><code>startup.options</code></h4>
+
+<pre class="code puppet"><code class="puppet">class { &#39;logstash&#39;:
+  startup_options =&gt; {
+    &#39;LS_NICE&#39; =&gt; &#39;10&#39;,
+  }
+}
+</code></pre>
+
+<h4><code>pipelines.yml</code></h4>
+
+<pre class="code puppet"><code class="puppet">class { &#39;logstash&#39;:
+  pipelines =&gt; [
+    {
+      &quot;pipeline.id&quot; =&gt; &quot;pipeline_one&quot;,
+      &quot;path.config&quot; =&gt;  &quot;/usr/local/etc/logstash/pipeline-1/one.conf&quot;,
+    },
+    {
+      &quot;pipeline.id&quot; =&gt; &quot;pipeline_two&quot;,
+      &quot;path.config&quot; =&gt;  &quot;/usr/local/etc/logstash/pipeline-2/two.conf&quot;,
+    }
+  ]
+}
+</code></pre>
+
+<p>Note that specifying <code>pipelines</code> will automatically remove the default
+<code>path.config</code> setting from <code>logstash.yml</code>, since this is incompatible with
+<code>pipelines.yml</code>.</p>
+
+<p>Enabling centralized pipeline management with <code>xpack.management.enabled</code> will
+also remove the default <code>path.config</code>.</p>
+
+<h3>Pipeline Configuration</h3>
+
+<p>Pipeline configuration files can be declared with the <code>logstash::configfile</code>
+type.</p>
+
+<pre class="code puppet"><code class="puppet">logstash::configfile { &#39;inputs&#39;:
+  content =&gt; template(&#39;path/to/input.conf.erb&#39;),
+}
+</code></pre>
+
+<p>or</p>
+
+<pre class="code puppet"><code class="puppet">logstash::configfile { &#39;filters&#39;:
+  source =&gt; &#39;puppet:///path/to/filter.conf&#39;,
+}
+</code></pre>
+
+<p>For simple cases, it&#39;s possible to provide your Logstash config as an
+inline string:</p>
+
+<pre class="code puppet"><code class="puppet">logstash::configfile { &#39;basic_ls_config&#39;:
+  content =&gt; &#39;input { heartbeat {} } output { null {} }&#39;,
+}
+</code></pre>
+
+<p>You can also specify the exact path for the config file, which is
+particularly useful with multiple pipelines:</p>
+
+<pre class="code puppet"><code class="puppet">logstash::configfile { &#39;config_for_pipeline_two&#39;:
+  content =&gt; &#39;input { heartbeat {} } output { null {} }&#39;,
+  path    =&gt; &#39;/usr/local/etc/logstash/pipeline-2/two.conf&#39;,
+}
+</code></pre>
+
+<p>If you want to use Hiera to specify your configs, include the following
+create_resources call in your manifest:</p>
+
+<pre class="code puppet"><code class="puppet">create_resources(&#39;logstash::configfile&#39;, hiera(&#39;my_logstash_configs&#39;))
+</code></pre>
+
+<p>...and then create a data structure like this in Hiera:</p>
+
+<pre class="code yaml"><code class="yaml">---
+my_logstash_configs:
+  nginx:
+    template: site_logstash/nginx.conf.erb
+  syslog:
+    template: site_logstash/syslog.conf.erb
+</code></pre>
+
+<p>In this example, templates for the config files are stored in the custom,
+site-specific module &quot;<code>site_logstash</code>&quot;.</p>
+
+<h3>Patterns</h3>
+
+<p>Many plugins (notably <a href="http://logstash.net/docs/latest/filters/grok">Grok</a>) use <em>patterns</em>. While many are included in Logstash already, additional site-specific patterns can be managed as well.</p>
+
+<pre class="code puppet"><code class="puppet">logstash::patternfile { &#39;extra_patterns&#39;:
+  source =&gt; &#39;puppet:///path/to/extra_pattern&#39;,
+}
+</code></pre>
+
+<p>By default the resulting filename of the pattern will match that of the source. This can be over-ridden:</p>
+
+<pre class="code puppet"><code class="puppet">logstash::patternfile { &#39;extra_patterns_firewall&#39;:
+  source   =&gt; &#39;puppet:///path/to/extra_patterns_firewall_v1&#39;,
+  filename =&gt; &#39;extra_patterns_firewall&#39;,
+}
+</code></pre>
+
+<p><strong>IMPORTANT NOTE</strong>: Using logstash::patternfile places new patterns in the correct directory, however, it does NOT cause the path to be included automatically for filters (example: grok filter). You will still need to include this path (by default, /etc/logstash/patterns/) explicitly in your configurations.</p>
+
+<p>Example: If using &#39;grok&#39; in one of your configurations, you must include the pattern path in each filter like this:</p>
+
+<pre class="code ruby"><code class="ruby"># Note: this example is Logstash configuration, not a Puppet resource.
+# Logstash and Puppet look very similar!
+grok {
+  patterns_dir =&gt; &quot;/etc/logstash/patterns/&quot;
+  ...
+}
+</code></pre>
+
+<h2>Plugin management</h2>
+
+<h3>Installing by name (from RubyGems.org)</h3>
+
+<pre class="code puppet"><code class="puppet">logstash::plugin { &#39;logstash-input-beats&#39;: }
+</code></pre>
+
+<h3>Installing from a local Gem</h3>
+
+<pre class="code puppet"><code class="puppet">logstash::plugin { &#39;logstash-input-custom&#39;:
+  source =&gt; &#39;/tmp/logstash-input-custom-0.1.0.gem&#39;,
+}
+</code></pre>
+
+<h3>Installing from a &#39;puppet://&#39; URL</h3>
+
+<pre class="code puppet"><code class="puppet">logstash::plugin { &#39;logstash-filter-custom&#39;:
+  source =&gt; &#39;puppet:///modules/my_ls_module/logstash-filter-custom-0.1.0.gem&#39;,
+}
+</code></pre>
+
+<h3>Installing from an &#39;http(s)://&#39; URL</h3>
+
+<pre class="code puppet"><code class="puppet">logstash::plugin { &#39;x-pack&#39;:
+  source =&gt; &#39;https://artifacts.elastic.co/downloads/packs/x-pack/x-pack-5.3.0.zip&#39;,
+}
+</code></pre>
+
+<h3>Controling the environment for the <code>logstash-plugin</code> command</h3>
+
+<pre class="code puppet"><code class="puppet">logstash::plugin { &#39;logstash-input-websocket&#39;:
+  environment =&gt; &#39;LS_JVM_OPTS=&quot;-Xms1g -Xmx1g&quot;&#39;,
+}
+</code></pre>
+
+<h2>Support</h2>
+
+<p>Need help? Join us in <a href="https://webchat.freenode.net?channels=%23logstash">#logstash</a> on Freenode IRC or on the <a href="https://discuss.elastic.co/c/logstash">https://discuss.elastic.co/c/logstash</a> discussion forum.</p>
+</div></div>
+
+      <div id="footer">
+     Generated by <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>.
+</div>
+
+    </div>
+  </body>
+</html>

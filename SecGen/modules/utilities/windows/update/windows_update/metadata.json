@@ -1,0 +1,25 @@
+{
+  "name": "puppet-windows_autoupdate",
+  "version": "1.1.0",
+  "author": "puppet",
+  "summary": "Module for managing windows automatic updates",
+  "license": "Apache-2.0",
+  "source": "https://github.com/voxpupuli/puppet-windows_autoupdate",
+  "project_page": "https://github.com/voxpupuli/puppet-windows_autoupdate",
+  "issues_url": "https://github.com/voxpupuli/puppet-windows_autoupdate/issues",
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "windows",
+      "operatingsystemrelease": [
+        "2008",
+        "2008 R2",
+        "2012",
+        "2012 R2"
+      ]
+    }
+  ],
+  "dependencies": [
+    {"name":"puppetlabs/stdlib","version_requirement":">= 3.0.0 <5.0.0"},
+    {"name":"puppetlabs/registry","version_requirement":">= 1.0.0 <2.0.0"}
+  ]
+}

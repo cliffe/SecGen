@@ -1,0 +1,623 @@
+#========================= Filebeat global options ============================
+
+<% unless scope.function_versioncmp([@major_version, '6']) >= 0 -%>
+filebeat.spool_size: <%= @filebeat_config['filebeat']['spool_size'] %>
+filebeat.publish_async: <%= @filebeat_config['filebeat']['publish_async'] %>
+filebeat.idle_timeout: <%= @filebeat_config['filebeat']['idle_timeout'] %>
+<% end -%>
+filebeat.registry_file: <%= @filebeat_config['filebeat']['registry_file'] %>
+filebeat.config_dir: <%= @filebeat_config['filebeat']['config_dir'] %>
+filebeat.shutdown_timeout: <%= @filebeat_config['filebeat']['shutdown_timeout'] %>
+
+#================================ General =====================================
+
+name: <%= @filebeat_config['beat_name'] %>
+<%- if @filebeat_config['tags'].length > 0 -%>
+tags:
+<%- @filebeat_config['tags'].each do |tag| -%>
+  - <%= tag %>
+<%- end -%>
+<%- end -%>
+
+<%- if @filebeat_config['fields'].length > 0 -%>
+fields:
+  <%- @filebeat_config['fields'].each_pair do |k, v| -%>
+  <%= k %>: <%= v %>
+  <%- end -%>
+<%- end -%>
+
+fields_under_root: <%= @filebeat_config['fields_under_root'] %>
+<% unless scope.function_versioncmp([@major_version, '6']) >= 0 -%>
+queue_size: <%= @filebeat_config['queue_size'] %>
+<% end -%>
+
+# The internal queue size for bulk events in the processing pipeline.
+# Do not modify this value.
+#bulk_queue_size: 0
+
+<%- if @filebeat_config['max_procs'] != nil -%>
+max_procs: <%= @filebeat_config['max_procs'] %>
+<%- end -%>
+
+#================================ Processors =====================================
+
+# Processors are used to reduce the number of fields in the exported event or to
+# enhance the event with external meta data. This section defines a list of processors
+# that are applied one by one and the first one receives the initial event:
+#
+#   event -> filter1 -> event1 -> filter2 ->event2 ...
+#
+# Supported processors: drop_fields, drop_event, include_fields
+#
+# For example, you can use the following processors to keep
+# the fields that contain CPU load percentages, but remove the fields that
+# contain CPU ticks values:
+#
+#processors:
+#- include_fields:
+#    fields: ["cpu"]
+#- drop_fields:
+#    fields: ["cpu.user", "cpu.system"]
+#
+# The following example drops the events that have the HTTP response code 200:
+#
+#processors:
+#- drop_event:
+#    when:
+#       equals:
+#           http.code: 200
+#
+
+#================================ Outputs =====================================
+
+<%- if @filebeat_config['output']['elasticsearch'] != nil -%>
+#-------------------------- Elasticsearch output ------------------------------
+output.elasticsearch:
+  <%- if @filebeat_config['output']['elasticsearch']['enabled'] != nil -%>
+  enabled: <%= @filebeat_config['output']['elasticsearch']['enabled'] %>
+  <%- end -%>
+  hosts:
+  <%- @filebeat_config['output']['elasticsearch']['hosts'].each do |host| -%>
+    - <%= host %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['elasticsearch']['loadbalance'] != nil -%>
+  loadbalance: <%= @filebeat_config['output']['elasticsearch']['loadbalance'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['elasticsearch']['compression_level'] != nil -%>
+  compression_level: <%= @filebeat_config['output']['elasticsearch']['compression_level'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['elasticsearch']['protocol'] != nil -%>
+  protocol: "<%= @filebeat_config['output']['elasticsearch']['protocol'] %>"
+  <%- end -%>
+  <%- if @filebeat_config['output']['elasticsearch']['username'] != nil -%>
+  username: "<%= @filebeat_config['output']['elasticsearch']['username'] %>"
+  <%- end -%>
+  <%- if @filebeat_config['output']['elasticsearch']['password'] != nil -%>
+  password: "<%= @filebeat_config['output']['elasticsearch']['password'] %>"
+  <%- end -%>
+  <%- if @filebeat_config['output']['elasticsearch']['parameters'] != nil && @filebeat_config['output']['elasticsearch']['parameters'].length > 0 -%>
+  parameters:
+    <%- @filebeat_config['output']['elasticsearch']['parameters'].each_pair do |k, v| -%>
+    <%= k %>: <%= v %>
+    <%- end -%>
+  <%- end -%>
+  <%- if @filebeat_config['output']['elasticsearch']['worker'] != nil -%>
+  worker: <%= @filebeat_config['output']['elasticsearch']['worker'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['elasticsearch']['index'] != nil -%>
+  index: "<%= @filebeat_config['output']['elasticsearch']['index'] %>"
+  <%- end -%>
+  <%- if @filebeat_config['output']['elasticsearch']['pipeline'] != nil -%>
+  pipeline: "<%= @filebeat_config['output']['elasticsearch']['pipeline'] %>"
+  <%- end -%>
+  <%- if @filebeat_config['output']['elasticsearch']['pipelines'] != nil -%>
+  pipelines:
+  <%- @filebeat_config['output']['elasticsearch']['pipelines'].each do |pipeline| -%>
+    <%- if pipeline['name'] != nil -%>
+    - pipeline: "<%= pipeline['name'] %>"
+      when.equals:
+        <%= pipeline['filter'] %>: "<%= pipeline['pattern'] %>"
+    <%- end -%>
+  <%- end -%>
+  <%- end -%>
+  <%- if @filebeat_config['output']['elasticsearch']['indices'] != nil -%>
+  indices:
+  <%- @filebeat_config['output']['elasticsearch']['indices'].each do |indice| -%>
+    <%- if indice['name'] != nil -%>
+    - index: "<%= indice['name'] %>"
+      <%- if indice['pipeline'] != nil -%>
+      pipeline: "<%= indice['pipeline'] %>"
+      <%- end -%>
+      when.contains:
+        <%= indice['filter'] %>: "<%= indice['pattern'] %>"
+    <%- end -%>
+  <%- end -%>
+  <%- end -%>
+  <%- if @filebeat_config['output']['elasticsearch']['path'] != nil -%>
+  path: "<%= @filebeat_config['output']['elasticsearch']['path'] %>"
+  <%- end -%>
+  <%- if @filebeat_config['output']['elasticsearch']['proxy_url'] != nil -%>
+  proxy_url: "<%= @filebeat_config['output']['elasticsearch']['proxy_url'] %>"
+  <%- end -%>
+  <%- if @filebeat_config['output']['elasticsearch']['max_retries'] != nil -%>
+  max_retries: <%= @filebeat_config['output']['elasticsearch']['max_retries'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['elasticsearch']['bulk_max_size'] != nil -%>
+  bulk_max_size: <%= @filebeat_config['output']['elasticsearch']['bulk_max_size'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['elasticsearch']['timeout'] != nil -%>
+  timeout: <%= @filebeat_config['output']['elasticsearch']['timeout'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['elasticsearch']['flush_interval'] != nil -%>
+  flush_interval: <%= @filebeat_config['output']['elasticsearch']['flush_interval'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['elasticsearch']['template'] != nil -%>
+  template:
+    <%- if @filebeat_config['output']['elasticsearch']['template']['enabled'] != nil -%>
+    enabled: <%= @filebeat_config['output']['elasticsearch']['template']['enabled'] %>
+    <%- end -%>
+    <%- if @filebeat_config['output']['elasticsearch']['template']['name'] != nil -%>
+    name: "<%= @filebeat_config['output']['elasticsearch']['template']['name'] %>"
+    <%- end -%>
+    <%- if @filebeat_config['output']['elasticsearch']['template']['path'] != nil -%>
+    path: "<%= @filebeat_config['output']['elasticsearch']['template']['path'] %>"
+    <%- end -%>
+    <%- if @filebeat_config['output']['elasticsearch']['template']['overwrite'] != nil -%>
+    overwrite: <%= @filebeat_config['output']['elasticsearch']['template']['name'] %>
+    <%- end -%>
+    <%- if @filebeat_config['output']['elasticsearch']['template']['versions']['2.x'] != nil -%>
+    <%- if @filebeat_config['output']['elasticsearch']['template']['versions']['2.x']['enabled'] != nil -%>
+    versions.2x.enabled: <%= @filebeat_config['output']['elasticsearch']['template']['versions']['2.x']['enabled'] %>
+    <%- end -%>
+    <%- if @filebeat_config['output']['elasticsearch']['template']['versions']['2.x']['path'] != nil -%>
+    versions.2x.path: "<%= @filebeat_config['output']['elasticsearch']['template']['versions']['2.x']['path'] %>"
+    <%- end -%>
+    <%- end -%>
+  <%- end -%>
+  <%- if @filebeat_config['output']['elasticsearch']['ssl'] != nil -%>
+  ssl:
+    <%- if @filebeat_config['output']['elasticsearch']['ssl']['enabled'] != nil -%>
+    enabled: <%= @filebeat_config['output']['elasticsearch']['ssl']['enabled'] %>
+    <%- end -%>
+    <%- if @filebeat_config['output']['elasticsearch']['ssl']['verification_mode'] != nil -%>
+    verification_mode: <%= @filebeat_config['output']['elasticsearch']['ssl']['verification_mode'] %>
+    <%- end -%>
+    <%- if @filebeat_config['output']['elasticsearch']['ssl']['supported_protocols'] != nil -%>
+    supported_protocols:
+    <%- @filebeat_config['output']['elasticsearch']['ssl']['supported_protocols'].each do |protocol| -%>
+      - <%= protocol %>
+      <%- end -%>
+    <%- end -%>
+    <%- if @filebeat_config['output']['elasticsearch']['ssl']['certificate_authorities'] != nil -%>
+    certificate_authorities:
+    <%- @filebeat_config['output']['elasticsearch']['ssl']['certificate_authorities'].each do |ca| -%>
+      - <%= ca %>
+      <%- end -%>
+      <%- end -%>
+    <%- if @filebeat_config['output']['elasticsearch']['ssl']['certificate'] != nil -%>
+    certificate: "<%= @filebeat_config['output']['elasticsearch']['ssl']['certificate'] %>"
+    <%- end -%>
+    <%- if @filebeat_config['output']['elasticsearch']['ssl']['key'] != nil -%>
+    key: "<%= @filebeat_config['output']['elasticsearch']['ssl']['key'] %>"
+    <%- end -%>
+    <%- if @filebeat_config['output']['elasticsearch']['ssl']['key_passphrase'] != nil -%>
+    key_passphrase: '<%= @filebeat_config['output']['elasticsearch']['ssl']['key_passphrase'] %>'
+    <%- end -%>
+    <%- if @filebeat_config['output']['elasticsearch']['ssl']['cipher_suites'] != nil -%>
+    cipher_suites:
+    <%- @filebeat_config['output']['elasticsearch']['ssl']['cipher_suites'].each do |cipher_suite| -%>
+      - <%= cipher_suite %>
+      <%- end -%>
+    <%- end -%>
+    <%- if @filebeat_config['output']['elasticsearch']['ssl']['curve_types'] != nil -%>
+    curve_types:
+    <%- @filebeat_config['output']['elasticsearch']['ssl']['curve_types'].each do |curve_type| -%>
+      - <%= curve_type %>
+      <%- end -%>
+    <%- end -%>
+    <%- end -%>
+<%- end -%>
+<%- if @filebeat_config['output']['logstash'] != nil -%>
+#----------------------------- Logstash output --------------------------------
+output.logstash:
+  <%- if @filebeat_config['output']['logstash']['enabled'] != nil -%>
+  enabled: <%= @filebeat_config['output']['logstash']['enabled'] %>
+  <%- end -%>
+  hosts:
+  <%- @filebeat_config['output']['logstash']['hosts'].each do |host| -%>
+    - <%= host %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['logstash']['ssl_certificate'] != nil -%>
+  ssl.certificate: <%= @filebeat_config['output']['logstash']['ssl_certificate'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['logstash']['ssl_key'] != nil -%>
+  ssl.key: <%= @filebeat_config['output']['logstash']['ssl_key'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['logstash']['worker'] != nil -%>
+  worker: <%= @filebeat_config['output']['logstash']['worker'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['logstash']['compression_level'] != nil -%>
+  compression_level: <%= @filebeat_config['output']['logstash']['compression_level'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['logstash']['loadbalance'] != nil -%>
+  loadbalance: <%= @filebeat_config['output']['logstash']['loadbalance'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['logstash']['pipelining'] != nil -%>
+  pipelining: <%= @filebeat_config['output']['logstash']['pipelining'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['logstash']['index'] != nil -%>
+  index: <%= @filebeat_config['output']['logstash']['index'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['logstash']['proxy_url'] != nil -%>
+  proxy_url: <%= @filebeat_config['output']['logstash']['proxy_url'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['logstash']['proxy_use_local_resolver'] != nil -%>
+  proxy_use_local_resolver: <%= @filebeat_config['output']['logstash']['proxy_use_local_resolver'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['logstash']['ssl'] != nil -%>
+  ssl:
+    <%- if @filebeat_config['output']['logstash']['ssl']['enabled'] == false -%>
+    enabled: false
+    <%- else -%>
+    enabled: true
+    <%- end -%>
+    <%- if @filebeat_config['output']['logstash']['ssl']['verification_mode'] != nil -%>
+    verification_mode: <%= @filebeat_config['output']['logstash']['ssl']['verification_mode'] %>
+    <%- end -%>
+    <%- if @filebeat_config['output']['logstash']['ssl']['certificate_authorities'] != nil -%>
+    certificate_authorities:
+    <%- @filebeat_config['output']['logstash']['ssl']['certificate_authorities'].each do |ca| -%>
+      - <%= ca %>
+    <%- end -%>
+    <%- end -%>
+    <%- if @filebeat_config['output']['logstash']['ssl']['certificate'] != nil -%>
+    certificate: "<%= @filebeat_config['output']['logstash']['ssl']['certificate'] %>"
+    <%- end -%>
+    <%- if @filebeat_config['output']['logstash']['ssl']['key'] != nil -%>
+    key: "<%= @filebeat_config['output']['logstash']['ssl']['key'] %>"
+    <%- end -%>
+    <%- if @filebeat_config['output']['logstash']['ssl']['key_passphrase'] != nil -%>
+    key_passphrase: '<%= @filebeat_config['output']['logstash']['ssl']['key_passphrase'] %>'
+    <%- end -%>
+    <%- if @filebeat_config['output']['logstash']['ssl']['cipher_suites'] != nil -%>
+    cipher_suites:
+    <%- @filebeat_config['output']['logstash']['ssl']['cipher_suites'].each do |cipher_suite| -%>
+      - <%= cipher_suite %>
+    <%- end -%>
+    <%- end -%>
+    <%- if @filebeat_config['output']['logstash']['ssl']['curve_types'] != nil -%>
+    curve_types:
+    <%- @filebeat_config['output']['logstash']['ssl']['curve_types'].each do |curve_type| -%>
+      - <%= curve_type %>
+    <%- end -%>
+    <%- end -%>
+  <%- end -%>
+<%- end -%>
+<%- if @filebeat_config['output']['kafka'] != nil -%>
+#------------------------------- Kafka output ---------------------------------
+output.kafka:
+  <%- if @filebeat_config['output']['kafka']['enabled'] != nil -%>
+  enabled: <%= @filebeat_config['output']['kafka']['enabled'] %>
+  <%- end -%>
+  hosts:
+  <%- @filebeat_config['output']['kafka']['hosts'].each do |host| -%>
+    - <%= host %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['kafka']['topic'] != nil -%>
+  topic: <%= @filebeat_config['output']['kafka']['topic'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['kafka']['round_robin'] != nil -%>
+  round_robin:
+    group_events: <%= @filebeat_config['output']['kafka']['round_robin']['group_events'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['kafka']['key'] != nil -%>
+  key: '<%= @filebeat_config['output']['kafka']['key'] %>'
+  <%- end -%>
+  <%- if @filebeat_config['output']['kafka']['codec.format'] != nil -%>
+  codec.format:
+    <%- if @filebeat_config['output']['kafka']['codec.format']['string'] != nil -%>
+    string: <%= @filebeat_config['output']['kafka']['codec.format']['string'] %>
+    <%- end -%>
+  <%- end -%>
+  <%- if @filebeat_config['output']['kafka']['partition'] != nil and @filebeat_config['output']['kafka']['partition']['hash'] != nil -%>
+  partition.hash:
+    <%- if @filebeat_config['output']['kafka']['partition']['hash']['reachable_only'] != nil -%>
+    reachable_only: <%= @filebeat_config['output']['kafka']['partition']['hash']['reachable_only'] %>
+    <%- end -%>
+    <%- if @filebeat_config['output']['kafka']['partition']['hash']['random'] != nil -%>
+    random: <%= @filebeat_config['output']['kafka']['partition']['hash']['random'] %>
+    <%- end -%>
+    <%- if @filebeat_config['output']['kafka']['partition']['hash']['hash'] != nil -%>
+    hash:
+    <%- @filebeat_config['output']['kafka']['partition']['hash']['hash'].each do |value| -%>
+      - <%= value %>
+    <%- end -%>
+    <%- end -%>
+  <%- end -%>
+  <%- if @filebeat_config['output']['kafka']['username'] != nil -%>
+  username: '<%= @filebeat_config['output']['kafka']['username'] %>'
+  <%- end -%>
+  <%- if @filebeat_config['output']['kafka']['password'] != nil -%>
+  password: '<%= @filebeat_config['output']['kafka']['password'] %>'
+  <%- end -%>
+  <%- if @filebeat_config['output']['kafka']['version'] != nil -%>
+  version: <%= @filebeat_config['output']['kafka']['version'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['kafka']['metadata'] != nil -%>
+  metadata:
+    <%- if @filebeat_config['output']['kafka']['retry']['max'] != nil -%>
+    retry.max: 3
+    <%- end -%>
+    <%- if @filebeat_config['output']['kafka']['retry']['backoff'] != nil -%>
+    retry.backoff: 3
+    <%- end -%>
+    <%- if @filebeat_config['output']['kafka']['retry']['frequency'] != nil -%>
+    retry.frequency: 3
+    <%- end -%>
+  <%- end -%>
+  <%- if @filebeat_config['output']['kafka']['worker'] != nil -%>
+  worker: <%= @filebeat_config['output']['kafka']['worker'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['kafka']['max_retries'] != nil -%>
+  max_retries: <%= @filebeat_config['output']['kafka']['max_retries'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['kafka']['bulk_max_size'] != nil -%>
+  bulk_max_size: <%= @filebeat_config['output']['kafka']['bulk_max_size'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['kafka']['timeout'] != nil -%>
+  timeout: <%= @filebeat_config['output']['kafka']['timeout'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['kafka']['broker_timeout'] != nil -%>
+  broker_timeout: <%= @filebeat_config['output']['kafka']['broker_timeout'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['kafka']['channel_buffer_size'] != nil -%>
+  channel_buffer_size: <%= @filebeat_config['output']['kafka']['channel_buffer_size'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['kafka']['keep_alive'] != nil -%>
+  keep_alive: <%= @filebeat_config['output']['kafka']['keep_alive'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['kafka']['compression'] != nil -%>
+  compression: <%= @filebeat_config['output']['kafka']['compression'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['kafka']['max_message_bytes'] != nil -%>
+  max_message_bytes: <%= @filebeat_config['output']['kafka']['max_message_bytes'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['kafka']['required_acks'] != nil -%>
+  required_acks: <%= @filebeat_config['output']['kafka']['required_acks'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['kafka']['flush_interval'] != nil -%>
+  flush_interval: <%= @filebeat_config['output']['kafka']['flush_interval'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['kafka']['client_id'] != nil -%>
+  client_id: <%= @filebeat_config['output']['kafka']['client_id'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['kafka']['ssl'] != nil -%>
+  ssl:
+    <%- if @filebeat_config['output']['kafka']['ssl']['enabled'] != nil -%>
+    enabled: <%= @filebeat_config['output']['kafka']['ssl']['enabled'] %>
+    <%- end -%>
+    <%- if @filebeat_config['output']['kafka']['ssl']['verification_mode'] != nil -%>
+    verification_mode: <%= @filebeat_config['output']['kafka']['ssl']['verification_mode'] %>
+    <%- end -%>
+    <%- if @filebeat_config['output']['kafka']['ssl']['supported_protocols'] != nil -%>
+    supported_protocols:
+    <%- @filebeat_config['output']['kafka']['ssl']['supported_protocols'].each do |protocol| -%>
+      - <%= protocol %>
+    <%- end -%>
+    <%- end -%>
+    <%- if @filebeat_config['output']['kafka']['ssl']['certificate_authorities'] != nil -%>
+    certificate_authorities:
+    <%- @filebeat_config['output']['kafka']['ssl']['certificate_authorities'].each do |ca| -%>
+      - <%= ca %>
+    <%- end -%>
+    <%- end -%>
+    <%- if @filebeat_config['output']['kafka']['ssl']['certificate'] != nil -%>
+    certificate: "<%= @filebeat_config['output']['kafka']['ssl']['certificate'] %>"
+    <%- end -%>
+    <%- if @filebeat_config['output']['kafka']['ssl']['key'] != nil -%>
+    key: "<%= @filebeat_config['output']['kafka']['ssl']['key'] %>"
+    <%- end -%>
+    <%- if @filebeat_config['output']['kafka']['ssl']['key_passphrase'] != nil -%>
+    key_passphrase: '<%= @filebeat_config['output']['kafka']['ssl']['key_passphrase'] %>'
+    <%- end -%>
+    <%- if @filebeat_config['output']['kafka']['ssl']['cipher_suites'] != nil -%>
+    cipher_suites:
+    <%- @filebeat_config['output']['kafka']['ssl']['cipher_suites'].each do |cipher_suite| -%>
+      - <%= cipher_suite %>
+    <%- end -%>
+    <%- end -%>
+    <%- if @filebeat_config['output']['kafka']['ssl']['curve_types'] != nil -%>
+    curve_types:
+    <%- @filebeat_config['output']['kafka']['ssl']['curve_types'].each do |curve_type| -%>
+      - <%= curve_type %>
+    <%- end -%>
+    <%- end -%>
+  <%- end -%>
+<%- end -%>
+<%- if @filebeat_config['output']['redis'] != nil -%>
+#------------------------------- Redis output ---------------------------------
+output.redis:
+  <%- if @filebeat_config['output']['redis']['enabled'] != nil -%>
+  enabled: <%= @filebeat_config['output']['redis']['enabled'] %>
+  <%- end -%>
+  hosts:
+  <%- @filebeat_config['output']['redis']['hosts'].each do |host| -%>
+    - <%= host %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['redis']['port'] != nil -%>
+  port: <%= @filebeat_config['output']['redis']['port'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['redis']['key'] != nil -%>
+  key: <%= @filebeat_config['output']['redis']['key'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['redis']['password'] != nil -%>
+  password: <%= @filebeat_config['output']['redis']['password'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['redis']['db'] != nil -%>
+  db: <%= @filebeat_config['output']['redis']['db'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['redis']['datetype'] != nil -%>
+  datetype: <%= @filebeat_config['output']['redis']['datetype'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['redis']['worker'] != nil -%>
+  worker: <%= @filebeat_config['output']['redis']['worker'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['redis']['loadbalance'] != nil -%>
+  loadbalance: <%= @filebeat_config['output']['redis']['loadbalance'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['redis']['timeout'] != nil -%>
+  timeout: <%= @filebeat_config['output']['redis']['timeout'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['redis']['max_retries'] != nil -%>
+  max_retries: <%= @filebeat_config['output']['redis']['max_retries'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['redis']['bulk_max_size'] != nil -%>
+  bulk_max_size: <%= @filebeat_config['output']['redis']['bulk_max_size'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['redis']['proxy_url'] != nil -%>
+  proxy_url: <%= @filebeat_config['output']['redis']['proxy_url'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['redis']['proxy_use_local_resolver'] != nil -%>
+  proxy_use_local_resolver: <%= @filebeat_config['output']['redis']['proxy_use_local_resolver'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['redis']['ssl'] != nil -%>
+  ssl:
+    <%- if @filebeat_config['output']['redis']['ssl']['enabled'] != nil -%>
+    enabled: <%= @filebeat_config['output']['logstash']['ssl']['enabled'] %>
+    <%- end -%>
+    <%- if @filebeat_config['output']['redis']['ssl']['verification_mode'] != nil -%>
+    verification_mode: <%= @filebeat_config['output']['redis']['ssl']['verification_mode'] %>
+    <%- end -%>
+    <%- if @filebeat_config['output']['redis']['ssl']['supported_protocols'] != nil -%>
+    supported_protocols:
+    <%- @filebeat_config['output']['redis']['ssl']['supported_protocols'].each do |protocol| -%>
+      - <%= protocol %>
+    <%- end -%>
+    <%- end -%>
+    <%- if @filebeat_config['output']['redis']['ssl']['certificate_authorities'] != nil -%>
+    certificate_authorities:
+    <%- @filebeat_config['output']['redis']['ssl']['certificate_authorities'].each do |ca| -%>
+      - <%= ca %>
+    <%- end -%>
+    <%- end -%>
+    <%- if @filebeat_config['output']['redis']['ssl']['certificate'] != nil -%>
+    certificate: "<%= @filebeat_config['output']['redis']['ssl']['certificate'] %>"
+    <%- end -%>
+    <%- if @filebeat_config['output']['redis']['ssl']['key'] != nil -%>
+    key: "<%= @filebeat_config['output']['redis']['ssl']['key'] %>"
+    <%- end -%>
+    <%- if @filebeat_config['output']['redis']['ssl']['key_passphrase'] != nil -%>
+    key_passphrase: '<%= @filebeat_config['output']['redis']['ssl']['key_passphrase'] %>'
+    <%- end -%>
+    <%- if @filebeat_config['output']['redis']['ssl']['cipher_suites'] != nil -%>
+    cipher_suites:
+    <%- @filebeat_config['output']['redis']['ssl']['cipher_suites'].each do |cipher_suite| -%>
+      - <%= cipher_suite %>
+    <%- end -%>
+    <%- end -%>
+    <%- if @filebeat_config['output']['redis']['ssl']['curve_types'] != nil -%>
+    curve_types:
+    <%- @filebeat_config['output']['redis']['ssl']['curve_types'].each do |curve_type| -%>
+      - <%= curve_type %>
+    <%- end -%>
+    <%- end -%>
+  <%- end -%>
+<%- end -%>
+<%- if @filebeat_config['output']['file'] != nil -%>
+#------------------------------- File output ----------------------------------
+output.file:
+  <%- if @filebeat_config['output']['file']['enabled'] != nil -%>
+  enabled: <%= @filebeat_config['output']['file']['enabled'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['file']['path'] != nil -%>
+  path: "<%= @filebeat_config['output']['file']['path'] %>"
+  <%- end -%>
+  <%- if @filebeat_config['output']['file']['filename'] != nil -%>
+  filename: <%= @filebeat_config['output']['file']['filename'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['file']['rotate_every_kb'] != nil -%>
+  rotate_every_kb: <%= @filebeat_config['output']['file']['rotate_every_kb'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['file']['number_of_files'] != nil -%>
+  number_of_files: <%= @filebeat_config['output']['file']['number_of_files'] %>
+  <%- end -%>
+<%- end -%>
+<%- if @filebeat_config['output']['console'] != nil -%>
+#-------------------------- Console output ------------------------------------
+output.console:
+  <%- if @filebeat_config['output']['console']['enabled'] != nil -%>
+  enabled: <%= @filebeat_config['output']['console']['enabled'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['console']['pretty'] != nil -%>
+  pretty: <%= @filebeat_config['output']['console']['pretty'] %>
+  <%- end -%>
+  <%- if @filebeat_config['output']['console']['bulk_max_size'] != nil -%>
+  bulk_max_size: <%= @filebeat_config['output']['console']['bulk_max_size'] %>
+  <%- end -%>
+<%- end -%>
+
+#================================= Paths ======================================
+
+# The home path for the filebeat installation. This is the default base path
+# for all other path settings and for miscellaneous files that come with the
+# distribution (for example, the sample dashboards).
+# If not set by a CLI flag or in the configuration file, the default for the
+# home path is the location of the binary.
+#path.home:
+
+# The configuration path for the filebeat installation. This is the default
+# base path for configuration files, including the main YAML configuration file
+# and the Elasticsearch template file. If not set by a CLI flag or in the
+# configuration file, the default for the configuration path is the home path.
+#path.config: <%= @filebeat_config['filebeat']['config_dir'] %>
+
+# The data path for the filebeat installation. This is the default base path
+# for all the files in which filebeat needs to store its data. If not set by a
+# CLI flag or in the configuration file, the default for the data path is a data
+# subdirectory inside the home path.
+#path.data: ${path.home}/data
+
+# The logs path for a filebeat installation. This is the default location for
+# the Beat's log files. If not set by a CLI flag or in the configuration file,
+# the default for the logs path is a logs subdirectory inside the home path.
+#path.logs: ${path.home}/logs
+
+#================================ Logging =====================================
+<%- if @filebeat_config['logging']['level'] != nil -%>
+logging.level: <%= @filebeat_config['logging']['level'] %>
+<%- end -%>
+<%- if @filebeat_config['logging']['selectors'] != nil && @filebeat_config['logging']['selectors'].length > 0 -%>
+logging.selectors:
+<%- @filebeat_config['logging']['selectors'].each do |selector| -%>
+  - <%= selector %>
+<%- end -%>
+<%- end -%>
+<%- if @filebeat_config['logging']['to_syslog'] != nil -%>
+logging.to_syslog: <%= @filebeat_config['logging']['to_syslog'] %>
+<%- end -%>
+<%- if @filebeat_config['logging']['metrics'] != nil -%>
+<%- if @filebeat_config['logging']['metrics']['enabled'] != nil -%>
+logging.metrics.enabled: <%= @filebeat_config['logging']['metrics']['enabled'] %>
+<%- end -%>
+<%- if @filebeat_config['logging']['metrics']['period'] != nil -%>
+logging.metrics.period: <%= @filebeat_config['logging']['metrics']['period'] %>
+<%- end -%>
+<%- end -%>
+<%- if @filebeat_config['logging']['to_files'] != nil -%>
+logging.to_files: <%= @filebeat_config['logging']['to_files'] %>
+<%- end -%>
+<%- if @filebeat_config['logging']['files'] != nil -%>
+logging.files:
+  <%- if @filebeat_config['logging']['files']['path'] != nil -%>
+  path: <%= @filebeat_config['logging']['files']['path'] %>
+  <%- end -%>
+  <%- if @filebeat_config['logging']['files']['name'] != nil -%>
+  name: <%= @filebeat_config['logging']['files']['name'] %>
+  <%- end -%>
+  <%- if @filebeat_config['logging']['files']['rotateeverybytes'] != nil -%>
+  rotateeverybytes: <%= @filebeat_config['logging']['files']['rotateeverybytes'] %>
+  <%- end -%>
+  <%- if @filebeat_config['logging']['files']['keepfiles'] != nil -%>
+  keepfiles: <%= @filebeat_config['logging']['files']['keepfiles'] %>
+  <%- end -%>
+<%- end -%>

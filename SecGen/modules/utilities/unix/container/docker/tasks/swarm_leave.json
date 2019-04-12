@@ -1,0 +1,11 @@
+
+{
+  "description": "Leave a swarm",
+  "input_method": "stdin",
+  "parameters": {
+    "force": {
+      "description": "Force this node to leave the swarm, ignoring warnings",
+      "type": "Optional[Boolean]"
+    }
+  }
+}

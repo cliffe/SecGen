@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<!-- Hash challenges.
+			# TODO : Create a wrapper module so that accounts use the below as passwords in /etc/passwd and /etc/shadow
+	-->
+
+	<system>
+		<system_name>challenge_server</system_name>
+		<base platform="linux" type="server"/>
+
+		<input into="challenges">
+			<!--Unsalted dictionary word - rainbow lookup-->
+			<encoder type="hash">
+				<input into="strings_to_encode">
+					<generator type="random_word_generator"/>
+				</input>
+			</encoder>
+
+			<!--Unsalted password - rainbow lookup-->
+			<encoder type="hash">
+				<input into="strings_to_encode">
+					<generator type="password_generator"/>
+				</input>
+			</encoder>
+
+			<!--Dictionary word - dictionary salt - salt provided-->
+			<encoder type="hash">
+				<input into="strings_to_encode">
+					<generator type="random_word_generator"/>
+				</input>
+				<input into="salt">
+					<generator type="random_word_generator"/>
+				</input>
+				<input into="return_salts">
+					<value>true</value>
+				</input>
+			</encoder>
+
+			<!--Dictionary word - dictionary salt - salt not provided-->
+			<encoder type="hash">
+				<input into="strings_to_encode">
+					<generator type="random_word_generator"/>
+				</input>
+				<input into="salt">
+					<generator type="random_word_generator"/>
+				</input>
+				<input into="return_salts">
+					<value>false</value>
+				</input>
+			</encoder>
+
+			<!-- Random password - dictionary salt - salt provided-->
+			<encoder type="hash">
+				<input into="strings_to_encode">
+					<generator type="password_generator"/>
+				</input>
+				<input into="salt">
+					<generator type="random_word_generator"/>
+				</input>
+				<input into="return_salts">
+					<value>true</value>
+				</input>
+			</encoder>
+
+			<!-- Random password - dictionary salt - salt not provided-->
+			<encoder type="hash">
+				<input into="strings_to_encode">
+					<generator type="password_generator"/>
+				</input>
+				<input into="salt">
+					<generator type="random_word_generator"/>
+				</input>
+				<input into="return_salts">
+					<value>false</value>
+				</input>
+			</encoder>
+
+			<!--Number - unsalted-->
+			<encoder type="hash">
+				<input into="strings_to_encode">
+					<generator type="random_number_generator">
+						<input into="maximum">
+							<value>10000000</value>
+						</input>
+					</generator>
+				</input>
+			</encoder>
+
+			<!--Number - dictionary salt - salt provided-->
+			<encoder type="hash">
+				<input into="strings_to_encode">
+					<generator type="random_number_generator">
+						<input into="maximum">
+							<value>100</value>
+						</input>
+					</generator>
+				</input>
+				<input into="salt">
+					<generator type="random_word_generator"/>
+				</input>
+				<input into="return_salts">
+					<value>true</value>
+				</input>
+			</encoder>
+
+			<!-- Number - dictionary salt - salt not provided-->
+			<encoder type="hash">
+				<input into="strings_to_encode">
+					<generator type="random_number_generator">
+						<input into="maximum">
+							<value>100</value>
+						</input>
+					</generator>
+				</input>
+				<input into="salt">
+					<generator type="random_word_generator"/>
+				</input>
+				<input into="return_salts">
+					<value>false</value>
+				</input>
+			</encoder>
+		</input>
+
+		<network type="private_network" range="dhcp" />
+	</system>
+
+</scenario>

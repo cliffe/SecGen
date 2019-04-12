@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+
+<encoder xmlns="http://www.github/cliffe/SecGen/encoder"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/encoder">
+  <name>ASCII Value Shift Cipher</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Shifts ASCII characters by numerical value via a numerical shift_key. Rotating between standard ASCII
+    characters values 32(' ') to 126('~').
+  </description>
+
+  <type>shift_cipher</type>
+  <type>ascii_value_cipher</type>
+  <type>cipher_encoder</type>
+  <type>ascii_reversible</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+  <difficulty>medium</difficulty>
+
+  <hint>Encoded with a rotation cipher based on the ASCII value using a random key. Uses the 94 printable ascii
+    characters.
+  </hint>
+  <solution>Decoding tools are available online e.g. http://www.dcode.fr/rot-cipher</solution>
+
+  <read_fact>strings_to_encode</read_fact>
+  <read_fact>shift_key</read_fact>
+
+  <default_input into="strings_to_encode">
+    <generator type="flag_generator"/>
+  </default_input>
+  <default_input into="shift_key">
+    <generator type="number_range">
+      <input into="lower_bound">
+        <value>1</value>
+      </input>
+      <input into="upper_bound">
+        <value>94</value>
+      </input>
+    </generator>
+  </default_input>
+
+  <output_type>encoded_strings</output_type>
+</encoder>

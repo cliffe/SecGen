@@ -1,0 +1,15 @@
+server {
+    listen 80;
+    server_tokens off;
+    server_name PROJECT_HOST;
+    root PROJECT_DIR/www;
+
+    location / {
+         include uwsgi_params;
+         uwsgi_pass unix:PROJECT_DIR/www/uwsgi.sock;
+     }
+
+     location /static {
+         alias PROJECT_DIR/www/static;
+     }
+}

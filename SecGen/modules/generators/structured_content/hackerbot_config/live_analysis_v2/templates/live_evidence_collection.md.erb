@@ -1,0 +1,350 @@
+## Live analysis
+
+After suspecting a compromise, before powering down the server for offline analysis, the first step is typically to perform some initial investigation of the live system. Live analysis aims to investigate suspicions that a compromise has occurred, and gather volatile information, which may potentially include evidence that would be lost by powering down the computer.
+
+**On the desktop VM,** ==ssh into the compromised server==
+
+```bash
+ssh <%= $compromised_server_ip %>
+```
+
+> Because the same users exist on both systems you can leave off the user name (normally ssh *username*@*server_ip*)
+
+**On the compromised_server VM (ssh):** To keep a record of what we are doing on the system, start the script command:
+
+```bash
+mkdir evid
+script -f evid/invst.log
+```
+> Note: *if you do this lab over multiple sessions*, be sure to save a copy of the log of your progress (evid/invst.log), and restart `script`.
+
+==LogBook question: Make a note of the risks and benefits associated with storing a record of what we are doing locally on the computer that we are investigating.==
+
+Consider the advantages of *handwritten* documentation of what investigators are doing.
+
+### Using a Live CD/DVD
+
+Many of the commands used to investigate what is happening on a system are standard Unix commands. However, it is advisable to run these from a read-only source, since software on your system may have been tampered with. Also, using read-only media minimises the changes made to your local filesystem, such as executable file access times.
+
+Next you will configure the compromised_server VM to have access to the FIRE (Forensic and Incident Response Environment) CD/DVD ISO (which is equivalent to inserting the optical disk into your server's DVD-tray). FIRE is an example of a Linux Live Disk that includes tools for forensic investigation. In addition to tools to boot to a version of Linux for offline investigation of evidence, the disk contains Linux tools for live analysis.
+
+Add the FIRE IR CD disk:
+
+In Hacktivity, click on the VM's settings (gear) icon and choose ==Change CD/DVD==.
+
+==Select the "fire-0.3.5b.iso"== file from the dropdown box. ==Click "Attach disk"==
+
+**Continuing on the compromised_server VM**, ==mount the disk==, so that we can access its contents:
+
+```bash
+sudo mount /media/cdrom0/ -o exec
+```
+
+On a typical system, many binary executables are dynamically linked; that is, these programs do not physically contain all the libraries (shared code) they use, and instead load that code from shared library files when the program runs. On Unix systems the shared code is typically contained in ".so" files, while on Windows ".dll" files contain shared code. The risks associated with using dynamically linked executables to investigate security breaches is that access times on the shared objects will be updated, and the shared code may also have been tampered with. For this reason it is safest to use programs that are statically linked; that is, have been compiled to physically contain a copy of all of the shared code that it uses.
+
+**On your Desktop VM (in a separate console tab)** ==look at which libraries are dynamically loaded== when you run a typical command:
+
+```bash
+ldd /bin/ls
+```
+
+Examine the output, and determine how many external libraries are involved.
+
+**On the compromised_server VM (ssh console)**: The FIRE disk contains a number of statically compiled programs to be used for investigations.
+
+==Look at the commands available:==
+
+```bash
+ls /media/cdrom0/statbins/linux2.2_x86/
+```
+
+==Check that these are indeed statically linked:==
+
+```bash
+ldd /media/cdrom0/statbins/linux2.2_x86/ls
+```
+
+==Compare the output to the previous command== run on your own Desktop system. The output will be distinctly different, stating that the program is not dynamically compiled.
+
+Note that, although an improvement, using statically linked programs such as these still do not guarantee that you can trust the output of the programs you run. ==Consider why, and make a note of this in your LogBook.==
+
+## First look around
+
+Run ls to view the contents of the home directory on the compromised_server.
+
+```bash
+cd
+ls
+```
+
+Run the static version
+```
+/media/cdrom0/statbins/linux2.2_x86/ls
+```
+
+Note the presence of a "u_r_powned" file in the output from the live disk version of ls! Running the local version of ls is not accurately reporting the files that exist! Lucky we thought to run another copy of ls.
+
+## Collecting live state manually
+
+The next step is to use various tools to capture information about the live system, for later analysis. One approach to storing the resulting evidence is to send results over the network via Netcat or SSH, without storing them locally. This has the advantage of not changing local files, and is less likely to tip off an attacker, rather than storing the evidence you are collecting on the compromised machine itself.
+
+**On your Desktop VM  (not from the console still sshed into the server)**, ==create a directory for the evidence you are about to collect.==
+
+```bash
+mkdir evidence
+```
+
+### Saving output from the compromised server to your desktop
+
+**On the desktop VM (not from the sshed server)**, ==test sending the results of some commands over SSH to your Desktop VM==:
+
+```bash
+ssh <%= $compromised_server_ip %> "echo this command is running on the server"
+
+ssh <%= $compromised_server_ip %> "echo this command is running on the server" | tee evidence/test_output
+
+ls evidence
+
+cat evidence/test_output
+```
+
+> Take the time to make sure you understand which system each command above is running on.
+> tee prints to the screen as well as saving the output to disk (you can instead redirect the output to a file with `>`, but you won't see the output while the program runs.)
+
+### Comparing process lists
+
+Collect results of a process listing using ps over SSH to the compromised VM:
+
+```bash
+ssh -t <%= $compromised_server_ip %> "sudo ps aux" | tee evidence/local_ps_output
+```
+
+**On your Desktop VM**, find the newly created files and view the contents.
+
+> Hint: you may wish to use the Dolphin graphical file browser, then navigate to "/home/<%= $main_user %>/evidence".
+
+Run the statically compiled version of ls from the incident response disk to list the contents of /proc (this is provided dynamically by the kernel: a directory exists for every process on the system), and once again send the results to your Desktop VM...
+
+Run the command:
+
+```bash
+ssh <%= $compromised_server_ip %> "/media/cdrom0/statbins/linux2.2_x86/ls /proc" | tee evidence/proc_ls_static
+```
+
+**On your Desktop VM**, find the newly created files and ==compare the list of pids (numbers representing processes) output from the previous commands==. This is the second column of output in the ps\_out, with the numbers in proc\_ls\_static.
+
+Hint: you can do the comparison manually, or using commands such as "cut" (or [*awk*](http://lmgtfy.com/?q=use+awk+to+print+column)), "sort", and "diff". For example, `cat ps_out | awk '{ print $4 }'` will pipe the contents of the file ps\_out into the awk command, which will split on spaces, and only display the fourth field. Ensure this is displaying the list of pids, if not try selecting a different field. You could pipe this through to "sort". Then save that to a file (by appending " &gt; pids\_ps\_out"). Remember "man awk", "man sort", and "man diff" will tell you about how to use the commands (and Google may also come in handy).
+
+Are the same processes shown each time? Can you explain why the outputs from different tools are giving you a different picture of the system? If not, that is very suspicious, and likely indicates a break-in, and that we probably shouldn't trust the output of local commands.
+
+> Note that some changes are to expected simply due to timing, such as short running processes, including the commands you are actually running to do your investigation. However, you wouldn't expect processes that are consistently running to not be visible in ps, etc.
+
+## Gathering live state using statically compiled programs
+
+Save a list of the files currently being accessed by programs:
+
+```bash
+ssh <%= $compromised_server_ip %> "/media/cdrom0/statbins/linux2.2_x86/lsof" | tee evidence/lsof_out
+```
+
+Save a list of network connections:
+
+```bash
+ssh -t <%= $compromised_server_ip %> "sudo netstat -apn" | tee evidence/netstat_out
+
+ssh -t <%= $compromised_server_ip %> "sudo /media/cdrom0/statbins/linux2.2_x86/netstat -apn" | tee evidence/netstat_static_out
+```
+> (Some commands such as this one may take awhile to run, wait until the Bash prompt returns)
+
+Save a list of the network resources currently being accessed by programs:
+
+```bash
+ssh -t <%= $compromised_server_ip %> "sudo /media/cdrom0/statbins/linux2.2_x86/lsof -P -i -n" | tee evidence/lsof_net_out
+```
+
+Save a copy of the routing table:
+
+```bash
+ssh <%= $compromised_server_ip %> "/media/cdrom0/statbins/linux2.2_x86/route" | tee evidence/route_out
+```
+
+Save a copy of the ARP cache:
+
+```bash
+ssh <%= $compromised_server_ip %> "/media/cdrom0/statbins/linux2.2_x86/arp -a" | tee evidence/arp_out
+```
+
+Save a list of the kernel modules currently loaded (as reported by the kernel):
+
+```bash
+ssh -t <%= $compromised_server_ip %> "sudo /media/cdrom0/statbins/linux2.2_x86/cat /proc/modules" | tee evidence/lsmod_out
+```
+
+Save a copy of the Bash history:
+
+```bash
+ssh -t <%= $compromised_server_ip %> "sudo /media/cdrom0/statbins/linux2.2_x86/cat /root/.bash_history" | tee evidence/bash_history
+```
+
+**Creating images of the system state**
+
+We can take a snapshot of the live state of the computer by dumping the entire contents of memory (what is in RAM/swap) into a file. On a Linux system /proc/kcore contains an ELF-formatted core dump of the kernel. Save a snapshot of the kernel state:
+
+```bash
+ssh -t <%= $compromised_server_ip %> "sudo /media/cdrom0/statbins/linux2.2_x86/dd if=/proc/kcore conv=noerror,sync" | tee evidence/kcore
+```
+==After 10 seconds or so press Ctrl-C to stop.==
+
+Next, we can copy entire partitions to our other system, to preserve the exact state of stored data, and so that we can conduct offline analysis without modifying the filesystem.
+
+Start by identifying the device files for the partitions on the compromised system:
+
+```bash
+df
+```
+
+Note that on this system the root partition (mounted on "/"), is /dev/sda1.
+
+> Help: on some VMs, you may need to replace "sda1" with "hda1".
+
+Then **you could** (see the tip below) copy byte-for-byte the contents of the entire root ("/") partition over the network (where /dev/sda1 was identified from the previous command):
+
+```bash
+ssh -t <%= $compromised_server_ip %> "/media/cdrom0/statbins/linux2.2_x86/dd if=/dev/sda1 conv=noerror,sync" | tee evidence/sda1.img
+```
+> Tip: Feel free to ==skip this step==. Running this will take some time, so you may wish to continue with the next step while the copying runs.
+
+This command could be repeated for each partition including swap partitions. For now, let's accept that we have all we need.
+
+**On your Desktop VM**, list all the files you have created:
+
+```bash
+ls -la /home/<%= $main_user %>/evidence
+```
+
+At this stage ==take a closer look through== some of the information you have collected.
+
+==LogBook Task:== Examine the contents of the various output files and identify anything that may indicate that the computer has been compromised by an attacker. Hint: does the network usage seem suspicious?
+
+### Collecting live state using scripts
+
+As you may have concluded from the previous tasks, manually collecting all this information from a live system can be a fairly time consuming process. Incident response data collection scripts can automate much of this process. A common data collection script "linux-ir.sh", is included on the FIRE disk, and is also found on the popular Helix IR disk.
+
+**On the compromised_server VM (ssh console tab from earlier)**, have a look through the script:
+
+```bash
+less /media/cdrom0/statbins/linux-ir.sh
+```
+
+Note that this is a Bash script, and each line contains commands that you could type into the Bash shell. Bash provides the command prompt on most Unix systems, and a Bash script is an automated way of running commands. This script is quite simple, with a series of commands (similar to some of those you have already run) to display information about the running system.
+
+Identify some commands within the script that collect information you have not already collected above.
+
+Exit viewing the script (press q).
+
+Run the data collection script, redirecting output to your Desktop VM:
+
+```bash
+ssh -t <%= $compromised_server_ip %> "cd /media/cdrom0/statbins; sudo /media/cdrom0/statbins/linux-ir.sh" | tee evidence/ir_out
+```
+
+**On your Desktop VM**, have a look at the output from the script:
+
+```bash
+less /home/<%= $main_user %>/evidence/ir_out
+```
+
+Use what you have learnt to spot some evidence of a security compromise.
+
+### Checking for rootkits
+
+An important concern when investigating an incident, is that the system (including user-space programs, libraries, and possibly even the OS kernel) may have been modified to hide the presence of changes made by an attacker. For example, the ps and ls commands may be modified, so that certain processes and files (respectively) are not displayed. The libraries used by various commands may have been modified, so that any programs using those libraries are provided with deceptive information. If the kernel has been modified, it can essentially change the behaviour of *any* program on the system, by changing the kernel's response to instructions from processes. For example, if a program attempts to *open* a file for viewing, the kernel could provide one set of content, while an attempt to *execute* the file may result in a completely different program running.
+
+Detecting the presence of rootkits is tricky, and prone to error. However, there are a number of techniques that, while not foolproof, can detect a number of rootkits. Methods of detection include: looking for inconsistencies between different ways of gathering data about the system state, and looking for known instances of malicious files.
+
+Chkrootkit is a Bash script that performs a number of tests for the presence of various rootkits.
+
+**On the compromised_server VM (ssh)**, have a quick look through the script, it is much more complex than the previous linux-ir.sh script:
+
+```bash
+less /media/cdrom0/statbins/chkrootkit-linux/chkrootkit
+```
+> Exit less
+
+Confirm that if we were to run ls, we would be running the local (dynamic) version, probably /bin/ls:
+
+```bash
+which ls
+```
+
+To understand why, look at the value of the environment variable \$PATH, which tells Bash where to look for programs:
+
+```bash
+echo $PATH
+```
+
+Set the \$PATH environment variable to use our static binaries wherever possible, so that when chkrootkit calls external programs it will (wherever possible) use the ones stored on the IR disk:
+
+```bash
+export PATH=$static:$PATH
+```
+
+Confirm that now if we were to run less, we would be running the static version:
+
+```bash
+which ls
+```
+
+This should report the path to our static binary on the FIRE disk.
+
+It is now safe to run chkrootkit[^1]:
+
+```bash
+ssh <%= $compromised_server_ip %> "PATH=$static:$PATH sudo /media/cdrom0/statbins/chkrootkit-linux/chkrootkit" | tee evidence/chkrootkit_out
+```
+> Help: you may get a message in the terminal before you type the password. You should still type the password for the script to run. The script should not take long to run.
+
+**On your Desktop VM**, have a look at the output:
+
+```bash
+less /home/<%= $main_user %>/evidence/chkrootkit_out
+```
+
+From the output, identify files or directories reported as "INFECTED", or suspicious.
+
+At this stage you should be convinced that this system is compromised, and infected with some form of rootkit.
+
+**On the compromised_server VM (ssh console tab)**
+
+**You could**, power down the compromised system, so that we can continue analysis offline:
+
+```bash
+/media/cdrom0/statbins/linux2.2_x86/sync; /media/cdrom0/statbins/linux2.2_x86/sync
+```
+> If you do not know what the sync command does, on your Desktop VM, run "info coreutils 'sync invocation'" for more information.
+>
+> At this point you could tell Hacktivity to force a Power Off. However, you might want to wait until you finish the Hackerbot challenges.
+
+Why might we want to force a power off (effectively "pulling the plug"), rather than going through the normal shutdown process (by running "halt" or "shutdown")?
+
+## Offline analysis of live data collection
+
+Note that even if the bash\_history was not saved, we can still recover commands that were run while the computer was running. This is possible by searching through the saved RAM (the kcore ELF dump we saved earlier).
+
+**On your Desktop VM**, run:
+
+```bash
+sudo -u <%= $main_user %> bash -c "strings -n 10 /home/<%= $main_user %>/evidence/kcore > /home/<%= $main_user %>/evidence/kcore_strings"
+```
+
+The above "strings" command extracts ASCII text from the binary core dump.
+
+Open the extracted strings, and look for evidence of the commands you ran before saving the kernel core dump:
+
+```bash
+less /home/<%= $main_user %>/evidence/kcore_strings
+```
+
+Now press the '/' key, and type a regex to search for commands you previously ran to collect information about the system. For example, try searching for "statbins/linux2.2_x86" (press 'n' for next).
+
+[^1]: Note that it would be better to not have to include \$PATH, and only use static versions. Unfortunately, FIRE does not include statically compiled versions of all of the commands that chkrootkit requires.

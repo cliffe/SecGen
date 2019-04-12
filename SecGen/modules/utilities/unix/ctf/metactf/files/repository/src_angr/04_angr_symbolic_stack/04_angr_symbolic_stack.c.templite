@@ -1,0 +1,78 @@
+${
+import random, os
+random.seed(os.urandom(8))
+userdef = [random.randint(0, 0xFFFFFFFF) for i in xrange(2)]
+}$
+
+#include <stdio.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <string.h>
+
+#define USERDEF0 ${ userdef[0] }$
+#define USERDEF1 ${ userdef[1] }$
+
+char msg[] = "${ description }$";
+
+void print_msg() {
+  printf("%s", msg);
+}
+
+uint32_t complex_function0(uint32_t value) {
+  ${ write(''.join([ ('value ^= %d;' % (random.randint(0, 0xFFFFFFFF),)) for _ in xrange(32) ])) }$
+  return value;
+}
+
+uint32_t complex_function1(uint32_t value) {
+  ${ write(''.join([ ('value ^= %d;' % (random.randint(0, 0xFFFFFFFF),)) for _ in xrange(32) ])) }$
+  return value;
+}
+
+void handle_user() {
+  uint32_t user_int0;
+  uint32_t user_int1;
+  scanf("%u %u", &user_int0, &user_int1);
+  user_int0 = complex_function0(user_int0);
+  user_int1 = complex_function1(user_int1);
+  if ((user_int0 ^ USERDEF0) || (user_int1 ^ USERDEF1)) {
+    printf("Try again.\n");
+  } else {
+    printf("Good Job.\n");
+    printflag();
+  }
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main(int argc, char* argv[]) {
+  //print_msg();
+  printf("Enter the password: ");
+  handle_user();
+}

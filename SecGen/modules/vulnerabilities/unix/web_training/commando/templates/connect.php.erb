@@ -1,0 +1,18 @@
+<?php
+// This code is taken from lauras code base and edited as only one connection is needed in this case
+//starts the php session for the log in form
+session_start();
+// localhost is where the data base is stored with the standard user commando_user
+$servername = "127.0.0.1";
+$username = "commando_user";
+$password = "<%= @db_password %>";
+// the name of the database
+$dbname = "store";
+
+// Create connection
+$conn2 = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+?>

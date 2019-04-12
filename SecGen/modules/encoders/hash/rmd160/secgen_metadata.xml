@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<encoder xmlns="http://www.github/cliffe/SecGen/encoder"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/encoder">
+  <name>RMD160 Encoder</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Generates an RMD160 hash for each of the strings.</description>
+
+  <type>hash</type>
+  <type>rmd160</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>strings_to_encode</read_fact>
+  <read_fact>salt</read_fact>
+  <read_fact>return_salts</read_fact>
+
+  <output_type>string</output_type>
+  
+</encoder>

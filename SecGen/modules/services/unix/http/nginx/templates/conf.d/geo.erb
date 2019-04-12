@@ -1,0 +1,33 @@
+# MANAGED BY PUPPET
+<%
+  # sorting ip addresses in ascending order is more efficient for nginx - so we need
+  # to convert them to numbers first via IPAddr
+  require 'ipaddr'
+-%>
+geo <%= @address ? "#{@address} " : '' %>$<%= @name %> {
+<% if @ranges -%>
+  ranges;
+<% end -%>
+<% if @default -%>
+  default <%= @default %>;
+<% end -%>
+<% if @delete -%>
+  delete  <%= @delete %>;
+<% end -%>
+<% if @proxies -%>
+
+  <%- if @proxy_recursive -%>
+  proxy_recursive;
+  <%- end -%>
+  <%- [@proxies].flatten.each do |proxy| -%>
+  proxy <%= proxy %>;
+  <%- end -%>
+<% end -%>
+<% if @networks -%>
+
+  <%- field_width = @networks.inject(0) { |l,(k,v)| k.size > l ? k.size : l } -%>
+  <%- @networks.sort_by{|k,v| IPAddr.new(k.split('-').first).to_i }.each do |key,value| -%>
+  <%= sprintf("%-*s", field_width, key) %> <%= value %>;
+  <%- end -%>
+<% end -%>
+}

@@ -1,0 +1,74 @@
+{
+  "name": "puppetlabs-docker",
+  "version": "3.1.0",
+  "author": "Puppet Labs",
+  "summary": "Module for installing and managing docker",
+  "license": "Apache-2.0",
+  "source": "https://github.com/puppetlabs/puppetlabs-docker.git",
+  "project_page": "https://github.com/puppetlabs/puppetlabs-docker",
+  "issues_url": "https://github.com/puppetlabs/puppetlabs-docker/issues",
+  "dependencies": [
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 4.24.0"
+    },
+    {
+      "name": "puppetlabs/apt",
+      "version_requirement": ">= 4.4.1"
+    },
+    {
+      "name": "puppetlabs/translate",
+      "version_requirement": ">= 0.0.1 <=1.1.0"
+    },
+    {
+      "name": "puppetlabs/powershell",
+      "version_requirement": ">= 2.1.4"
+    },
+    {
+      "name": "puppetlabs/reboot",
+      "version_requirement": ">= 2.0.0"
+    }
+  ],
+  "data_provider": null,
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "14.04",
+        "16.04",
+        "18.04"
+      ]
+    },
+    {
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "8.0",
+        "9.0"
+      ]
+    },
+    {
+      "operatingsystem": "Windows",
+      "operatingsystemrelease": [
+        "Server 2016"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 4.0.0 <=5.5.6"
+    }
+  ]
+}

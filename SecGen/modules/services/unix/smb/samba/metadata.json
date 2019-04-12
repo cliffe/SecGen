@@ -1,0 +1,30 @@
+{
+  "name": "example42-samba",
+  "version": "2.0.16",
+  "author": "Alessandro Franceschi",
+  "summary": "Puppet module for samba",
+  "license": "Apache2",
+  "source": "https://github.com/example42/puppet-samba",
+  "project_page": "http://www.example42.com",
+  "issues_url": "https://github.com/example42/puppet-samba/issues",
+  "dependencies": [
+    {"name":"example42/puppi","version_requirement":">=2.0.0"},
+    {"name":"example42/firewall","version_requirement":">=2.0.0"},
+    {"name":"example42/monitor","version_requirement":">=2.0.0"}
+  ],
+  "description": "This module installs and manages samba. Check README for details.",
+  "checksums": {
+    "Modulefile": "cfbb7165fbddef20427bf007f70f6529",
+    "README.rdoc": "1c4bc73aacbed851bff2d27a56df0209",
+    "Rakefile": "7749f3f800147c17f465a0e2213419d1",
+    "manifests/init.pp": "568409a6ffd6e10270fca4e7924f42bf",
+    "manifests/params.pp": "21283fb6f1ccaa23ea6a02a998f39979",
+    "manifests/spec.pp": "ea3a4002ee39256387f6b3b7d6775789",
+    "spec/classes/samba_spec.rb": "5b566023befa9a0ee577afb380f26aab",
+    "spec/spec_helper.rb": "0db89c9a486df193c0e40095422e19dc",
+    "templates/spec.erb": "95554a191230174b3ba5942f8d8d5b1e",
+    "tests/absent.pp": "b06f7aab9880b651e59525e4ee5a3560",
+    "tests/disable.pp": "cb3f51e4a1c77e91a8d74d978d93f413",
+    "tests/init.pp": "6e56182476a8b9f993ea5c0400024adf"
+  }
+}

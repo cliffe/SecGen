@@ -1,0 +1,43 @@
+
+{
+  "description": "Initializes a swarm",
+  "input_method": "stdin",
+  "parameters": {
+    "advertise_addr": {
+      "description": "Advertised address",
+      "type": "Optional[String[1]]"
+    },
+    "autolock": {
+      "description": "Enable manager autolocking",
+      "type": "Optional[Boolean]"
+    },
+    "cert_expiry": {
+      "description": "Validity period for node certificates",
+      "type": "Optional[String[1]]"
+    },
+    "dispatcher_heartbeat": {
+      "description": "Dispatcher heartbeat period",
+      "type": "Optional[String[1]]"
+    },
+    "external_ca": {
+      "description": "Specifications of one or more certificate signing endpoints",
+      "type": "Optional[String[1]]"
+    },
+    "force_new_cluster": {
+      "description": "Force create a new cluster from current state",
+      "type": "Optional[Boolean]"
+    },
+    "listen_addr": {
+      "description": "Listen address",
+      "type": "Optional[String[1]]"
+    },
+    "max_snapshots": {
+      "description": "Number of additional Raft snapshots to retain",
+      "type": "Optional[Integer[1]]"
+    },
+    "snapshot_interval": {
+      "description": "Number of log entries between Raft snapshots",
+      "type": "Optional[Integer[1]]"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<base xmlns="http://www.github/cliffe/SecGen/base"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/base">
+  <name>Ubuntu Xenial 16.04 LTS 64-bit Server by puppetlabs</name>
+  <author>Thomas Shaw</author>
+  <module_license>GPLv3</module_license>
+  <description>TODO </description>
+  <cpu_word_size>64-bit</cpu_word_size>
+  <type>server</type>
+  <type>cli</type>
+
+  <platform>linux</platform>
+  <platform>unix</platform>
+  <distro>Ubuntu Xenial 16.04 LTS</distro>
+  <url>https://app.vagrantup.com/puppetlabs/boxes/ubuntu-16.04-64-puppet/versions/1.0.0/providers/virtualbox.box</url>
+  <esxi_url>https://app.vagrantup.com/redwiz666/boxes/ubuntu-16.04-64-puppet/versions/1.0.0/providers/vmware_esxi.box</esxi_url>
+  <ovirt_template>debian_server</ovirt_template>
+
+  <reference>https://atlas.hashicorp.com/puppetlabs</reference>
+  <software_license>various</software_license>
+</base>

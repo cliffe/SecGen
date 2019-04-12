@@ -1,0 +1,53 @@
+#### Detecting changes to resources using package management
+
+On Linux systems, package management systems are used to organise, install, and update software. The package management system has a database that keeps track of all the files for each program or software package. Depending on the package management system used, the database may maintain hashes in order to detect changes to files since install. DEB-based systems (such as Debian, and Ubuntu) and RPM-based systems (such as Red Hat, Fedora, and OpenSUSE), typically store hashes of each file that is included in software packages. There are commands that can be used to detect changes to files that have occurred since being installed by the package management software.
+
+Note that there are times where it is perfectly normal for a number of files to not match the 'fresh' versions that were installed: for example, configuring a system for use will involve editing configuration files that were distributed with software packages.
+
+==View the files containing MD5 hashes== stored for the packages on the system:
+```bash
+ls /var/lib/dpkg/info/*.md5sums
+```
+
+==View the contents== of one of the files.
+
+debsums is a program that can use those MD5 hashes to verify that files on a DEB-based system match the corresponding packages that are installed. By default it doesn't check configuration files (such as in /etc/).
+
+Verify all files installed by all packages:
+```bash
+sudo debsums -ac
+```
+> Ctrl-C to end the program early.
+> Options for debsum include:
+> -a also check config files
+> -e *only* check config files
+> -c only report *changed* files
+
+Verify the files installed by a specific package:
+```bash
+sudo debsums firefox
+```
+
+Choose any system file on the computer, such as /etc/securetty. To determine which package the file belongs to:
+
+```bash
+dpkg-query -S *any-file-you-chose*
+```
+> Where ==any-file-you-chose== is any file such as /etc/securetty.
+
+The output of that command contains the package-name, and is required in the next
+step.
+
+Check the integrity of the file:
+
+```bash
+sudo debsums -a *package-name*
+```
+> Where package-name is the output from the previous command.
+
+Try to understand the cause of any files failing the integrity checks.
+
+==Workbook question: What are the limitations of this approach?==
+
+- What files will (and won't) this approach to integrity management cover?
+- Are the hashes protected against tampering?

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="solve">
+<h2>Solve a binary</h2>
+  {% for key, values in d.items() %}
+     <form action="{{url_for('solve')}}" method="post">
+     <select name="{{key}}">
+         <option selected disabled>{{key}}</option>
+         {% for v in values %}
+	 <option value="{{v}}" />{{v}}</option>
+	 {% endfor %}
+	<input type="text" placeholder="answer" name="winput" maxlength="64" />
+	<input type="submit" value="Submit" />
+     </form>
+  {% endfor %}
+</div>
+{% endblock %}

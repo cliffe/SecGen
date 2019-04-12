@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>Nmap Setuid</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Nmap setuid local privilege escalation</description>
+
+  <type>access_controls</type>
+  <privilege>root_rwx</privilege>
+  <access>local</access>
+  <platform>linux</platform>
+  <difficulty>medium</difficulty>
+
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+
+  <default_input into="strings_to_leak">
+    <generator type="flag_generator"/>
+  </default_input>
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+  </default_input>
+
+  <requires>
+    <module_path>modules/utilities/unix/audit_tools/scanners/nmap</module_path>
+  </requires>
+
+</vulnerability>

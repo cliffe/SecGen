@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Random Medium Password Generator</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Selects a random word or name 6 characters long and appends 2 random digits.</description>
+
+  <type>crackable_password_generator</type>
+  <type>medium_password_generator</type>
+  <type>password_generator</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <reference>https://github.com/danielmiessler/SecLists</reference>
+
+  <output_type>generated_passwords</output_type>
+
+</generator>

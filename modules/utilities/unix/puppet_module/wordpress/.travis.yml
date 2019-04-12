@@ -1,0 +1,48 @@
+---
+sudo: false
+dist: trusty
+language: ruby
+cache: bundler
+before_install:
+  - bundle -v
+  - rm Gemfile.lock || true
+  - gem update --system
+  - gem update bundler
+  - gem --version
+  - bundle -v
+script:
+  - 'bundle exec rake $CHECK'
+bundler_args: --without system_tests
+rvm:
+  - 2.4.1
+env:
+  - PUPPET_GEM_VERSION="~> 5.0" CHECK=spec
+matrix:
+  fast_finish: true
+  include:
+    -
+      env: CHECK=rubocop
+    -
+      env: CHECK="syntax lint"
+    -
+      env: CHECK=metadata_lint
+    -
+      env: CHECK=spec
+    -
+      env: PUPPET_GEM_VERSION="~> 4.0" CHECK=spec
+      rvm: 2.1.9
+branches:
+  only:
+    - master
+    - /^v\d/
+notifications:
+  email: false
+deploy:
+  provider: puppetforge
+  user: puppet
+  password:
+    secure: ""
+  on:
+    tags: true
+    all_branches: true
+    condition: "$DEPLOY_TO_FORGE = yes"

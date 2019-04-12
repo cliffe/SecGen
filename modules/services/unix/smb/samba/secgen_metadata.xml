@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<service xmlns="http://www.github/cliffe/SecGen/service"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
+  <name>Samba file share Server</name>
+  <author>example42</author>
+  <author>Jason Keighley</author>
+  <module_license>Apache v2</module_license>
+  <description>An installation of Samba</description>
+
+  <type>smb</type>
+  <platform>linux</platform>
+
+  <!--optional details-->
+  <reference>https://forge.puppet.com/example42/samba</reference>
+  <software_name>samba</software_name>
+  <software_license>Apache v2</software_license>
+
+  <!--Cannot co-exist with other samba installations-->
+  <conflict>
+    <software_name>samba</software_name>
+  </conflict>
+
+  <conflict>
+    <name>.*Stretch.*</name>
+  </conflict>
+  <conflict>
+    <name>.*Kali.*</name>
+  </conflict>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+</service>

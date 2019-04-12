@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<!-- an example remote storage system, with a remotely exploitable vulnerability that can then be escalated to root -->
+	<system>
+		<system_name>nginx_server</system_name>
+		<base platform="linux" type="server"/>
+
+		<service module_path="modules/services/unix/http/nginx"></service>
+
+		<network type="private_network" range="dhcp"></network>
+	</system>
+
+</scenario>

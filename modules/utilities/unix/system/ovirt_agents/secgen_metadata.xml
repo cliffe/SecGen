@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>oVirt Agents</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>Apache v2</module_license>
+  <description>Installs some oVirt agents for installing into VMs to improve UX. This should really just be installed in the templates, and exists as a SecGen module as a shortcut during testing.</description>
+
+  <type>vm_tools</type>
+  <platform>linux</platform>
+
+  <requires>
+    <type>update</type>
+  </requires>
+</utility>

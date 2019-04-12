@@ -1,0 +1,22 @@
+{
+  "Client": {
+    "ApiVersion": "1.27",
+    "Arch": "amd64",
+    "BuildTime": "Fri Mar 24 00:40:33 2017",
+    "GitCommit": "c6d412e",
+    "GoVersion": "go1.7.5",
+    "Os": "linux",
+    "Version": "17.03.1-ce-client"
+  },
+  "Server": {
+    "ApiVersion": "1.27",
+    "Arch": "amd64",
+    "BuildTime": "Fri Mar 24 00:40:33 2017",
+    "GitCommit": "c6d412e",
+    "GoVersion": "go1.7.5",
+    "KernelVersion": "3.13.0-115-generic",
+    "MinAPIVersion": "1.12",
+    "Os": "linux",
+    "Version": "17.03.1-ce-server"
+  }
+}

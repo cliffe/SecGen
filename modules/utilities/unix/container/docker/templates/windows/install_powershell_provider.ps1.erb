@@ -1,0 +1,36 @@
+# this file install the Windows Docker package using the DockerMsftProvider powershell provider
+$dockerProviderName="DockerMsftProvider"
+
+Write-Information "Installing Package Provider"
+$module = Install-PackageProvider NuGet -Force `
+<% if @nuget_package_provider_version -%>
+-RequiredVersion <%= @nuget_package_provider_version %>
+<% end -%>
+
+If ($module -eq $null) {
+    Write-Error "Failed to install NuGet PackagePrivider"
+    Exit 1
+}
+
+Write-Information "Installing Docker Provider"
+Install-Module $dockerProviderName -Force `
+<% if @docker_msft_provider_version -%>
+-RequiredVersion <%= @docker_msft_provider_version %>
+<% end -%>
+
+$provider = Get-Module -ListAvailable -Name $dockerProviderName
+If ($provider -eq $null) {
+    Write-Error "Failed to install Docker Microsoft Provider"
+    Exit 1
+}
+
+Write-Information "Installing Docker Package"
+$package=Install-Package <%= @docker_ee_package_name %> -ProviderName $dockerProviderName -Force `
+<% if @version -%>
+-RequiredVersion <%= @version %>
+<% end -%>
+
+If ($package -eq $null) { 
+    Write-Error "Failed to install Docker Package"
+    Exit 1
+}

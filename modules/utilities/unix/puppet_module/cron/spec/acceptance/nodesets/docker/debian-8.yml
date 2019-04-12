@@ -1,0 +1,20 @@
+---
+# This file is managed via modulesync
+# https://github.com/voxpupuli/modulesync
+# https://github.com/voxpupuli/modulesync_config
+HOSTS:
+  debian-8-x64:
+    platform: debian-8-amd64
+    hypervisor: docker
+    image: debian:8
+    docker_preserve_image: true
+    docker_cmd: '["/sbin/init"]'
+    docker_image_commands:
+      - 'apt-get update && apt-get install -y cron locales-all net-tools wget'
+      - 'rm -f /usr/sbin/policy-rc.d'
+      - 'systemctl mask getty@tty1.service getty-static.service'
+CONFIG:
+  trace_limit: 200
+  masterless: true
+...
+# vim: syntax=yaml

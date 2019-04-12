@@ -1,0 +1,2 @@
+---
+elasticsearch::defaults_location: /etc/default

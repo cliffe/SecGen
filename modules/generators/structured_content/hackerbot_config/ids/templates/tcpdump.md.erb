@@ -1,0 +1,125 @@
+### Tcpdump
+
+This section gives a quick overview of the basics of network monitoring, using tools such as Tcpdump and Wireshark. Keep in mind that these are important foundations, and we will quickly build on these.
+
+**From your ids_snoop VM.** (==Login to the ids_snoop VM==)
+
+To view live network traffic, ==start tcpdump on the ids_snoop:==
+
+First, identify the network interface card (nic) to use:
+```bash
+ip -4 -o a s | grep <%= $ids_server_ip %>
+```
+> The "ip a s" command lists all local IP addresses, and -4 filters to only show IPv4, while -o sets one-line output mode
+
+```bash
+sudo tcpdump -i ens3
+```
+> Where **ens3**, is the name of the interface given in response to the above command.
+
+With tcpdump still running,  **from the desktop VM** ==perform a ping to the ids_snoop VM.==
+
+```bash
+ping <%= $ids_server_ip %>
+```
+> Run the above from the desktop VM.
+
+> Note that Tcpdump displays the network activity taking place, including the pings, and various TCP connections and ARP requests. Depending on your environment you might also be seeing the traffic between various other VMs.
+
+==Stop the ping== with Ctrl-C.
+
+The IDS server has a network card interface that can enter promiscuous mode, meaning that it can view traffic destined to other systems on the network. (Without entering promiscuous mode a computer would only view the traffic destined for itself.)
+
+Test this, **from the desktop** ==ping the web_server==:
+
+```bash
+ping <%= $web_server_ip %>
+```
+> If your network is configured correctly, from the Tcpdump running on the ids_snoop you should see the pings between these separate VMs (the desktop, and the web_server). Take the time to confirm that this is working. If it is not showing this traffic, but did show the last output, you need to configure the ids_snoop to be able to view the network traffic.
+
+Once you have seen tcpdump in action displaying these packets ==press Ctrl-C to exit.==
+
+Tcpdump can format the output in various ways, showing various levels of detail.
+
+**From the ids_snoop**, ==run:==
+
+```bash
+sudo tcpdump -A  -i ens3
+```
+> This shows the packet **content** without the information about the source and destination. Note that this content will contain binary data that can be difficult understand.
+
+When you ==access a web page in a browser on the desktop VM== (go ahead... ==reload this labsheet== webpage), Tcpdump will display the content, so long as the traffic is not SSL encrypted (for example, so long as the URL doesn't start with http**s**://). Depending on the webserver and browser, the content may be compressed (but not encrypted) to save bandwidth.
+
+**From the desktop VM**, use command line tools to ==view the webserver pages:==
+
+```bash
+curl <%= $web_server_ip %>
+```
+
+==Ping the web_server again== and observe the output.
+
+Stop tcpdump (Ctrl-C) on the ids_snoop VM once you have observed the output.
+
+==Run the following== command **on the ids_snoop:**
+
+```bash
+sudo tcpdump -v  -i ens3
+```
+> The above is even more verbose, showing lots of detail about the network traffic.
+
+Now try the ==above again==. Note the very detailed output.
+
+It is possible to write tcpdump network traffic to storage, so that it can be analysed later:
+```bash
+sudo tcpdump -w /tmp/tcpdump-output  -i ens3
+```
+
+While that is running, ==access a web page from Firefox on the desktop VM== browse to ==[*http://<%= $web_server_ip %>*](http://<%= $web_server_ip %>)== (In a new tab.)
+
+Then ==close tcpdump== (Ctrl-C).
+
+To view the file containing the tcpdump output on the ids_snoop VM type:
+
+```bash
+less /tmp/tcpdump-output
+```
+> (Press "y" to see the output if you are warned that it may be a binary file)
+
+> You should be able to PageUp and PageDown through the file.
+
+> Press "Q" to quit when ready
+
+Run `man tcpdump` and read about the many options for output and filtering.
+
+### Tcpdump filtering and Wireshark
+
+We can also use tcpdump to do some simple monitoring of the network traffic to detect certain key words.
+
+**On the ids_snoop**, ==run:==
+
+```bash
+kdesudo wireshark &
+> For this exercise you can ignore the warning about running Wireshark as root, or read online to learn to use setcap to grant Wireshark more specific privileges.
+
+```
+And in another command tab:
+```bash
+sudo tcpdump -A  -i ens3 | grep "GET"
+```
+
+In Wireshark, choose the network interface card (such as ens3) then click the start icon, to ==start monitoring traffic==. Generate some traffic and explore how to ==view it using Wireshark==.
+
+You can also open the captured network traffic in Wireshark.
+
+Open a web browser **on the desktop VM**, and visit [*http://<%= $web_server_ip %>*](http://<%= $web_server_ip %>), note that tcpdump captures *most* network content, and grep can be used to filter it down to lines that are interesting to us.
+> If you don't see traffic generated from this, you may need to press Ctrl-F5 to force the browser not to load from a local cache.
+
+==Right click on an HTTP request in Wireshark and "Follow", "TCP Stream".==
+
+==Right click the same HTTP request in Wireshark and "Follow", "HTTP Stream".==
+
+==In your log book explain the differences in the TCP and HTTP stream view for the same web traffic.==
+
+Note that making sense of network traffic information using tcpdump and/or Wireshark is possible (and is a common sys-admin task), but the output is too noisy to be constantly and effectively monitored by a human to detect security incidents. Therefore we can use an IDS such as Snort to monitor and analyse the network traffic to detect activity that it is configured to alert.
+
+Make sure tcpdump is stopped (Ctrl-C).

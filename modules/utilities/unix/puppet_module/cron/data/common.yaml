@@ -1,0 +1,10 @@
+---
+
+cron::package_name: cron
+cron::service_name: cron
+
+lookup_options:
+  cron::users_allow:
+    merge: unique
+  cron::users_deny:
+    merge: unique

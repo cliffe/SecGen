@@ -1,0 +1,186 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <system>
+    <system_name>metactf</system_name>
+    <base platform="linux" type="desktop" distro="Stretch"/>
+
+    <utility type="reversing_tools"/>
+
+    <utility module_path=".*parameterised_accounts">
+      <input into="accounts" into_datastore="account">
+        <generator type="account">
+          <input into="username">
+            <value>challenger</value>
+          </input>
+          <input into="password">
+            <value>password</value>
+          </input>
+          <input into="strings_to_leak">
+            <value/>
+          </input>
+          <input into="leaked_filenames">
+            <value/>
+          </input>
+          <input into="super_user">
+            <value>false</value>
+          </input>
+
+        </generator>
+      </input>
+    </utility>
+
+    <utility module_path=".*metactf">
+      <input into="challenge_list">
+        <value>src_csp/Ch1-2/Ch1_Ltrace</value>
+        <value>src_csp/Ch1-2/Ch1_Readelf</value>
+        <value>src_csp/Ch1-2/Ch2_01_Endian</value>
+        <value>src_csp/Ch1-2/Ch2_01_Showkey</value>
+        <value>src_csp/Ch1-2/Ch2_03_IntOverflow</value>
+        <value>src_csp/Ch1-2/Ch2_03_TwosComplement</value>
+        <value>src_csp/Ch1-2/Ch2_03_XorInt</value>
+        <value>src_csp/Ch1-2/Ch2_05_FloatConvert</value>
+        <value>src_csp/Ch3-ExtraFormatStr/Ch3_Format0_Leak</value>
+        <value>src_csp/Ch3-ExtraFormatStr/Ch3_Format1_LeakDollar</value>
+        <value>src_csp/Ch3-ExtraFormatStr/Ch3_Format2_nCorruptKey</value>
+        <value>src_csp/Ch3-ExtraFormatStr/Ch3_Format3_nWriteKey</value>
+        <value>src_csp/Ch3-ExtraFormatStr/Ch3_Format4_nWriteFnP</value>
+        <value>src_csp/Ch3-ExtraFormatStr/Ch3_Format5_nTargetWrite</value>
+        <value>src_csp/Ch3-ExtraFormatStr/Ch3_Format6_PLTHijack</value>
+        <value>src_csp/Ch3.1-3.5/Ch3_00_GdbIntro</value>
+        <value>src_csp/Ch3.1-3.5/Ch3_00_GdbRegs</value>
+        <value>src_csp/Ch3.1-3.5/Ch3_00_GdbSetmem</value>
+        <value>src_csp/Ch3.1-3.5/Ch3_01_GdbPractice</value>
+        <value>src_csp/Ch3.1-3.5/Ch3_02_AsciiInstr</value>
+        <value>src_csp/Ch3.1-3.5/Ch3_04_FnPointer</value>
+        <value>src_csp/Ch3.1-3.5/Ch3_04_LinkedList</value>
+        <value>src_csp/Ch3.1-3.5/Ch3_05_XorLong</value>
+        <value>src_csp/Ch3.1-3.5/Ch3_05_XorStr</value>
+        <value>src_csp/Ch3.6-3.7/Ch3_06_Conditionals</value>
+        <value>src_csp/Ch3.6-3.7/Ch3_06_LoopMulti</value>
+        <value>src_csp/Ch3.6-3.7/Ch3_06_SwitchTable</value>
+        <value>src_csp/Ch3.6-3.7/Ch3_07_FloatReturn</value>
+        <value>src_csp/Ch3.6-3.7/Ch3_07_ParamsRegs</value>
+        <value>src_csp/Ch3.6-3.7/Ch3_07_ParamsStack</value>
+        <value>src_csp/Ch3.6-3.7/Ch3_07_SegvBacktrace</value>
+        <value>src_csp/Ch3.6-3.7/Ch3_07_StaticInt</value>
+        <value>src_csp/Ch3.6-3.7/Ch3_07_StaticStrcmp</value>
+        <value>src_csp/Ch3.7-3.9/Ch3_07_CanaryBypass</value>
+        <value>src_csp/Ch3.7-3.9/Ch3_07_HijackPLT</value>
+        <value>src_csp/Ch3.7-3.9/Ch3_07_ScanfOverflow</value>
+        <value>src_csp/Ch3.7-3.9/Ch3_07_StackSmash</value>
+        <value>src_csp/Ch3.7-3.9/Ch3_08_2DArrays</value>
+        <value>src_csp/Ch3.7-3.9/Ch3_08_Matrix</value>
+        <value>src_csp/Ch3.7-3.9/Ch3_09_Structs</value>
+        <value>src_csp/Ch5-8/Ch5_08_LoopUnroll</value>
+        <value>src_csp/Ch5-8/Ch7_13_LdPreloadGetUID</value>
+        <value>src_csp/Ch5-8/Ch8_05_PsSignals</value>
+        <value>src_csp/Ch5-8/Ch8_05_Signals</value>
+      </input>
+      <input into="groups">
+        <value>challenge01</value>
+        <value>challenge02</value>
+        <value>challenge03</value>
+        <value>challenge04</value>
+        <value>challenge05</value>
+        <value>challenge06</value>
+        <value>challenge07</value>
+        <value>challenge08</value>
+        <value>challenge09</value>
+        <value>challenge10</value>
+        <value>challenge11</value>
+        <value>challenge12</value>
+        <value>challenge13</value>
+        <value>challenge14</value>
+        <value>challenge15</value>
+        <value>challenge16</value>
+        <value>challenge17</value>
+        <value>challenge18</value>
+        <value>challenge19</value>
+        <value>challenge20</value>
+        <value>challenge21</value>
+        <value>challenge22</value>
+        <value>challenge23</value>
+        <value>challenge24</value>
+        <value>challenge25</value>
+        <value>challenge26</value>
+        <value>challenge27</value>
+        <value>challenge28</value>
+        <value>challenge29</value>
+        <value>challenge30</value>
+        <value>challenge31</value>
+        <value>challenge32</value>
+        <value>challenge33</value>
+        <value>challenge34</value>
+        <value>challenge35</value>
+        <value>challenge36</value>
+        <value>challenge37</value>
+        <value>challenge38</value>
+        <value>challenge39</value>
+        <value>challenge40</value>
+        <value>challenge41</value>
+        <value>challenge42</value>
+        <value>challenge43</value>
+        <value>challenge44</value>
+      </input>
+      <input into="flags">
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+        <generator type="flag_generator"/>
+      </input>
+      <input into="account">
+        <datastore>account</datastore>
+      </input>
+      <input into="include_chapters">
+        <value>true</value>
+      </input>
+    </utility>
+
+    <network type="private_network" range="dhcp"/>
+  </system>
+
+</scenario>

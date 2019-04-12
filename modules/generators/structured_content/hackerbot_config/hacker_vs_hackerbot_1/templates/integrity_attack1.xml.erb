@@ -1,0 +1,36 @@
+
+	<attack>
+<% $random_user = 'user' + SecureRandom.hex(3) %>
+		<!-- topic: Detecting changes to resources using backups-->
+		<prompt>An attempt to add a new user is coming, let it happen. But first create a backup of /etc/passwd to /home/<%= $main_user %>/backups/passwd.</prompt>
+
+		<post_command>rm /etc/.pwd.lock; sudo adduser <%= $random_user %> --gecos '<%= $random_user %>' --disabled-password --quiet; echo $?</post_command>
+		<suppress_command_output_feedback />
+		<condition>
+			<output_matches>returned error code</output_matches>
+			<message>:( Couldn't add a user -- make sure /etc/ is not still read-only mounted!.</message>
+		</condition>
+		<condition>
+			<output_matches>0</output_matches>
+			<message>User added</message>
+			<trigger_quiz />
+		</condition>
+		<condition>
+			<output_matches>already exists</output_matches>
+			<message>:( Remove the user and try again.</message>
+		</condition>
+		<condition>
+			<output_matches>Permission denied|Operation not permitted|Read-only</output_matches>
+			<message>:( You stopped the attack, rather than monitor for changes...</message>
+		</condition>
+		<else_condition>
+			<message>:( Something was not right...</message>
+		</else_condition>
+
+		<quiz>
+			<question>Now after the attack, find the username added by diffing using a backup. What username was created?</question>
+			<answer>^<%= $random_user %>$</answer>
+			<correct_answer_response>:) <%= $flags.pop %></correct_answer_response>
+			<trigger_next_attack />
+		</quiz>
+	</attack>

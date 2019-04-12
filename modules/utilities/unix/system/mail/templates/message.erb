@@ -1,0 +1,18 @@
+From <%= @sender %> <%= @sent_datetime %>
+Return-path: <%= @sender %>
+Envelope-to: <% @recipient%>
+Delivery-date: <%= @sent_datetime %>
+Received: from <%= @sender_user %> by <%= @sender_domain%> with local (Exim 4.80)
+	(envelope-from <%= @sender %>)
+	id <%= @id %>
+	for <%= @recipient %>; <%= @sent_datetime %>
+To: <%= @recipient %>
+Subject: <%= @subject %>
+Message-Id: <<%= @message_id%>@<%= @recipient_domain%>>
+From: <%= @sender_user %> <<%= @sender %>>
+Date: <%= @sent_datetime %>
+
+<%= @content.join("\n") %>
+
+
+

@@ -1,0 +1,26 @@
+files {
+<% if @motd -%>
+    motd            "<%= @motd %>";
+<% end -%>
+<% if @shortmotd -%>
+    shortmotd       "<%= @shortmotd %>";
+<% end -%>
+<% if @opermotd -%>
+    opermotd        "<%= @opermotd %>";
+<% end -%>
+<% if @svsmotd -%>
+    svsmotd         "<%= @svsmotd %>";
+<% end -%>
+<% if @botmotd -%>
+    botmotd         "<%= @botmotd %>";
+<% end -%>
+<% if @rules -%>
+    rules           "<%= @rules %>";
+<% end -%>
+<% if @tunefile -%>
+    tunefile        "<%= @tunefile %>";
+<% end -%>
+<% if @pidfile -%>
+    pidfile         "<%= @pidfile %>";
+<% end -%>
+};

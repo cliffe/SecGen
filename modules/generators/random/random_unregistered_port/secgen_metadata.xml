@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Random Unregistered Port Number</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>MIT</module_license>
+  <description>A random port number between 1025 and 65,535.</description>
+
+  <type>random_number_generator</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <output_type>integer</output_type>
+</generator>

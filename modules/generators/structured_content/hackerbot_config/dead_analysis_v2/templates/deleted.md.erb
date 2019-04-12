@@ -1,0 +1,79 @@
+## Deleted files analysis
+
+Autopsy can be used to view files that have been deleted. Simply click "All Deleted Files", and browse through the deleted files it has discovered. Some of the deleted files will have known filenames, others will not.
+
+However, this is not an efficient way of searching through content to find relevant information.
+
+Since we are primarily interested in recovering lost log files (which are ASCII human-readable), one of the quickest methods is to extract all unallocated data from our evidence image, and search that for likely log messages. Autopsy has a keyword search. However, manual searching can be more efficient.
+
+In a terminal console in Kali Linux, ==run:==
+
+```bash
+blkls -A evidence/hda1.img | strings > evidence/unallocated
+```
+
+This will extract all unallocated blocks from the partition, and run this through strings, which reduces it to text only (removing any binary data), and the results are stored in "evidence/unallocated".
+
+Open the extracted information for viewing:
+
+```bash
+less evidence/unallocated
+```
+
+Scroll down, and ==find any deleted email message logs.==
+
+> Hint: try pressing ":" then type "/To:".
+
+==LogBook Question: What sorts of information was emailed?==
+
+To get the list of all email recipients quit less (press 'q'), and ==run:==
+
+```bash
+grep "To:.*@" evidence/unallocated
+```
+
+Once again, ==open the extracted deleted information== for viewing:
+
+```bash
+less evidence/unallocated
+```
+
+Scroll down until you notice some Bash history. What files have been downloaded using wget? Quit less, and write a grep command to search for wget commands used to download files.
+
+---
+
+==Write a grep command to search for commands used by the attacker to delete files from the system.==
+
+Once again, open the extracted deleted information for viewing:
+
+```bash
+less evidence/unallocated
+```
+
+Press ":" and type "/shellcode". There a quite a few exploits on this system, not all of which were used in the compromise.
+
+==Search for the contents of log files==, that were recorded on the day the attack took place:
+
+```bash
+grep "Aug[/ ]10" evidence/unallocated
+```
+Note that there is an error message from Apache that repeats many times, complaining that it cannot hold a lockfile. This is caused by the attacker having deleted the logs directory, which Apache is using.
+
+If things have gone extremely well the output will include further logs from Apache, including error messages with enough information to search the Internet for information about the exploit that was used to take control of Apache to run arbitrary code. If not, then at some point during live analysis you may have clobbered some deleted files. This is the important piece of information from unallocated disk space:
+
+`
+[Sun Aug 10 13:24:29 2003] [error] mod_ssl: SSL handshake failed (server localhost.localdomain:443, client 213.154.118.219) (OpenSSL library error follows)
+
+[Sun Aug 10 13:24:29 2003] [error] OpenSSL: error:1406908F:SSL routines:GET_CLIENT_FINISHED:connection id is different 
+`
+
+This may indicate the exploitation of this software vulnerability:
+
+> OpenSSL SSLv2 Malformed Client Key Remote Buffer Overflow Vulnerability
+>
+> [*http://www.securityfocus.com/bid/5363*](http://www.securityfocus.com/bid/5363)
+
+[^1]: Note that the specifics of the times that are recorded depend on the filesystem in use. A typical Unix filesystem keeps a record of the most recent modification, most recent access, and most recent inode change. On Windows filesystems a creation date may be recorded in place of the inode change date.
+
+[^2]: [*http://wiki.sleuthkit.org/index.php?title=Mactime\_output*](http://wiki.sleuthkit.org/index.php?title=Mactime_output)
+ 

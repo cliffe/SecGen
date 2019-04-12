@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Random Name Generator</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Random name generator using the Faker + Forgery ruby gems.</description>
+
+  <type>name_generator</type>
+  <type>name</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <reference>https://github.com/stympy/faker</reference>
+  <reference>https://github.com/sevenwire/forgery</reference>
+
+  <output_type>name</output_type>
+</generator>

@@ -1,0 +1,62 @@
+<%- _item = scope.lookupvar('_template_scope')[:item] -%>
+<%- if scope.function_versioncmp([@apache_version, '2.4']) >= 0 -%>
+  <%- if _item['require'] && _item['require'] != '' && _item['require'] !~ /unmanaged/i -%>
+    <%- if _item['require'].is_a?(Hash) -%>
+      <%- case _item['require']['enforce'].downcase
+          when 'all','none','any' then -%>
+    <Require<%= _item['require']['enforce'].capitalize %>>
+        <%- Array(_item['require']['requires']).each do |req| -%>
+      Require <%= req.strip %>
+        <%- end -%>
+    </Require<%= _item['require']['enforce'].capitalize %>>
+      <%- else -%>
+        <%- scope.function_warning(["Apache::Vhost: Require can only overwritten with all, none or any."]) -%>
+      <%- end -%>
+    <%- else -%>
+      <%- Array(_item['require']).each do |req| -%>
+    Require <%= req %>
+      <%- end -%>
+    <%- end -%>
+  <%- end -%>
+  <%- if _item['auth_require'] -%>
+    Require <%= _item['auth_require'] %>
+  <%- end -%>
+  <%- if !(_item['require'] && _item['require'] != '') && _item['require'] !~ /unmanaged/i && !(_item['auth_require']) -%>
+    Require all granted
+  <%- end -%>
+<%- else -%>
+  <%- if _item['auth_require'] -%>
+    Require <%= _item['auth_require'] %>
+  <%- end -%>
+  <%- if _item['order'] and _item['order'] != '' -%>
+    Order <%= Array(_item['order']).join(',') %>
+  <%- else -%>
+    Order allow,deny
+  <%- end -%>
+  <%- if _item['deny'] and ! [ false, 'false', '' ].include?(_item['deny']) -%>
+    <%- if _item['deny'].kind_of?(Array) -%>
+      <%- Array(_item['deny']).each do |restrict| -%>
+    Deny <%=  restrict %>
+      <%- end -%>
+    <%- else -%>
+    Deny <%= _item['deny'] %>
+    <%- end -%>
+  <%- end -%>
+  <%- if _item['allow'] and ! [ false, 'false', '' ].include?(_item['allow']) -%>
+    <%- if _item['allow'].kind_of?(Array) -%>
+      <%- Array(_item['allow']).each do |access| -%>
+    Allow <%=  access %>
+    <%- end -%>
+  <%- else -%>
+    Allow <%= _item['allow'] %>
+  <%- end -%>
+  <%- elsif [ 'from all', 'from All' ].include?(_item['deny']) -%>
+  <%- elsif ! _item['deny'] and [ false, 'false', '' ].include?(_item['allow']) -%>
+    Deny from all
+  <%- else -%>
+    Allow from all
+  <%- end -%>
+  <%- if _item['satisfy'] and _item['satisfy'] != '' -%>
+    Satisfy <%= _item['satisfy'] %>
+  <%- end -%>
+<%- end -%>

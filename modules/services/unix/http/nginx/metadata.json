@@ -1,0 +1,61 @@
+{
+  "name": "jfryman-nginx",
+  "version": "0.3.0",
+  "author": "James Fryman",
+  "summary": "Puppet NGINX management module",
+  "license": "MIT",
+  "source": "https://github.com/jfryman/puppet-nginx.git",
+  "project_page": "http://github.com/jfryman/puppet-nginx",
+  "issues_url": "https://github.com/jfryman/puppet-nginx/issues",
+  "dependencies": [
+    {"name":"puppetlabs/stdlib","version_requirement":">= 4.2.0 <5.0.0"},
+    {"name":"puppetlabs/apt","version_requirement":">= 1.8.0 <3.0.0"},
+    {"name":"puppetlabs/concat","version_requirement":">= 1.1.1 <3.0.0"}
+  ],
+  "data_provider": null,
+  "requirements": [
+    {
+      "name": "pe",
+      "version_requirement": "3.x"
+    },
+    {
+      "name": "puppet",
+      "version_requirement": "3.x"
+    }
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "OpenBSD"
+    },
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "SLES"
+    },
+    {
+      "operatingsystem": "Solaris"
+    },
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "14.04",
+        "12.04",
+        "10.04"
+      ]
+    }
+  ]
+}

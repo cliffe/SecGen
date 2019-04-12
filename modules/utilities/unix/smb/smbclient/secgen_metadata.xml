@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Samba client</name>
+  <author>Jason Keighley</author>
+  <module_license>Apache v2</module_license>
+  <description>An installation of smbclient</description>
+
+  <type>smb</type>
+  <platform>linux</platform>
+
+  <!--optional details-->
+  <software_name>smbclient</software_name>
+  <software_license>Apache v2</software_license>
+
+  <!--Cannot co-exist with other smbclient installations-->
+  <conflict>
+    <software_name>smbclient</software_name>
+  </conflict>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+</utility>

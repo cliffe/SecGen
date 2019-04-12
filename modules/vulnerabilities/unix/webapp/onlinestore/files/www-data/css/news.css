@@ -1,0 +1,74 @@
+/* --------- Preview List --------- */
+
+div#preview_list {
+  display: inline-block;
+  position: absolute;
+
+  width: 28%;
+
+  top: 200;
+  margin: 0;
+  margin-right: 2%;
+
+  background-color: F8FAFF;
+}
+
+div#preview_list ul {
+  list-style: none;
+
+  margin: 0;
+  padding: 0;
+}
+
+div#preview_list li {
+  width: 100%;
+
+  border-style: solid;
+  border-width: 1px;
+}
+
+div#preview_list li:hover {
+  border-color: #000000;
+
+  cursor: pointer;
+}
+
+div#preview_list li * {
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+  overflow: hidden;
+
+  margin: 0px;
+}
+
+li.preview {
+  border-color:  #F8FAFF;
+}
+
+li.marked_preview {
+  background-color: #7586AB;
+  border-color: #000000;
+}
+
+/* --------- Story --------- */
+
+div#story_pane {
+  display: inline-block;
+
+  width: 70%;
+
+  margin: 0;
+  margin-left: 30%;
+}
+
+div#story_pane ul {
+  list-style: none;
+
+  margin: 0;
+  padding: 0;
+}
+
+li.hidden_story {
+  display: none;
+}

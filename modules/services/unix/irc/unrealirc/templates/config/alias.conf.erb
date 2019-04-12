@@ -1,0 +1,25 @@
+alias <%= @aliasname %> {
+    type            <%= @type %>;
+<% if @target -%>
+    target          <%= @target %>;
+<% end -%>
+<% @formats.each do |format| -%>
+    format "<%= format['regex'] %>" {
+<% if format['target'] -%>
+        target      <%= format['target'] %>;
+<% end -%>
+<% if format['command'] -%>
+        command     <%= format['command'] %>;
+<% end -%>
+<% if format['type'] -%>
+        type        <%= format['type'] %>;
+<% end -%>
+<% if format['parameters'] -%>
+        parameters  <%= format['parameters'] %>;
+<% end -%>
+    };
+<% end -%>
+<% if @spamfilter -%>
+    spamfilter      <%= @spamfilter %>;
+<% end -%>
+};

@@ -1,0 +1,12 @@
+{
+  "ChangeLog": "5b2b703aec32f3fd59d14cb7bdfc7a6c",
+  "README.md": "3d26239d1981ee13be5c53d6ef1187a3",
+  "Rakefile": "20b80e526e351a74df2001f504e756d2",
+  "manifests/apache.pp": "0a83be988699e6debf81a5d93af2641d",
+  "manifests/init.pp": "c5401a6950b8e576b8b5ea9970e4fc65",
+  "manifests/mysql.pp": "33e00aecad89ca381a1c35427e3146d3",
+  "metadata.json": "3c761b019c216ea0d79da474fa7b7b39",
+  "spec/classes/init_spec.rb": "41a2b9253e06c120efe6227aa20196cb",
+  "spec/spec_helper.rb": "a55d1e6483344f8ec6963fcb2c220372",
+  "tests/init.pp": "fcb1cd3be3ee69614bbb0b087d17a8ec"
+}

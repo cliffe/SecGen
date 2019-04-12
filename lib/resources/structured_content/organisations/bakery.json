@@ -1,0 +1,47 @@
+{
+  "business_name": "Artisan Bakery",
+  "business_motto": "The loaves are in the oven.",
+  "business_address": "1080 Headingley Lane, Headingley, Leeds, LS6 1BN",
+  "domain": "artisan-bakery.co.uk",
+  "office_telephone": "0113 222 1080",
+  "office_email": "orders@artisan-bakery.co.uk",
+  "industry": "Bakers",
+  "manager": {
+    "name": "Maxie Durgan",
+    "address": "1080 Headingley Lane, Headingley, Leeds, LS6 1BN",
+    "phone_number": "0113 222 1080",
+    "email_address": "maxie@artisan-bakery.co.uk",
+    "username": "maxie",
+    "password": ""
+  },
+  "employees": [
+    {
+      "name": "Matthew Riley",
+      "address": "1080 Headingley Lane, Headingley, Leeds, LS6 1BN",
+      "phone_number": "0113 222 1080",
+      "email_address": "matt@artisan-bakery.co.uk",
+      "username": "matt",
+      "password": ""
+    },
+    {
+      "name": "Emelie Lowe",
+      "address": "1080 Headingley Lane, Headingley, Leeds, LS6 1BN",
+      "phone_number": "0113 222 1080",
+      "email_address": "emelie@artisan-bakery.co.uk",
+      "username": "emelie",
+      "password": ""
+    },
+    {
+      "name": "Antonio Durgan",
+      "address": "1080 Headingley Lane, Headingley, Leeds, LS6 1BN",
+      "phone_number": "0113 222 1080",
+      "email_address": "antonio@artisan-bakery.co.uk",
+      "username": "antonio",
+      "password": ""
+    }
+  ],
+  "product_name": "Baked goods",
+  "intro_paragraph": [
+    "Finest bakery in Headingley since 1900. Baked fresh daily. Bread loaves, teacakes, sweet and savoury treats. We are open from 9 am til 6 pm, every day except for bank holidays."
+  ]
+}

@@ -1,0 +1,10 @@
+log "<%= @log_path %>" {
+    maxsize           <%= @maxsize %>;
+<% if @flags -%>
+    flags {
+<% @flags.each do |flag| -%>
+        <%= flag %>;
+<% end -%>
+    };
+<% end -%>
+};

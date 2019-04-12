@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+<encoder xmlns="http://www.github/cliffe/SecGen/encoder"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/encoder">
+  <name>Vigenere Cipher</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>The Vigenere cipher is a type of polyalphabetic cipher, a square table of alphabets shifted 1 space on
+    each row (aka a 'tabula recta').
+
+    The encryption key is repeated for the length of the string being encoded. To encrypt, select the column with the
+    letter to encode and pick the row which the corresponds with the current position in the encryption key and find
+    where they intercept.
+  </description>
+
+  <type>vigenere_cipher</type>
+  <type>alpha_reversible</type>
+  <type>cipher_encoder</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+  <difficulty>medium</difficulty>
+
+  <reference>http://www.cs.mtu.edu/~shene/NSF-4/Tutorial/VIG/Vig-Base.html</reference>
+  <reference>http://rosettacode.org/wiki/Vigen%C3%A8re_cipher#Ruby</reference>
+
+  <hint>Learn about Vigenere ciphers here: https://www.youtube.com/watch?v=zNO4PTlg62k - The first part is a key.</hint>
+  <solution>The first section is a key. Decoding tools are available online e.g. http://www.dcode.fr/vigenere-cipher</solution>
+
+  <read_fact>strings_to_encode</read_fact>
+  <read_fact>encryption_key</read_fact>
+
+  <default_input into="strings_to_encode">
+    <generator type="flag_generator"/>
+  </default_input>
+  <default_input into="encryption_key">
+    <generator type="random_word.*"/>
+  </default_input>
+
+  <output_type>encoded_strings_and_keys</output_type>
+</encoder>

@@ -1,0 +1,38 @@
+# Intrusion Detection and Prevention Systems: Configuration and Monitoring using Snort
+
+## Getting started
+### VMs in this lab
+
+==Start these VMs== (if you haven't already):
+
+- hackerbot_server (leave it running, you don't log into this)
+- ids_snoop (IP address: <%= $ids_server_ip %>)
+- web_server (IP address: <%= $web_server_ip %>)
+- desktop
+
+All of these VMs need to be running to complete the lab.
+
+**Ensure the ids_snoop VM is allowed promiscuous mode.** If you are completing this lab on Leeds Beckett oVirt infrastructure, this should be sorted. Otherwise, if you have used SecGen to spin up VMs, you need to ensure your VMs have permission to monitor networks using promiscuous mode. On the Leeds Beckett oVirt infrastructure we have snoop networks, which mirror all the traffic between systems. On Virtualbox, you would need to go to Advanced network settings for the host-only network on the ids_snoop and enable promiscious mode.
+
+### Your login details for the "desktop" and "ids_snoop" VMs
+User: <%= $main_user %>
+Password: tiaspbiqe2r (**t**his **i**s **a** **s**ecure **p**assword **b**ut **i**s **q**uite **e**asy **2** **r**emember)
+
+You won't login to the hackerbot_server or web_server, but all the VMs need to be running to complete the lab.
+
+### For marks in the module
+1. **You need to submit flags**. Note that the flags and the challenges in your VMs are different to other's in the class. Flags will be revealed to you as you complete challenges throughout the module. Flags look like this: ==flag{*somethingrandom*}==. Follow the link on the module page to submit your flags.
+2. **You need to document the work and your solutions in a workbook**. This needs to include screenshots (including the flags) of how you solved each Hackerbot challenge and a writeup describing your solution to each challenge, and answering any "Workbook Questions". The workbook will be submitted later in the semester.
+
+## Hackerbot!
+![small-right](images/skullandusb.svg)
+
+This exercise involves interacting with Hackerbot, a chatbot who will task you to monitor the network and will attack your systems. If you satisfy Hackerbot by completing the challenges, she will reveal flags to you.
+
+Work through the below exercises, completing the Hackerbot challenges as noted.
+
+---
+## Network monitoring basics
+It is important for an organisation to monitor their network for detecting unwanted behaviour, such as malicious attacks or organisational resources being misused.
+
+Please take care to observe the instructions on which VM each command should be run from. (*There is quite a bit of switching between VMs in this lab.*)

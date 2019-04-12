@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>Writable Passwd File</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Changes permissions on passwd file to 777, open to account tampering to local users.
+    This is not a common misconfiguration, and not particularly subtle.</description>
+
+  <type>access_control_misconfiguration</type>
+  <privilege>root_rw</privilege>
+  <access>local</access>
+  <platform>linux</platform>
+
+  <!--optional vulnerability details-->
+  <difficulty>medium</difficulty>
+  <cvss_base_score>6.6</cvss_base_score>
+  <cvss_vector>AV:L/AC:M/Au:S/C:C/I:C/A:C</cvss_vector>
+
+  <!--<solution>TODO:</solution>-->
+
+</vulnerability>

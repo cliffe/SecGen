@@ -1,0 +1,47 @@
+################################################################################
+# This file is managed by Puppet, and is refreshed regularly.                  #
+# Edit at your own peril!                                                      #
+################################################################################
+## <%= @name %> Cron Job
+
+# Environment Settings
+<% Array(@environment).join("\n").split(%r{\n}).each do |env_var|
+     if env_var.match(%r{\S+=\S+}) -%>
+<%= env_var %>
+<%   elsif env_var.match(%r{\S}) -%>
+## Possible input error: <%= env_var %>
+<%   end
+   end -%>
+
+<%- Array(@jobs).each do | job | -%>
+  <%- if job['command'].nil? -%>
+    <%- scope.function_fail(["Must pass command to Cron::Jobs"]) -%>
+  <%- end -%>
+  <%- if job['minute'].nil? -%>
+    <%- job['minute'] = '*' -%>
+  <%- end -%>
+  <%- if job['hour'].nil? -%>
+    <%- job['hour'] = '*' -%>
+  <%- end -%>
+  <%- if job['date'].nil? -%>
+    <%- job['date'] = '*' -%>
+  <%- end -%>
+  <%- if job['month'].nil? -%>
+    <%- job['month'] = '*' -%>
+  <%- end -%>
+  <%- if job['weekday'].nil? -%>
+    <%- job['weekday'] = '*' -%>
+  <%- end -%>
+  <%- if job['user'].nil? -%>
+    <%- job['user'] = 'root' -%>
+  <%- end -%>
+<% if job.has_key?('description') -%>
+
+# <%= job['description'] %>
+<% end -%>
+<%- if job['special'].nil? -%>
+<%= job['minute'] %> <%= job['hour'] %> <%= job['date'] %> <%= job['month'] %> <%= job['weekday'] %>  <%= job['user'] %>  <%= job['command'] %>
+<%  else -%>
+@<%= job['special'] %>  <%= job['user'] %>  <%= job['command'] %>
+<%  end -%>
+<% end -%>

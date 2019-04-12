@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>Access control mis-configurations suid bash root</name>
+  <author>Jason Keighley</author>
+  <module_license>Apache v2</module_license>
+  <description>Mis-configure /bin/bash with 4777 (suid, rwxrwxrwx) to enable root privileges</description>
+
+  <type>access_control_mis-configurations</type>
+  <privilege>root_rw</privilege>
+  <access>local</access>
+  <platform>unix</platform>
+
+  <hint>Shell permission misconfiguration</hint>
+  <solution>Bash shell running with root permissions due to suid bit set (try /bin/bash -cp "some_command")</solution>
+</vulnerability>

@@ -1,0 +1,7 @@
+# File managed by Puppet.
+<%=
+  $LOAD_PATH.unshift(File.join(File.dirname(__FILE__),'..','..','..','lib'))
+  require 'puppet_x/elastic/hash'
+
+  @config.extend(Puppet_X::Elastic::SortedHash).to_yaml
+-%>

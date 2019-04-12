@@ -1,0 +1,103 @@
+${
+import random, os
+random.seed(os.urandom(8))
+userdef_charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+userdef0 = ''.join(random.choice(userdef_charset) for _ in range(8))
+}$
+
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#define USERDEF0 "${ userdef0 }$"
+#define USERDEF1 "${ userdef1 }$.txt"
+#define FILESIZE 64
+
+char msg[] = "${ description }$";
+
+char buffer[FILESIZE];
+FILE* fp;
+
+void print_msg() {
+  printf("%s", msg);
+}
+
+int complex_function(int value, int i) {
+#define LAMBDA 17
+  if (!('A' <= value && value <= 'Z')) {
+    printf("Try again.\n");
+    exit(1);
+  }
+  return ((value - 'A' + (LAMBDA * i)) % ('Z' - 'A' + 1)) + 'A';
+}
+
+void ignore_me(char* buffer, int length) {
+  char buffer_break_angr[length];
+  int i;
+
+  memset(buffer_break_angr, 0, length);
+  unlink(USERDEF1);
+  FILE* file = fopen(USERDEF1, "a+b");
+  fwrite(buffer, 1, length, file);
+  fseek(file, 0, SEEK_SET);
+  fscanf(file, "%64s", buffer_break_angr);
+  fseek(file, 0, SEEK_SET);
+  fwrite(buffer_break_angr, 1, length, file);
+  fclose(file);
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main(int argc, char* argv[]) {
+  memset(buffer, 0, FILESIZE);
+
+  //print_msg();
+  printf("Enter the password: ");
+  scanf("%64s", buffer);
+  ignore_me(buffer, FILESIZE);
+  memset(buffer, 0, FILESIZE);
+  fp = fopen(USERDEF1, "rb");
+  fread(buffer, 1, FILESIZE, fp);
+  fclose(fp);
+  unlink(USERDEF1);
+
+  for (int i=0; i<8; ++i) {
+    buffer[i] = complex_function(buffer[i], i);
+  }
+
+  if (strncmp(buffer, USERDEF0, 9)) {
+    printf("Try again.\n");
+    exit(1);
+  } else {
+    printf("Good Job.\n");
+    printflag();
+    exit(0);
+  }
+}

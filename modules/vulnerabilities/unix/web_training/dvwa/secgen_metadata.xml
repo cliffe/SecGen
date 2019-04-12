@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>Damn Vulnerable Web App (DVWA)</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>MIT</module_license>
+  <description>Damn Vulnerable Web Application (DVWA) is a PHP/MySQL web application that is damn vulnerable. Its main goal is to be an aid for security professionals to test their skills and tools in a legal environment, help web developers better understand the processes of securing web applications and to aid both students & teachers to learn about web application security in a controlled class room environment. The aim of DVWA is to **practice some of the most common web vulnerabilities**, with **various levels of difficulty**, with a simple straightforward interface. Please note, there are **both documented and undocumented vulnerabilities** with this software. This is intentional. You are encouraged to try and discover as many issues as possible.</description>
+
+  <type>web_training_platform</type>
+  <privilege>info_leak</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+
+  <read_fact>port</read_fact>
+  <read_fact>db_password</read_fact>
+
+  <default_input into="port">
+    <value>80</value>
+  </default_input>
+
+  <default_input into="db_password">
+    <generator type="strong_password_generator"/>
+  </default_input>
+
+  <reference>http://www.dvwa.co.uk/</reference>
+
+  <software_name>dvwa</software_name>
+  <software_license>GPLv3</software_license>
+
+  <!-- TODO: Make stretch compatible, php5 packages are not available... -->
+  <!-- <conflict>
+    <name>Stretch</name>
+  </conflict> -->
+  <!-- <conflict>
+    <distro>Kali</distro>
+  </conflict> -->
+
+  <requires>
+    <module_path>.*/apache.*</module_path>
+  </requires>
+  <requires>
+    <module_path>.*/mysql.*</module_path>
+  </requires>
+
+</vulnerability>

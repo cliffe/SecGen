@@ -1,0 +1,8 @@
+---
+elasticsearch::datadir: /var/lib/elasticsearch
+elasticsearch::download_tool: wget -O
+elasticsearch::download_tool_insecure: wget --no-check-certificate -O
+elasticsearch::elasticsearch_user: elasticsearch
+elasticsearch::elasticsearch_group: elasticsearch
+elasticsearch::homedir: /usr/share/elasticsearch
+elasticsearch::package_dir: /opt/elasticsearch/swdl

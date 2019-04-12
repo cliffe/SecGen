@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <system>
+    <system_name>example_server</system_name>
+    <base platform="linux" type="server"/>
+
+    <!--select a vulnerability that takes leaked_filenames-->
+    <vulnerability read_fact="leaked_filenames">
+
+      <!--direct the output from below into leaked_filenames -->
+      <input into="leaked_filenames">
+
+        <!-- Selects any generator module with the type 'filename_generator'. Currently 'random_filename', which this
+         example focuses on, or 'leaked_filename'. -->
+        <!--<generator type="filename_generator"/>-->
+
+
+        <!--The default behaviour generates a random filename with a chance of it having a random extension. -->
+        <generator module_path=".*random_filename.*"/>
+
+
+        <!--If you want to force a random filename with no extension you can use the value 'no_extension'. -->
+        <!--<generator module_path=".*random_filename.*">-->
+          <!--<input into="extension">-->
+            <!--<value>no_extension</value>-->
+          <!--</input>-->
+        <!--</generator>-->
+
+
+        <!--If you want a specific file name with a random extension. -->
+        <!--<generator module_path=".*random_filename.*">-->
+          <!--<input into="file_name">-->
+            <!--<value>base_filename</value>-->
+          <!--</input>-->
+        <!--</generator>-->
+
+      </input>
+    </vulnerability>
+
+    <network type="private_network" range="dhcp"/>
+  </system>
+
+</scenario>

@@ -1,0 +1,16 @@
+drpass {
+<% if @restart -%>
+<% if @restart_auth -%>
+    restart "<%= @restart %>" { <%= @restart_auth %>; };
+<% else -%>
+    restart "<%= @restart %>";
+<% end -%>
+<% end -%>
+<% if @die -%>
+<% if @die_auth -%>
+    die "<%= @die %>" { <%= @die_auth %>; };
+<% else -%>
+    die "<%= @die %>";
+<% end -%>
+<% end -%>
+};

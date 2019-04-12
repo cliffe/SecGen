@@ -1,0 +1,7 @@
+NAME:
+   maze - Maze generating and solving program
+
+USAGE:
+   maze [global options] [arguments...]
+
+VERSION:

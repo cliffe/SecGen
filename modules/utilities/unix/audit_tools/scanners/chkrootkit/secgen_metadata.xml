@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Chkrootkit Local Rootkit Scanner</name>
+  <author>Thomas Shaw</author>
+  <module_license>Apache v2</module_license>
+  <description>Chkrootkit local rootkit scanner. Version installed from ubuntu repositories has been patched for the
+    vulnerability in versions 0.49 and below.
+  </description>
+
+  <type>rootkit_scanner</type>
+  <platform>linux</platform>
+
+  <!--optional details-->
+  <reference>http://www.chkrootkit.org/</reference>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+</utility>

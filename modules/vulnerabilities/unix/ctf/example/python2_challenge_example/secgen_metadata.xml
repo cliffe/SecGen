@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>python2 Challenge Example</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>python2 challenge example</description>
+
+  <type>script_challenge</type>
+  <privilege>none</privilege>
+  <access>local</access>
+  <platform>linux</platform>
+
+  <challenge_type>misc</challenge_type>
+  <challenge_subtype>example</challenge_subtype>
+
+  <!-- script dropped in account's home directory by default with setuid configuration. -->
+  <read_fact>challenge_name</read_fact>
+  <read_fact>script_data</read_fact>
+  <read_fact>account</read_fact>
+  <read_fact>flag</read_fact>
+  <!-- storage_directory: Blank by default. If supplied, store the files here. e.g. NFS or SMB storage location -->
+  <read_fact>storage_directory</read_fact>
+  <!--  group: Blank by default. If supplied install script challenge as setgid  -->
+  <read_fact>group</read_fact>
+  <default_input into="challenge_name">
+    <value>python2_script_example</value>
+  </default_input>
+  <default_input into="script_data">
+    <generator module_path=".*python_example"/>
+  </default_input>
+  <default_input into="account">
+    <generator type="account">
+      <input into="username">
+        <value>challenges</value>
+      </input>
+      <input into="password">
+        <value>password</value>
+      </input>
+    </generator>
+  </default_input>
+  <default_input into="flag">
+    <generator type="flag_generator"/>
+  </default_input>
+  <default_input into="challenge_name">
+    <value>python2_script_example</value>
+  </default_input>
+
+  <requires>
+    <module_path>utilities/unix/system/accounts</module_path>
+  </requires>
+
+  <requires>
+    <module_path>utilities/unix/system/binary_script_container</module_path>
+  </requires>
+
+  <requires>
+    <module_path>utilities/unix/languages/python2/python</module_path>
+  </requires>
+
+</vulnerability>

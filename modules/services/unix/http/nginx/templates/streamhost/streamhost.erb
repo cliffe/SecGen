@@ -1,0 +1,33 @@
+# MANAGED BY PUPPET
+server {
+<%- if @listen_ip.is_a?(Array) then -%>
+  <%- @listen_ip.each do |ip| -%>
+  listen                <%= ip %>:<%= @listen_port %><% if @listen_options %> <%= @listen_options %><% end %>;
+  <%- end -%>
+<%- else -%>
+  listen                <%= @listen_ip %>:<%= @listen_port %><% if @listen_options %> <%= @listen_options %><% end %>;
+<%- end -%>
+<%# check to see if ipv6 support exists in the kernel before applying -%>
+<%- if @ipv6_enable && (defined? @ipaddress6) -%>
+  <%- if @ipv6_listen_ip.is_a?(Array) then -%>
+    <%- @ipv6_listen_ip.each do |ipv6| -%>
+  listen [<%= ipv6 %>]:<%= @ipv6_listen_port %> <% if @ipv6_listen_options %><%= @ipv6_listen_options %><% end %>;
+    <%- end -%>
+  <%- else -%>
+  listen [<%= @ipv6_listen_ip %>]:<%= @ipv6_listen_port %> <% if @ipv6_listen_options %><%= @ipv6_listen_options %><% end %>;
+  <%- end -%>
+<%- end -%>
+  server_name           <%= @server_name.join(" ") %>;
+
+  <% Array(@raw_prepend).each do |line| -%>
+    <%= line %>
+  <% end %>
+
+  proxy_timeout         <%= @proxy_read_timeout %>;
+  proxy_connect_timeout <%= @proxy_connect_timeout %>;
+  proxy_pass            <%= @proxy %>;
+
+  <% Array(@raw_append).each do |line| -%>
+    <%= line %>
+  <% end -%>
+}

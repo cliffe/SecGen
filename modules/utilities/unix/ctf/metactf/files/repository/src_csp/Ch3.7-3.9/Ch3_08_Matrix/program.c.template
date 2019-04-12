@@ -1,0 +1,102 @@
+/* Shu Jiang,  New Beginnings 12/2016 */
+#include <stdio.h>
+#include <fcntl.h>
+#include <string.h>
+#include <stdlib.h>
+#include <sys/ptrace.h>
+#include <unistd.h>
+#define ROW AAAAAA
+#define COL BBBBBB
+#define USERDEF0 CCCCCC
+#define USERDEF1 DDDDDD
+
+int array[ROW][COL];
+
+char msg[] =
+ "The elements in multi-dimentional arrays in C are stored in row major\n"
+ "order (i.e. elements of a row are stored contiguously).  Unfortunately,\n"
+ "C does not check array bound violations, naively applying its array\n"
+ "indexing logic regardless of the values of the indices.  In this level\n"
+ "a 2D array is given below with %d rows and %d columns.  Its elements\n"
+ "are initialized with monotonically increasing integers.  The password\n"
+ "is the output of array[%d][%d].  We have conveniently disabled debuggers\n"
+ "for you and have added delays to annoy the brute-forcers among you.\n\n";
+/* , ROW, COL,USERDEF0,USERDEF1);*/
+
+void print_msg() {
+    printf(msg, ROW, COL,USERDEF0,USERDEF1);
+}
+
+void detectTrace(void) __attribute__((constructor));
+void detectTrace (void) {
+    if(ptrace(PTRACE_TRACEME, 0, 1, 0) < 0) {
+        printf("No tracing");
+        exit(1);
+    };
+};
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main(void){
+  int i,j;
+  print_msg();
+  printf("2D Array:\n");
+  for(i=0;i<4;i++){
+    for(j=0;j<COL;j++){
+      array[i][j]=i*COL+j;
+      printf("%3d ",array[i][j]);
+    }
+    printf("\n");
+  }
+  printf("             ...\n");
+  for(i=4; i<ROW-3; i++){
+    for(j=0;j<COL;j++)
+      array[i][j]=i*COL+j;
+  }
+  printf("             ...\n");
+  for(i=ROW-3;i<ROW;i++){
+    for(j=0;j<COL;j++){
+      array[i][j]=i*COL+j;
+      printf("%3d ",array[i][j]);
+    }
+    printf("\n");
+  }
+  int pwd,result;
+  printf("Enter the password: ");
+  scanf("%d",&pwd);
+  if(pwd == array[USERDEF0][USERDEF1]){
+	printf("Good Job.\n");
+    printflag();
+  }
+  else{
+    sleep(2);
+    printf("Try again.\n");
+  }
+  return 0;
+}

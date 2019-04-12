@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <string.h>
+#include <stdlib.h>
+#define USERDEF0 "AAAAAA"
+#define USERDEF1 BBBBBB
+
+char msg[] =
+ "To thwart static analysis, code and data are often encrypted by packers\n"
+ "using a random key.  In this level, we have taken the password and packed\n"
+ "it using a sophisticated XOR scheme. To find the password, you will need to\n"
+ "unpack it by analyzing the binary using \"objdump -d\" or \"gdb\".\n\n";
+
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg[i%len] + msg[(i+1)%len];
+    h2 += msg[(i+1)%len] + msg[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg);
+  else
+    printf("%s",msg);
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+char c[9]=USERDEF0;
+char in[9];
+
+int main() {
+    int i,len;
+
+    print_msg();
+
+    printf("Enter the password: ");
+    len = strlen(c);
+    for (i=0; i < len; i++)
+	c[i] ^= (unsigned char) USERDEF1;
+    scanf("%8s",in);
+    for (i=0; i < len; i++) {
+      if (c[i] != in[i]) {
+	printf("Try again.\n");
+	return 0;
+      }
+    }
+	printf("Good Job.\n");
+    printflag();
+    return 0;
+}

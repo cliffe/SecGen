@@ -1,0 +1,23 @@
+
+{
+  "description": "Join a swarm",
+  "input_method": "stdin",
+  "parameters": {
+    "advertise_addr": {
+      "description": "Advertised address",
+      "type": "Optional[String[1]]"
+    },
+    "listen_addr": {
+      "description": "Listen address",
+      "type": "Optional[String[1]]"
+    },
+    "token": {
+      "description": "Join token for the swarm",
+      "type": "String[1]"
+    },
+    "manager_ip": {
+      "description": "IP Address of the swarm manager",
+      "type": "String[1]"
+    }
+  }
+}

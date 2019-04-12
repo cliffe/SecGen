@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<encoder xmlns="http://www.github/cliffe/SecGen/encoder"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/encoder">
+  <name>Braille Code Encoder</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Encodes a string into Braille.</description>
+
+  <type>braille_encoder</type>
+  <type>ascii_reversible</type>
+  <type>string_encoder</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+  <difficulty>medium</difficulty>
+
+  <reference>https://github.com/nicanor/braille</reference>
+
+  <solution>Braille decoders are available online e.g. https://www.dcode.fr/braille-alphabet</solution>
+
+  <read_fact>strings_to_encode</read_fact>
+
+  <default_input into="strings_to_encode">
+    <generator type="flag_generator"/>
+  </default_input>
+
+  <output_type>encoded_strings</output_type>
+</encoder>

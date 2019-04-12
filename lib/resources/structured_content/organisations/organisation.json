@@ -1,0 +1,47 @@
+{
+  "business_name": "",
+  "business_motto": "",
+  "business_address": "",
+  "domain": "",
+  "office_telephone": "",
+  "office_email": "",
+  "industry": "",
+  "manager": {
+    "name": "",
+    "address": "",
+    "phone_number": "",
+    "email_address": "",
+    "username": "",
+    "password": ""
+  },
+  "employees": [
+    {
+      "name": "",
+      "address": "",
+      "phone_number": "",
+      "email_address": "",
+      "username": "",
+      "password": ""
+    },
+    {
+      "name": "",
+      "address": "",
+      "phone_number": "",
+      "email_address": "",
+      "username": "",
+      "password": ""
+    },
+    {
+      "name": "",
+      "address": "",
+      "phone_number": "",
+      "email_address": "",
+      "username": "",
+      "password": ""
+    }
+  ],
+  "product_name": "",
+  "intro_paragraph": [
+    ""
+  ]
+}

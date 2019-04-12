@@ -1,0 +1,93 @@
+//Final Project - CTF
+//Liz Lawrens
+//New Beginnings 2016
+// Computer Systems Programming
+
+#include <stdio.h>
+#include <fcntl.h>
+#include <string.h>
+#define USERDEF AAAAAA
+
+char msg[] = \
+"In this level, you will use your knowledge of x86 AVX floating point\n"
+"to retrieve the password.  In AVX, data is stored in the 16 256-bit YMM\n"
+"registers (%ymm0 - %ymm15).  While the 32-byte YMM registers commonly hold\n"
+"vectors of floating point numbers, they can also be used to store scalar\n"
+"scalar numbers in its low-order 32 bits (for float) or low-order 64 bits\n"
+"(for double).  When holding only scalar data, the registers are often\n"
+"referred to by their XMM register names (%xmm0 - %xmm15), where each XMM\n"
+"register is the low-order 16 bytes of the corresponding YMM register.\n"
+"The password for this level is passed as the return value of the function\n"
+"called from main.  Recall which register is used to return floating point\n"
+"values, then use gdb to figure out which function returns a floating point\n"
+"value.  Then, set a break point after the function call to see the return\n"
+"In gdb, \"info all-registers\" can be used to view the contents of the\n"
+"floating point registers.  To determine the register's value as a float\n"
+"you can also use a \"print /f\" command.  The password is this value.\n\n";
+
+float float_mov(float f){
+	float f1=f+0.123;
+	return f1;
+}
+
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg[i%len] + msg[(i+1)%len];
+    h2 += msg[(i+1)%len] + msg[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg);
+  else
+    printf("%s",msg);
+}
+
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main(int argc, char* argv[]) {
+
+    float f,input;
+
+    print_msg();
+
+    f=float_mov(USERDEF);
+    printf("Enter the password: ");
+    scanf("%f",&input);
+
+    if (input!=f) {
+        printf ("Try again.\n");
+    } else {
+    	printf("Good Job.\n");
+        printflag();
+    }
+    return 0;
+}

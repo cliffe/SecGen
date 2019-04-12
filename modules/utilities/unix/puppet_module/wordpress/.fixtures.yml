@@ -1,0 +1,7 @@
+fixtures:
+  repositories:
+    concat: "git://github.com/ripienaar/puppet-concat.git"
+    mysql: "git://github.com/puppetlabs/puppetlabs-mysql.git"
+    stdlib: "git://github.com/puppetlabs/puppetlabs-stdlib.git"
+  symlinks:
+    wordpress: "#{source_dir}"

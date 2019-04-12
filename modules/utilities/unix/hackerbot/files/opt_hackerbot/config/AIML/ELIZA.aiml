@@ -1,0 +1,1223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Downloaded from SQLBot by Phil Massyn -->
+<!-- Bot name : ELIZA -->
+<!-- Sat Nov 23 02:37:02 2013 -->
+
+<aiml version="1.0">
+<category>
+	<pattern>SORRY *</pattern>
+	<template><srai>sorry</srai></template>
+</category>
+
+<category>
+	<pattern>APOLOGY</pattern>
+	<template><srai>sorry</srai></template>
+</category>
+
+<category>
+	<pattern>APOLOGIZE</pattern>
+	<template><srai>sorry</srai></template>
+</category>
+
+<category>
+	<pattern>SORRY</pattern>
+	<template>
+		<random>
+			<li>Please don't apologize.</li>
+			<li>Apologies are not necessary.</li>
+			<li>I've told you that apologies are not required.</li>
+			<li>It did not bother me. Please continue.</li>
+		</random>
+	</template>
+</category>
+<!--
+<category>
+	<pattern>*</pattern>
+	<template>
+		<random>
+			<li>I'm not sure I understand you fully.</li>
+			<li>Please go on.</li>
+			<li>That is interesting. Please continue.</li>
+			<li>Tell me more about that.</li>
+			<li>Does talking about this bother you?</li>
+		</random>
+	</template>
+</category>-->
+
+<category>
+	<pattern>APOLOGIZE *</pattern>
+	<template><srai>sorry</srai></template>
+</category>
+
+<category>
+	<pattern>APOLOGY *</pattern>
+	<template><srai>sorry</srai></template>
+</category>
+
+<category>
+	<pattern>* SORRY *</pattern>
+	<template><srai>sorry</srai></template>
+</category>
+
+<category>
+	<pattern>* APOLOGIZE *</pattern>
+	<template><srai>sorry</srai></template>
+</category>
+
+<category>
+	<pattern>* APOLOGY *</pattern>
+	<template><srai>sorry</srai></template>
+</category>
+
+<category>
+	<pattern>* SORRY</pattern>
+	<template><srai>sorry</srai></template>
+</category>
+
+<category>
+	<pattern>* APOLOGIZE</pattern>
+	<template><srai>sorry</srai></template>
+</category>
+
+<category>
+	<pattern>* APOLOGY</pattern>
+	<template><srai>sorry</srai></template>
+</category>
+
+<category>
+	<pattern>I REMEMBER *</pattern>
+	<template>
+		<random>
+			<li>Do you often think of <star />?</li>
+			<li>Does thinking of <star /> bring anything else to mind?</li>
+			<li>Why do you remember <star /> just now?</li>
+			<li>What in the present situation reminds you of <star />?</li>
+			<li>What is the connection </li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>DO YOU REMEMBER *</pattern>
+	<template>
+		<random>
+			<li>Did you think I would forget <star />?</li>
+			<li>Why do you think I should recall <star /> now?</li>
+			<li>What about <star />?</li>
+			<li>You mentioned <star />?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>YOU REMEMBER *</pattern>
+	<template>
+		<random>
+			<li>How could I forget <star />?</li>
+			<li>What about <star /> should I remember?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>I FORGET *</pattern>
+	<template>
+		<random>
+			<li>Can you think of why you might forget <star />?</li>
+			<li>Why can't you remember <star />?</li>
+			<li>How often do you think of <star />?</li>
+			<li>Does it bother you to forget that?</li>
+			<li>Could it be a mental block?</li>
+			<li>Are you generally forgetful?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>DID YOU FORGET *</pattern>
+	<template>
+		<random>
+			<li>Why do you ask?</li>
+			<li>Are you sure you told me?</li>
+			<li>Would it bother you if I forgot <star />?</li>
+			<li>Why should I recall <star /> just now?</li>
+			<li>Tell me more about <star />.</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>IF *</pattern>
+	<template>
+		<random>
+			<li>Do you think it's likely that <star />?</li>
+			<li>Do you wish that <star />?</li>
+			<li>What do you know about <star />?</li>
+			<li>Really, if <star />?</li>
+			<li>What would you do if <star />?</li>
+			<li>But what are the chances that <star />?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>* IF *</pattern>
+	<template><srai>if <get name="star2" /></srai></template>
+</category>
+
+<category>
+	<pattern>I DREAMED *</pattern>
+	<template>
+		<random>
+			<li>Really, <star />?</li>
+			<li>Have you ever fantasized <star /> while you were awake?</li>
+			<li>Have you ever dreamed <star /> before?</li>
+			<li>What does that dream suggest to you?</li>
+			<li>Do you dream often?</li>
+			<li>What persons appear in your dreams?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>* I DREAMED *</pattern>
+	<template><srai>i dreamed <get name="star2" /></srai></template>
+</category>
+
+<category>
+	<pattern>PERHAPS *</pattern>
+	<template><srai>perhaps</srai></template>
+</category>
+
+<category>
+	<pattern>* PERHAPS</pattern>
+	<template><srai>perhaps</srai></template>
+</category>
+
+<category>
+	<pattern>PERHAPS</pattern>
+	<template>
+		<random>
+			<li>You don't seem quite certain.</li>
+			<li>Why the uncertain tone?</li>
+			<li>Can't you be more positive?</li>
+			<li>You aren't sure?</li>
+			<li>Don't you know?</li>
+			<li>How likely, would you estimate?</li>
+		</random>
+	</template>
+</category>
+
+<!--<category>
+	<pattern>HELLO</pattern>
+	<template>
+		<random>
+			<li>How do you do. Please state your problem.</li>
+			<li>Hi. What seems to be your problem?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>HI</pattern>
+	<template><srai>hello</srai></template>
+</category>
+
+<category>
+	<pattern>HOWDY</pattern>
+	<template><srai>hello</srai></template>
+</category>
+
+<category>
+	<pattern>HOLA</pattern>
+	<template><srai>hello</srai></template>
+</category>
+
+<category>
+	<pattern>HAI</pattern>
+	<template><srai>hello</srai></template>
+</category>
+
+<category>
+	<pattern>YO</pattern>
+	<template><srai>hello</srai></template>
+</category>
+
+<category>
+	<pattern>HELLO *</pattern>
+	<template><srai>hello</srai></template>
+</category>
+
+<category>
+	<pattern>HI</pattern>
+	<template><srai>hello</srai></template>
+</category>
+
+<category>
+	<pattern>HOWDY</pattern>
+	<template><srai>hello</srai></template>
+</category>
+
+<category>
+	<pattern>HOLA</pattern>
+	<template><srai>hello</srai></template>
+</category>
+
+<category>
+	<pattern>HAI</pattern>
+	<template><srai>hello</srai></template>
+</category>
+
+<category>
+	<pattern>YO</pattern>
+	<template><srai>hello</srai></template>
+</category>-->
+
+<category>
+	<pattern>COMPUTER</pattern>
+	<template>
+		<random>
+			<li>Do computers worry you?</li>
+			<li>Why do you mention computers?</li>
+			<li>What do you think machines have to do with your problem?</li>
+			<li>Don't you think computers can help people?</li>
+			<li>What about machines worries you?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>COMPUTER *</pattern>
+	<template><srai>computer</srai></template>
+</category>
+
+<category>
+	<pattern>* COMPUTER</pattern>
+	<template><srai>computer</srai></template>
+</category>
+
+<category>
+	<pattern>* COMPUTER *</pattern>
+	<template><srai>computer</srai></template>
+</category>
+
+<category>
+	<pattern>AM I *</pattern>
+	<template>
+		<random>
+			<li>Do you believe you are <star />?</li>
+			<li>Would you want to be <star />?</li>
+			<li>Do you wish I would tell you you are <star />?</li>
+			<li>What would it mean if you were <star />?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>ARE YOU *</pattern>
+	<template>
+		<random>
+			<li>Are you interested in whether I am <star /> or not?</li>
+			<li>Would you prefer if I weren't <star />?</li>
+			<li>Perhaps I am <star /> in your fantasies.</li>
+			<li>Do you sometimes think I am <star />?</li>
+			<li>Would it matter to you?</li>
+			<li>What if I was?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>YOU ARE *</pattern>
+	<template>
+		<random>
+			<li>What makes you think I am <star />?</li>
+			<li>Does it please you to believe I am <star />?</li>
+			<li>Do you sometimes wish you were <star />?</li>
+			<li>Perhaps you would like to be <star />.</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>* ARE *</pattern>
+	<template>
+		<random>
+			<li>Did you think they might not be <get name="star2" />?</li>
+			<li>Would you like it if they were not <get name="star2" />?</li>
+			<li>What if they were not <get name="star2" />?</li>
+			<li>Are they always <get name="star2" />?</li>
+			<li>Are you positive they are <get name="star2" />?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>YOUR *</pattern>
+	<template>
+		<random>
+			<li>Why are you concerned over my <star />?</li>
+			<li>What about your own <star />?</li>
+			<li>Are you worried about someone else's <star />?</li>
+			<li>Really, my <star />?</li>
+			<li>What makes you think of my <star />?</li>
+			<li>Do you want my <star />?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>* YOUR *</pattern>
+	<template><srai>your <get name="star2" /></srai></template>
+</category>
+
+<category>
+	<pattern>WAS I *</pattern>
+	<template>
+		<random>
+			<li>What if you were <star />?</li>
+			<li>Do you think you were <star />?</li>
+			<li>Were you <star />?</li>
+			<li>What would it mean if you were <star />?</li>
+			<li>What does '<star />' suggest to you?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>I WAS *</pattern>
+	<template>
+		<random>
+			<li>Were you really?</li>
+			<li>Why do you tell me you were <star /> now?</li>
+			<li>Perhaps I already know you were <star />.</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>WAS YOU *</pattern>
+	<template>
+		<random>
+			<li>Would you like to believe I was <star />?</li>
+			<li>What suggests that I was <star />?</li>
+			<li>What do you think?</li>
+			<li>Perhaps I was <star />.</li>
+			<li>What if I had been <star />?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>* WAS YOU *</pattern>
+	<template><srai>was you <get name="star2" /></srai></template>
+</category>
+
+<category>
+	<pattern>I DESIRE *</pattern>
+	<template><srai>i want <star /></srai></template>
+</category>
+
+<category>
+	<pattern>I NEED *</pattern>
+	<template><srai>i want <star /></srai></template>
+</category>
+
+<category>
+	<pattern>I WANT *</pattern>
+	<template>
+		<random>
+			<li>What would it mean to you if you got <star />?</li>
+			<li>Why do you want <star />?</li>
+			<li>Suppose you got <star /> soon.</li>
+			<li>What if you never got <star />?</li>
+			<li>What would getting <star /> mean to you?</li>
+			<li>What does wanting <star /> hav</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>I AM *</pattern>
+	<template>
+		<random>
+			<li>Is it because you are <star /> that you came to me?</li>
+			<li>How long have you been <star />?</li>
+			<li>Do you believe it is normal to be <star />?</li>
+			<li>Do you enjoy being <star />?</li>
+			<li>Do you know anyone else who is <star />?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>I CAN NOT *</pattern>
+	<template>
+		<random>
+			<li>How do you know that you can't <star />?</li>
+			<li>Have you tried?</li>
+			<li>Perhaps you could <star /> now.</li>
+			<li>Do you really want to be able to <star />?</li>
+			<li>What if you could <star />?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>I DO NOT *</pattern>
+	<template>
+		<random>
+			<li>Don't you really <star />?</li>
+			<li>Why don't you <star />?</li>
+			<li>Do you wish to be able to <star />?</li>
+			<li>Does that trouble you?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>I FEEL *</pattern>
+	<template>
+		<random>
+			<li>Tell me more about such feelings.</li>
+			<li>Do you often feel <star />?</li>
+			<li>Do you enjoy feeling <star />?</li>
+			<li>Of what does feeling <star /> remind you?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>I * YOU</pattern>
+	<template>
+		<random>
+			<li>Perhaps in your fantasies we <star /> each other.</li>
+			<li>Do you wish to <star /> me?</li>
+			<li>You seem to need to <star /> me.</li>
+			<li>Do you <star /> anyone else?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>YOU * ME</pattern>
+	<template>
+		<random>
+			<li>Why do you think I <star /> you?</li>
+			<li>You like to think I <star /> you -- don't you?</li>
+			<li>What makes you think I <star /> you?</li>
+			<li>Really, I <star /> you?</li>
+			<li>Do you wish to believe I <star /> you?</li>
+			<li>Suppose I did <star /> you </li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>WHY DO NOT YOU *</pattern>
+	<template>
+		<random>
+			<li>Do you believe I don't <star />?</li>
+			<li>Perhaps I will <star /> in good time.</li>
+			<li>Should you <star /> yourself?</li>
+			<li>You want me to <star />?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>WHY CAN NOT I *</pattern>
+	<template>
+		<random>
+			<li>Do you think you should be able to <star />?</li>
+			<li>Do you want to be able to <star />?</li>
+			<li>Do you believe this will help you to <star />?</li>
+			<li>Have you any idea why you can't <star />?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>EVERYONE *</pattern>
+	<template>
+		<random>
+			<li>Really, everyone?</li>
+			<li>Surely not everyone.</li>
+			<li>Can you think of anyone in particular?</li>
+			<li>Who, for example?</li>
+			<li>Are you thinking of a very special person?</li>
+			<li>Who, may I ask?</li>
+			<li>Someone special perhaps?</li>
+			<li>You have a pa</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>NO ONE *</pattern>
+	<template>
+		<random>
+			<li>Are you sure, no one <star />?</li>
+			<li>Surely someone <star />.</li>
+			<li>Can you think of anyone at all?</li>
+			<li>Are you thinking of a very special person?</li>
+			<li>Who, may I ask?</li>
+			<li>You have a particular person in mind, don't you?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>CAN YOU *</pattern>
+	<template>
+		<random>
+			<li>You believe I can <star /> don't you?</li>
+			<li>You want me to be able to <star />.</li>
+			<li>Perhaps you would like to be able to <star /> yourself.</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>CAN I *</pattern>
+	<template>
+		<random>
+			<li>Whether or not you can <star /> depends on you more than on me.</li>
+			<li>Do you want to be able to <star />?</li>
+			<li>Perhaps you don't want to <star />.</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>I BELIEVE *</pattern>
+	<template>
+		<random>
+			<li>Do you really think so?</li>
+			<li>But you are not sure you <star />.</li>
+			<li>Do you really doubt you <star />.</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>I THINK *</pattern>
+	<template><srai>i believe <star /></srai></template>
+</category>
+
+<category>
+	<pattern>YOU *</pattern>
+	<template>
+		<random>
+			<li>We were discussing you -- not me.</li>
+			<li>Oh, I <star />?</li>
+			<li>You're not really talking about me -- are you?</li>
+			<li>What are your feelings now?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>* YOU *</pattern>
+	<template><srai>you <star /></srai></template>
+</category>
+
+<category>
+	<pattern>YES</pattern>
+	<template>
+		<random>
+			<li>Please go on.</li>
+			<li>Please tell me more about this.</li>
+			<li>Why don't you tell me a little more about this.</li>
+			<li>I see.</li>
+			<li>I understand.</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>YEAH</pattern>
+	<template><srai>yes</srai></template>
+</category>
+
+<category>
+	<pattern>YEP</pattern>
+	<template><srai>yes</srai></template>
+</category>
+
+<category>
+	<pattern>YUP</pattern>
+	<template><srai>yes</srai></template>
+</category>
+
+<category>
+	<pattern>* YES</pattern>
+	<template><srai>yes</srai></template>
+</category>
+
+<category>
+	<pattern>* YEAH</pattern>
+	<template><srai>yes</srai></template>
+</category>
+
+<category>
+	<pattern>* YEP</pattern>
+	<template><srai>yes</srai></template>
+</category>
+
+<category>
+	<pattern>* YUP</pattern>
+	<template><srai>yes</srai></template>
+</category>
+
+<category>
+	<pattern>YES *</pattern>
+	<template><srai>yes</srai></template>
+</category>
+
+<category>
+	<pattern>YEAH *</pattern>
+	<template><srai>yes</srai></template>
+</category>
+
+<category>
+	<pattern>YEP *</pattern>
+	<template><srai>yes</srai></template>
+</category>
+
+<category>
+	<pattern>YUP *</pattern>
+	<template><srai>yes</srai></template>
+</category>
+
+<category>
+	<pattern>* YES *</pattern>
+	<template><srai>yes</srai></template>
+</category>
+
+<category>
+	<pattern>* YEAH *</pattern>
+	<template><srai>yes</srai></template>
+</category>
+
+<category>
+	<pattern>* YEP *</pattern>
+	<template><srai>yes</srai></template>
+</category>
+
+<category>
+	<pattern>* YUP *</pattern>
+	<template><srai>yes</srai></template>
+</category>
+
+<category>
+	<pattern>BECAUSE</pattern>
+	<template>
+		<random>
+			<li>Is that the real reason?</li>
+			<li>Don't any other reasons come to mind?</li>
+			<li>Does that reason seem to explain anything else?</li>
+			<li>What other reasons might there be?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>* BECAUSE</pattern>
+	<template><srai>because</srai></template>
+</category>
+
+<category>
+	<pattern>BECAUSE *</pattern>
+	<template><srai>because</srai></template>
+</category>
+
+<category>
+	<pattern>* BECAUSE *</pattern>
+	<template><srai>because</srai></template>
+</category>
+
+<category>
+	<pattern>NO</pattern>
+	<template>
+		<random>
+			<li>Are you saying no just to be negative?</li>
+			<li>Does this make you feel unhappy?</li>
+			<li>Why not?</li>
+			<li>Why 'no'?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>NAH</pattern>
+	<template><srai>no</srai></template>
+</category>
+
+<category>
+	<pattern>NOPE</pattern>
+	<template><srai>no</srai></template>
+</category>
+
+<category>
+	<pattern>NO *</pattern>
+	<template><srai>no</srai></template>
+</category>
+
+<category>
+	<pattern>NAH *</pattern>
+	<template><srai>no</srai></template>
+</category>
+
+<category>
+	<pattern>NOPE *</pattern>
+	<template><srai>no</srai></template>
+</category>
+
+<category>
+	<pattern>* NO</pattern>
+	<template><srai>no</srai></template>
+</category>
+
+<category>
+	<pattern>* NAH</pattern>
+	<template><srai>no</srai></template>
+</category>
+
+<category>
+	<pattern>* NOPE</pattern>
+	<template><srai>no</srai></template>
+</category>
+
+<category>
+	<pattern>* NO *</pattern>
+	<template><srai>no</srai></template>
+</category>
+
+<category>
+	<pattern>* NAH *</pattern>
+	<template><srai>no</srai></template>
+</category>
+
+<category>
+	<pattern>* NOPE *</pattern>
+	<template><srai>no</srai></template>
+</category>
+
+<category>
+	<pattern>WHAT</pattern>
+	<template>
+		<random>
+			<li>Why do you ask?</li>
+			<li>Does that question interest you?</li>
+			<li>What is it you really want to know?</li>
+			<li>Are such questions much on your mind?</li>
+			<li>What answer would please you most?</li>
+			<li>What do you think?</li>
+			<li>What comes to mind?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>WHO</pattern>
+	<template><srai>what</srai></template>
+</category>
+
+<category>
+	<pattern>WHEN</pattern>
+	<template><srai>what</srai></template>
+</category>
+
+<category>
+	<pattern>WHERE</pattern>
+	<template><srai>what</srai></template>
+</category>
+
+<category>
+	<pattern>HOW</pattern>
+	<template><srai>what</srai></template>
+</category>
+
+<category>
+	<pattern>WHAT *</pattern>
+	<template><srai>what</srai></template>
+</category>
+
+<category>
+	<pattern>WHO *</pattern>
+	<template><srai>what</srai></template>
+</category>
+
+<category>
+	<pattern>WHEN *</pattern>
+	<template><srai>what</srai></template>
+</category>
+
+<category>
+	<pattern>WHERE *</pattern>
+	<template><srai>what</srai></template>
+</category>
+
+<category>
+	<pattern>HOW *</pattern>
+	<template><srai>what</srai></template>
+</category>
+
+<category>
+	<pattern>I AM HAPPY</pattern>
+	<template>
+		<random>
+			<li>How have I helped you to be happy?</li>
+			<li>Has your treatment made you happy?</li>
+			<li>What makes you happy just now?</li>
+			<li>Can you explain why you are happy?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>I AM HAPPY *</pattern>
+	<template><srai>i am happy</srai></template>
+</category>
+
+<category>
+	<pattern>I AM EXCITED</pattern>
+	<template>
+		<random>
+			<li>How have I helped you to be excited?</li>
+			<li>Has your treatment made you excited?</li>
+			<li>What makes you excited just now?</li>
+			<li>Can you explain why you are excited?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>I AM EXCITED *</pattern>
+	<template><srai>I am excited</srai></template>
+</category>
+
+<category>
+	<pattern>I AM GLAD</pattern>
+	<template>
+		<random>
+			<li>How have I helped you to be glad?</li>
+			<li>Has your treatment made you glad?</li>
+			<li>What makes you glad just now?</li>
+			<li>Can you explain why you are glad?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>I AM GLAD *</pattern>
+	<template><srai>i am glad</srai></template>
+</category>
+
+<category>
+	<pattern>MY MOM *</pattern>
+	<template>
+		<random>
+			<li>Tell me more about your family.</li>
+			<li>Who else in your family <star />?</li>
+			<li>Your mom?</li>
+			<li>What else comes to mind when you think of your mom?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>MY DAD *</pattern>
+	<template>
+		<random>
+			<li>Tell me more about your family.</li>
+			<li>Who else in your family <star />?</li>
+			<li>Your dad?</li>
+			<li>What else comes to mind when you think of your dad?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>MY MOTHER *</pattern>
+	<template>
+		<random>
+			<li>Tell me more about your family.</li>
+			<li>Who else in your family <star />?</li>
+			<li>Your mother?</li>
+			<li>What else comes to mind when you think of your mother?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>MY FATHER *</pattern>
+	<template>
+		<random>
+			<li>Tell me more about your family.</li>
+			<li>Who else in your family <star />?</li>
+			<li>Your father?</li>
+			<li>What else comes to mind when you think of your father?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>MY BRO *</pattern>
+	<template>
+		<random>
+			<li>Tell me more about your family.</li>
+			<li>Who else in your family <star />?</li>
+			<li>Your bro?</li>
+			<li>What else comes to mind when you think of your bro?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>MY BROTHER *</pattern>
+	<template>
+		<random>
+			<li>Tell me more about your family.</li>
+			<li>Who else in your family <star />?</li>
+			<li>Your brother?</li>
+			<li>What else comes to mind when you think of your brother?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>MY SIS *</pattern>
+	<template>
+		<random>
+			<li>Tell me more about your family.</li>
+			<li>Who else in your family <star />?</li>
+			<li>Your sis?</li>
+			<li>What else comes to mind when you think of your sis?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>MY SISTER *</pattern>
+	<template>
+		<random>
+			<li>Tell me more about your family.</li>
+			<li>Who else in your family <star />?</li>
+			<li>Your sister?</li>
+			<li>What else comes to mind when you think of your sister?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>MY COUSIN *</pattern>
+	<template>
+		<random>
+			<li>Tell me more about your family.</li>
+			<li>Who else in your family <star />?</li>
+			<li>Your cousin?</li>
+			<li>What else comes to mind when you think of your cousin?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>MY AUNT *</pattern>
+	<template>
+		<random>
+			<li>Tell me more about your family.</li>
+			<li>Who else in your family <star />?</li>
+			<li>Your aunt?</li>
+			<li>What else comes to mind when you think of your aunt?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>MY UNCLE *</pattern>
+	<template>
+		<random>
+			<li>Tell me more about your family.</li>
+			<li>Who else in your family <star />?</li>
+			<li>Your uncle?</li>
+			<li>What else comes to mind when you think of your uncle?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>* MY MOM *</pattern>
+	<template><srai>my mom <get name="star2" /></srai></template>
+</category>
+
+<category>
+	<pattern>* MY DAD *</pattern>
+	<template><srai>my dad <get name="star2" /></srai></template>
+</category>
+
+<category>
+	<pattern>* MY MOTHER *</pattern>
+	<template><srai>my mother <get name="star2" /></srai></template>
+</category>
+
+<category>
+	<pattern>* MY FATHER *</pattern>
+	<template><srai>my father <get name="star2" /></srai></template>
+</category>
+
+<category>
+	<pattern>* MY BRO *</pattern>
+	<template><srai>my bro <get name="star2" /></srai></template>
+</category>
+
+<category>
+	<pattern>* MY BROTHER *</pattern>
+	<template><srai>my brother <get name="star2" /></srai></template>
+</category>
+
+<category>
+	<pattern>* MY SIS *</pattern>
+	<template><srai>my sis <get name="star2" /></srai></template>
+</category>
+
+<category>
+	<pattern>* MY SISTER *</pattern>
+	<template><srai>my sister <get name="star2" /></srai></template>
+</category>
+
+<category>
+	<pattern>* MY COUSIN *</pattern>
+	<template><srai>my cousin <get name="star2" /></srai></template>
+</category>
+
+<category>
+	<pattern>* MY AUNT *</pattern>
+	<template><srai>my aunt <get name="star2" /></srai></template>
+</category>
+
+<category>
+	<pattern>* MY UNCLE *</pattern>
+	<template><srai>my uncle <get name="star2" /></srai></template>
+</category>
+
+<category>
+	<pattern>I AM SAD</pattern>
+	<template>
+		<random>
+			<li>I am sorry to hear that you are sad.</li>
+			<li>Do you think coming here will help you not to be sad?</li>
+			<li>I'm sure it's not pleasant to be sad.</li>
+			<li>Can you explain what made you sad?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>I AM UNHAPPY</pattern>
+	<template>
+		<random>
+			<li>I am sorry to hear that you are unhappy.</li>
+			<li>Do you think coming here will help you not to be unhappy?</li>
+			<li>I'm sure it's not pleasant to be unhappy.</li>
+			<li>Can you explain what made you unhappy?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>I AM MAD</pattern>
+	<template>
+		<random>
+			<li>I am sorry to hear that you are mad.</li>
+			<li>Do you think coming here will help you not to be mad?</li>
+			<li>I'm sure it's not pleasant to be mad.</li>
+			<li>Can you explain what made you mad?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>I AM ANGRY</pattern>
+	<template>
+		<random>
+			<li>I am sorry to hear that you are angry.</li>
+			<li>Do you think coming here will help you not to be angry?</li>
+			<li>I'm sure it's not pleasant to be angry.</li>
+			<li>Can you explain what made you angry?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>I AM PISSED</pattern>
+	<template>
+		<random>
+			<li>I am sorry to hear that you are pissed.</li>
+			<li>Do you think coming here will help you not to be pissed?</li>
+			<li>I'm sure it's not pleasant to be pissed.</li>
+			<li>Can you explain what made you pissed?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>I AM DEPRESSED</pattern>
+	<template>
+		<random>
+			<li>I am sorry to hear that you are depressed.</li>
+			<li>Do you think coming here will help you not to be depressed?</li>
+			<li>I'm sure it's not pleasant to be depressed.</li>
+			<li>Can you explain what made you depressed?</li>
+		</random>
+	</template>
+</category>
+
+<category>
+	<pattern>I AM SAD *</pattern>
+	<template><srai>i am sad</srai></template>
+</category>
+
+<category>
+	<pattern>I AM UNHAPPY *</pattern>
+	<template><srai>i am unhappy</srai></template>
+</category>
+
+<category>
+	<pattern>I AM MAD *</pattern>
+	<template><srai>i am mad</srai></template>
+</category>
+
+<category>
+	<pattern>I AM ANGRY *</pattern>
+	<template><srai>i am angry</srai></template>
+</category>
+
+<category>
+	<pattern>I AM PISSED *</pattern>
+	<template><srai>i am pissed</srai></template>
+</category>
+
+<category>
+	<pattern>I AM DEPRESSED *</pattern>
+	<template><srai>i am depressed</srai></template>
+</category>
+
+<category>
+	<pattern>I CAN NOT</pattern>
+	<template>Why is that?</template>
+</category>
+
+<category>
+	<pattern>BUT IT BOTHERS ME</pattern>
+	<template>Why do you think it bothers you?</template>
+</category>
+
+<category>
+	<pattern>ME NEITHER</pattern>
+	<template>Let's continue exploring this issue.</template>
+</category>
+
+</aiml>

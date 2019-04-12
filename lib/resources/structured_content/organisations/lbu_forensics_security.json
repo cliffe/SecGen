@@ -1,0 +1,49 @@
+{
+  "business_name": "Leeds Beckett- Computer Forensics and Security",
+  "business_motto": "",
+  "business_address": "43 Church Wood Ave, Leeds LS16 5LF",
+  "domain": "leedsbeckett.ac.uk",
+  "office_telephone": "0113 81 23000",
+  "office_email": "study@leedsbeckett.ac.uk",
+  "industry": "Higher Education",
+  "manager": {
+    "name": "Emlyn Butterfield",
+    "address": "115, Caedmon Hall, Headingley Campus",
+    "phone_number": "0113 81 24440",
+    "email_address": "E.Butterfield@leedsbeckett.ac.uk",
+    "username": "ebutterfield",
+    "password": ""
+  },
+  "employees": [
+    {
+      "name": "Dr. Z. Cliffe Schreuders",
+      "address": "105, Caedmon Hall, Headingley Campus",
+      "phone_number": "0113 81 28608",
+      "email_address": "C.Schreuders@leedsbeckett.ac.uk",
+      "username": "zschreuders",
+      "password": ""
+    },
+    {
+      "name": "Dr. Maurice Calvert",
+      "address": "117, Caedmon, Headingley Campus",
+      "phone_number": "0113 81 27429",
+      "email_address": "M.Calvert@leedsbeckett.ac.uk",
+      "username": "mcalvert",
+      "password": ""
+    },
+    {
+      "name": "Dr. John Elliott",
+      "address": "108, Caedmon, Headingley Campus",
+      "phone_number": "0113 81 27379",
+      "email_address": "J.Elliott@leedsbeckett.ac.uk",
+      "username": "jelliott",
+      "password": ""
+    }
+  ],
+  "product_name": "University Education",
+  "intro_paragraph": [
+    "Computer forensics involves the analysis of digital devices such as hard drives to identify and investigate their contents. Computer security involves using knowledge of computer systems and networks to protect businesses and users from malicious attacks.",
+    "This course combines these two fields of national importance and will teach you practical investigative and 'hacking' techniques. You will develop the skills to undertake rigorous forensic analysis and implement robust security mechanisms.",
+    "This is a hands-on course where you will learn through doing, gaining an in-depth knowledge of how to hack a computer to be able to protect it. You will learn where a computer hides data and how to recover information from a device."
+  ]
+}

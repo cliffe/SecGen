@@ -1,0 +1,23 @@
+#
+# PHP is an HTML-embedded scripting language which attempts to make it
+# easy for developers to write dynamically generated webpages.
+#
+
+#
+# Cause the PHP interpreter to handle files with a .php extension.
+#
+<FilesMatch ".+(<%= @extensions.flatten.compact.collect { |s| Regexp.escape(s) }.join('|') %>)$">
+    SetHandler application/x-httpd-php
+</FilesMatch>
+
+#
+# Add index.php to the list of files that will be served as directory
+# indexes.
+#
+DirectoryIndex index.php
+
+#
+# Uncomment the following line to allow PHP to pretty-print .phps
+# files as PHP source code:
+#
+#AddType application/x-httpd-php-source .phps

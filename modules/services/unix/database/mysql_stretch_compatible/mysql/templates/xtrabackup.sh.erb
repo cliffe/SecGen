@@ -1,0 +1,37 @@
+<%- if @kernel == 'Linux' -%>
+#!/bin/bash
+<%- else -%>
+#!/bin/sh
+<%- end -%>
+#
+# A wrapper for Xtrabackup
+#
+<% if @prescript -%>
+  <%- [@prescript].flatten.compact.each do |script| %>
+<%= script %>
+  <%- end -%>
+<% end -%>
+
+<%- _innobackupex_args = '' -%>
+
+<%- if @backupuser and @backuppassword -%>
+  <%- _innobackupex_args = '--user="' + @backupuser + '" --password="' + @backuppassword + '"' -%>
+<%- end -%>
+
+<%- if @backupdatabases and @backupdatabases.is_a?(Array) and !@backupdatabases.empty? -%>
+  <%- _innobackupex_args = _innobackupex_args + ' --databases="' + @backupdatabases.join(' ') + '"' -%>
+<%- end -%>
+
+<%- if @optional_args and @optional_args.is_a?(Array) -%>
+  <%- @optional_args.each do |arg| -%>
+    <%- _innobackupex_args = _innobackupex_args + ' ' + arg -%>
+  <%- end -%>
+<%- end -%>
+
+innobackupex <%= _innobackupex_args %> "$@"
+
+<% if @postscript -%>
+  <%- [@postscript].flatten.compact.each do |script| %>
+<%= script %>
+  <%- end -%>
+<% end -%>

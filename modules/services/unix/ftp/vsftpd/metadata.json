@@ -1,0 +1,19 @@
+{
+  "name": "example42-vsftpd",
+  "version": "2.0.15",
+  "author": "Alessandro Franceschi",
+  "summary": "Puppet module for vsftpd",
+  "license": "Apache2",
+  "source": "https://github.com/example42/puppet-vsftpd",
+  "project_page": "http://www.example42.com",
+  "issues_url": "https://github.com/example42/puppet-vsftpd/issues",
+  "dependencies": [
+    {"name":"example42/puppi","version_requirement":">=2.0.0"}
+  ],
+  "description": "This module installs and manages vsftpd. Check README.rdoc for details. Puppi is required for some common functions: you can install them without using the whole module. Monitor and firewall dependencies are needed only if the relevant features are enabled",
+  "types": [
+  
+  ],
+  "checksums": {
+  }
+}

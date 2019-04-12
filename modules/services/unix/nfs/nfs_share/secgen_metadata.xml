@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<service xmlns="http://www.github/cliffe/SecGen/service"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
+  <name>NFS Share</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>MIT</module_license>
+  <description>NFS (Network File System) sharing a directory</description>
+
+  <type>nfs</type>
+  <type>storage</type>
+  <platform>unix</platform>
+
+  <read_fact>storage_directory</read_fact>
+  <default_input into="storage_directory">
+    <value>/exports_test</value>
+  </default_input>
+
+  <!--optional details-->
+  <reference>https://en.wikipedia.org/wiki/Network_File_System</reference>
+  <reference>http://nfs.sourceforge.net/#section_c</reference>
+
+  <software_name>nfs-common</software_name>
+  <software_license>GPLv2</software_license>
+
+</service>

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Zip File Generator</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Creates a zip archive containing a text file which holds the contents of strings_to_leak and returns it
+    in base64 format.
+  </description>
+
+  <type>zip_file</type>
+  <type>zip_file_generator</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <reference>https://github.com/rubyzip/rubyzip</reference>
+
+  <read_fact>file_name</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>password</read_fact>
+
+  <default_input into="file_name">
+    <value>flag.txt</value>
+  </default_input>
+
+  <default_input into="strings_to_leak">
+    <generator type="flag_generator"/>
+  </default_input>
+
+
+  <output_type>base64_zip_file</output_type>
+</generator>

@@ -1,0 +1,89 @@
+#!/usr/bin/env node
+
+var path = require('path');
+var Browser = require('zombie');
+var htmlToText = require('html-to-text');
+
+var optsZombie = {
+  debug: false,
+  silent: false,
+  waitDuration: '10s',
+  runScripts: true
+};
+var optsHTT = {
+  wordwrap: 80, // process.stdout.columns
+  tables: true,
+  ignoreHref: true,
+  preserveNewlines: true,
+  singleNewLineParagraphs: true
+};
+
+var jobs = process.argv.slice(2);
+var returnCode = 0;
+var browser = null;
+
+// start processing pages
+startBrowser();
+
+function startBrowser() {
+  // close any previous browser sessions
+  if (browser) {
+    //browser.window.close();
+    browser.destroy();
+  }
+
+  // next URL
+  var url = jobs.shift();
+  if (url === undefined) {
+    console.log('>> Complete');
+    process.exit(returnCode);
+    return;
+  } else if (!/^(?:https?|ftp):/.test(url)) {
+    // rewrite local path as a file:// URL
+    url = encodeURI('file://' + path.resolve(url).replace(/\\/g, '/'));
+  }
+
+  // load page
+  console.log('>> Loading %s ...', url);
+  browser = new Browser(optsZombie);
+  if (optsZombie.debug) { browser.debug(); }
+  browser.visit(url).then(checkCb).catch(problemCb);
+}
+
+function problemCb(err) {
+  // log error, and process next page
+  console.warn('>> ' + err);
+  returnCode = 1;
+  startBrowser();
+}
+
+function checkCb() {
+  var done = false;
+
+  // check for errors
+  function onProb(err) {
+    console.warn('>> ' + err);
+    returnCode = 1;
+    done = true;
+  }
+  (browser.errors || []).forEach(onProb);
+  (browser.document.errors || []).forEach(onProb);
+
+  // retrieve and log results
+  var report = browser.html('#report');
+  if (report && report.length) {
+    done = true;
+    //console.log(browser.text('#report'));
+    console.log(htmlToText.fromString(
+      // HACK: replace <div> tags with <p>
+      // https://github.com/werk85/node-html-to-text/issues/71
+      report.replace(/(<\/?)div/ig, '$1p'), optsHTT));
+  }
+
+  // process next page if done, otherwise wait for page to complete loading
+  if (done) {
+    startBrowser();
+  } else {
+    browser.wait().then(checkCb).catch(problemCb);
+  }
+}

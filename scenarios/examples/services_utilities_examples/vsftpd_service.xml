@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<!-- An example secure ftp server using the service vsftpd -->
+	<system>
+		<system_name>vsftpd_server</system_name>
+		<base platform="linux" type="server"/>
+
+		<service module_path="modules/services/unix/ftp/vsftpd"></service>
+
+		<network type="private_network" range="dhcp"></network>
+	</system>
+
+</scenario>

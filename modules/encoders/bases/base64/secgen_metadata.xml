@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<encoder xmlns="http://www.github/cliffe/SecGen/encoder"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/encoder">
+  <name>BASE64 Encoder</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>MIT</module_license>
+  <description>Converts to BASE64 encoding.</description>
+
+  <type>string_encoder</type>
+  <type>ascii_reversible</type>
+  <type>alpha_reversible</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+  <difficulty>low</difficulty>
+
+  <solution>Encoded using Base64. Decoding tools available online e.g. https://www.base64decode.org/</solution>
+
+  <read_fact>strings_to_encode</read_fact>
+  <read_fact>base64_options</read_fact>
+
+  <output_type>encoded_strings</output_type>
+  
+</encoder>

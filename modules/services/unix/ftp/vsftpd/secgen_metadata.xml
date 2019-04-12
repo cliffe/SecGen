@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<service xmlns="http://www.github/cliffe/SecGen/service"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
+  <name>vsftpd Server</name>
+  <author>Jason Keighley</author>
+  <author>Alessandro Franceschi</author>
+  <module_license>Apache v2</module_license>
+  <description>An installation of vsftpd</description>
+
+  <type>ftp</type>
+  <platform>linux</platform>
+
+  <read_fact>port</read_fact>
+
+  <default_input into="port">
+    <value>21</value>
+  </default_input>
+
+  <!--optional details-->
+  <reference>https://security.appspot.com/vsftpd.html</reference>
+  <software_name>vsftpd</software_name>
+  <software_license>Apache v2</software_license>
+
+  <conflict>
+    <software_name>vsftpd</software_name>
+  </conflict>
+
+</service>

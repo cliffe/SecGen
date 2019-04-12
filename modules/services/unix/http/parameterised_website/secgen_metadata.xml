@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<service xmlns="http://www.github/cliffe/SecGen/service"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
+
+  <name>Random Parameterised Website</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Parameterised website filled with SecGen generated content.</description>
+
+  <type>http</type>
+  <platform>linux</platform>
+
+  <!-- Strings are leaked in index.html source code comments -->
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>images_to_leak</read_fact>
+  <read_fact>organisation</read_fact>
+  <read_fact>main_page_paragraph_content</read_fact>
+  <read_fact>white_text</read_fact>
+  <read_fact>additional_pages</read_fact>
+  <read_fact>additional_page_filenames</read_fact>
+
+  <!-- Team Project markers, generate and host an acceptable use policy on a basic website. -->
+  <read_fact>host_acceptable_use_policy</read_fact>
+  <read_fact>security_audit</read_fact>
+
+  <!-- Tab-pane contents, add some HTML, usually CTF challenges, here. -->
+  <read_fact>visible_tabs</read_fact>
+  <read_fact>hidden_tabs</read_fact>
+
+  <read_fact>port</read_fact>
+  <read_fact>theme</read_fact>
+
+  <default_input into="port">
+    <value>80</value>
+  </default_input>
+
+  <default_input into="strings_to_leak">
+    <generator type="message_generator"/>
+    <generator type="message_generator"/>
+  </default_input>
+
+  <default_input into="organisation">
+    <generator type="organisation"/>
+  </default_input>
+
+  <default_input into="main_page_paragraph_content">
+    <generator type="text_paragraph"/>
+  </default_input>
+
+  <default_input into="host_acceptable_use_policy">
+    <value>false</value>
+  </default_input>
+
+  <default_input into="theme">
+    <generator type="website_theme"/>
+  </default_input>
+
+  <conflict>
+    <module_path>.*parameterised_website</module_path>
+  </conflict>
+
+  <requires>
+    <module_path>.*apache</module_path>
+    <type>httpd</type>
+  </requires>
+
+</service>

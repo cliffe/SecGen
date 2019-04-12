@@ -1,0 +1,27 @@
+
+	<attack>
+<% $random = SecureRandom.hex %>
+		<!-- topic: File integrity checkers-->
+		<prompt>Creating a new file in /home/<%= $main_user %>/... Let it happen.</prompt>
+
+		<post_command>echo '<%= $random %>' > /home/<%= $main_user %>/something_secret; echo $?</post_command>
+		<condition>
+			<output_matches>0</output_matches>
+			<message>Created /home/<%= $main_user %>/something_secret</message>
+			<trigger_quiz />
+		</condition>
+		<condition>
+			<output_matches>Permission denied|Operation not permitted|Read-only</output_matches>
+			<message>:( You stopped the attack, rather than monitor for changes...</message>
+		</condition>
+		<else_condition>
+			<message>:( Something was not right...</message>
+		</else_condition>
+
+		<quiz>
+			<question>What is the SHA1 hash of /home/<%= $main_user %>/something_secret?</question>
+			<answer>^<%= Digest::SHA1.hexdigest ("#{$random + "\n"}") %>$</answer>
+			<correct_answer_response>:) <%= $flags.pop %></correct_answer_response>
+			<trigger_next_attack />
+		</quiz>
+	</attack>

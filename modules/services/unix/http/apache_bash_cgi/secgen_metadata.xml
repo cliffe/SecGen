@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<service xmlns="http://www.github/cliffe/SecGen/service"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
+  <name>Apache Bash CGI</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Hosts a bash CGI script on a default apache installation.</description>
+
+  <type>http_bash</type>
+  <platform>unix</platform>
+
+  <reference>https://httpd.apache.org/</reference>
+  <software_license>Apache v2</software_license>
+
+  <requires>
+    <module_path>.*apache</module_path>
+    <type>httpd</type>
+  </requires>
+
+
+</service>

@@ -1,0 +1,85 @@
+${
+import random, os
+random.seed(os.urandom(8))
+
+letter0 = random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+integer = random.randint(0, 256)
+lamb = random.choice([2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71])
+}$
+
+#include <stdio.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+
+char msg[] = "${ description }$";
+
+void print_msg() {
+  printf("%s", msg);
+}
+
+int complex_function(int value, int i) {
+#define LAMBDA ${ write(lamb) }$
+  if (!('A' <= value && value <= 'Z')) {
+    printf("Try again.\n");
+    exit(1);
+  }
+  return ((value - 'A' + (LAMBDA * i)) % ('Z' - 'A' + 1)) + 'A';
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main(int argc, char* argv[]) {
+  char buffer[33];
+
+  //print_msg();
+
+  memset(buffer, 0, 33);
+
+  printf("Enter the password: ");
+  scanf("%32s", buffer);
+
+  int counter0 = 0;
+  int counter1 = 0;
+  for (int i=0; i<32; ++i) {
+    if (buffer[i] == complex_function(${ write('\'' + letter0 + '\'' ) }$, i + ${ write(integer) }$) ) {
+      counter0++;
+    }
+  }
+
+  if (counter0 == 32 && buffer[33] == 0x0) {
+    printf("Good Job.\n");
+    printflag();
+  } else {
+    printf("Try again.\n");
+  }
+
+  return 0;
+}

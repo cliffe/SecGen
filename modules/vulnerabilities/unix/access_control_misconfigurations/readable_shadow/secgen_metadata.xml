@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>Readable Shadow File</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Changes permissions on shadow file to 0622, reveals password hashes to local users.
+    This is not a common misconfiguration, and not particularly subtle.</description>
+
+  <type>access_control_misconfiguration</type>
+  <privilege>root_r</privilege>
+  <access>local</access>
+  <platform>linux</platform>
+
+  <hint>View the /etc/shadow file and try to crack an account hash.</hint>
+
+  <conflict>
+    <name>Writable Shadow File</name>
+    <author>Lewis Ardern</author>
+  </conflict>
+</vulnerability>

@@ -1,0 +1,27 @@
+    proxy_pass            <%= @proxy %>;
+    proxy_read_timeout    <%= @proxy_read_timeout %>;
+    proxy_connect_timeout <%= @proxy_connect_timeout %>;
+    proxy_redirect        <%= @proxy_redirect %>;
+<% if @proxy_method -%>
+    proxy_method          <%= @proxy_method %>;
+<% end -%>
+<% if @proxy_set_body -%>
+    proxy_set_body        <%= @proxy_set_body %>;
+<% end -%>
+<% unless @proxy_set_header.nil? -%>
+    <%- @proxy_set_header.each do |header| -%>
+    proxy_set_header      <%= header %>;
+    <%- end -%>
+<% end -%>
+<% if @proxy_cache -%>
+    proxy_cache           <%= @proxy_cache %>;
+<% end -%>
+<% if @proxy_cache_valid -%>
+    proxy_cache_valid     <%= @proxy_cache_valid %>;
+<% end -%>
+<% if @proxy_cache_use_stale -%>
+    proxy_cache_use_stale   <%= @proxy_cache_use_stale %>;
+<% end -%>
+<% if @proxy_cache_key -%>
+    proxy_cache_key         <%= @proxy_cache_key %>;
+<% end -%>

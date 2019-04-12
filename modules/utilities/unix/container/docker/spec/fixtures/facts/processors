@@ -1,0 +1,16 @@
+{
+  "count": 8,
+  "isa": "i386",
+  "models": [
+    "Intel(R) Core(TM) i7-3740QM CPU @ 2.70GHz",
+    "Intel(R) Core(TM) i7-3740QM CPU @ 2.70GHz",
+    "Intel(R) Core(TM) i7-3740QM CPU @ 2.70GHz",
+    "Intel(R) Core(TM) i7-3740QM CPU @ 2.70GHz",
+    "Intel(R) Core(TM) i7-3740QM CPU @ 2.70GHz",
+    "Intel(R) Core(TM) i7-3740QM CPU @ 2.70GHz",
+    "Intel(R) Core(TM) i7-3740QM CPU @ 2.70GHz",
+    "Intel(R) Core(TM) i7-3740QM CPU @ 2.70GHz"
+  ],
+  "physicalcount": 4,
+  "speed": "2.70 GHz"
+}

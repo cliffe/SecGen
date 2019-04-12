@@ -1,0 +1,111 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/ptrace.h>
+#define USERDEF "AAAAAA"
+
+// Credit to PicoCTF for this level
+
+char msg[] =
+"Endianness refers to the convention used to interpret bytes in a data word.\n"
+"Little-endian systems store the Least significant byte in the Lowest\n"
+"address (LLL) while big-endian systems store the most significant byte\n"
+"of a word in the lowest address. For example, if we had the quad word\n"
+"0x1234567890ABCDEF, big endian systems would store 0x12 in the lowest\n"
+"address while little endian systems would store 0xEF in the lowest address.\n"
+"Similarly, if we had the double word 0x01020304, big endian systems\n"
+"would store the 0x01 in the lowest address while little endian systems\n"
+"would store the 0x04 in the lowest address.  This level contains the\n"
+"following code (where xxxxxxxx is substituted for the level password)\n"
+"   char password[9]=\"xxxxxxxx\";\n"
+"   unsigned int * ip;\n"
+"   ip = (unsigned int *) &password;\n"
+"   printf(\"%08x : %08x\\n\", *ip, *(ip+1));\n"
+"Use your knowledge of ASCII encoding and endianness to find the password\n\n";
+
+void detectTrace(void) __attribute__((constructor));
+void detectTrace (void) {
+    if(ptrace(PTRACE_TRACEME, 0, 1, 0) < 0) {
+        printf("No tracing");
+        exit(1);
+    };
+};
+
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg[i%len] + msg[(i+1)%len];
+    h2 += msg[(i+1)%len] + msg[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg);
+  else
+    printf("%s",msg);
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main() {
+
+	char password[9];
+	char answer[9];
+	unsigned int *ip,i;
+	// Call introduction message
+	print_msg();
+
+	for (i=0; i<9; i++) {
+		password[i]=0;
+		answer[i]=0;
+	}
+	sscanf(USERDEF,"%8s",password);
+	ip = (unsigned int *) &password;
+	printf("Output of above C code\n");
+	printf("%08x : %08x\n\n", *ip, *(ip+1));
+
+	// Get user input
+	printf("Enter the password: ");
+	scanf("%8s",answer);
+
+	printf("Your input represented as consecutive 4-byte integers:\n");
+	ip = (unsigned int *) &answer;
+	printf("%08x : %08x\n\n", *ip, *(ip+1));
+
+	// Compare user input with USERDEF
+	if (!strncmp(answer,USERDEF,8)) {
+    	printf("Good Job.\n");
+        printflag();
+	} else {
+		printf("Try again.\n");
+	}
+
+	return 0;
+}

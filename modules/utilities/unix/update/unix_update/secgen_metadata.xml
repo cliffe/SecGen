@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Unix update repository</name>
+  <author>Jason Keighley</author>
+  <module_license>Apache v2</module_license>
+  <description>An update module for unix</description>
+
+  <type>update</type>
+  <platform>linux</platform>
+
+</utility>

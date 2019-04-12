@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<system>
+		<system_name>challenge_server</system_name>
+		<base platform="linux" type="server"/>
+
+		<input into_datastore="huffman_challenge">
+			<encoder type="huffman_encoder">
+				<input into="strings_to_encode">
+					<generator type="flag_generator"/>
+				</input>
+			</encoder>
+		</input>
+
+		<vulnerability read_fact="images_to_leak">
+			<input into="strings_to_leak">
+				<datastore access="0">huffman_challenge</datastore>
+			</input>
+			<input into="images_to_leak">
+				<datastore access="1">huffman_challenge</datastore>
+			</input>
+		</vulnerability>
+
+		<network type="private_network" range="dhcp" />
+	</system>
+
+</scenario>

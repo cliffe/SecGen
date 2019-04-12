@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<encoder xmlns="http://www.github/cliffe/SecGen/encoder"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/encoder">
+  <name>Random Line Selector</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Randomly selects one of the lines from a file and discards the rest.
+    Optionally pick position in a list (indexed from 1 - in the list [a,b,c] a is in pos 1, b is in pos 2, etc.)
+  </description>
+
+  <type>line_selector</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <read_fact>file_path</read_fact>
+  <read_fact>position</read_fact>
+
+  <output_type>selected_string</output_type>
+</encoder>

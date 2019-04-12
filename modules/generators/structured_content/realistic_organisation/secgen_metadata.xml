@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Realistic Organisation Generator</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Organisation Generator which uses the the business_name to update the domain, manager and employees'
+    usernames and email addresses.
+  </description>
+
+  <type>organisation</type>
+  <type>realistic_organisation</type>
+
+  <platform>linux</platform>
+  <platform>unix</platform>
+  <platform>windows</platform>
+
+  <read_fact>business_name</read_fact>
+  <read_fact>business_motto</read_fact>
+  <read_fact>business_address</read_fact>
+  <read_fact>domain</read_fact>
+  <read_fact>office_telephone</read_fact>
+  <read_fact>office_email</read_fact>
+  <read_fact>industry</read_fact>
+  <read_fact>manager</read_fact>
+  <read_fact>employees</read_fact>
+  <read_fact>product_name</read_fact>
+  <read_fact>intro_paragraph</read_fact>
+
+  <default_input into="business_name">
+    <generator type="business_name"/>
+  </default_input>
+  <default_input into="business_motto">
+    <generator type="motto"/>
+  </default_input>
+  <default_input into="business_address">
+    <generator type="address_generator"/>
+  </default_input>
+  <default_input into="domain">
+    <generator type="domain"/>
+  </default_input>
+  <default_input into="office_telephone">
+    <generator type="phone_number"/>
+  </default_input>
+  <default_input into="office_email">
+    <generator type="email_address"/>
+  </default_input>
+  <default_input into="industry">
+    <generator type="industry_generator"/>
+  </default_input>
+  <default_input into="manager">
+    <generator type="person"/>
+  </default_input>
+  <default_input into="employees">
+    <generator type="person"/>
+    <generator type="person"/>
+    <generator type="person"/>
+  </default_input>
+  <default_input into="product_name">
+    <generator type="product"/>
+  </default_input>
+  <default_input into="intro_paragraph">
+    <generator type="paragraph_generator"/>
+  </default_input>
+
+
+  <output_type>account</output_type>
+</generator>

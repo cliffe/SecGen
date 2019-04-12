@@ -1,0 +1,23 @@
+
+	<attack>
+<% $file = SecureRandom.hex(2) %>
+    <!--shell on the backup server-->
+		<get_shell>sshpass -p <%= $root_password %> ssh -oStrictHostKeyChecking=no root@<%= $backup_server_ip %> /bin/bash</get_shell>
+
+		<prompt>Use scp to copy the desktop /bin/ directory to the backup_server: <%= $backup_server_ip %>:/home/<%= $main_user %>/remote-bin-backup-<%= $file %>/, which should then include the backed up bin/ directory.</prompt>
+
+		<post_command>ls /home/<%= $main_user %>/remote-bin-backup-<%= $file %>/bin/ls /home/<%= $main_user %>/remote-bin-backup-<%= $file %>/bin/mkdir > /dev/null; echo $?</post_command>
+		<condition>
+			<output_matches>No such file or directory</output_matches>
+			<message>:( You didn't copy to the remote /home/<%= $main_user %>/remote-bin-backup-<%= $file %>/bin/... Remember that the trailing / changes whether you are copying directories or their contents...</message>
+		</condition>
+		<condition>
+			<output_matches>0</output_matches>
+			<message>:) Well done! <%= $flags.pop %></message>
+			<trigger_next_attack>true</trigger_next_attack>
+		</condition>
+		<else_condition>
+			<message>:( Something was not right...</message>
+		</else_condition>
+
+	</attack>

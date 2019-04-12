@@ -1,0 +1,153 @@
+# MANAGED BY PUPPET
+<% if @rewrite_www_to_non_www -%>
+<%- @server_name.each do |s| -%>
+server {
+  <%- if @listen_ip.is_a?(Array) then -%>
+    <%- @listen_ip.each do |ip| -%>
+  listen       <%= ip %>:<%= @listen_port %><% if @listen_options %> <%= @listen_options %><% end %>;
+    <%- end -%>
+  <%- else -%>
+  listen       <%= @listen_ip %>:<%= @listen_port %><% if @listen_options %> <%= @listen_options %><% end %>;
+  <%- end -%>
+  <%- if @listen_unix_socket_enable -%>
+    <%- if @listen_unix_socket.is_a?(Array) then -%>
+      <%- @listen_unix_socket.each do |unix_socket| -%>
+  listen unix:<%= unix_socket %><% if @listen_unix_socket_options %> <%= @listen_unix_socket_options %><% end %>;
+      <%- end -%>
+    <%- else -%>
+  listen unix:<%= @listen_unix_socket %><% if @listen_unix_socket_options %> <%= @listen_unix_socket_options %><% end %>;
+    <%- end -%>
+  <%- end -%>
+<%# check to see if ipv6 support exists in the kernel before applying -%>
+  <%- if @ipv6_enable && (defined? @ipaddress6) -%>
+    <%- if @ipv6_listen_ip.is_a?(Array) then -%>
+      <%- @ipv6_listen_ip.each do |ipv6| -%>
+  listen [<%= ipv6 %>]:<%= @ipv6_listen_port %> <% if @ipv6_listen_options %><%= @ipv6_listen_options %><% end %>;
+      <%- end -%>
+    <%- else -%>
+  listen [<%= @ipv6_listen_ip %>]:<%= @ipv6_listen_port %> <% if @ipv6_listen_options %><%= @ipv6_listen_options %><% end %>;
+    <%- end -%>
+  <%- end -%>
+  server_name  www.<%= s.gsub(/^www\./, '') %>;
+  return       301 http://<%= s.gsub(/^www\./, '') %>$request_uri;
+}
+
+<% end -%>
+<% end -%>
+server {
+<%- if @listen_ip.is_a?(Array) then -%>
+  <%- @listen_ip.each do |ip| -%>
+  listen <%= ip %>:<%= @listen_port %><% if @listen_options %> <%= @listen_options %><% end %>;
+  <%- end -%>
+<%- else -%>
+  listen <%= @listen_ip %>:<%= @listen_port %><% if @listen_options %> <%= @listen_options %><% end %>;
+<%- end -%>
+<%- if @listen_unix_socket_enable -%>
+  <%- if @listen_unix_socket.is_a?(Array) then -%>
+    <%- @listen_unix_socket.each do |unix_socket| -%>
+  listen unix:<%= unix_socket %><% if @listen_unix_socket_options %> <%= @listen_unix_socket_options %><% end %>;
+    <%- end -%>
+  <%- else -%>
+  listen unix:<%= @listen_unix_socket %><% if @listen_unix_socket_options %> <%= @listen_unix_socket_options %><% end %>;
+  <%- end -%>
+<%- end -%>
+<%# check to see if ipv6 support exists in the kernel before applying -%>
+<%- if @ipv6_enable && (defined? @ipaddress6) -%>
+  <%- if @ipv6_listen_ip.is_a?(Array) then -%>
+    <%- @ipv6_listen_ip.each do |ipv6| -%>
+  listen [<%= ipv6 %>]:<%= @ipv6_listen_port %> <% if @ipv6_listen_options %><%= @ipv6_listen_options %><% end %>;
+    <%- end -%>
+  <%- else -%>
+  listen [<%= @ipv6_listen_ip %>]:<%= @ipv6_listen_port %> <% if @ipv6_listen_options %><%= @ipv6_listen_options %><% end %>;
+  <%- end -%>
+<%- end -%>
+  server_name           <%= @rewrite_www_to_non_www ? @server_name.join("  ").gsub(/(^| )(www\.)?(?=[a-z0-9])/, '') : @server_name.join(" ") %>;
+<%- if instance_variables.any? { |iv| iv.to_s.include? 'auth_basic' } -%>
+  <%- if defined? @auth_basic -%>
+  auth_basic           "<%= @auth_basic %>";
+  <%- end -%>
+  <%- if defined? @auth_basic_user_file -%>
+  auth_basic_user_file <%= @auth_basic_user_file %>;
+  <%- end -%>
+<% end -%>
+<% if instance_variables.any? { |iv| iv.to_s.include? 'client_' } -%>
+  <%- if defined? @client_body_timeout -%>
+  client_body_timeout <%= @client_body_timeout %>;
+  <%- end -%>
+  <%- if defined? @client_header_timeout -%>
+  client_header_timeout <%= @client_header_timeout %>;
+  <%- end -%>
+  <%- if defined? @client_max_body_size -%>
+  client_max_body_size <%= @client_max_body_size %>;
+  <%- end -%>
+<% end -%>
+<% if defined? @gzip_types -%>
+  gzip_types <%= @gzip_types %>;
+<% end -%>
+<%# make sure that allow comes before deny by forcing the allow key (if it -%>
+<%# exists) to be first in the output order.  The hash keys also need to be -%>
+<%# sorted so that the ordering is stable. -%>
+<% if @vhost_cfg_prepend -%>
+  <%- @vhost_cfg_prepend.sort_by{ |k, v| k.to_s == 'allow' ? '' : k.to_s }.each do |key,value| -%>
+    <%- if value.is_a?(Hash) -%>
+      <%- value.sort_by {|k,v| k}.each do |subkey,subvalue| -%>
+        <%- Array(subvalue).each do |asubvalue| -%>
+  <%= key %> <%= subkey %> <%= asubvalue %>;
+        <%- end -%>
+      <%- end -%>
+    <%- else -%>
+      <%- Array(value).each do |asubvalue| -%>
+  <%= key %> <%= asubvalue %>;
+      <%- end -%>
+    <%- end -%>
+  <%- end -%>
+<% end -%>
+<% Array(@raw_prepend).each do |line| -%>
+  <%= line %>
+<% end %>
+<% if @root -%>
+  root <%= @root %>;
+<% end -%>
+<% if @passenger_cgi_param -%>
+  <%- @passenger_cgi_param.keys.sort.each do |key| -%>
+  passenger_set_cgi_param  <%= key %> <%= @passenger_cgi_param[key] %>;
+  <%- end -%>
+<% end -%>
+<% if @passenger_set_header -%>
+  <%- @passenger_set_header.keys.sort.each do |key| -%>
+  passenger_set_header  <%= key %> <%= @passenger_set_header[key] %>;
+  <%- end -%>
+<% end -%>
+<% if @passenger_env_var -%>
+  <%- @passenger_env_var.keys.sort.each do |key| -%>
+  passenger_env_var  <%= key %> <%= @passenger_env_var[key] %>;
+  <%- end -%>
+<% end -%>
+<% if Array(@resolver).count > 0 -%>
+  resolver                  <% Array(@resolver).each do |r| %> <%= r %><% end %>;
+<% end -%>
+<% if @add_header -%>
+  <%- @add_header.keys.sort.each do |key| -%>
+  add_header              <%= key %> <%= @add_header[key] %>;
+  <%- end -%>
+<% end -%>
+<% if @maintenance -%>
+  <%= @maintenance_value %>;
+<% end -%>
+<% if @rewrite_to_https -%>
+  if ($ssl_protocol = "") {
+       return 301 https://$host<% if @ssl_port.to_i != 443 %>:<%= @ssl_port %><% end %>$request_uri;
+  }
+<% end -%>
+<% if @index_files.count > 0 -%>
+  index <% Array(@index_files).each do |i| %> <%= i %><% end %>;
+<% end -%>
+<% if defined? @log_by_lua -%>
+  log_by_lua '<%= @log_by_lua %>';
+<% end -%>
+<% if defined? @log_by_lua_file -%>
+  log_by_lua_file "<%= @log_by_lua_file %>";
+<% end -%>
+
+  access_log            <%= @access_log_real %>;
+  error_log             <%= @error_log_real %>;

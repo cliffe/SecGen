@@ -1,0 +1,11 @@
+<% if @options -%>
+listen <%= @ip %>:<%= @port %> {
+    options {
+<% @options.each do |option| -%>
+        <%= option %>;
+<% end -%>
+    };
+};
+<% else -%>
+listen <%= @ip %>:<%= @port %>;
+<% end -%>

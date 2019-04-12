@@ -1,0 +1,94 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <string.h>
+#define USERDEF "AAAAAA"
+
+char msg[] =
+ "In this level, you will need to use gdb to find the password as it is\n"
+ "being passed as a parameter to a function with 6 parameters. For x86-64,\n"
+ "the mnemonic for passing parameters using registers is Diane's Silk Dress\n"
+ "Cost $89. (rdi rsi rdx rcx r8 r9)\n\n";
+
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg[i%len] + msg[(i+1)%len];
+    h2 += msg[(i+1)%len] + msg[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg);
+  else
+    printf("%s",msg);
+}
+
+int foo(char *a, char *b, char *c, char *d, char *e, char *f) {
+    int flag=1;
+    int i;
+    int len = strlen(d);
+    if (len != strlen(f))
+	flag=0;
+    for (i=0; i < len; i++) {
+	if (e[i] != f[i]) {
+		flag = 0;
+		break;
+	}
+    }
+    return flag;
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main() {
+    char buff[12];
+    char chaff0[] = "IeuxMect";
+    char chaff1[] = "s27lzXgT";
+    char chaff2[] = "H62Pe7ky";
+    char chaff3[] = "Br0MSLjX";
+    char chaff4[] = "kO7wao8Q";
+    char chaff5[] = "s3sOylCO";
+    char chaff6[] = "KpMCmNKz";
+    char chaff7[] = "yZUEEOFo";
+    char chaff8[] = "rQwHzJrk";
+    char chaff9[] = "SeCmlYB0";
+    char chaff10[] = USERDEF;
+
+    print_msg();
+    printf("Enter the password: ");
+    scanf("%11s", buff);
+
+    if ( foo("TYdfExPX", "Ys1QXVxq", "uyQMBeoD", "Kr3Pp6kr", chaff10, buff)) {
+    	printf("Good Job.\n");
+        printflag();
+    } else {
+        printf("Try again.\n");
+    }
+    return 0;
+}

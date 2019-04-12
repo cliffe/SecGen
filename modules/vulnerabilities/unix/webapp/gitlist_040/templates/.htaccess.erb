@@ -1,0 +1,12 @@
+<IfModule mod_rewrite.c>
+    Options -MultiViews
+
+    RewriteEngine On
+    #RewriteBase /path/to/gitlist/
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ index.php [L,NC]
+</IfModule>
+<Files config.ini>
+  Require all granted
+</Files>

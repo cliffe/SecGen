@@ -1,0 +1,35 @@
+deny <%= @type %> {
+<% if @mask -%>
+    mask        "<%= @mask %>";
+<% end -%>
+<% if @filename -%>
+    filename    "<%= @filename %>";
+<% end -%>
+<% if @reason -%>
+    reason      "<%= @reason %>";
+<% end -%>
+<% if @soft -%>
+    soft        "<%= @soft %>";
+<% end -%>
+<% if @version -%>
+    version     "<%= @version %>";
+<% end -%>
+<% if @flags -%>
+    flags       "<%= @flags %>";
+<% end -%>
+<% if @rule -%>
+    rule        "<%= @rule %>";
+<% end -%>
+<% if @typedenial -%>
+    type        "<%= @typedenial %>";
+<% end -%>
+<% if @channel -%>
+    channel     "<%= @channel %>";
+<% end -%>
+<% if @redirect -%>
+    redirect    "<%= @redirect %>";
+<% end -%>
+<% if @warn -%>
+    warn        "<%= @warn %>";
+<% end -%>
+};

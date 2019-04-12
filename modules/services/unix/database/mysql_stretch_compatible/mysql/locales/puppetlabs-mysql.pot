@@ -1,0 +1,176 @@
+"Project-Id-Version: puppetlabs-mysql 3.11.0-50-gd122d86\n"
+"\n"
+"Report-Msgid-Bugs-To: docs@puppet.com\n"
+"POT-Creation-Date: 2017-09-14 14:21+0100\n"
+"PO-Revision-Date: 2017-09-14 14:21+0100\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#. metadata.json
+#: .summary
+msgid "Installs, configures, and manages the MySQL service."
+msgstr ""
+
+#. metadata.json
+#: .description
+msgid "MySQL module"
+msgstr ""
+
+#. ./manifests/bindings/client_dev.pp:12
+msgid "No MySQL client development package configured for %{os}."
+msgstr ""
+
+#. ./manifests/bindings/daemon_dev.pp:12
+msgid "No MySQL daemon development package configured for %{os}."
+msgstr ""
+
+#. ./manifests/bindings.pp:38
+msgid ""
+"::mysql::bindings::java cannot be managed by puppet on %{osfamily} as it is "
+"not in official repositories. Please disable java mysql binding."
+msgstr ""
+
+#. ./manifests/bindings.pp:40
+msgid ""
+"::mysql::bindings::php does not need to be managed by puppet on %{osfamily} "
+"as it is included in mysql package by default."
+msgstr ""
+
+#. ./manifests/bindings.pp:42
+msgid ""
+"::mysql::bindings::ruby cannot be managed by puppet on %{osfamily} as it is "
+"not in official repositories. Please disable ruby mysql binding."
+msgstr ""
+
+#. ./manifests/params.pp:124
+msgid ""
+"Unsupported platform: puppetlabs-%{module_name} currently doesn't support "
+"%{os}."
+msgstr ""
+
+#. ./manifests/params.pp:381
+msgid ""
+"Unsupported platform: puppetlabs-%{module_name} currently doesn't support "
+"%{osfamily} or %{os}."
+msgstr ""
+
+#. ./manifests/params.pp:465
+msgid ""
+"Unsupported platform: puppetlabs-%{module_name} only supports RedHat 5.0 and "
+"beyond."
+msgstr ""
+
+#. ./manifests/server/backup.pp:28
+msgid ""
+"The 'prescript' option is not currently implemented for the %{provider} "
+"backup provider."
+msgstr ""
+
+#. ./manifests/server.pp:48
+msgid ""
+"The `old_root_password` attribute is no longer used and will be removed in a "
+"future release."
+msgstr ""
+
+#: ./lib/puppet/parser/functions/mysql_deepmerge.rb:22
+msgid ""
+"mysql_deepmerge(): wrong number of arguments (%{args_length}; must be at "
+"least 2)"
+msgstr ""
+
+#: ./lib/puppet/parser/functions/mysql_deepmerge.rb:30
+msgid ""
+"mysql_deepmerge: unexpected argument type %{arg_class}, only expects hash "
+"arguments."
+msgstr ""
+
+#: ./lib/puppet/parser/functions/mysql_dirname.rb:9
+msgid "mysql_dirname(): Wrong number of arguments given (%{args_length} for 1)"
+msgstr ""
+
+#: ./lib/puppet/parser/functions/mysql_password.rb:11
+msgid ""
+"mysql_password(): Wrong number of arguments given (%{args_length} for 1)"
+msgstr ""
+
+#: ./lib/puppet/parser/functions/mysql_strip_hash.rb:11
+msgid "mysql_strip_hash(): Requires a hash to work."
+msgstr ""
+
+#: ./lib/puppet/provider/mysql_datadir/mysql.rb:24
+msgid "Defaults-extra-file %{file} is missing."
+msgstr ""
+
+#: ./lib/puppet/provider/mysql_datadir/mysql.rb:59
+msgid "ERROR: `Resource` can not be removed."
+msgstr ""
+
+#: ./lib/puppet/provider/mysql_grant/mysql.rb:19
+msgid "#mysql had an error ->  %{inspect}"
+msgstr ""
+
+#: ./lib/puppet/provider/mysql_user/mysql.rb:125
+msgid "Only mysql_native_password (*ABCD...XXX) hashes are supported."
+msgstr ""
+
+#: ./lib/puppet/type/mysql_grant.rb:34
+msgid "`privileges` `parameter` is required."
+msgstr ""
+
+#: ./lib/puppet/type/mysql_grant.rb:35
+msgid "`privileges` `parameter`: PROXY can only be specified by itself."
+msgstr ""
+
+#: ./lib/puppet/type/mysql_grant.rb:36
+msgid "`table` `parameter` is required."
+msgstr ""
+
+#: ./lib/puppet/type/mysql_grant.rb:37
+msgid "`user` `parameter` is required."
+msgstr ""
+
+#: ./lib/puppet/type/mysql_grant.rb:39
+msgid "`name` `parameter` must match user@host/table format."
+msgstr ""
+
+#: ./lib/puppet/type/mysql_grant.rb:57
+msgid ""
+"PROXY user not supported on mysql versions < 5.5.0. Current version "
+"%{version}."
+msgstr ""
+
+#: ./lib/puppet/type/mysql_grant.rb:67
+msgid ""
+"`table` `property` for PROXY should be specified as proxy_user@proxy_host."
+msgstr ""
+
+#: ./lib/puppet/type/mysql_grant.rb:96 ./lib/puppet/type/mysql_user.rb:29
+msgid "Invalid database user %{user}."
+msgstr ""
+
+#: ./lib/puppet/type/mysql_grant.rb:102 ./lib/puppet/type/mysql_user.rb:34
+msgid "MySQL usernames are limited to a maximum of 16 characters."
+msgstr ""
+
+#: ./lib/puppet/type/mysql_grant.rb:103 ./lib/puppet/type/mysql_user.rb:35
+msgid "MySQL usernames are limited to a maximum of 32 characters."
+msgstr ""
+
+#: ./lib/puppet/type/mysql_grant.rb:104 ./lib/puppet/type/mysql_user.rb:36
+msgid "MySQL usernames are limited to a maximum of 80 characters."
+msgstr ""
+
+#: ./lib/puppet/type/mysql_user.rb:82
+msgid ""
+"`tls_options` `property`: The values NONE, SSL and X509 cannot be used with "
+"other options, you may only pick one of them."
+msgstr ""
+
+#: ./lib/puppet/type/mysql_user.rb:87
+msgid "Invalid tls option %{option}."
+msgstr ""

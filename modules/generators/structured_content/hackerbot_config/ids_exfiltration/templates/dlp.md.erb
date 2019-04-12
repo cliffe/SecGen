@@ -1,0 +1,31 @@
+## Data loss prevention (DLP)
+
+Data loss prevention (DLP) involves monitoring network activity that indicates that sensitive information is being exfiltrated or handled incorrectly. Some DLP systems monitor local systems and data at rest (for example, HIDS), while others are focused on network traffic and data in motion (NIDS). Using DLP software can help to detect insecure processes in an organisation, such as storing sensitive data in unplanned or insecure places. It can also help to mitigate insider threat, and data exfiltration to remote attackers. A report by Bnet shows that 45 percent of employees take data when they change jobs, and data leakage and organisational doxing has become more frequent (for example, the Sony Pictures compromise).
+
+Note that there is a variety of DLP solutions available, and the most robust enterprise solutions provide network monitoring (data in motion), file system monitoring (data at rest), and some DLP systems will also monitor local file transfers (for example, copying files to USB) to block exfiltration using local storage devices.
+
+In order to be effective, an organisation must identify sensitive data in their organisation that should be monitored.
+
+## Snort exfiltration detection (data in motion)
+
+### Text-based exfiltration detection
+
+Hint: you can include your sensitive data directly in a Snort rule. This is very closely related to the IDS rules lab, which will be a helpful resource. Consider using the metadata:service tag in your rule.
+
+It is fine to monitor all ports, so long as your rule(s) detect transfer of the file.
+
+#### Regular expression-based exfiltration detection
+
+Assuming the data you are protecting is sensitive, you likely don't want your Snort rules to contain direct copies of all your most sensitive data. For this reason, Snort rules can contain regular expressions to match against.
+
+It is possible to write Snort rules that detect the transfer of the contents of your files, based on pattern matching, so that the Snort rule does not contain the sensitive parts of your document.
+
+Hint: consider using the pcre keyword in your rule.
+
+#### Hash-based exfiltration detection
+
+> Assuming the data you are protecting is sensitive, you likely don't want your Snort rules to contain direct copies of all your most sensitive data. For this reason, Snort rules can contain hashes to match against.
+
+> Using newer versions of Snort it is possible to write Snort rules that detect the transfer of the contents of your files, based on hashes (using the protected\_content keyword), so that the Snort rule does not contain any plain text of your document.
+
+---

@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<!-- an example system with a setgid binary. -->
+	<system>
+		<system_name>group_challenges</system_name>
+		<base platform="linux" type="server" distro="Stretch"/>
+
+      <utility module_path=".*parameterised_accounts">
+          <input into="accounts" into_datastore="account">
+            <generator type="account">
+              <input into="username">
+                <value>challenger</value>
+              </input>
+              <input into="password">
+                <value>password</value>
+              </input>
+            </generator>
+          </input>
+        </utility>
+
+      <vulnerability type="pwnable_binary">
+          <input into="group">
+            <value>task1</value>
+          </input>
+          <input into="account">
+            <datastore>account</datastore>
+          </input>
+        </vulnerability>
+
+		<vulnerability type="pwnable_binary">
+			<input into="group">
+				<value>task2</value>
+			</input>
+			<input into="account">
+				<datastore>account</datastore>
+			</input>
+		</vulnerability>
+
+
+		<network type="private_network" range="dhcp"/>
+	</system>
+
+</scenario>

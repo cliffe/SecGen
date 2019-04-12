@@ -1,0 +1,148 @@
+#!/bin/sh
+#
+# elasticsearch <%= @resource[:instance] %> <summary>
+#
+# chkconfig:   2345 80 20
+# description: Starts and stops a single elasticsearch instance on this system
+#
+
+### BEGIN INIT INFO
+# Provides: Elasticsearch-<%= @resource[:instance] %>
+# Required-Start: $network $named
+# Required-Stop: $network $named
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: This service manages the elasticsearch daemon
+# Description: Elasticsearch is a very scalable, schema-free and high-performance search solution supporting multi-tenancy and near realtime search.
+### END INIT INFO
+
+#
+# init.d / servicectl compatibility (openSUSE)
+#
+if [ -f /etc/rc.status ]; then
+    . /etc/rc.status
+    rc_reset
+fi
+
+#
+# Source function library.
+#
+if [ -f /etc/rc.d/init.d/functions ]; then
+    . /etc/rc.d/init.d/functions
+fi
+
+EXE="/usr/share/elasticsearch/bin/elasticsearch"
+prog="elasticsearch-<%= @resource[:instance] %>"
+pidfile=/var/run/elasticsearch/${prog}.pid
+
+export JAVA_HOME=/usr/java/latest
+JAVAPROG=${JAVA_HOME}/bin/java
+MAX_MAP_COUNT=262144
+
+[ -e /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog
+
+export ES_HEAP_SIZE
+export ES_HEAP_NEWSIZE
+export ES_DIRECT_SIZE
+export ES_JAVA_OPTS
+export ES_JVM_OPTIONS
+
+lockfile=/var/lock/subsys/$prog
+
+# backwards compatibility for old config sysconfig files, pre 0.90.1
+if [ -n $USER ] && [ -z $ES_USER ] ; then
+   ES_USER=$USER
+fi
+
+checkJava() {
+    if [ -x "$JAVA_HOME/bin/java" ]; then
+        JAVA="$JAVA_HOME/bin/java"
+    else
+        JAVA=`which java`
+    fi
+
+    if [ ! -x "$JAVA" ]; then
+        echo "Could not find any executable java binary. Please install java in your PATH or set JAVA_HOME"
+        exit 1
+    fi
+}
+
+start() {
+    checkJava
+    [ -x $EXE ] || exit 5
+    [ -f $CONF_FILE ] || exit 6
+    if [ -n "$MAX_OPEN_FILES" ]; then
+        ulimit -n $MAX_OPEN_FILES
+    fi
+    if [ -n "$MAX_LOCKED_MEMORY" ]; then
+        ulimit -l $MAX_LOCKED_MEMORY
+    fi
+    if [ -n "$MAX_MAP_COUNT" -a -f /proc/sys/vm/max_map_count ]; then
+        sysctl -q -w vm.max_map_count=$MAX_MAP_COUNT
+    fi
+
+    if [ -n "$WORK_DIR" ]; then
+        mkdir -p "$WORK_DIR"
+        chown "$ES_USER":"$ES_GROUP" "$WORK_DIR"
+    fi
+    echo -n $"Starting $prog: "
+    # if not running, start it up here, usually something like "daemon $EXE"
+    startproc -u $ES_USER $EXE -d -p $pidfile <%= opt_flags.join(' ') %> &
+    retval=$?
+    if [ $retval -eq 0 ]; then
+        touch $lockfile
+    fi
+    rc_status -v
+    return $retval
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    #ps ax|grep $JAVA|grep `cat $pidfile`
+    killproc -p $pidfile $JAVAPROG
+    retval=$?
+
+    if [ $retval -eq 0 ]; then
+        rm -f $lockfile
+    fi
+    rc_status -v
+    return $retval
+}
+
+restart() {
+    stop
+    start
+}
+
+reload() {
+    restart
+}
+
+status() {
+    # run checks to determine if the service is running or use generic status
+    echo "Checking processes for elasticsearch"
+    checkproc -p $pidfile $JAVAPROG
+    rc_status -v
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart)
+        restart
+        ;;
+    reload)
+        reload
+        ;;
+    status)
+        status
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|status|restart|reload}"
+        exit 2
+esac
+exit $?

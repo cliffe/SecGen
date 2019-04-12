@@ -1,0 +1,48 @@
+{
+  "business_name": "Yorkshire Personal Health",
+  "business_motto": "We'll have you as good as new in no time.",
+  "business_address": "159 Longlands St, Bradford BD1 2PX",
+  "domain": "yorkspersonalhealth.co.uk",
+  "office_telephone": "01274 200700",
+  "office_email": "info@yorkspersonalhealth.co.uk",
+  "industry": "Medical Services",
+  "manager": {
+    "name": "Angela Dickinson",
+    "address": "76103 Joshuah Path, Port Magali, Cambridgeshire, R1 1TR",
+    "phone_number": "01274 200700 ext 100",
+    "email_address": "a.dickinson@yorkspersonalhealth.co.uk",
+    "username": "dickinson_a",
+    "password": ""
+  },
+  "employees": [
+    {
+      "name": "Abdullah Carroll",
+      "address": "Office A, 160 Longlands St, Bradford BD1 2PX",
+      "phone_number": "01274 200700 ext 101",
+      "email_address": "a.carroll@yorkspersonalhealth.co.uk",
+      "username": "carroll_a",
+      "password": ""
+    },
+    {
+      "name": "Annie Williamson",
+      "address": "Office B, 160 Longlands St, Bradford BD1 2PX",
+      "phone_number": "01274 200700 ext 103",
+      "email_address": "a.williamson@yorkspersonalhealth.co.uk",
+      "username": "williamson_a",
+      "password": ""
+    },
+    {
+      "name": "Jammie Marks",
+      "address": "Office B, 160 Longlands St, Bradford BD1 2PX",
+      "phone_number": "01274 200700 ext 110",
+      "email_address": "j.marks@yorkspersonalhealth.co.uk",
+      "username": "marks_j",
+      "password": ""
+    }
+  ],
+  "product_name": "Check up",
+  "intro_paragraph": [
+    "A health assessment is more than a check up. It can be the start of a journey towards better health.",
+    "We use our health expertise to build a clear picture of where your current health is and identify potential future health risks. After your health assessment, we’ll give you guidance and support to help you become healthier today and in the future."
+  ]
+}

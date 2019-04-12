@@ -1,0 +1,49 @@
+<% $current_page = 'Contact Us' -%>
+<html>
+<%= scope.function_template(['parameterised_website/subtemplates/header.html.erb']) %>
+<body>
+  <%= scope.function_template(['parameterised_website/subtemplates/navbar.html.erb']) %>
+  <div id="main_container" class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="intro-text">
+          <h1 class="name"><%= @business_name %></h1>
+          <hr class="star-light">
+          <h3> <%= @business_motto %></h3>
+        </div>
+      </div>
+      <div class="col-lg-12" id="contact">
+        <div>
+          <h2>Contact <%= @business_name %></h2>
+          <p>Address: <%= @business_address %></p>
+          <p>Telephone: <%= @office_telephone %></p>
+          <p>Email: <%= @office_email %></p>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="employee">
+          <h2>Manager</h2>
+          <p><%= @manager_profile['name'] %></p>
+          <p><%= @manager_profile['phone_number'] %></p>
+          <p><%= @manager_profile['email_address'] %></p>
+        </div>
+      </div>
+      <% if @employees and @employees.length > 0 -%>
+      <div class="col-lg-12" id="employees">
+        <h2>Employees</h2>
+          <% @employees.each do |employee| -%>
+        <div class="col-lg-4">
+          <div class="employee">
+            <p><strong><%= employee['name'] %></strong></p>
+            <p><%= employee['phone_number'] %></p>
+            <p><%= employee['email_address'] %></p>
+          </div>
+        </div>
+        <% end %>
+      </div>
+      <% end -%>
+    </div>
+  </div>
+  <%= scope.function_template(['parameterised_website/subtemplates/scripts.html.erb']) %>
+</body>
+</html>

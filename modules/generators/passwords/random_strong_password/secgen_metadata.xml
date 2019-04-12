@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Random Strong Password Generator</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Strong password, a 15 character long SecureRandom base64 generated string.</description>
+
+  <type>password_generator</type>
+  <type>strong_password_generator</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <output_type>generated_passwords</output_type>
+
+</generator>

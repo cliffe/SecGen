@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Puppet Class: logstash::service
+  
+    &mdash; Documentation by YARD 0.9.13
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "puppet_classes::logstash::service";
+  relpath = '../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../puppet_class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../_index.html">Index (l)</a> &raquo;
+    <span class='title'><span class='object_link'>Puppet Classes</span></span>
+     &raquo; 
+    <span class="title">logstash::service</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="puppet_class_list_link"
+        href="../puppet_class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Puppet Class: logstash::service</h1>
+<div class="box_info">
+  
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>
+      manifests/service.pp
+    </dd>
+  </dl>
+</div>
+
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    <p>This mangages the system service for Logstash.</p>
+
+<p>It is usually used only by the top-level <code>logstash</code> class. It&#39;s unlikely
+that you will need to declare this class yourself.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
+      
+        <p class="example_title"><div class='inline'><p>Include this class to ensure its resources are available.</p>
+</div></p>
+      
+      <pre class="example code"><code><span class='id identifier rubyid_include'>include</span> <span class='id identifier rubyid_logstash'>logstash</span><span class='op'>::</span><span class='id identifier rubyid_service'>service</span></code></pre>
+    
+  </div>
+
+<p class="tag_title">Author:</p>
+<ul class="author">
+  
+    <li>
+      
+      
+      
+      
+        
+        <div class='inline'><p><a href="https://github.com/elastic/puppet-logstash/graphs/contributors">https://github.com/elastic/puppet-logstash/graphs/contributors</a></p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><div class="method_details_list">
+  <table class="source_code">
+    <tr>
+      <td>
+        <pre class="lines">
+
+
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173</pre>
+      </td>
+      <td>
+        <pre class="code"><span class="info file"># File 'manifests/service.pp', line 11</span>
+
+class logstash::service {
+  $default_settings = {
+    &#39;path.data&#39;   =&gt; &#39;/var/lib/logstash&#39;,
+    &#39;path.config&#39; =&gt; &#39;/etc/logstash/conf.d&#39;,
+    &#39;path.logs&#39;   =&gt; &#39;/var/log/logstash&#39;,
+  }
+
+  $default_startup_options = {
+    &#39;JAVACMD&#39;             =&gt; &#39;/usr/bin/java&#39;,
+    &#39;LS_HOME&#39;             =&gt; $logstash::home_dir,
+    &#39;LS_SETTINGS_DIR&#39;     =&gt; $logstash::config_dir,
+    &#39;LS_OPTS&#39;             =&gt; &quot;--path.settings=${logstash::config_dir}&quot;,
+    &#39;LS_JAVA_OPTS&#39;        =&gt; &#39;&quot;&quot;&#39;,
+    &#39;LS_PIDFILE&#39;          =&gt; &#39;/var/run/logstash.pid&#39;,
+    &#39;LS_USER&#39;             =&gt; $logstash::logstash_user,
+    &#39;LS_GROUP&#39;            =&gt; $logstash::logstash_group,
+    &#39;LS_GC_LOG_FILE&#39;      =&gt; &#39;/var/log/logstash/gc.log&#39;,
+    &#39;LS_OPEN_FILES&#39;       =&gt; &#39;16384&#39;,
+    &#39;LS_NICE&#39;             =&gt; &#39;19&#39;,
+    &#39;SERVICE_NAME&#39;        =&gt; &#39;&quot;logstash&quot;&#39;,
+    &#39;SERVICE_DESCRIPTION&#39; =&gt; &#39;&quot;logstash&quot;&#39;,
+  }
+
+  $default_jvm_options = [
+    &#39;-Dfile.encoding=UTF-8&#39;,
+    &#39;-Djava.awt.headless=true&#39;,
+    &#39;-Xms256m&#39;,
+    &#39;-Xmx1g&#39;,
+    &#39;-XX:CMSInitiatingOccupancyFraction=75&#39;,
+    &#39;-XX:+DisableExplicitGC&#39;,
+    &#39;-XX:+HeapDumpOnOutOfMemoryError&#39;,
+    &#39;-XX:+UseCMSInitiatingOccupancyOnly&#39;,
+    &#39;-XX:+UseConcMarkSweepGC&#39;,
+    &#39;-XX:+UseParNewGC&#39;,
+  ]
+
+  $settings = merge($default_settings, $logstash::settings)
+  $startup_options = merge($default_startup_options, $logstash::startup_options)
+  $jvm_options = $logstash::jvm_options
+  $pipelines = $logstash::pipelines
+
+  File {
+    owner  =&gt; &#39;root&#39;,
+    group  =&gt; &#39;root&#39;,
+    mode   =&gt; &#39;0644&#39;,
+    notify =&gt; Exec[&#39;logstash-system-install&#39;],
+  }
+
+  if $logstash::ensure == &#39;present&#39; {
+    case $logstash::status {
+      &#39;enabled&#39;: {
+        $service_ensure = &#39;running&#39;
+        $service_enable = true
+      }
+      &#39;disabled&#39;: {
+        $service_ensure = &#39;stopped&#39;
+        $service_enable = false
+      }
+      &#39;running&#39;: {
+        $service_ensure = &#39;running&#39;
+        $service_enable = false
+      }
+      default: {
+        fail(&quot;\&quot;${logstash::status}\&quot; is an unknown service status value&quot;)
+      }
+    }
+  } else {
+    $service_ensure = &#39;stopped&#39;
+    $service_enable = false
+  }
+
+  if $service_ensure == &#39;running&#39; {
+    # Then make sure the Logstash startup options are up to date.
+    file {&#39;/etc/logstash/startup.options&#39;:
+      content =&gt; template(&#39;logstash/startup.options.erb&#39;),
+    }
+
+    # ..and make sure the JVM options are up to date.
+    file {&#39;/etc/logstash/jvm.options&#39;:
+      content =&gt; template(&#39;logstash/jvm.options.erb&#39;),
+    }
+
+    # ..and pipelines.yml, if the user provided such. If they didn&#39;t, zero out
+    # the file, which will default Logstash to traditional single-pipeline
+    # behaviour.
+    if(empty($pipelines)) {
+      file {&#39;/etc/logstash/pipelines.yml&#39;:
+        content =&gt; &#39;&#39;,
+      }
+    }
+    else {
+      file {&#39;/etc/logstash/pipelines.yml&#39;:
+        content =&gt; template(&#39;logstash/pipelines.yml.erb&#39;),
+      }
+    }
+
+    # ..and the Logstash internal settings too.
+    file {&#39;/etc/logstash/logstash.yml&#39;:
+      content =&gt; template(&#39;logstash/logstash.yml.erb&#39;),
+    }
+
+    # Invoke &#39;system-install&#39;, which generates startup scripts based on the
+    # contents of the &#39;startup.options&#39; file.
+    exec { &#39;logstash-system-install&#39;:
+      command     =&gt; &quot;${logstash::home_dir}/bin/system-install&quot;,
+      refreshonly =&gt; true,
+      notify      =&gt; Service[&#39;logstash&#39;],
+    }
+  }
+
+  # Figure out which service provider (init system) we should be using.
+  # In general, we&#39;ll try to guess based on the operating system.
+  $os = downcase($::operatingsystem)
+  $release = $::operatingsystemmajrelease
+  # However, the operator may have explicitly defined the service provider.
+  if($logstash::service_provider) {
+    $service_provider = $logstash::service_provider
+  }
+  # In the absence of an explicit choice, we&#39;ll try to figure out a sensible
+  # default.
+  # Puppet 3 doesn&#39;t know that Debian 8 uses systemd, not SysV init, so we&#39;ll
+  # help it out with our knowledge from the future.
+  elsif($os == &#39;debian&#39; and $release == &#39;8&#39;) {
+    $service_provider = &#39;systemd&#39;
+  }
+  # Centos 6 uses Upstart by default, but Puppet can get confused about this too.
+  elsif($os =~ /(redhat|centos)/ and $release == &#39;6&#39;) {
+    $service_provider = &#39;upstart&#39;
+  }
+  elsif($os =~ /ubuntu/ and $release == &#39;12.04&#39;) {
+    $service_provider = &#39;upstart&#39;
+  }
+  elsif($os =~ /opensuse/ and $release == &#39;13&#39;) {
+    $service_provider = &#39;systemd&#39;
+  }
+  #Older Amazon Linux AMIs has its release based on the year
+  #it came out (2010 and up); the provider needed to be set explicitly;
+  #New Amazon Linux 2 AMIs has the release set to 2, Puppet can handle it 
+  elsif($os =~ /amazon/ and versioncmp($release, &#39;2000&#39;) &gt; 0) {
+    $service_provider = &#39;upstart&#39;
+  }
+  else {
+    # In most cases, Puppet(4) can figure out the correct service
+    # provider on its own, so we&#39;ll just say &#39;undef&#39;, and let it do
+    # whatever it thinks is best.
+    $service_provider = undef
+  }
+
+  service { &#39;logstash&#39;:
+    ensure     =&gt; $service_ensure,
+    enable     =&gt; $service_enable,
+    hasstatus  =&gt; true,
+    hasrestart =&gt; true,
+    provider   =&gt; $service_provider,
+  }
+
+  # If any files tagged as config files for the service are changed, notify
+  # the service so it restarts.
+  if $::logstash::restart_on_change {
+    File&lt;| tag == &#39;logstash_config&#39; |&gt; ~&gt; Service[&#39;logstash&#39;]
+    Logstash::Plugin&lt;| |&gt; ~&gt; Service[&#39;logstash&#39;]
+  }
+}</pre>
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+
+      <div id="footer">
+     Generated by <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>.
+</div>
+
+    </div>
+  </body>
+</html>

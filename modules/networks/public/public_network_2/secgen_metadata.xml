@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<network xmlns="http://www.github/cliffe/SecGen/network"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/network">
+  <name>Public Network #2</name>
+  <author>Travis Lee</author>
+  <module_license>GPLv3</module_license>
+  <description>A public network using a Static IP Range</description>
+
+  <type>public_network</type>
+  <range>10.69.69.0</range>
+
+</network>

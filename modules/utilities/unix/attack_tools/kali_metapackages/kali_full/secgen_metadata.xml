@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Kali Linux Metapackage: kali-linux-full</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>GPLv3</module_license>
+  <description>Installs a collection of software onto Kali.
+    kali-linux-full
+    When you download a Kali Linux ISO, you are essentially downloading an installation that has the kali-linux-full metapackage installed. This package includes all of the tools you are familiar with in Kali.
+    Installation Size: 9.0 GB</description>
+
+  <type>attack_tools</type>
+  <platform>linux</platform>
+
+  <requires>
+    <name>Kali Light.*</name>
+    <type>attack</type>
+    <type>desktop</type>
+  </requires>
+  <requires>
+    <type>update</type>
+  </requires>
+</utility>

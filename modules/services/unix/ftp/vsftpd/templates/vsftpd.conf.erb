@@ -1,0 +1,408 @@
+<%  require 'json'
+    $port = @secgen_parameters['port'].first
+%>
+# This file is managed by puppet
+#
+# The default compiled in settings are fairly paranoid. This sample file
+# loosens things up a bit, to make the ftp daemon more usable.
+# Please see vsftpd.conf.5 for all compiled in defaults.
+#
+# READ THIS: This example file is NOT an exhaustive list of vsftpd options.
+# Please read the vsftpd.conf.5 manual page to get a full idea of vsftpd's
+# capabilities.
+#
+# Generic parameters
+#
+# When "listen" directive is enabled, vsftpd runs in standalone mode and
+# listens on IPv4 sockets. This directive cannot be used in conjunction
+# with the listen_ipv6 directive.
+
+<% if scope.lookupvar('vsftpd::bool_listen') -%>
+listen=<%= scope.lookupvar('vsftpd::real_listen') %>
+<% else -%>
+#listen=YES
+<% end-%>
+#
+# This directive enables listening on IPv6 sockets. To listen on IPv4 and IPv6
+# sockets, you must run two copies of vsftpd with two configuration files.
+# Make sure, that one of the listen options is commented !!
+<% if scope.lookupvar('vsftpd::bool_listen_ipv6') -%>
+listen_ipv6=<%= scope.lookupvar('vsftpd::real_listen_ipv6') %>
+<% else -%>
+# listen_ipv6=NO
+<% end-%>
+<% if scope.lookupvar('vsftpd::listen_address') != '' -%>
+# Listen only on following IP address
+listen_address=<%= scope.lookupvar('vsftpd::listen_address') %>
+<% end-%>
+# Listen port
+listen_port=<%=$port%>
+#
+ftpd_banner=<%= scope.lookupvar('vsftpd::ftpd_banner') %>
+write_enable=<%= scope.lookupvar('vsftpd::real_write_enable') %>
+connect_from_port_20=<%= scope.lookupvar('vsftpd::real_connect_from_port_20') %>
+dirmessage_enable=<%= scope.lookupvar('vsftpd::real_dirmessage_enable') %>
+use_localtime=<%= scope.lookupvar('vsftpd::real_use_localtime') %>
+idle_session_timeout=<%= scope.lookupvar('vsftpd::idle_session_timeout') %>
+data_connection_timeout=<%= scope.lookupvar('vsftpd::data_connection_timeout') %>
+pam_service_name=<%= scope.lookupvar('vsftpd::pam_service_name') %>
+
+# Anonymous FTP parameters
+anonymous_enable=<%= scope.lookupvar('vsftpd::real_anonymous_enable') %>
+anon_upload_enable=<%= scope.lookupvar('vsftpd::real_anon_upload_enable') %>
+anon_mkdir_write_enable=<%= scope.lookupvar('vsftpd::real_anon_mkdir_write_enable') %>
+
+# Local users parameters
+local_enable=<%= scope.lookupvar('vsftpd::real_local_enable') %>
+local_umask=<%= scope.lookupvar('vsftpd::local_umask') %>
+
+<% if scope.lookupvar('vsftpd::userlist_enable') != '' -%>
+userlist_enable=<%= scope.lookupvar('vsftpd::real_userlist_enable') %>
+userlist_file=<%= scope.lookupvar('vsftpd::userlist_file') %>
+<% end -%>
+
+# Logging related paremeters
+xferlog_enable=<%= scope.lookupvar('vsftpd::real_xferlog_enable') %>
+xferlog_std_format=<%= scope.lookupvar('vsftpd::real_xferlog_std_format') %>
+xferlog_file=<%= scope.lookupvar('vsftpd::xferlog_file') %>
+<% if scope.lookupvar('vsftpd::log_ftp_protocol')-%>
+log_ftp_protocol=<%= scope.lookupvar('vsftpd::log_ftp_protocol') %>
+<% end -%>
+
+<% if scope.lookupvar('vsftpd::real_deny_email_enable') != '' -%>
+deny_email_enable=<%= scope.lookupvar('vsftpd::real_deny_email_enable') %>
+banned_email_file=<%= scope.lookupvar('vsftpd::banned_email_file') %>
+<% end -%>
+
+chroot_local_user=<%= scope.lookupvar('vsftpd::real_chroot_local_user') %>
+<% if scope.lookupvar('vsftpd::real_chroot_list_enable') != '' -%>
+chroot_list_enable=<%= scope.lookupvar('vsftpd::real_chroot_list_enable') %>
+chroot_list_file=<%= scope.lookupvar('vsftpd::chroot_list_file') -%>
+<% end -%>
+
+##### Other parameters
+# If you want, you can arrange for uploaded anonymous files to be owned by
+# a different user. Note! Using "root" for uploaded files is not
+# recommended!
+<% if scope.lookupvar('vsftpd::bool_chown_uploads') -%>
+chown_uploads=<%= scope.lookupvar('vsftpd::real_chown_uploads') %>
+chown_username=<%= scope.lookupvar('vsftpd::chown_username') %>
+<% else -%>
+#chown_uploads=YES
+#chown_username=whoever
+<% end -%>
+#
+# It is recommended that you define on your system a unique user which the
+# ftp server can use as a totally isolated and unprivileged user.
+#nopriv_user=ftpsecure
+#
+# Enable this and the server will recognise asynchronous ABOR requests. Not
+# recommended for security (the code is non-trivial). Not enabling it,
+# however, may confuse older FTP clients.
+#async_abor_enable=YES
+#
+# By default the server will pretend to allow ASCII mode but in fact ignore
+# the request. Turn on the below options to have the server actually do ASCII
+# mangling on files when in ASCII mode.
+# Beware that on some FTP servers, ASCII support allows a denial of service
+# attack (DoS) via the command "SIZE /big/file" in ASCII mode. vsftpd
+# predicted this attack and has always been safe, reporting the size of the
+# raw file.
+# ASCII mangling is a horrible feature of the protocol.
+#ascii_upload_enable=YES
+#ascii_download_enable=YES
+#
+# You may activate the "-R" option to the builtin ls. This is disabled by
+# default to avoid remote users being able to cause excessive I/O on large
+# sites. However, some broken FTP clients such as "ncftp" and "mirror" assume
+# the presence of the "-R" option, so there is a strong case for enabling it.
+#ls_recurse_enable=YES
+
+#If enabled, all non-anonymous logins are classed as "guest" logins. A guest
+# login is remapped to the user specified in the guest_username setting. 
+<% if scope.lookupvar('vsftpd::bool_guest_enable') -%>
+guest_enable=<%= scope.lookupvar('vsftpd::real_guest_enable') %>
+
+guest_username=<%= scope.lookupvar('vsftpd::guest_username') %>
+<% else -%>
+#guest_enable=NO
+#
+#guest_username=nobody
+<% end-%>
+#
+# This powerful option allows the override of any config option specified in
+# the manual page, on a per-user basis. Usage is simple, and is best illustrated
+# with an example. If you set user_config_dir to be /etc/vsftpd_user_conf and
+# then log on as the user "chris", then vsftpd will apply the settings in the
+# file /etc/vsftpd_user_conf/chris for the duration of the session. The format
+# of this file is as detailed in this manual page! PLEASE NOTE that not all
+# settings are effective on a per-user basis. For example, many settings only
+# prior to the user's session being started. Examples of settings which will
+# not affect any behviour on a per-user basis include listen_address,
+# banner_file, max_per_ip, max_clients, xferlog_file, etc. 
+<% if scope.lookupvar('vsftpd::user_config_dir') -%>
+user_config_dir=<%= scope.lookupvar('vsftpd::user_config_dir') %>
+<% else -%>
+#user_config_dir=/etc/vsftpd.d
+<% end-%>
+#
+# This option represents a directory which vsftpd will try to change into
+# after a local (i.e. non-anonymous) login. Failure is silently ignored. 
+<% if scope.lookupvar('vsftpd::local_root') -%>
+local_root=<%= scope.lookupvar('vsftpd::local_root') %>
+<% else -%>
+#local_root=/var/ftp
+<% end-%>
+#
+# If enabled, and vsftpd was compiled with tcp_wrappers support, incoming
+# connections will be fed through tcp_wrappers access control. Furthermore,
+# there is a mechanism for per-IP based configuration. If tcp_wrappers sets
+# the VSFTPD_LOAD_CONF environment variable, then the vsftpd session will try
+# and load the vsftpd configuration file specified in this variable. 
+<% if scope.lookupvar('vsftpd::bool_tcp_wrappers') -%>
+tcp_wrappers=<%= scope.lookupvar('vsftpd::real_tcp_wrappers') %>
+<% else -%>
+#tcp_wrappers=NO
+<% end-%>
+#
+# Use this option to override the IP address that vsftpd will advertise in response
+# to the PASV command. Provide a numeric IP address, unless pasv_addr_resolve is
+# enabled, in which case you can provide a hostname which will be DNS resolved
+# for you at startup.
+# Default: (none - the address is taken from the incoming connected socket)
+<% if scope.lookupvar('vsftpd::pasv_address') -%>
+pasv_address=<%= scope.lookupvar('vsftpd::pasv_address') %>
+<% else -%>
+#pasv_address=
+<% end-%>
+#
+# Set to YES if you want to use a hostname (as opposed to IP address) in the
+# pasv_address option.
+# Default: NO
+<% if scope.lookupvar('vsftpd::bool_pasv_addr_resolve') -%>
+pasv_addr_resolve=<%= scope.lookupvar('vsftpd::real_pasv_addr_resolve') %>
+<% else -%>
+#pasv_addr_resolve=NO
+<% end-%>
+#
+# The maximum port to allocate for PASV style data connections. Can be used
+# to specify a narrow port range to assist firewalling.
+# Default: 0 (use any port)
+<% if scope.lookupvar('vsftpd::pasv_max_port') -%>
+pasv_max_port=<%= scope.lookupvar('vsftpd::pasv_max_port') %>
+<% else -%>
+#pasv_max_port=0
+<% end-%>
+#
+# The minimum port to allocate for PASV style data connections. Can be used
+# to specify a narrow port range to assist firewalling.
+#Default: 0 (use any port) 
+<% if scope.lookupvar('vsftpd::pasv_min_port') -%>
+pasv_min_port=<%= scope.lookupvar('vsftpd::pasv_min_port') %>
+<% else -%>
+#pasv_min_port=0
+<% end-%>
+#
+# This option is useful is conjunction with virtual users. It is used to
+# automatically generate a home directory for each virtual user, based on a
+# template. For example, if the home directory of the real user specified via
+# guest_username is /home/virtual/$USER, and user_sub_token is set to $USER,
+# then when virtual user fred logs in, he will end up (usually chroot()'ed) in
+# the directory /home/virtual/fred. This option also takes affect if
+# local_root contains user_sub_token.
+# Default: (none) 
+<% if scope.lookupvar('vsftpd::user_sub_token') -%>
+user_sub_token=<%= scope.lookupvar('vsftpd::user_sub_token') %>
+<% else -%>
+#user_sub_token=''
+<% end-%>
+#
+# If enabled, virtual users will use the same privileges as local users. By
+# default, virtual users will use the same privileges as anonymous users,
+# which tends to be more restrictive (especially in terms of write access).
+<% if scope.lookupvar('vsftpd::bool_virtual_use_local_privs') -%>
+virtual_use_local_privs=<%= scope.lookupvar('vsftpd::real_virtual_use_local_privs') %>
+<% else -%>
+#virtual_use_local_privs=NO
+<% end-%>
+#
+# If enabled, all user and group information in directory listings will be
+# displayed as "ftp".
+<% if scope.lookupvar('vsftpd::bool_hide_ids') -%>
+hide_ids=<%= scope.lookupvar('vsftpd::real_hide_ids') %>
+<% else -%>
+#hide_ids=NO
+<% end-%>
+#
+# This is the name of the user that is used by vsftpd when it wants to be
+# totally unprivileged. Note that this should be a dedicated user, rather
+# than nobody. The user nobody tends to be used for rather a lot of important
+# things on most machines.
+# Default: nobody 
+<% if scope.lookupvar('vsftpd::nopriv_user') -%>
+nopriv_user=<%= scope.lookupvar('vsftpd::nopriv_user') %>
+<% else -%>
+#nopriv_user=nobody
+<% end-%>
+#
+# This option should be the name of a directory which is empty. Also, the
+# directory should not be writable by the ftp user. This directory is used as
+# a secure chroot() jail at times vsftpd does not require filesystem access.
+<% if scope.lookupvar('vsftpd::secure_chroot_dir') -%>
+secure_chroot_dir=<%= scope.lookupvar('vsftpd::secure_chroot_dir') %>
+<% else -%>
+#secure_chroot_dir=/usr/share/empty
+<% end-%>
+
+# If enabled, two log files are generated in parallel, going by default to /var/log/xferlog
+# and /var/log/vsftpd.log. The former is a wu-ftpd style transfer log, parseable by
+# standard tools. The latter is vsftpd's own style log.
+# Default: NO
+<% if scope.lookupvar('vsftpd::bool_dual_log_enable') -%>
+dual_log_enable=<%= scope.lookupvar('vsftpd::real_dual_log_enable') %>
+<% else -%>
+#dual_log_enable=NO
+<% end-%>
+
+# If enabled, the chroot of virtual users may be writeable
+# Default: NO
+<% if scope.lookupvar('vsftpd::bool_allow_writeable_chroot') -%>
+allow_writeable_chroot=<%= scope.lookupvar('vsftpd::real_allow_writeable_chroot') %>
+<% else -%>
+#allow_writeable_chroot=NO
+<% end-%>
+
+# If enabled, and vsftpd was compiled against OpenSSL, vsftpd will support secure connections
+# via SSL. This applies to the control connection (including login) and also data connections.
+# Default: NO
+<% if scope.lookupvar('vsftpd::bool_ssl_enable') -%>
+ssl_enable=<%= scope.lookupvar('vsftpd::real_ssl_enable') %>
+<% else -%>
+#ssl_enable=NO
+<% end-%>
+
+# If enabled, this option will permit SSL v2 protocol connections.
+# Default: NO
+<% if scope.lookupvar('vsftpd::bool_ssl_sslv2') -%>
+ssl_sslv2=<%= scope.lookupvar('vsftpd::real_ssl_sslv2') %>
+<% else -%>
+#ssl_sslv2=NO
+<% end-%>
+
+# If enabled, this option will permit SSL v3 protocol connections.
+# Default: NO
+<% if scope.lookupvar('vsftpd::bool_ssl_sslv3') -%>
+ssl_sslv3=<%= scope.lookupvar('vsftpd::real_ssl_sslv3') %>
+<% else -%>
+#ssl_sslv3=NO
+<% end-%>
+
+# If enabled, this option will permit TLS v1 protocol connections.
+# Default: YES
+<% if scope.lookupvar('vsftpd::bool_ssl_tlsv1') -%>
+ssl_tlsv1=<%= scope.lookupvar('vsftpd::real_ssl_tlsv1') %>
+<% else -%>
+#ssl_tlsv1=YES
+<% end-%>
+
+# This option specifies the location of the RSA certificate to use for SSL encrypted connections.
+# Default: /usr/share/ssl/certs/vsftpd.pem
+<% if scope.lookupvar('vsftpd::rsa_cert_file') -%>
+rsa_cert_file=<%= scope.lookupvar('vsftpd::rsa_cert_file') %>
+<% else -%>
+#rsa_cert_file=/usr/share/ssl/certs/vsftpd.pem
+<% end-%>
+
+# This option specifies the location of the RSA private key to use for SSL encrypted connections.
+# If this option is not set, the private key is expected to be in the same file as the certificate.
+# Default: (none)
+<% if scope.lookupvar('vsftpd::rsa_private_key_file') -%>
+rsa_private_key_file=<%= scope.lookupvar('vsftpd::rsa_private_key_file') %>
+<% else -%>
+#rsa_private_key_file=
+<% end-%>
+
+# If activated, all non-anonymous logins are forced to use a secure SSL connection in order to 
+# send and receive data on data connections. 
+# Default: YES
+<% if defined?('vsftpd::bool_force_local_data_ssl') -%>
+force_local_data_ssl=<%= scope.lookupvar('vsftpd::real_force_local_data_ssl') %>
+<% else -%>
+#force_local_data_ssl=YES
+<% end-%>
+
+# If activated, all non-anonymous logins are forced to use a secure SSL connection in order to 
+# send the password. 
+# Default: YES
+<% if defined?('vsftpd::bool_force_local_logins_ssl') -%>
+force_local_logins_ssl=<%= scope.lookupvar('vsftpd::real_force_local_logins_ssl') %>
+<% else -%>
+#force_local_logins_ssl=YES
+<% end-%>
+
+# If set to yes, all SSL data connections are required to exhibit SSL session reuse (which proves that they
+# know the same master secret as the control channel). Although this is a secure default, it may break many
+# FTP clients, so you may want to disable it.
+# Default: YES
+<% if defined?('vsftpd::bool_require_ssl_reuse') -%>
+require_ssl_reuse=<%= scope.lookupvar('vsftpd::real_require_ssl_reuse') %>
+<% else -%>
+#require_ssl_reuse=YES
+<% end-%>
+
+# This option can be used to select which SSL ciphers vsftpd will allow for encrypted SSL connections.
+# See the ciphers man page for further details. Note that restricting ciphers can be a useful security
+# precaution as it prevents malicious remote parties forcing a cipher which they have found problems with.
+# Default: DES-CBC3-SHA
+<% if scope.lookupvar('vsftpd::ssl_ciphers') -%>
+ssl_ciphers=<%= scope.lookupvar('vsftpd::ssl_ciphers') %>
+<% else -%>
+#ssl_ciphers=DES-CBC3-SHA
+<% end-%>
+
+# If true, OpenSSL connection diagnostics are dumped to the vsftpd log file.
+# Default: NO
+<% if defined?('vsftpd::bool_debug_ssl') -%>
+debug_ssl=<%= scope.lookupvar('vsftpd::real_debug_ssl') %>
+<% else -%>
+#debug_ssl=NO
+<% end-%>
+
+# This options specifies a comma separated list of allowed FTP commands (post login. USER, PASS and QUIT 
+# and others are always allowed pre-login). Other commands are rejected.
+# Default: (none)
+<% if scope.lookupvar('vsftpd::cmds_allowed') -%>
+cmds_allowed=<%= scope.lookupvar('vsftpd::cmds_allowed') %>
+<% else -%>
+#cmds_allowed=
+<% end-%>
+
+# If enabled, vsftpd will try and show session status information in the system process listing. In other words, the 
+# reported name of the process will change to reflect what a vsftpd session is doing (idle, downloading etc).
+# Default: NO
+<% if scope.lookupvar('vsftpd::bool_setproctitle_enable') -%>
+setproctitle_enable=<%= scope.lookupvar('vsftpd::real_setproctitle_enable') %>
+<% else -%>
+#setproctitle_enable=NO
+<% end-%>
+
+# Set to YES if you want to disable the PASV security check that ensures the data connection originates from
+# the same IP address as the control connection. Only enable if you know what you are doing! The only legitimate
+# use for this is in some form of secure tunnelling scheme, or perhaps to facilitate FXP support. 
+# Default: NO
+<% if scope.lookupvar('vsftpd::bool_pasv_promiscuous') -%>
+pasv_promiscuous=<%= scope.lookupvar('vsftpd::real_pasv_promiscuous') %>
+<% else -%>
+#pasv_promiscuous=NO
+<% end-%>
+
+<% if scope.lookupvar('vsftpd::supports_seccomp_sandbox') -%>
+# If set to yes, process is run within a seccomp sandbox and hence is only allowed to make use of a limited set
+# of system calls, such as exit(), sigreturn(), read() and write() to opened file descriptors.
+# Default: YES
+<% if defined?('vsftpd::bool_seccomp_syndbox') -%>
+seccomp_sandbox=<%= scope.lookupvar('vsftpd::real_seccomp_sandbox') %>
+<% else -%>
+#seccomp_sandbox=YES
+<% end -%>
+<% end -%>

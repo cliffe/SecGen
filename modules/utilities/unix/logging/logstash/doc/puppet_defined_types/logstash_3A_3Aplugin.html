@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Defined Type: logstash::plugin
+  
+    &mdash; Documentation by YARD 0.9.13
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "puppet_defined_types::logstash::plugin";
+  relpath = '../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../puppet_defined_type_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../_index.html">Index (l)</a> &raquo;
+    <span class='title'><span class='object_link'>Defined Types</span></span>
+     &raquo; 
+    <span class="title">logstash::plugin</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="puppet_class_list_link"
+        href="../puppet_class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Defined Type: logstash::plugin</h1>
+<div class="box_info">
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>
+      manifests/plugin.pp
+    </dd>
+  </dl>
+</div>
+
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    <p>Manage the installation of a Logstash plugin.</p>
+
+<p>By default, plugins are downloaded from RubyGems, but it is also possible
+to install from a local Gem, or one stored in Puppet.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
+      
+        <p class="example_title"><div class='inline'><p>Install a plugin.</p>
+</div></p>
+      
+      <pre class="example code"><code>logstash::plugin { &#39;logstash-input-stdin&#39;: }</code></pre>
+    
+      
+        <p class="example_title"><div class='inline'><p>Remove a plugin.</p>
+</div></p>
+      
+      <pre class="example code"><code>logstash::plugin { &#39;logstash-input-stout&#39;:
+  ensure =&gt; absent,
+}</code></pre>
+    
+      
+        <p class="example_title"><div class='inline'><p>Install a plugin from a local file.</p>
+</div></p>
+      
+      <pre class="example code"><code>logstash::plugin { &#39;logstash-input-custom&#39;:
+  source =&gt; &#39;file:///tmp/logstash-input-custom.gem&#39;,
+}</code></pre>
+    
+      
+        <p class="example_title"><div class='inline'><p>Install a plugin from a Puppet module.</p>
+</div></p>
+      
+      <pre class="example code"><code>logstash::plugin { &#39;logstash-input-custom&#39;:
+  source =&gt; &#39;puppet:///modules/logstash-site-plugins/logstash-input-custom.gem&#39;,
+}</code></pre>
+    
+      
+        <p class="example_title"><div class='inline'><p>Install X-Pack.</p>
+</div></p>
+      
+      <pre class="example code"><code>logstash::plugin { &#39;x-pack&#39;:
+  source =&gt; &#39;https://artifacts.elastic.co/downloads/packs/x-pack/x-pack-5.3.0.zip&#39;,
+}</code></pre>
+    
+      
+        <p class="example_title"><div class='inline'><p>Install a plugin, overriding JVM options via the environment.</p>
+</div></p>
+      
+      <pre class="example code"><code>logstash::plugin { &#39;logstash-input-jmx&#39;:
+  environment =&gt; [&#39;LS_JVM_OPTIONS=&quot;-Xms1g -Xmx1g&quot;&#39;]
+}</code></pre>
+    
+  </div>
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>ensure</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>present</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Install or remove with <code>present</code> or <code>absent</code>.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>source</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Install from this file, not from RubyGems.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>environment</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>[]</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Environment used when running &#39;logstash-plugin&#39;</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+
+</div><div class="method_details_list">
+  <table class="source_code">
+    <tr>
+      <td>
+        <pre class="lines">
+
+
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127</pre>
+      </td>
+      <td>
+        <pre class="code"><span class="info file"># File 'manifests/plugin.pp', line 40</span>
+
+define logstash::plugin (
+  $source = undef,
+  $ensure = present,
+  $environment = [],
+)
+{
+  require logstash::package
+  $exe = &quot;${logstash::home_dir}/bin/logstash-plugin&quot;
+
+  Exec {
+    path        =&gt; &#39;/bin:/usr/bin&#39;,
+    cwd         =&gt; &#39;/tmp&#39;,
+    user        =&gt; $logstash::logstash_user,
+    timeout     =&gt; 1800,
+    environment =&gt; $environment,
+  }
+
+  case $source { # Where should we get the plugin from?
+    undef: {
+      # No explict source, so search Rubygems for the plugin, by name.
+      # ie. &quot;logstash-plugin install logstash-output-elasticsearch&quot;
+      $plugin = $name
+    }
+
+    /^(\/|file:)/: {
+      # A gem file that is already available on the local filesystem.
+      # Install from the local path.
+      # ie. &quot;logstash-plugin install /tmp/logtash-filter-custom.gem&quot; or
+      # &quot;logstash-plugin install file:///tmp/logtash-filter-custom.gem&quot; or
+      $plugin = $source
+    }
+
+    /^puppet:/: {
+      # A &#39;puppet:///&#39; URL. Download the gem from Puppet, then install
+      # the plugin from the downloaded file.
+      $downloaded_file = sprintf(&#39;/tmp/%s&#39;, basename($source))
+      file { $downloaded_file:
+        source =&gt; $source,
+        before =&gt; Exec[&quot;install-${name}&quot;],
+      }
+
+      case $source {
+        /\.zip$/: {
+          $plugin = &quot;file://${downloaded_file}&quot;
+        }
+        default: {
+          $plugin = $downloaded_file
+        }
+      }
+    }
+
+    /^https?:/: {
+      # An &#39;http(s):///&#39; URL.
+      $plugin = $source
+    }
+
+    default: {
+      fail(&#39;&quot;source&quot; should be a local path, a &quot;puppet:///&quot; url, or undef.&#39;)
+    }
+  }
+
+  case $ensure {
+    &#39;present&#39;: {
+      exec { &quot;install-${name}&quot;:
+        command =&gt; &quot;${exe} install ${plugin}&quot;,
+        unless  =&gt; &quot;${exe} list ^${name}$&quot;,
+      }
+    }
+
+    /^\d+\.\d+\.\d+/: {
+      exec { &quot;install-${name}&quot;:
+        command =&gt; &quot;${exe} install --version ${ensure} ${plugin}&quot;,
+        unless  =&gt; &quot;${exe} list --verbose ^${name}$ | grep --fixed-strings --quiet &#39;(${ensure})&#39;&quot;,
+      }
+    }
+
+    &#39;absent&#39;: {
+      exec { &quot;remove-${name}&quot;:
+        command =&gt; &quot;${exe} remove ${name}&quot;,
+        onlyif  =&gt; &quot;${exe} list | grep -q ^${name}$&quot;,
+      }
+    }
+
+    default: {
+      fail &quot;&#39;ensure&#39; should be &#39;present&#39;, &#39;absent&#39;, or a version like &#39;1.3.4&#39;.&quot;
+    }
+  }
+}</pre>
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+
+      <div id="footer">
+     Generated by <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>.
+</div>
+
+    </div>
+  </body>
+</html>

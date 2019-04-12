@@ -1,0 +1,21 @@
+  <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
+    <div class="container">
+      <div class="navbar-brand"><%= @business_name %></div>
+      <div class="collapse navbar-collapse" id="navbarResponsive" >
+        <ul class="nav navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <% if @security_audit or @acceptable_use_policy -%>
+            <% if @security_audit -%>
+          <li class="nav-item"><a class="nav-link" href="security_audit_remit.html">Security Audit Remit</a></li>
+            <% end -%>
+            <% if @acceptable_use_policy -%>
+          <li class="nav-item"><a class="nav-link" href="acceptable_use_policy.html">Acceptable Use Policy</a></li>
+            <% end -%>
+          <% end -%>
+          <% if @organisation and @organisation != '' -%>
+           <li class="nav-item"><a class="nav-link" href="contact.html">Contact Us</a></li>
+        <% end -%>
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div>
+  </nav>

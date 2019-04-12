@@ -1,0 +1,39 @@
+  ssl on;
+
+  ssl_certificate           <%= @ssl_cert %>;
+  ssl_certificate_key       <%= @ssl_key %>;
+<% if defined? @ssl_client_cert -%>
+  ssl_client_certificate    <%= @ssl_client_cert %>;
+  ssl_verify_client on;
+<% end -%>
+<% if defined? @ssl_dhparam -%>
+  ssl_dhparam               <%= @ssl_dhparam %>;
+<% end -%>
+  ssl_session_cache         <%= @ssl_cache %>;
+  ssl_session_timeout       <%= @ssl_session_timeout %>;
+<% if @ssl_buffer_size -%>
+  ssl_buffer_size           <%= @ssl_buffer_size %>;
+<% end -%>
+  ssl_protocols             <%= @ssl_protocols %>;
+  ssl_ciphers               <%= @ssl_ciphers %>;
+  ssl_prefer_server_ciphers on;
+<% if @ssl_crl -%>
+  ssl_crl                   <%= @ssl_crl %>;
+<% end -%>
+<%- if instance_variables.any? { |iv| iv.to_s.include? 'ssl_' } -%>
+  <%- if @ssl_stapling -%>
+  ssl_stapling              on;
+  <%- end -%>
+  <%- if defined? @ssl_stapling_file -%>
+  ssl_stapling_file         <%= @ssl_stapling_file %>;
+  <%- end -%>
+  <%- if defined? @ssl_stapling_responder -%>
+  ssl_stapling_responder    <%= @ssl_stapling_responder %>;
+  <%- end -%>
+  <%- if @ssl_stapling_verify -%>
+  ssl_stapling_verify       on;
+  <%- end -%>
+  <%- if defined? @ssl_trusted_cert -%>
+  ssl_trusted_certificate   <%= @ssl_trusted_cert %>;
+  <%- end -%>
+<% end -%>

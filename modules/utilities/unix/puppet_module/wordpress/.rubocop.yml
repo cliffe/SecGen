@@ -1,0 +1,107 @@
+---
+require: rubocop-rspec
+AllCops:
+  DisplayCopNames: true
+  TargetRubyVersion: '2.1'
+  Include:
+  - "./**/*.rb"
+  Exclude:
+  - bin/*
+  - ".vendor/**/*"
+  - Gemfile
+  - Rakefile
+  - pkg/**/*
+  - spec/fixtures/**/*
+  - vendor/**/*
+Metrics/LineLength:
+  Description: People have wide screens, use them.
+  Max: 200
+RSpec/BeforeAfterAll:
+  Description: Beware of using after(:all) as it may cause state to leak between tests.
+    A necessary evil in acceptance testing.
+  Exclude:
+  - spec/acceptance/**/*.rb
+RSpec/HookArgument:
+  Description: Prefer explicit :each argument, matching existing module's style
+  EnforcedStyle: each
+Style/BlockDelimiters:
+  Description: Prefer braces for chaining. Mostly an aesthetical choice. Better to
+    be consistent then.
+  EnforcedStyle: braces_for_chaining
+Style/ClassAndModuleChildren:
+  Description: Compact style reduces the required amount of indentation.
+  EnforcedStyle: compact
+Style/EmptyElse:
+  Description: Enforce against empty else clauses, but allow `nil` for clarity.
+  EnforcedStyle: empty
+Style/FormatString:
+  Description: Following the main puppet project's style, prefer the % format format.
+  EnforcedStyle: percent
+Style/FormatStringToken:
+  Description: Following the main puppet project's style, prefer the simpler template
+    tokens over annotated ones.
+  EnforcedStyle: template
+Style/Lambda:
+  Description: Prefer the keyword for easier discoverability.
+  EnforcedStyle: literal
+Style/RegexpLiteral:
+  Description: Community preference. See https://github.com/voxpupuli/modulesync_config/issues/168
+  EnforcedStyle: percent_r
+Style/TernaryParentheses:
+  Description: Checks for use of parentheses around ternary conditions. Enforce parentheses
+    on complex expressions for better readability, but seriously consider breaking
+    it up.
+  EnforcedStyle: require_parentheses_when_complex
+Style/TrailingCommaInArguments:
+  Description: Prefer always trailing comma on multiline argument lists. This makes
+    diffs, and re-ordering nicer.
+  EnforcedStyleForMultiline: comma
+Style/TrailingCommaInLiteral:
+  Description: Prefer always trailing comma on multiline literals. This makes diffs,
+    and re-ordering nicer.
+  EnforcedStyleForMultiline: comma
+Style/SymbolArray:
+  Description: Using percent style obscures symbolic intent of array's contents.
+  EnforcedStyle: brackets
+RSpec/MessageSpies:
+  EnforcedStyle: receive
+Style/CollectionMethods:
+  Enabled: true
+Style/MethodCalledOnDoEndBlock:
+  Enabled: true
+Style/StringMethods:
+  Enabled: true
+Layout/EndOfLine:
+  Enabled: false
+Metrics/AbcSize:
+  Enabled: false
+Metrics/BlockLength:
+  Enabled: false
+Metrics/ClassLength:
+  Enabled: false
+Metrics/CyclomaticComplexity:
+  Enabled: false
+Metrics/MethodLength:
+  Enabled: false
+Metrics/ModuleLength:
+  Enabled: false
+Metrics/ParameterLists:
+  Enabled: false
+Metrics/PerceivedComplexity:
+  Enabled: false
+RSpec/DescribeClass:
+  Enabled: false
+RSpec/ExampleLength:
+  Enabled: false
+RSpec/MessageExpectation:
+  Enabled: false
+RSpec/MultipleExpectations:
+  Enabled: false
+RSpec/NestedGroups:
+  Enabled: false
+Style/AsciiComments:
+  Enabled: false
+Style/IfUnlessModifier:
+  Enabled: false
+Style/SymbolProc:
+  Enabled: false

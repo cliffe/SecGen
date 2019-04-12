@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Hackerbot</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>GPLv3</module_license>
+  <description>Chatbot(s) that attacks and challenges the victim to defend themselves for flags.
+    Connects to an IRC server (localhost by default), and reads config files for attack and chat behaviour.
+    Developed as part of the SecGen project.</description>
+
+  <type>chatbot</type>
+  <platform>linux</platform>
+
+  <software_license>GPLv3</software_license>
+
+  <read_fact>server_ip</read_fact>
+  <read_fact>hackerbot_configs</read_fact>
+  <!--port for www hosting of lab sheets-->
+  <read_fact>port</read_fact>
+
+  <default_input into="port">
+    <value>80</value>
+  </default_input>
+
+  <default_input into="server_ip">
+    <value>localhost</value>
+  </default_input>
+
+  <default_input into="hackerbot_configs">
+    <value>localhost</value>
+  </default_input>
+
+  <requires>
+    <type>update</type>
+  </requires>
+  <requires>
+    <module_path>.*services/.*/apache.*</module_path>
+    <type>httpd</type>
+  </requires>
+</utility>

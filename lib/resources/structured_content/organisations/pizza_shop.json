@@ -1,0 +1,48 @@
+{
+  "business_name": "Speedy Pizzas",
+  "business_motto": "Pizza done quick.",
+  "business_address": "195 Headingley Lane, Headingley, Leeds, LS6 1BN",
+  "domain": "speedypizzas.co.uk",
+  "office_telephone": "0113 123 3214",
+  "office_email": "info@speedypizzas.co.uk",
+  "industry": "Food",
+  "manager": {
+    "name": "David Sand",
+    "address": "195 Headingley Lane, Headingley, Leeds, LS6 1BN",
+    "phone_number": "07879 635412",
+    "email_address": "dave@speedypizzas.co.uk",
+    "username": "d_sand",
+    "password": ""
+  },
+  "employees": [
+    {
+      "name": "Cydney Hermann",
+      "address": "195 Headingley Lane, Headingley, Leeds, LS6 1BN",
+      "phone_number": "0113 123 3214",
+      "email_address": "cydney@speedypizzas.co.uk",
+      "username": "c_hermann",
+      "password": ""
+    },
+    {
+      "name": "Lori Marshall",
+      "address": "195 Headingley Lane, Headingley, Leeds, LS6 1BN",
+      "phone_number": "0113 123 3214",
+      "email_address": "lori@speedypizzas.co.uk",
+      "username": "l_marshall",
+      "password": ""
+    },
+    {
+      "name": "Andrea Martinez",
+      "address": "195 Headingley Lane, Headingley, Leeds, LS6 1BN",
+      "phone_number": "0113 123 3214",
+      "email_address": "andrea@speedypizzas.co.uk",
+      "username": "a_martinez",
+      "password": ""
+    }
+  ],
+  "product_name": "Pizza",
+  "intro_paragraph": [
+    "Welcome to speedy pizzas. Piping hot food either in store or delivered to your door. Pizza takeaway, parmesan, kebabs and much more.",
+    "We are based in the centre of Headingley on Headingley lane and will deliver up to 3 miles for free, £1 per additional mile. Red hot pizza on delivery or your money back."
+  ]
+}

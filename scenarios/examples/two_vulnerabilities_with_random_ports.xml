@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<!--System selects two modules which have customisable ports, then chooses a random port + excludes any previously selected ports -->
+	<system>
+		<system_name>random_server</system_name>
+		<base module_path="modules/bases/debian_puppet_32"/>
+		<vulnerability read_fact="port">
+			<input into="port" into_datastore="selected_ports">
+				<encoder type="string_selector_with_exclusions">
+					<input into="strings_to_encode">
+						<value>8000</value>
+						<value>8080</value>
+						<value>9000</value>
+						<value>9090</value>
+					</input>
+				</encoder>
+			</input>
+		</vulnerability>
+		<vulnerability read_fact="port">
+			<input into="port" into_datastore="selected_ports">
+				<encoder type="string_selector_with_exclusions">
+					<input into="exclusion_list">
+						<datastore>selected_ports</datastore>
+					</input>
+					<input into="strings_to_encode">
+						<value>8000</value>
+						<value>8080</value>
+						<value>9000</value>
+						<value>9090</value>
+					</input>
+				</encoder>
+			</input>
+		</vulnerability>
+      <network module_path=".*private_network_1"/>
+	</system>
+</scenario>

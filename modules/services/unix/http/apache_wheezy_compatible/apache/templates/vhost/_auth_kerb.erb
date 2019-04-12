@@ -1,0 +1,32 @@
+<% if @auth_kerb -%>
+
+  ## Kerberos directives
+  <%- if @krb_method_negotiate -%>
+  KrbMethodNegotiate <%= @krb_method_negotiate %>
+  <%- end -%>
+  <%- if @krb_method_k5passwd -%>
+  KrbMethodK5Passwd <%= @krb_method_k5passwd %>
+  <%- end -%>
+  <%- if @krb_authoritative -%>
+  KrbAuthoritative <%= @krb_authoritative %>
+  <%- end -%>
+  <%- if @krb_auth_realms and @krb_auth_realms.length >= 1 -%>
+  KrbAuthRealms <%= @krb_auth_realms.join(' ') %>
+  <%- end -%>
+  <%- if @krb_5keytab -%>
+  Krb5Keytab <%= @krb_5keytab %>
+  <%- end -%>
+  <%- if @krb_local_user_mapping -%>
+  KrbLocalUserMapping <%= @krb_local_user_mapping %>
+  <%- end -%>
+  <%- if @krb_verify_kdc -%>
+  KrbVerifyKDC <%= @krb_verify_kdc %>
+  <%- end -%>
+  <%- if @krb_servicename -%>
+  KrbServiceName <%= @krb_servicename %>
+  <%- end -%>
+  <%- if @krb_save_credentials -%>
+  KrbSaveCredentials <%= @krb_save_credentials -%>
+  <%- end -%>
+
+<% end -%>

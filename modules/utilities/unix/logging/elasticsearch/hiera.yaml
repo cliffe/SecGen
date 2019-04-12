@@ -1,0 +1,27 @@
+---
+version: 4
+datadir: data
+hierarchy:
+  - name: "Distribution major version"
+    backend: yaml
+    path: "distro/%{facts.os.name}/%{facts.os.release.major}"
+
+  - name: "Operating system family major version"
+    backend: yaml
+    path: "os/%{facts.os.family}/%{facts.os.release.major}"
+
+  - name: "Distribution name"
+    backend: yaml
+    path: "distro/%{facts.os.name}"
+
+  - name: "Operating system family"
+    backend: yaml
+    path: "os/%{facts.os.family}"
+
+  - name: "System kernel"
+    backend: yaml
+    path: "kernel/%{facts.kernel}"
+
+  - name: "Default values"
+    backend: yaml
+    path: "common"

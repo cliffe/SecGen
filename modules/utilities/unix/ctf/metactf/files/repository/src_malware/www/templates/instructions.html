@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block body %}
+<h2>INSTRUCTIONS 492/592 CTF</h2>
+	{% if 'username' in session %}
+		<p>Logged in as: {{session['username']}}</p>
+	{% else %}
+		<p>Login required:</p>
+		</p>
+		<form action="{{url_for('login')}}" method="post">
+			<p>Username:<br>
+			<input type="text" name="username"></p>
+			<p>Password:<br>
+			<input type="password" name="passwd"></p>
+			<p><input type="submit" value="submit"></p>
+		</form>
+	{% endif %}
+	{% with messages = get_flashed_messages() %}
+			{% for message in messages %}
+{{message}}
+			{% endfor %}
+		</pre>
+	{% endwith %}
+{% endblock %}
+

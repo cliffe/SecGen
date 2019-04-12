@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>Hidden Linux File</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Linux hidden file challenge. Creates a file containing a flag with a leading dot. e.g. '.hidden'
+  </description>
+
+  <type>ctf_challenge</type>
+  <privilege>none</privilege>
+  <access>local</access>
+  <platform>linux</platform>
+
+  <challenge_type>misc</challenge_type>
+  <challenge_subtype>information_gathering</challenge_subtype>
+  <difficulty>low</difficulty>
+
+  <read_fact>challenge_name</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>account</read_fact>
+  <!-- storage_directory: Blank by default. If supplied, store the files here. e.g. NFS or SMB storage location -->
+  <read_fact>storage_directory</read_fact>
+
+  <default_input into="challenge_name">
+    <value>elusive</value>
+  </default_input>
+  <default_input into="account">
+    <generator type="account">
+      <input into="username">
+        <value>challenges</value>
+      </input>
+      <input into="password">
+        <value>password</value>
+      </input>
+      <!-- Blank account['leaked_filenames'] as this module uses the read_fact level leaked_filenames -->
+      <input into="leaked_filenames">
+        <value/>
+      </input>
+      <!-- Blank account['strings_to_leak'] as this module uses the read_fact level strings_to_leak -->
+      <input into="strings_to_leak">
+        <value/>
+      </input>
+    </generator>
+  </default_input>
+  <default_input into="strings_to_leak">
+    <generator type="flag_generator"/>
+  </default_input>
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+  </default_input>
+  <default_input into="password">
+    <generator type="password_generator"/>
+  </default_input>
+
+  <hint>Try reading the man page for ls with 'man ls'. Linux hidden files have names which begin with a dot. e.g.
+    .file
+  </hint>
+  <solution>List all files in a directory including hidden files with 'ls -a [directory]'. Omit the [directory] to list
+    those in the current working directory.
+  </solution>
+
+  <requires>
+    <module_path>utilities/unix/system/accounts</module_path>
+  </requires>
+
+</vulnerability>

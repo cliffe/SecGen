@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+
+<service xmlns="http://www.github/cliffe/SecGen/service"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
+  <name>UnrealIRCd 3.2.8.1</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>
+    UnrealIRCd 3.2.8.1
+  </description>
+
+  <type>ircd</type>
+  <platform>linux</platform>
+
+  <read_fact>ip</read_fact>
+  <read_fact>port</read_fact>
+
+  <default_input into="ip">
+    <value>*</value>
+  </default_input>
+  <default_input into="port">
+    <value>6667</value>
+  </default_input>
+
+  <!--optional details-->
+  <software_name>unreal</software_name>
+  <software_license>MIT</software_license>
+
+  <!--fails to build on Kali-->
+  <conflict>
+    <name>Kali.*</name>
+  </conflict>
+
+  <conflict>
+    <name>.*Stretch.*</name>
+  </conflict>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+</service>

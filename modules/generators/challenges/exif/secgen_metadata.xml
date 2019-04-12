@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Image ith Modified EXIF Metadata</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Modifies an image's EXIF metadata to leak a string.</description>
+
+  <type>modified_exif</type>
+  <type>image_generator</type>
+  <type>image_challenge_generator</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <hint>Use a tool to extract the metadata e.g. exiftool (http://www.sno.phy.queensu.ca/~phil/exiftool/) or
+    http://exifdata.com/
+  </hint>
+
+  <read_fact>base64_image</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>exif_field</read_fact>
+
+  <default_input into="base64_image">
+    <generator type="random_jpg"/>
+  </default_input>
+
+  <default_input into="strings_to_leak">
+    <generator type="flag_generator"/>
+  </default_input>
+
+  <default_input into="exif_field">
+    <generator type="exif_string_field"/>
+  </default_input>
+
+  <output_type>generated_image</output_type>
+</generator>

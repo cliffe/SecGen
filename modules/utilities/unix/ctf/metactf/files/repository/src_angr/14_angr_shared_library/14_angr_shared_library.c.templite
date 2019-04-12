@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <string.h>
+
+#ifndef __19_ANGR_SHARED_LIBRARY
+#define __19_ANGR_SHARED_LIBRARY
+
+extern void print_msg(void);
+extern int validate(char*, int);
+
+#endif
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main(int argc, char* argv[]) {
+  char buffer[16];
+  memset(buffer, 0, 16);
+  //print_msg();
+  printf("Enter the password: ");
+  scanf("%8s", buffer);
+  if (validate(buffer, 8)) {
+    printf("Good Job.\n");
+    printflag();
+  } else {
+    printf("Try again.\n");
+  }
+  return 0;
+}

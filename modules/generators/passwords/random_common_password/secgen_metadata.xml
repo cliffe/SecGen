@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Random Common Password Generator</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Password picked from the top 100 most commonly used password list from the Mark Burnett 10 million
+    password dump.
+  </description>
+
+  <type>password_generator</type>
+  <type>weak_password_generator</type>
+  <type>crackable_password_generator</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <reference>https://github.com/danielmiessler/SecLists</reference>
+
+  <output_type>generated_passwords</output_type>
+
+</generator>

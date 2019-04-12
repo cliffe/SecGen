@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+		  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		  xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<!--some basic decoding challenges (just two flags, one of which encoded in a reversible way)-->
+	<!--comments describe using pseudo code-->
+	<system>
+		<system_name>decode_me</system_name>
+		<base platform="linux" type="server"/>
+
+		<!--  flag1 = encoder_flag_generator()   -->
+		<input into_datastore="flag1">
+			<generator type="flag_generator" />
+		</input>
+
+		<!--  flag2 = encoder_flag_generator()   -->
+		<input into_datastore="flag2">
+			<generator type="flag_generator" />
+		</input>
+
+		<!--  encoded_flag = encoder_ascii_reversible(encoded_flag: flag2)   -->
+		<input into_datastore="encoded_flag">
+			<encoder type="ascii_reversible">
+				<input into="strings_to_encode">
+					<datastore>flag2</datastore>
+				</input>
+			</encoder>
+		</input>
+
+		<!--  vulnerability_nfs_share(strings_to_leak: encoded_flag CONCAT flag1)   -->
+		<vulnerability name="NFS Share Leak">
+			<input into="strings_to_leak" unique_module_list="unique_encoders">
+				<datastore>encoded_flag</datastore>
+				<datastore>flag1</datastore>
+			</input>
+		</vulnerability>
+
+
+
+		<network module_path=".*private_network_1"/>
+		<build type="cleanup">
+			<input into="root_password">
+				<generator type="strong_password_generator"/>
+			</input>
+		</build>
+	</system>
+
+</scenario>

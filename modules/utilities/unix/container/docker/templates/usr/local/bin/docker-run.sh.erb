@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+/usr/bin/<%= @docker_command %> run \
+        <%= @docker_run_flags %> \
+        --name <%= @sanitised_title %> \
+        <%= @image %> \
+        <% if @command %> <%= @command %><% end %>

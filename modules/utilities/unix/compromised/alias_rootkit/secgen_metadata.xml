@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Alias rootkit</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>MIT</module_license>
+  <description>A new simple bash-based rootkit based on using aliases to hide output from commands.
+    This module has to be included in the scenario BEFORE accounts are created, since it modifies all user accounts via /etc/skel.
+  </description>
+
+  <type>rootkit</type>
+  <type>userspace_rootkit</type>
+  <platform>linux</platform>
+
+  <read_fact>hidden_ports</read_fact>
+  <read_fact>hidden_strings</read_fact>
+
+  <default_input into="hidden_ports">
+    <value>4444</value>
+    <value>12345</value>
+  </default_input>
+  <default_input into="hidden_strings">
+    <value>hideme</value>
+    <value>hme</value>
+  </default_input>
+
+</utility>

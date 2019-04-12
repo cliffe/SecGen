@@ -1,0 +1,14 @@
+<div id="tabs">
+  <ul class="nav nav-tabs">
+    <li class="nav-item active"><a class="nav-link active" data-toggle="tab" href="#start_tab">Start here!</a></li>
+    <% @visible_tabs.each_with_index { |_, counter|  -%>
+     <% if counter != 0 && counter != @visible_tabs.length -%>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" href="tab_<%= counter %>.html"><%= counter %></a></li>
+      <% end -%>
+    <% } %>
+  </ul>
+  <div id="start_tab">
+    <%= @visible_tabs[0] %>
+  </div>
+</div>

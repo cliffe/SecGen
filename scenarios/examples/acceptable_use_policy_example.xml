@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<!-- Drops an acceptable use policy in html format in the /root directory -->
+	<system>
+		<system_name>storage_server</system_name>
+		<base module_path=".*debian_puppet_32.*"/>
+
+		<vulnerability module_path=".*sans_acceptable_use.*"/>
+
+		<network type="private_network" range="dhcp"/>
+	</system>
+
+</scenario>

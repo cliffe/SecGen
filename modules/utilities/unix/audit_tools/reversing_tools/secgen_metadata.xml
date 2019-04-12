@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Reversing tools</name>
+  <author>Thomas Shaw</author>
+  <module_license>Apache v2</module_license>
+  <description>Installs gdb, radare2 (TODO: and angr) for reverse engineering challenges.</description>
+
+  <type>reversing_tools</type>
+  <platform>linux</platform>
+
+</utility>

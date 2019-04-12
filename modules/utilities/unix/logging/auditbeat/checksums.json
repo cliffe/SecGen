@@ -1,0 +1,17 @@
+{
+  "CHANGELOG.md": "bc5fc992d44e4268c06e9c31d15ae407",
+  "Gemfile": "c4c41250024bfc670661d8311e327c5b",
+  "LICENSE": "86d3f3a95c324c9479bd8986968f4327",
+  "README.md": "1f28d7b15130e180e8d627b7d532fc73",
+  "Rakefile": "dea9b7fb13224f44edcbbe636db85050",
+  "appveyor.yml": "105dce352be3244a497e667f6b0403c7",
+  "manifests/config.pp": "e997c355f0ea7d961bddd04df4901d77",
+  "manifests/init.pp": "c6326b2c217962994dc4360233a466e6",
+  "manifests/install.pp": "aa8339e3bed731ce4448a6daa4446349",
+  "manifests/repo.pp": "1a54906d79814f04520be5a06aaccbcc",
+  "manifests/service.pp": "169f32b198e49e1a6d3e726a406a6565",
+  "metadata.json": "a6c8c4b7ad1b55240f3a964d627b1064",
+  "spec/classes/auditbeat_spec.rb": "787100aabbf0fe947f41e99e895fd413",
+  "spec/default_facts.yml": "4de3cb611af6981a6d22bc77d7dd6f6f",
+  "spec/spec_helper.rb": "4a36f24b9891142e2e09fdbd4a9263c7"
+}

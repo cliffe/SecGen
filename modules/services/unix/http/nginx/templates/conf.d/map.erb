@@ -1,0 +1,16 @@
+# MANAGED BY PUPPET
+map <%= @string %> $<%= @name %> {
+<% if @hostnames -%>
+  hostnames;
+<% end -%>
+<% if @default -%>
+  default <%= @default %>;
+<% end -%>
+
+<% if @mappings -%>
+  <%- field_width = @mappings.inject(0) { |l,(k,v)| k.size > l ? k.size : l } -%>
+  <%- @mappings.sort_by{|k,v| k}.each do |key,value| -%>
+  <%= sprintf("%-*s", field_width, key) %> <%= value %>;
+  <%- end -%>
+<% end -%>
+}

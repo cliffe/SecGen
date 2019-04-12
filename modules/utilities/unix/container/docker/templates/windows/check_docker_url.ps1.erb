@@ -1,0 +1,22 @@
+$dockerLocation = Join-Path $env:TEMP "docker.zip"
+
+if ((test-path $dockerLocation)) 
+{
+    $localModified = (Get-Item $dockerLocation).LastWriteTime 
+    $webRequest = [System.Net.HttpWebRequest]::Create("<%= @docker_download_url %>");
+    $webRequest.Method = "HEAD";
+    $webResponse = $webRequest.GetResponse()
+    $remoteLastModified = ($webResponse.LastModified) -as [DateTime] 
+    $webResponse.Close()
+
+    if ($remoteLastModified -gt $localModified)
+    {
+        exit 1
+    }
+    else
+    {
+        exit 0
+    }
+}
+
+exit 1

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Domain Encoder</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Creates a domain based on user inputting a name.</description>
+
+  <type>string_generator</type>
+  <type>domain_generator</type>
+  <type>domain</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <reference>https://github.com/stympy/faker</reference>
+
+  <!-- Convert a name into a randomly formatted domain. Works with business names too. e.g. thomas_shaw.org-->
+  <read_fact>name</read_fact>
+
+  <default_input into="name">
+    <generator type="name_generator"/>
+  </default_input>
+
+  <output_type>domain</output_type>
+</generator>

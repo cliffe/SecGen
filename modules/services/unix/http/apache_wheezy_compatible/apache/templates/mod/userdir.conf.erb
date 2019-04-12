@@ -1,0 +1,27 @@
+<IfModule mod_userdir.c>
+<% if @disable_root -%>
+  UserDir disabled root
+<% end -%>
+  UserDir <%= @home %>/*/<%= @dir %>
+
+  <Directory "<%= @home %>/*/<%= @dir %>">
+    AllowOverride FileInfo AuthConfig Limit Indexes
+    Options <%= @options.join(' ') %>
+    <Limit GET POST OPTIONS>
+      <%- if scope.function_versioncmp([@_apache_version, '2.4']) >= 0 -%>
+      Require all granted
+      <%- else -%>
+      Order allow,deny
+      Allow from all
+      <%- end -%>
+    </Limit>
+    <LimitExcept GET POST OPTIONS>
+      <%- if scope.function_versioncmp([@_apache_version, '2.4']) >= 0 -%>
+      Require all granted
+      <%- else -%>
+      Order allow,deny
+      Allow from all
+      <%- end -%>
+    </LimitExcept>
+  </Directory>
+</IfModule>

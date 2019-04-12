@@ -1,0 +1,1 @@
+require binary_script_container::install

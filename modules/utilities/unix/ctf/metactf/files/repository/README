@@ -1,0 +1,61 @@
+#####################################################################
+# MetaCTF for Malware and Computer Systems Programming
+# Directions to Instructors
+#####################################################################
+
+This is the source code for the reverse engineering CTFs used at
+Portland State University within our Computer Systems Programming
+course and our Malware Reverse Engineering Course.
+
+etc -> configuration required to run on nginx or Apache wsgi
+src_malware -> source code for Malware (CS 492/592) levels
+src_csp -> source code for Computer Systems Programming (CS 201) levels
+src_angr -> source code for Angr (CS 492/592) levels (see below)
+www -> web site
+install.sh -> install script for nginx on Ubuntu 18.04
+   git clone .../metactf
+   mv metactf foo
+   cd foo
+   git submodule init     (For src_angr)
+   git submodule update
+   sudo ./install.sh foo.oregonctf.org
+
+MetaCTF comes with the source for the both the Malware and Computer Systems
+Programming CTF.  Installation for each is identical.  Simply change
+directories to the CTF you want to run and follow the build instructions.
+Both CTFs use the same web site code.
+
+To build the source for the CTF you wish to run, change into its directory
+and edit the userlist in users to create your list of users and their
+passwords (space-delimited).
+	make distclean
+		- whack prior builds if applicable
+	make
+		- builds per-user binaries for all levels in all SUBDIRS
+	make <SUBDIR>
+		- builds per-user binaries for levels in SUBDIR
+	make install
+		- installs all built binaries into web directory
+		- creates www logins in www/users.py (via wwwusers target)
+        sudo systemctl restart foo
+
+If a "Bad Gateway" error is returned through nginx, debug the web app via
+        $PATH/env/bin/uwsgi --socket 0.0.0.0:5000 --protocol=http -w wsgi:app
+
+Adding new users to site while saving the old.
+	Move the login information from users file into "saved_users"
+	Edit users file to specify new users
+	Build the binaries for the new users and install
+	Updates www logins to include both users and saved_users (via wwwusers
+		target)
+	Combine both users file into a single users file, clear out saved_users
+
+Making changes to src_angr.
+  The submodule src_angr references https://github.com/jakespringer/angr_ctf
+  On master in angr_ctf, make changes
+  Checkout the cs492 branch and merge master into it
+  In this repository, `cd angr_ctf; git pull origin cs492`
+  To get latest angr_ctf changes
+     git submodule update --remote --merge
+
+If you have any questions, wuchang at pdx.edu

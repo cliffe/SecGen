@@ -1,0 +1,42 @@
+# Analysis of a Compromised System - Online Analysis and Data Collection
+
+## Getting started
+### VMs in this lab
+
+==Start these VMs== (if you haven't already):
+
+- hackerbot-server (leave it running, you don't log into this)
+- desktop
+- server-compromised (<%= $compromised_server_ip %>)
+
+All of these VMs need to be running to complete the lab.
+
+### Your login details for the VMs
+
+**Desktop and Compromised-Server:**
+
+User: <%= $main_user %>
+Password: tiaspbiqe2r (**t**his **i**s **a** **s**ecure **p**assword **b**ut **i**s **q**uite **e**asy **2** **r**emember)
+
+You won't login to the hackerbot_server, but all the VMs need to be running to complete the lab.
+
+### For marks in the module
+1. **You need to submit flags**. Note that the flags and the challenges in your VMs are different to other's in the class. Flags will be revealed to you as you complete challenges throughout the module. Flags look like this: ==flag{*somethingrandom*}==. Follow the link on the module page to submit your flags.
+2. **You need to document the work and your solutions in a workbook**. This needs to include screenshots (including the flags) of how you solved each Hackerbot challenge and a writeup describing your solution to each challenge, and answering any "Workbook Questions". The workbook will be submitted later in the semester.
+
+## Hackerbot!
+![small-right](images/skullandusb.svg)
+
+This exercise involves interacting with Hackerbot, a chatbot who will task you to investigate the system. If you satisfy Hackerbot by completing the challenges, she will reveal flags to you.
+
+Work through the below exercises, completing the Hackerbot challenges as noted.
+
+---
+
+## Introduction
+
+So you have reason to believe one of your servers has experienced a security compromise... What next? For this lab you investigate a server that has been compromised.
+
+The investigation of a potential security compromise is closely related to digital forensics topics. As with forensic investigations, we also aim to maintain the integrity of our "evidence", *wherever possible* not modifying access times or other information. However, in a business incident response setting maintaining a chain of evidence may not be our highest priority, since we may be more concerned with other business objectives, such as assuring the confidentiality, integrity, and availability of data and services.
+
+During analysis, it is good practice to follow the order of volatility (OOV): collecting the most volatile evidence first (such as the contents of RAM, details of processes running, and so on) from a live system, then collecting less volatile evidence (such as data stored on disk) using offline analysis.

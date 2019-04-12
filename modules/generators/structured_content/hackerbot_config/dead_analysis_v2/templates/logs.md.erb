@@ -1,0 +1,68 @@
+## Logs analysis
+
+The most common logging system on Unix systems is Syslog, which is typically configured in /etc/syslog.conf (or similar, such as rsyslog). Within the Autopsy File Analysis browser, ==navigate to this configuration file and view its contents.== Note that most logging is configured to go to /var/log/messages. Some security messages are logged to /var/log/secure. Boot messages are logged to /var/log/boot.log.
+
+==Make a note of where mail messages are logged==, you will use this later:
+
+Within Autopsy, browse to /var/log. Note that you cannot view the messages file, which would have contained many helpful log entries. Click the inode number to the right (47173):
+
+As previously seen in the timeline, this file has been symlinked to /dev/null. If you are not familiar with /dev/null, search the Internet for an explanation.
+
+For now, we will continue by investigating the files that are available, and later investigate deleted files.
+
+Using Autopsy, ==view the /var/log/secure file==, and identify any IP addresses that have attempted to log in to the system using SSH or Telnet.
+
+==Determine the country of origin for each of these connection attempts:==
+
+> On a typical Unix system we can look up this information using the command:
+
+```bash
+whois *IP-address*
+```
+> (Where IP-address is the IP address being investigated).
+>
+> However, this may not be possible from within our lab environment, and alternatively there are a number of websites that be used (potentially from your own host PC):
+>
+> [*http://whois.domaintools.com/*](http://whois.domaintools.com/)
+>
+> [*http://whois.net/ip-address-lookup/*](http://whois.net/ip-address-lookup/)
+>
+> You may also run a traceroute to determine what routers lie between your system and the remote system.
+>
+> Additionally, software and websites exist that will graphically approximate the location of the IP:
+>
+> [*http://www.iplocationfinder.com/*](http://www.iplocationfinder.com/)
+
+---
+
+Within Autopsy, ==view the /var/log/boot.log file==. At the top of this file Syslog reports starting at August 10 at 13:33:57.
+
+==LogBook Question: Given what we have learned about this system during timeline analysis, what is suspicious about Syslog restarting on August 10th? Was the system actually restarted at that time?==
+
+Note that according to the log, Apache fails to restart. Why can't Apache restart? Do you think the attacker intended to do this?
+
+==Open the mail log file==, which you recorded the location of earlier. ==Identify the email addresses that messages were sent to.==
+
+---
+
+Another valuable source of information are records of commands that have been run by users. One source of this information is the .bash\_history file. As noted during timeline analysis, the /root/.bash\_history file was symlinked to /dev/null, meaning the history was not saved. However, the attacker did leave behind a Bash history file in the root of the filesystem ("/"). ==View this file.==
+
+Towards the end of this short Bash session the attacker downloads sslstop.tar.gz, then the attacker runs:
+
+```bash
+ps aux | grep apache
+
+kill -9 21510 21511 23289 23292 23302
+```
+
+==LogBook Question: What is the attacker attempting to do with these commands?==
+
+Apache has clearly played an important role in the activity of the attacker, so it is natural to investigate Apache's configuration and logs.
+
+Still in Autopsy, ==browse to /etc/httpd/conf/, and view httpd.conf.==
+
+Note that the Apache config has been altered by sslstop, by changing the "HAVE\_SSL" directive to "HAVE\_SSS" (remember, this file was shown in the timeline to be modified after sslstop was run)
+
+This configuration also specifies that Apache logs are stored in /etc/httpd/logs, and upon investigation this location is symlinked to /var/log/httpd/. This is a common Apache configuration.
+
+Unfortunately the /var/log/httpd/ directory does not exist, so clearly the attacker has attempted to cover their tracks by deleting Apache's log files.

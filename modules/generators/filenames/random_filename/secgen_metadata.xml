@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Random Filename Generator</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Random filename generator using the Faker ruby gem.</description>
+
+  <type>string_generator</type>
+  <type>filename_generator</type>
+  <type>filename</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <reference>https://github.com/stympy/faker</reference>
+
+  <!-- No default input for these facts, but if required you can override in the scenario. If you need a random filename
+  without an extension use <value>no_extension</value> -->
+  <read_fact>file_name</read_fact>
+  <read_fact>extension</read_fact>
+
+  <output_type>filename</output_type>
+</generator>

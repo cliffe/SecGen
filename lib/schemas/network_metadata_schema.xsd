@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.github/cliffe/SecGen/network"
+           xmlns="http://www.github/cliffe/SecGen/network"
+           elementFormDefault="qualified">
+
+  <xs:element name="network">
+    <xs:complexType>
+      <xs:sequence>
+        <!--required SecGen module details-->
+        <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="author" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+        <xs:element name="module_license" minOccurs="1" maxOccurs="unbounded">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="MIT"/>
+              <xs:enumeration value="Apache v2"/>
+              <xs:enumeration value="GPLv3"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name="description" type="xs:string" minOccurs="1" maxOccurs="1"/>
+
+        <xs:element name="type" minOccurs="1" maxOccurs="1">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="public_network"/>
+              <xs:enumeration value="private_network"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+
+        <xs:element name="range" minOccurs="1" maxOccurs="1">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:pattern value="([0-9]{1,3}\.){3}0|dhcp"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+
+
+        <!-- cannot co-exist with a network matching ALL of the optionally specified values (can be repeated for OR)-->
+        <xs:element name="conflict" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="author" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="module_license" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+
+              <xs:element name="type" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="range" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

@@ -1,0 +1,152 @@
+/* Derived from CTF level by Thomas Van Klaveren New Beginnings 2014*/
+#include <stdio.h>
+#include <fcntl.h>
+#include <string.h>
+#include <sys/ptrace.h>
+#include <stdlib.h>
+
+char msg[] =
+ "In this level, an array of integers is being passed to three functions.\n"
+ "The array consists of the integers 0 to 99 in increasing order: \n"
+ "  (e.g. nums[0] = 0, nums[1] = 1, nums[2] = 2, ..., nums[99] = 99)\n"
+ "Each function uses loop unrolling to calculate and return the sum of the\n"
+ "first n elements of the array (nums[0] + nums[1] + ... + nums[n-1])\n"
+ "where n is potentially a different number for each function. Use objdump\n"
+ "to identify the three functions that are called.  Then, reverse-engineer\n"
+ "each function to determine the sum that each calculates. Pay attention\n"
+ "to the level of unrolling and the ending condition for what is being\n"
+ "accumulated. The password consists of the 3 sums separated by spaces.\n"
+ "It is read via scanf(\"%d %d %d\").  To ensure that you reverse-engineer\n"
+ "the unrolled loops, we have disabled debugging for this level.  Finally,\n"
+ "when calculating each sum, look up how a young, misbehaved lad named\n"
+ "Carl Gauss cleverly bypassed the punishment of adding a list of integers\n"
+ "in progression given to him by his teacher J.G. Buttner.\n\n";
+
+void detectTrace(void) __attribute__((constructor));
+void detectTrace (void) {
+    if(ptrace(PTRACE_TRACEME, 0, 1, 0) < 0) {
+        printf("No tracing");
+        exit(1);
+    };
+};
+
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg[i%len] + msg[(i+1)%len];
+    h2 += msg[(i+1)%len] + msg[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg);
+  else
+    printf("%s",msg);
+}
+
+int unroll2(int *nums){
+  int i, val = 0;
+  for (i = 0; i < AAAAAA*2; i+=2)
+    val +=  nums[i] + nums[i+1];
+  return val;
+}
+
+int unroll3(int *nums){
+  int i, val = 0;
+  for (i = 0; i < BBBBBB*3; i+=3)
+    val +=  nums[i] + nums[i+1] + nums[i+2];
+  return val;
+}
+
+int unroll4(int *nums){
+  int i, val = 0;
+  for (i = 0; i < CCCCCC*4; i+=4)
+    val +=  nums[i] + nums[i+1] + nums[i+2] + nums[i+3];
+  return val;
+}
+
+int unroll5(int *nums){
+  int i, val = 0;
+  for (i = 0; i < DDDDDD*5; i+=5)
+    val +=  nums[i] + nums[i+1] + nums[i+2] + nums[i+3] + nums[i+4];
+  return val;
+}
+
+int unroll6(int *nums){
+  int i, val = 0;
+  for (i = 0; i < EEEEEE*6; i+=6)
+    val +=  nums[i] + nums[i+1] + nums[i+2] + nums[i+3] + nums[i+4] + nums[i+5];
+  return val;
+}
+
+int unroll7(int *nums){
+  int i, val = 0;
+  for (i = 0; i < FFFFFF*7; i+=7)
+    val +=  nums[i] + nums[i+1] + nums[i+2] + nums[i+3] + nums[i+4] + nums[i+5] + nums[i+6];
+  return val;
+}
+
+int unroll8(int *nums){
+  int i, val = 0;
+  for (i = 0; i < GGGGGG*8; i+=8)
+    val +=  nums[i] + nums[i+1] + nums[i+2] + nums[i+3] + nums[i+4] + nums[i+5] + nums[i+6] + nums[i+7];
+  return val;
+}
+
+int unroll9(int *nums){
+  int i, val = 0;
+  for (i = 0; i < HHHHHH*9; i+=9)
+    val +=  nums[i] + nums[i+1] + nums[i+2] + nums[i+3] + nums[i+4] + nums[i+5] + nums[i+6] + nums[i+7] + nums[i+8];
+  return val;
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main(int argc, char *argv[]){
+  int u1,u2,u3,g1,g2,g3,i;
+  int nums[100];
+
+  for (i=0; i < 100; i++)
+	nums[i] = i;
+
+  print_msg();
+
+  u1 = unrollXXXXXX(nums);
+  u2 = unrollYYYYYY(nums);
+  u3 = unrollZZZZZZ(nums);
+
+  printf("Enter the password: ");
+  if ((scanf("%d %d %d", &g1, &g2, &g3) != 3) || (u1 != g1) || (u2 != g2) || (u3 != g3))
+    printf("Try again.\n");
+  else {
+	printf("Good Job.\n");
+    printflag();
+  }
+  return 0;
+}

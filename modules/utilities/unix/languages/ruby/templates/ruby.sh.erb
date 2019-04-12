@@ -1,0 +1,18 @@
+# Set environemnt variables for Ruby as per
+# http://www.rubyenterpriseedition.com/documentation.html#_garbage_collector_performance_tuning
+# This file is managed by Puppet, any changes may be overwritten
+<% if @gc_malloc_limit -%>
+export RUBY_GC_MALLOC_LIMIT=<%= @gc_malloc_limit %>
+<% end -%>
+<% if @heap_free_min -%>
+export RUBY_HEAP_FREE_MIN=<%= @heap_free_min %>
+<% end -%>
+<% if @heap_slots_growth_factor -%>
+export RUBY_HEAP_SLOTS_GROWTH_FACTOR=<%= @heap_slots_growth_factor %>
+<% end -%>
+<% if @heap_min_slots -%>
+export RUBY_HEAP_MIN_SLOTS=<%= @heap_min_slots %>
+<% end -%>
+<% if @heap_slots_increment -%>
+export RUBY_HEAP_SLOTS_INCREMENT=<%= @heap_slots_increment %>
+<% end -%>

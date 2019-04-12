@@ -1,0 +1,34 @@
+	<attack>
+<% $rand_alert5 = SecureRandom.hex(3) %>
+		<pre_shell>sshpass -p <%= $root_password %> scp -prv -oStrictHostKeyChecking=no root@<%= $ids_server_ip %>:/var/log/snort/alert /tmp/snort_alert_before; stat1=$?; curl <%= $web_server_ip %> >/dev/null; curl <%= $web_server_ip %>/contact.html >/dev/null; stat2=$?; sshpass -p <%= $root_password %> scp -prv -oStrictHostKeyChecking=no root@<%= $ids_server_ip %>:/var/log/snort/alert /tmp/snort_alert_after; stat3=$?; echo --$stat1$stat2$stat3; diff -n /tmp/snort_alert_before /tmp/snort_alert_after | tail -n 5</pre_shell>
+		<get_shell>false</get_shell>
+		<post_command></post_command>
+
+		<prompt>Create a Snort rule that detects access to http://<%= $web_server_ip %> but NOT http://<%= $web_server_ip %>/contact.html. The alert must include the message "<%= $rand_alert5 %>".</prompt>
+
+		<condition>
+			<output_matches>^--1</output_matches>
+			<message>:( Failed to scp to your system.</message>
+		</condition>
+		<condition>
+			<output_matches>^--01</output_matches>
+			<message>:( Failed to test your system.</message>
+		</condition>
+		<condition>
+			<output_matches>^--[01][01]1</output_matches>
+			<message>:( Failed to scp to your system (the second time).</message>
+		</condition>
+		<condition>
+			<output_matches>^--00.*<%= $rand_alert5 %>.*<%= $rand_alert5 %></output_matches>
+			<message>:( Almost, but your rule triggered too many times. Are you inspecting the content of the connection?</message>
+			<trigger_next_attack />
+		</condition>
+		<condition>
+			<output_matches>^--00.*<%= $rand_alert5 %></output_matches>
+			<message>:) Well done! <%= $flags.pop %>.</message>
+			<trigger_next_attack />
+		</condition>
+		<else_condition>
+			<message>:( Your rule didn't get triggered (or didn't include the right message).</message>
+		</else_condition>
+	</attack>

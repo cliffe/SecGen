@@ -1,0 +1,125 @@
+<%- if @kernel == 'Linux' -%>
+#!/bin/bash
+<%- else -%>
+#!/bin/sh
+<%- end -%>
+#
+# MySQL Backup Script
+#  Dumps mysql databases to a file for another backup tool to pick up.
+#
+# MySQL code:
+# GRANT SELECT, RELOAD, LOCK TABLES ON *.* TO 'user'@'localhost'
+# IDENTIFIED BY 'password';
+# FLUSH PRIVILEGES;
+#
+##### START CONFIG ###################################################
+
+USER=<%= @backupuser %>
+PASS='<%= @backuppassword %>'
+MAX_ALLOWED_PACKET=<%= @maxallowedpacket %>
+DIR=<%= @backupdir %>
+ROTATE=<%= [ Integer(@backuprotate) - 1, 0 ].max %>
+
+# Create temporary mysql cnf file.
+TMPFILE=`mktemp /tmp/backup.XXXXXX` || exit 1
+<%- if @kernel == 'SunOS' -%>
+echo "[client]\npassword=$PASS\nuser=$USER\nmax_allowed_packet=$MAX_ALLOWED_PACKET" > $TMPFILE
+<%- else -%>
+echo -e "[client]\npassword=$PASS\nuser=$USER\nmax_allowed_packet=$MAX_ALLOWED_PACKET" > $TMPFILE
+<%- end -%>
+
+<% if @prescript -%>
+<%- [@prescript].flatten.compact.each do |script|%>
+<%= script %>
+<%- end -%>
+<% end -%>
+
+# Ensure backup directory exist.
+mkdir -p $DIR
+
+PREFIX=mysql_backup_
+<% if @ignore_events %>
+ADDITIONAL_OPTIONS="--ignore-table=mysql.event"
+<% else %>
+ADDITIONAL_OPTIONS="--events"
+<% end %>
+<%# Only include routines or triggers if we're doing a file per database -%>
+<%# backup. This happens if we named databases, or if we explicitly set -%>
+<%# file per database mode -%>
+<% if !@backupdatabases.empty? || @file_per_database -%>
+<% if @include_triggers -%>
+ADDITIONAL_OPTIONS="$ADDITIONAL_OPTIONS --triggers"
+<% else -%>
+ADDITIONAL_OPTIONS="$ADDITIONAL_OPTIONS --skip-triggers"
+<% end -%>
+<% if @include_routines -%>
+ADDITIONAL_OPTIONS="$ADDITIONAL_OPTIONS --routines"
+<% else -%>
+ADDITIONAL_OPTIONS="$ADDITIONAL_OPTIONS --skip-routines"
+<% end -%>
+<% end -%>
+
+<%- if @optional_args and @optional_args.is_a?(Array) -%>
+<%- @optional_args.each do |arg| -%>
+ADDITIONAL_OPTIONS="$ADDITIONAL_OPTIONS <%= arg %>"
+<%- end -%>
+<%- end -%>
+
+##### STOP CONFIG ####################################################
+PATH=<%= @execpath %>
+
+
+
+<%- if @kernel == 'Linux' -%>
+set -o pipefail
+<%- end -%>
+
+cleanup()
+{
+<%- if @kernel == 'SunOS' -%>
+	gfind "${DIR}/" -maxdepth 1 -type f -name "${PREFIX}*.sql*" -mtime +${ROTATE} -print0 | gxargs -0 -r rm -f
+<%- else -%>
+	find "${DIR}/" -maxdepth 1 -type f -name "${PREFIX}*.sql*" -mtime +${ROTATE} -print0 | xargs -0 -r rm -f
+<%- end -%>
+}
+
+<% if @delete_before_dump -%>
+cleanup
+
+<% end -%>
+<% if @backupdatabases.empty? -%>
+<% if @file_per_database -%>
+mysql --defaults-extra-file=$TMPFILE -s -r -N -e 'SHOW DATABASES' | while read dbname
+do
+  mysqldump --defaults-extra-file=$TMPFILE --opt --flush-logs --single-transaction \
+    ${ADDITIONAL_OPTIONS} \
+    ${dbname} <% if @backupcompress %>| bzcat -zc <% end %>> ${DIR}/${PREFIX}${dbname}_`date +%Y%m%d-%H%M%S`.sql<% if @backupcompress %>.bz2<% end  %>
+done
+<% else -%>
+mysqldump --defaults-extra-file=$TMPFILE --opt --flush-logs --single-transaction \
+ ${ADDITIONAL_OPTIONS} \
+ --all-databases <% if @backupcompress %>| bzcat -zc <% end %>> ${DIR}/${PREFIX}`date +%Y%m%d-%H%M%S`.sql<% if @backupcompress %>.bz2<% end  %>
+<% end -%>
+<% else -%>
+<% @backupdatabases.each do |db| -%>
+mysqldump --defaults-extra-file=$TMPFILE --opt --flush-logs --single-transaction \
+    ${ADDITIONAL_OPTIONS} \
+ <%= db %><% if @backupcompress %>| bzcat -zc <% end %>> ${DIR}/${PREFIX}<%= db %>_`date +%Y%m%d-%H%M%S`.sql<% if @backupcompress %>.bz2<% end  %>
+<% end -%>
+<% end -%>
+
+<% unless @delete_before_dump -%>
+if [ $? -eq 0 ] ; then
+    cleanup
+    touch /tmp/mysqlbackup_success
+fi
+<% end -%>
+
+<% if @postscript -%>
+  <%- [@postscript].flatten.compact.each do |script|%>
+<%= script %>
+  <%- end -%>
+<% end -%>
+
+# Remove temporary file
+rm -f $TMPFILE

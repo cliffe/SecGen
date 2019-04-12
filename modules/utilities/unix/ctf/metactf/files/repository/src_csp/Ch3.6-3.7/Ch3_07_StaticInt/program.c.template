@@ -1,0 +1,84 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <string.h>
+#include <signal.h>
+#define USERDEF0 AAAAAA
+#define USERDEF1 BBBBBB
+
+char msg[] =
+ "In this level, you will use your knowledge of the stack and dynamic analysis\n"
+ "via a debugger to find the passcode. The program has a function that is used\n"
+ "to check the validity of the code entered.  Set a breakpoint at the\n"
+ "appropriate location in order to discover what it is.\n\n";
+
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg[i%len] + msg[(i+1)%len];
+    h2 += msg[(i+1)%len] + msg[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg);
+  else
+    printf("%s",msg);
+}
+
+void print_good(void){
+    	printf("Good Job.\n");
+		printflag();
+}
+
+void print_again(void){
+		printf("Try again.\n");
+}
+
+int check_code(int input, int answer) {
+    if (input==answer) return 1;
+    else return 0;
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main (int argc, char** argv) {
+    int a, b, code, input;
+    print_msg();
+    a = AAAAAA;
+    b = BBBBBB;
+    code = a + b - 1;
+    printf("Enter the password: ");
+    scanf("%d", &input);
+    if (check_code(input,code))
+	print_good();
+    else
+	print_again();
+    exit(0);
+}

@@ -1,0 +1,11 @@
+HOSTS:
+  debian-81-x64:
+    roles:
+      - default
+    platform: debian-8-amd64
+    box: debian/jessie64
+    hypervisor: vagrant
+
+CONFIG:
+  log_level: verbose
+  type: foss

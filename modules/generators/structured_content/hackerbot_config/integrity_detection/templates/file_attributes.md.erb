@@ -1,0 +1,69 @@
+### Protecting integrity with file attributes
+#### Getting to know file attributes
+Unix systems (such as Linux or FreeBSD) include file attributes that, amongst other features, can make files immutable or append only. Setting these file attributes can provide an effective layer of security, and yet could be considered one of the more obscure Unix security features[^1]. Note that this feature is dependent on the use of a compatible filesystem (most Unix filesystems, such as ext, are compatible with file attributes). Once configured, file attributes can even prevent root (the all-powerful Unix superuser) from making changes to certain files.
+
+[^1]: Setting a file to immutable (and therefore impossible to simply delete) can be an effective prank against the uninitiated in Unix ways.
+
+==Run:==
+
+```bash
+lsattr <%= $example_file %>
+```
+``
+ -------------e- <%= $example_file %>
+``
+
+The 'e' flag is common on ext filesystems, may or may not be present when you run the above, and does not really concern us. From a security perspective the 'a' and 'i' flags are the most interesting. Read the man page for chattr to find out more about these flags and what they do:
+
+```bash
+man chattr
+```
+> (Press q to leave the manual page)
+
+==Set the 'i' flag== using the chattr command:
+
+```bash
+sudo chattr +i <%= $example_file %>
+```
+
+Now ==try to delete the file== and see what happens:
+
+```bash
+rm <%= $example_file %>
+```
+Denied!
+
+==Use root permissions== to try to delete the file:
+
+```bash
+sudo rm <%= $example_file %>
+```
+
+It still didn't work! That's right, *even root can't delete the file*, without changing the file's attributes back first.
+
+==Use some commands to remove the 'i' flag==
+> Hint: '-i', instead of '+i'.
+
+Now run a command to ==set the 'a' flag on <%= $example_file %>.==
+
+If you have done so correctly, attempting to overwrite the file with a test message should fail. ==Run:==
+
+```bash
+sudo bash -c 'echo "test message" > <%= $example_file %>'
+```
+> This should produce an error, since > causes the output of the program to be written to the specified log file, which is not allowed due to the chattr command you have run.
+
+Yet you should be able to append messages to the end of the file:
+
+```bash
+sudo bash -c 'echo "YOURNAME: test message" >> <%= $example_file %>'
+```
+> This should succeed, since >> causes the output of the program to be appended (added to the end of) to the specified log file, which is allowed. Use your name above, for example 'echo "==Cliffe==: test message" >> <%= $example_file %>'.
+
+==View your changes== at the end of the file:
+
+```bash
+tail <%= $example_file %>
+```
+
+This has obvious security benefits, this feature can be used to allow files to be written to without altering existing content. For example, for ensuring that log files can be written to, but avoiding giving everyone who can write to the file the ability to alter its contents.

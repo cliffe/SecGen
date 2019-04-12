@@ -1,0 +1,19 @@
+### MANAGED BY PUPPET ###
+<%-
+  $LOAD_PATH.unshift(File.join(File.dirname(__FILE__),"..","..","..","lib"))
+  require 'puppet_x/elastic/deep_to_i'
+  require 'puppet_x/elastic/hash'
+
+  @yml_string = ''
+
+  if !@data.empty?
+
+    # Sort Hash and transform it into yaml
+    @yml_string += Puppet_X::Elastic::deep_to_i(
+      @data
+    ).extend(
+      Puppet_X::Elastic::SortedHash
+    ).to_yaml
+  end
+-%>
+<%= @yml_string %>

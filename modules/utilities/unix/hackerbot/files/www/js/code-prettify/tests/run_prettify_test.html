@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Run_Prettify Test</title>
+<style type="text/css">
+#report { white-space: pre; }
+</style>
+<script type="text/javascript">
+(function () {
+  // capture globals before loading run_prettify
+  var knownGlobals = {};
+  for (var k in window) {
+    if (Object.hasOwnProperty.call(window, k)) {
+      knownGlobals[k] = knownGlobals;
+    }
+  }
+  // log messages
+  function dump(s) {
+    var p = document.createElement('p');
+    p.appendChild(document.createTextNode(s));
+    document.getElementById('report').appendChild(p);
+  }
+  // autorun callback functions to dump globals after run_prettify is loaded
+  // (only new ones)
+  function printDone() { dump('-- done --'); }
+  function dumpGlobals() {
+    for (var k in window) {
+      if (knownGlobals[k] !== knownGlobals &&
+          Object.hasOwnProperty.call(window, k)) {
+        dump('global: ' + k);
+      }
+    }
+  }
+  // expose callbacks to PR
+  window.exports = {
+    print_done: printDone,
+    dump_globals: dumpGlobals
+  };
+})();
+
+// load run_prettify
+(function () {
+  function injectJS(url) {
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  var srcDir = /[&?]loader\b/.test(location.search) ? '../loader/' : '../src/';
+  injectJS(srcDir + 'run_prettify.js' +
+    '?lang=css' +
+    '&callback=print_done' +
+    '&skin=sunburst' +
+    '&callback=dump_globals');
+})();
+</script>
+</head>
+
+<body>
+
+<h1>run_prettify test</h1>
+<p>Note: try appending <code>?loader</code> to this page URL to test the
+minified version instead.</p>
+
+<h2>Test</h2>
+<pre class="prettyprint">
+&lt;div style="color: #f00"&gt;
+  Hello, <em>World!</em>
+&lt;/div&gt;
+</pre>
+
+<h2>Log</h2>
+<div id="report"></div>
+
+</body>
+</html>

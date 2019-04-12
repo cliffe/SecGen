@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<!-- A secure system running java -->
+	<system>
+		<system_name>system_with_java</system_name>
+		<base platform="linux" type="server"/>
+
+		<utility type="java"/>
+
+		<network type="private_network" range="dhcp"></network>
+	</system>
+
+</scenario>

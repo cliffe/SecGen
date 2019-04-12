@@ -1,0 +1,75 @@
+[General]
+ConfigVersion=2.4
+ConsoleTTYs=tty1,tty2,tty3,tty4,tty5,tty6
+GreeterUID=kdm
+PidFile=/var/run/kdm.pid
+ReserveServers=:1,:2,:3
+ServerVTs=-7
+StaticServers=:0
+
+[Shutdown]
+BootManager=None
+HaltCmd=/sbin/shutdown -h -P now
+RebootCmd=/sbin/shutdown -r now
+
+[X-*-Core]
+AllowNullPasswd=false
+AllowRootLogin=false
+AllowShutdown=Root
+AutoReLogin=false
+ClientLogFile=.xsession-errors-%d
+Reset=/etc/kde4/kdm/Xreset
+Session=/etc/kde4/kdm/Xsession
+Setup=/etc/kde4/kdm/Xsetup
+Startup=/etc/kde4/kdm/Xstartup
+
+[X-*-Greeter]
+AntiAliasing=false
+ColorScheme=
+FaceSource=AdminOnly
+FailFont=Sans Serif,10,-1,5,75,0,0,0,0,0
+GUIStyle=
+GreetFont=Serif,20,-1,5,50,0,0,0,0,0
+GreetString=Welcome to %s at %n
+GreeterPos=50,50
+HiddenUsers=
+Language=en_US
+LogoArea=Logo
+LogoPixmap=/usr/share/kde4/apps/kdm/pics/kdelogo.png
+MaxShowUID=29999
+MinShowUID=1000
+Preloader=/usr/bin/preloadkde
+SelectedUsers=
+ShowUsers=NotHidden
+SortUsers=true
+StdFont=Sans Serif,10,-1,5,50,0,0,0,0,0
+Theme=
+UseBackground=true
+UseTheme=true
+UserCompletion=false
+UserList=true
+
+[X-:*-Core]
+AllowNullPasswd=true
+AllowShutdown=All
+NoPassEnable=false
+NoPassUsers=
+ServerArgsLocal=-br -nolisten tcp
+ServerCmd=/usr/bin/X
+
+[X-:*-Greeter]
+AllowClose=true
+DefaultUser=<%=@autologin_user%>
+FocusPasswd=true
+LoginMode=DefaultLocal
+PreselectUser=Previous
+
+[X-:0-Core]
+AutoLoginEnable=true
+AutoLoginLocked=false
+AutoLoginUser=<%=@autologin_user%>
+ClientLogFile=.xsession-errors
+
+[Xdmcp]
+Enable=false
+Willing=/etc/kde4/kdm/Xwilling

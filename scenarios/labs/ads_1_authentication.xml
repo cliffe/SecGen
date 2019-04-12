@@ -1,0 +1,350 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<name>Authentication lab</name>
+  <author>Z. Cliffe Schreuders</author>
+  <description>A Hackerbot lab. Work through the labsheet, then when prompted interact with Hackerbot. Topics covered: Protecting integrity with file attributes; Protecting integrity with read-only filesystems.</description>
+
+  <type>ctf-lab</type>
+  <type>hackerbot-lab</type>
+  <type>lab-sheet</type>
+  <difficulty>intermediate</difficulty>
+
+	<system>
+		<system_name>desktop</system_name>
+		<base distro="Debian 9" type="desktop" name="KDE"/>
+
+		<input into_datastore="IP_addresses">
+			<!-- 0 desktop -->
+			<value>172.16.0.2</value>
+			<!-- 1 server -->
+			<value>172.16.0.3</value>
+			<!-- 2 hackerbot_server -->
+			<value>172.16.0.4</value>
+			<!-- 3 kali_cracker -->
+			<value>172.16.0.5</value>
+		</input>
+
+		<!-- generate some usernames to use -->
+		<input into_datastore="usernames">
+			<!-- main user -->
+			<generator type="random_word_generator">
+				<input into="wordlist">
+					<value>mythical_creatures</value>
+				</input>
+			</generator>
+			<!-- 4 other users -->
+			<generator type="random_word_generator">
+				<input into="wordlist">
+					<value>mythical_creatures</value>
+				</input>
+			</generator>
+			<generator type="random_word_generator">
+				<input into="wordlist">
+					<value>mythical_creatures</value>
+				</input>
+			</generator>
+			<generator type="random_word_generator">
+				<input into="wordlist">
+					<value>mythical_creatures</value>
+				</input>
+			</generator>
+			<generator type="random_word_generator">
+				<input into="wordlist">
+					<value>mythical_creatures</value>
+				</input>
+			</generator>
+		</input>
+
+		<!-- generate some passwords to be cracked -->
+		<input into_datastore="weak_passwords">
+			<generator type="weak_password_generator"/>
+			<generator type="weak_password_generator"/>
+			<generator type="weak_password_generator"/>
+			<generator type="medium_password_generator"/>
+		</input>
+
+		<!-- accounts on the desktop, with the main user as a sudoer, with no flags -->
+		<input into_datastore="user_accounts_desktop">
+			<!-- main user, sudoer -->
+			<generator type="account">
+				<input into="username">
+					<datastore access="0">usernames</datastore>
+				</input>
+				<input into="password">
+					<value>tiaspbiqe2r</value>
+				</input>
+				<input into="super_user">
+					<value>true</value>
+				</input>
+			</generator>
+			<!-- other users, with weak passwords, no flags -->
+			<generator type="account">
+				<input into="username">
+					<datastore access="next">usernames</datastore>
+				</input>
+				<input into="password">
+					<datastore access="0">weak_passwords</datastore>
+				</input>
+			</generator>
+			<generator type="account">
+				<input into="username">
+					<datastore access="next">usernames</datastore>
+				</input>
+				<input into="password">
+					<datastore access="next">weak_passwords</datastore>
+				</input>
+			</generator>
+			<generator type="account">
+				<input into="username">
+					<datastore access="next">usernames</datastore>
+				</input>
+				<input into="password">
+					<datastore access="next">weak_passwords</datastore>
+				</input>
+			</generator>
+			<generator type="account">
+				<input into="username">
+					<datastore access="next">usernames</datastore>
+				</input>
+				<input into="password">
+					<datastore access="next">weak_passwords</datastore>
+				</input>
+			</generator>
+		</input>
+
+		<input into_datastore="desktop_root_password">
+			<generator type="strong_password_generator"/>
+		</input>
+
+		<!--Create the users-->
+		<utility module_path=".*parameterised_accounts">
+			<input into="accounts">
+				<datastore>user_accounts_desktop</datastore>
+			</input>
+		</utility>
+
+		<utility module_path=".*kde_minimal">
+			<input into="autologin_user">
+				<datastore access="0">usernames</datastore>
+			</input>
+			<input into="accounts">
+				<datastore>user_accounts_desktop</datastore>
+			</input>
+			<input into="autostart_konsole">
+				<value>true</value>
+			</input>
+		</utility>
+		<utility module_path=".*handy_cli_tools"/>
+		<utility module_path=".*hash_tools"/>
+
+		<utility module_path=".*iceweasel">
+			<input into="accounts">
+				<datastore>user_accounts_desktop</datastore>
+			</input>
+			<input into="autostart">
+				<value>true</value>
+			</input>
+			<input into="start_page">
+				<datastore access="2">IP_addresses</datastore>
+			</input>
+		</utility>
+
+		<utility module_path=".*pidgin">
+			<input into="server_ip">
+				<datastore access="2">IP_addresses</datastore>
+			</input>
+			<input into="accounts">
+				<datastore access="0">user_accounts_desktop</datastore>
+			</input>
+		</utility>
+
+		<vulnerability module_path=".*ssh_root_login">
+			<input into="root_password">
+				<datastore>desktop_root_password</datastore>
+			</input>
+		</vulnerability>
+
+		<network type="private_network">
+			<input into="IP_address">
+				<datastore access="0">IP_addresses</datastore>
+			</input>
+		</network>
+	</system>
+
+	<system>
+		<system_name>server</system_name>
+		<base distro="Debian 9" type="server"/>
+
+		<!-- user accounts on the server, with matching usernames and passwords, but with flags to find -->
+		<input into_datastore="user_accounts_server">
+			<!-- main user, NOT sudoer -->
+			<generator type="account">
+				<input into="username">
+					<datastore access="0">usernames</datastore>
+				</input>
+				<input into="password">
+					<value>tiaspbiqe2r</value>
+				</input>
+				<input into="super_user">
+					<value>false</value>
+				</input>
+			</generator>
+			<!-- other users, with the SAME weak passwords, WITH flags -->
+			<generator type="account">
+				<input into="username">
+					<datastore access="next">usernames</datastore>
+				</input>
+				<input into="password">
+					<datastore access="0">weak_passwords</datastore>
+				</input>
+				<input into="leaked_filenames">
+					<value>flag</value>
+				</input>
+				<input into="strings_to_leak">
+					<generator type="flag_generator" />
+				</input>
+			</generator>
+			<generator type="account">
+				<input into="username">
+					<datastore access="next">usernames</datastore>
+				</input>
+				<input into="password">
+					<datastore access="next">weak_passwords</datastore>
+				</input>
+				<input into="leaked_filenames">
+					<value>flag</value>
+				</input>
+				<input into="strings_to_leak">
+					<generator type="flag_generator" />
+				</input>
+			</generator>
+			<generator type="account">
+				<input into="username">
+					<datastore access="next">usernames</datastore>
+				</input>
+				<input into="password">
+					<datastore access="next">weak_passwords</datastore>
+				</input>
+				<input into="leaked_filenames">
+					<value>flag</value>
+				</input>
+				<input into="strings_to_leak">
+					<generator type="flag_generator" />
+				</input>
+			</generator>
+			<generator type="account">
+				<input into="username">
+					<datastore access="next">usernames</datastore>
+				</input>
+				<input into="password">
+					<datastore access="next">weak_passwords</datastore>
+				</input>
+				<input into="leaked_filenames">
+					<value>flag</value>
+				</input>
+				<input into="strings_to_leak">
+					<generator type="flag_generator" />
+				</input>
+			</generator>
+		</input>
+
+		<!--Create the users-->
+		<utility module_path=".*parameterised_accounts">
+			<input into="accounts">
+				<datastore>user_accounts_server</datastore>
+			</input>
+		</utility>
+
+		<utility module_path=".*handy_cli_tools"/>
+
+		<vulnerability module_path=".*ssh_root_login">
+			<input into="root_password">
+				<datastore>desktop_root_password</datastore>
+			</input>
+		</vulnerability>
+
+		<network type="private_network">
+			<input into="IP_address">
+				<datastore access="1">IP_addresses</datastore>
+			</input>
+		</network>
+	</system>
+
+	<system>
+		<system_name>hackerbot_server</system_name>
+		<base distro="Kali" name="MSF"/>
+
+		<service type="ircd"/>
+
+		<utility module_path=".*metasploit_framework"/>
+		<utility module_path=".*nmap"/>
+		<utility module_path=".*handy_cli_tools"/>
+
+		<service type="httpd"/>
+
+		<utility module_path=".*hackerbot">
+			<input into="hackerbot_configs">
+				<generator module_path=".*hbauthentication">
+					<input into="accounts">
+						<datastore>user_accounts_desktop</datastore>
+					</input>
+					<input into="root_password">
+						<datastore>desktop_root_password</datastore>
+					</input>
+					<input into="server_ip">
+						<datastore access="1">IP_addresses</datastore>
+					</input>
+				</generator>
+			</input>
+		</utility>
+
+    <network type="private_network" >
+     	<input into="IP_address">
+    		<datastore access="2">IP_addresses</datastore>
+     	</input>
+    </network>
+
+		<build type="cleanup">
+			<input into="root_password">
+				<generator type="strong_password_generator"/>
+			</input>
+		</build>
+	</system>
+
+	<system>
+		<system_name>kali_cracker</system_name>
+		<base distro="Kali" name="MSF"/>
+
+		<input into_datastore="kali_root_account">
+			<value>{"username":"root","password":"toor","super_user":"","strings_to_leak":[],"leaked_filenames":[]}</value>
+		</input>
+
+		<utility module_path=".*kali_pwtools"/>
+		<utility module_path=".*metasploit_framework"/>
+		<utility module_path=".*handy_cli_tools"/>
+		<utility module_path=".*nmap"/>
+
+		<utility module_path=".*iceweasel">
+			<input into="accounts">
+				<datastore>kali_root_account</datastore>
+			</input>
+			<input into="autostart">
+				<value>true</value>
+			</input>
+			<input into="start_page">
+				<datastore access="2">IP_addresses</datastore>
+			</input>
+		</utility>
+
+		<network type="private_network" >
+			<input into="IP_address">
+				<datastore access="3">IP_addresses</datastore>
+			</input>
+		</network>
+	</system>
+
+</scenario>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>User account service</name>
+  <author>Puppet Labs</author>
+  <author>Jason Keighley</author>
+  <module_license>Apache v2</module_license>
+  <description>User account creation and modification</description>
+
+  <type>system</type>
+  <platform>linux</platform>
+
+  <!--optional details-->
+  <reference>https://forge.puppet.com/puppetlabs/accounts</reference>
+
+</utility>

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Dead HDD image</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>MIT</module_license>
+  <description>A disk image taken from a compromised Redhat 7.2 system (from the Honeynet Project). This module drops the image in /root/evidence/
+  </description>
+
+  <type>forensic_artifact</type>
+  <platform>linux</platform>
+
+</utility>

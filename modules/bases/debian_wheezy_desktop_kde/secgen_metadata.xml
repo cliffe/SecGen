@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<base xmlns="http://www.github/cliffe/SecGen/base"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/base">
+  <name>Debian 7 Wheezy Desktop KDE</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>GPLv3</module_license>
+  <description>Based on the Official Puppet Vagrant box. Debian 7.8 (wheezy) 32-bit (i386), Puppet 4.3.2 / Puppet Enterprise 2015.3.2 (agent).
+    Plus KDE and some useful tools. 
+    For testing purposes, the default root password is puppet.</description>
+  <cpu_word_size>32-bit</cpu_word_size>
+  <type>desktop</type>
+
+  <platform>linux</platform>
+  <platform>unix</platform>
+  <distro>Debian 7.8 (wheezy) 32-bit (i386)</distro>
+  <url>https://app.vagrantup.com/secgen/boxes/debian_wheezy_kde_puppet/versions/1.0.0/providers/virtualbox.box</url>
+  <esxi_url>https://app.vagrantup.com/redwiz666/boxes/debian_wheezy_desktop_kde/versions/1.0.0/providers/vmware.box</esxi_url>
+  <ovirt_template>debian_desktop_kde</ovirt_template>
+
+  <reference>https://atlas.hashicorp.com/puppetlabs</reference>
+  <software_license>various</software_license>
+
+</base>

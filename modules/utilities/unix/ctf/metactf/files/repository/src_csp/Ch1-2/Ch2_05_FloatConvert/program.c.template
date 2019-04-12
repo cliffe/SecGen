@@ -1,0 +1,104 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <string.h>
+#include <stdlib.h>
+#include <sys/ptrace.h>
+#define USERDEF0 AAAAAA
+#define USERDEF1 BBBBBB
+
+char msg[] =
+ "In this level, you will practice correctly converting a single-precision\n"
+ "IEEE floating point number to its machine representation and vice-versa.\n"
+ "The password to unlock the level is the result of these two conversions\n"
+ "and will be read in using:   scanf(\"%x \%f\");\n"
+ "For your inconvenience, we have turned off debugging.\n\n";
+
+void detectTrace(void) __attribute__((constructor));
+void detectTrace (void) {
+    if(ptrace(PTRACE_TRACEME, 0, 1, 0) < 0) {
+        printf("Sorry, we have disallowed debuggers on this assignment.\n");
+        exit(1);
+    };
+};
+
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg[i%len] + msg[(i+1)%len];
+    h2 += msg[(i+1)%len] + msg[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg);
+  else
+    printf("%s",msg);
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main() {
+    float f1,f2;
+    unsigned int *ip;
+    unsigned int *ip1;
+    unsigned int userin;
+    float userfl;
+
+    f1 = USERDEF0;
+    f2 = (float) USERDEF1;
+    ip = (unsigned int *) &f2;
+    ip1 = (unsigned int *) &f1;
+#ifdef DEBUG
+    printf("%x %f\n",*ip1,f2);
+#endif
+
+    print_msg();
+
+    printf("Give the machine representation of the floating point ");
+    printf("number %8.1f (in hex)\nfollowed by the floating point ",f1);
+    printf("value represented by the hex pattern %x\n",*ip);
+    printf("Enter the password: ");
+    scanf("%x %f",&userin,&userfl);
+    if ((userin != *ip1) || (userfl != f2)) {
+	if (userin != *ip1)
+		printf("  %x incorrect   ",userin);
+	else
+		printf("  %x OK   ",userin);
+	if (userfl != f2)
+		printf("  %f incorrect\n",userfl);
+	else
+		printf("  %f OK\n",userfl);
+        printf("Try again.\n");
+    }
+    else {
+        printf("Good Job.\n");
+        printflag();
+    }
+    return 0;
+}

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<build xmlns="http://www.github/cliffe/SecGen/build"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.github/cliffe/SecGen/build">
+  <name>SecGen Puppet Functions</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>SecGen functions module encapsulates commonly used functions within secgen (e.g. leaking files,
+    overshare, flags etc.) into puppet resource statements.
+  </description>
+
+  <type>puppet</type>
+  <platform>linux</platform>
+
+  <!--optional details-->
+  <software_name>puppet</software_name>
+  <software_license>Apache v2</software_license>
+
+</build>

@@ -1,0 +1,20 @@
+---
+# This file is managed via modulesync
+# https://github.com/voxpupuli/modulesync
+# https://github.com/voxpupuli/modulesync_config
+HOSTS:
+  centos-6-x64:
+    platform: el-6-x86_64
+    hypervisor: docker
+    image: centos:6
+    docker_preserve_image: true
+    docker_cmd: '["/sbin/init"]'
+    docker_image_commands:
+      - 'rm -rf /var/run/network/*'
+      - 'yum install -y crontabs initscripts iproute openssl sysvinit-tools tar wget which'
+      - 'rm /etc/init/tty.conf'
+CONFIG:
+  trace_limit: 200
+  masterless: true
+...
+# vim: syntax=yaml

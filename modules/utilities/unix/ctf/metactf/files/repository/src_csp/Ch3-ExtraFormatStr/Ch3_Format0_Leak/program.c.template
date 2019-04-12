@@ -1,0 +1,165 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <sys/ptrace.h>
+#include <string.h>
+#define MAXSIZE 4096
+#define USERDEF AAAAAA
+
+// Base64 encoding table
+static char encoding_table[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+				'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+				'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+				'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
+				'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
+				'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+				'w', 'x', 'y', 'z', '0', '1', '2', '3',
+				'4', '5', '6', '7', '8', '9', '+', '/'};
+
+// Introduction message
+char msg[] =
+"To produce formatted output, a constant format string is passed as the\n"
+"first parameter to a call such as printf.  Within the format string,\n"
+"format specifiers are used to denote how subsequent function parameters\n"
+"are to be interpreted and displayed.  Consider printf(\"Hi: %d\",i);\n"
+"the format string is \"Hi: %d\" and the format specifier \"%d\" tells printf\n"
+"to interpret the parameter i as a signed decimal.  If we were to\n"
+"instead use %x, the printf would output the hexadecimal representation of\n"
+"i instead.  Similarly, if we have a pointer to an array of characters\n"
+"(i.e. a string) that we want to print, then if we supply the %p format\n"
+"specifier, it will output the hexadecimal address contained in the pointer,\n"
+"while if we supply the %s format specifier, it will interpret the parameter\n"
+"as a pointer to a string and print the characters in the string.  When\n"
+"printf is directly called without a constant format string, but rather\n"
+"with user input, it can lead to security problems.  For example, in\n"
+"a program called foo, if one uses printf(argv[1]).  It is intended that\n"
+"the program simply print out the argument used to call foo.  In other\n"
+"words \"./foo hello\" might be intended to output \"hello\".  The problem\n"
+"here is that an adversary might call the program as: ./foo %x%x%x%x , which\n"
+"results in the call printf(\"%x%x%x%x\").  In this case, printf is\n"
+"called with 4 format specifiers, but without corresponding function\n"
+"parameters.  By doing so, an adversary can print out locations in the stack\n"
+"frame of the function caller.\n\n"
+"In this level, the binary echoes your input with a vulnerable call to\n"
+"printf.\n"
+"     char *password;\n"
+"     ....\n"
+"     ....\n"
+"     scanf(\"%8s\",input);\n"
+"     printf(input);\n"
+"A pointer to the character array containing the password is\n"
+"located in the caller stack frame.  Use multiple %x and %s directives to\n"
+"discover what the password is.  You will need to avoid using %s on stack\n"
+"locations that are not pointers to prevent segmentation faults.  A good\n"
+"strategy would be to start with %x-%x-%x, then change the one that looks\n"
+"like a pointer to a %s.  Note that the input field is limited to 8\n"
+"characters so you will be unable to dump large portions of the stack\n\n";
+
+// Print introduction message
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg[i%len] + msg[(i+1)%len];
+    h2 += msg[(i+1)%len] + msg[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg);
+  else
+    printf("%s",msg);
+}
+
+// Debugger prevention
+void detectTrace(void) __attribute__((constructor));
+void detectTrace(void) {
+	if(ptrace(PTRACE_TRACEME, 0, 1, 0) < 0) {
+		printf("Sorry, we have disallowed debuggers on this assignment.\n");
+		exit(1);
+	};
+};
+
+// Format string vulnerable method (pushing flag onto stack as argument)
+void format_string(char *input, char *password){
+	char flag[9];
+	printf("You input: ");
+	strncpy(flag, password, 8);
+	flag[8]=0;
+	printf(input);
+	printf("\n");
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main(){
+	// Declare variables for password generation
+	char input[9], password[9];
+	unsigned int seed=USERDEF;
+	int i, flag, cnt = 0;
+	char modulus;
+
+	// Initialize input and output and flag
+	for(i = 0; i < 9; i++) {
+		input[i] = 0;
+		password[i] = 0;
+	}
+
+	flag = 0;
+
+	// Print introduction message
+	print_msg();
+
+	// Get user input
+	printf("Enter the password: ");
+	//fgets(input, 9, stdin);
+	scanf("%8s",input);
+
+	// Password Generation
+	for(i = 0; (i < MAXSIZE) && (cnt < 8); i++) {
+		seed = (seed * 214013) + 2531011;
+		modulus = seed % 61;
+		if(!(i % 256)) {
+			flag += abs(input[cnt]-encoding_table[modulus]);
+			password[cnt] = encoding_table[modulus % 64];
+			cnt++;
+		}
+	}
+
+	password[cnt]=0;
+	// Call vulnerable method
+	format_string(input, password);
+
+	if(flag) {
+	 printf("Try again.\n");
+	} else {
+	  printf("Good Job.\n");
+	  printflag();
+    }
+	return 0;
+}

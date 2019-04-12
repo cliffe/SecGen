@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Lipsum Paragraph Generator</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Random Hipster paragraph generator using the Faker ruby gem.</description>
+
+  <type>paragraph_generator</type>
+  <type>text_paragraph</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <reference>https://github.com/stympy/faker</reference>
+
+  <read_fact>paragraph_count</read_fact>
+
+  <default_input into="paragraph_count">
+    <!--The number range encoder wrappers the rand() function and passes in the upper / lower bounds-->
+    <generator type="number_range">
+      <input into="lower_bound">
+        <value>3</value>
+      </input>
+      <input into="upper_bound">
+        <value>5</value>
+      </input>
+    </generator>
+  </default_input>
+
+  <output_type>paragraph</output_type>
+</generator>

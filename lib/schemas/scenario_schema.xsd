@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.github/cliffe/SecGen/scenario"
+           xmlns="http://www.github/cliffe/SecGen/scenario"
+           elementFormDefault="qualified">
+  <xs:element name="scenario">
+    <xs:complexType>
+      <xs:sequence>
+        <!-- TODO: These are optional for now, should these be set to minOccurs 1 to make mandatory? -->
+        <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="author" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="type" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="difficulty" type="xs:string" minOccurs="0" maxOccurs="1"/>
+
+        <xs:element name='system' type='SystemType' minOccurs='1' maxOccurs='unbounded' />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="InputElements">
+    <xs:sequence>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name='vulnerability' type='VulnerabilityType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='service' type='ServiceUtilityBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='utility' type='ServiceUtilityBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='network' type='NetworkType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='build' type='ServiceUtilityBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='generator' type='ServiceUtilityBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='encoder' type='ServiceUtilityBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='value' type='xs:string' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='datastore' type='DatastoreType' minOccurs='0' maxOccurs='unbounded' />
+      </xs:choice>
+    </xs:sequence>
+    <xs:attribute name='into' type='xs:string'/>
+    <xs:attribute name='into_datastore' type='xs:string'/>
+    <xs:attribute name='unique_module_list' type='xs:string'/>
+
+  </xs:complexType>
+  <xs:complexType name="SystemType">
+    <xs:sequence>
+      <xs:element name="system_name" minOccurs="1" maxOccurs="1">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="[a-zA-Z0-9_]+"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name='base' type='BaseType' minOccurs='1' maxOccurs='1' />
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="input" type="InputElements" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name='vulnerability' type='VulnerabilityType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='service' type='ServiceUtilityBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='utility' type='ServiceUtilityBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='build' type='ServiceUtilityBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='network' type='NetworkType' minOccurs='0' maxOccurs='unbounded' />
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="BaseType">
+    <xs:attribute name="module_path" type="xs:string"/>
+    <xs:attribute name='name' type='xs:string'/>
+    <xs:attribute name='author' type='xs:string'/>
+    <xs:attribute name='module_license' type='xs:string'/>
+    <xs:attribute name='description' type='xs:string'/>
+    <xs:attribute name='cpu_word_size' type='xs:string'/>
+    <xs:attribute name='type' type='xs:string'/>
+    <xs:attribute name='platform' type='xs:string'/>
+    <xs:attribute name='distro' type='xs:string'/>
+    <xs:attribute name='url' type='xs:string'/>
+    <xs:attribute name='vagrantbase' type='xs:string'/>
+    <xs:attribute name='ovirt_template' type='xs:string'/>
+    <xs:attribute name='reference' type='xs:string'/>
+    <xs:attribute name='software_license' type='xs:string'/>
+  </xs:complexType>
+
+  <xs:complexType name="VulnerabilityType">
+    <xs:sequence>
+      <xs:element name="input" type="InputElements" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+
+    <xs:attribute name="module_path" type="xs:string"/>
+
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="author" type="xs:string"/>
+    <xs:attribute name="module_license" type="xs:string"/>
+    <xs:attribute name="description" type="xs:string"/>
+
+    <xs:attribute name="type" type="xs:string"/>
+    <xs:attribute name="privilege" type="xs:string"/>
+    <xs:attribute name="access" type="xs:string"/>
+    <xs:attribute name="platform" type="xs:string"/>
+
+    <!--optional vulnerability inputs-->
+    <xs:attribute name="read_fact" type="xs:string"/>
+
+    <!--optional vulnerability details-->
+    <xs:attribute name="difficulty" type="xs:string"/>
+    <xs:attribute name="cve" type="xs:string"/>
+    <xs:attribute name="cvss_base_score" type="xs:string"/>
+    <xs:attribute name="cvss_vector" type="xs:string"/>
+    <xs:attribute name="reference" type="xs:string"/>
+    <xs:attribute name="software_name" type="xs:string"/>
+    <xs:attribute name="software_license" type="xs:string"/>
+
+    <!--optional breadcrumb (info that is leaked and required to exploit)-->
+    <xs:attribute name="breadcrumb" type="xs:string"/>
+
+    <!--optional hints-->
+    <xs:attribute name="msf_module" type="xs:string"/>
+    <xs:attribute name="hint" type="xs:string"/>
+    <xs:attribute name="solution" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="ServiceUtilityBuildEncoderGeneratorType">
+    <xs:sequence>
+      <xs:element name="input" type="InputElements" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="module_path" type="xs:string"/>
+
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="author" type="xs:string"/>
+    <xs:attribute name="module_license" type="xs:string"/>
+    <xs:attribute name="description" type="xs:string"/>
+    <xs:attribute name="type" type="xs:string"/>
+    <xs:attribute name="platform" type="xs:string"/>
+    <xs:attribute name="difficulty" type="xs:string"/>
+
+    <xs:attribute name="read_fact" type="xs:string"/>
+
+    <xs:attribute name="reference" type="xs:string"/>
+    <xs:attribute name="software_name" type="xs:string"/>
+    <xs:attribute name="software_license" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="NetworkType">
+    <xs:sequence>
+      <xs:element name="input" type="InputElements" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="module_path" type="xs:string"/>
+
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="author" type="xs:string"/>
+    <xs:attribute name="module_license" type="xs:string"/>
+    <xs:attribute name="description" type="xs:string"/>
+    <xs:attribute name="type" type="xs:string"/>
+    <xs:attribute name='range' type='xs:string'/>
+  </xs:complexType>
+
+  <xs:complexType name="DatastoreType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="access" type="xs:string" default="next"/>
+        <xs:attribute name="access_json" type="xs:string"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+</xs:schema>

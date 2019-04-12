@@ -1,0 +1,7 @@
+<% if @passenger_base_uris -%>
+
+  ## Enable passenger base uris
+<% Array(@passenger_base_uris).each do |uri| -%>
+  PassengerBaseURI <%= uri %>
+<% end -%>
+<% end -%>

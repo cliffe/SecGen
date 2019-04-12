@@ -1,0 +1,184 @@
+# Analysis of a Compromised System - Offline Analysis
+
+## Getting started
+
+### VMs in this lab
+
+==Start these VMs== (if you haven't already):
+
+- hackerbot-server (leave it running, you don't log into this)
+- kali (user: root, password: toor)
+- desktop (user: <%= $main_user %>, password: tiaspbiqe2r)
+
+All of these VMs need to be running to complete the lab.
+
+Analysis is done on the Kali VM, answers stored on the Desktop VM.
+
+## Introduction to dead (offline) analysis
+
+Once you have collected information from a compromised computer (as you have done in the previous lab), you can continue analysis offline. There are a number of software environments that can be used do offline analysis. We will be using Kali Linux, which includes a number of forensic tools. Another popular toolset is the Helix incident response environment, which you may want to also experiment with.
+
+This lab reinforces what you have learned about integrity management and log analysis, and introduces a number of new concepts and tools.
+
+## IMG of a compromised server
+**On Kali Linux**:
+
+In /root/evidence/ you will find a copy of an image copied from a live system, that was connected to the Internet and attacked. The image is a few years old, but is still an excellent example of the kinds of evidence you can find.
+
+## Mounting the image read-only
+
+It is possible to mount the partition image directly as a [*loop device*](http://en.wikipedia.org/wiki/Loop_device), and access the files directly. However, doing so should be done with caution (and is generally a bad idea, unless you are very careful), since there is some chance that it may result in changes to your evidence, and you risk infecting the analysis machine with any malware on the system being analysed. However, this technique is worth exploring, since it does make accessing files particularly convenient.
+
+==Create a directory to mount our evidence onto:==
+
+```bash
+mkdir /mnt/compromised
+```
+
+==Mount the image== that we previously captured of the state of the main partition on the compromised system:
+
+```bash
+mount -O ro -o loop evidence/hda1.img /mnt/compromised
+```
+
+Confirm that you can now see the files that were on the compromised system:
+
+```bash
+ls /mnt/compromised
+```
+
+## Preparing for analysis of the integrity of files
+
+Fortunately the system administrator of the Red Hat server had run a file integrity tool to generate hashes before the system was compromised.
+
+`/root/evidence/md5s` contains the md5 hashes of the system before it was compromised
+
+==View the file==:
+
+```bash
+less /root/evidence/md5s
+```
+> 'q' to quit
+
+As you have learned in the Integrity Management lab, this information can be used to check whether files have changed.
+
+## Starting Autopsy
+
+Autopsy is a front-end for the Sleuth Kit (TSK) collection of forensic analysis command line tools. There is a version of Autopsy included in Kali Linux (a newer desktop-based version is also available for Windows).
+
+==Create a directory== for storing the evidence files from Autopsy:
+
+```bash
+mkdir /root/evidence/autopsy
+```
+
+Start Autopsy. You can do this using the program menu. ==Click Applications / Forensics / autopsy.==
+
+A terminal window should be displayed.
+
+==Open Firefox, and visit [http://localhost:9999/autopsy](http://localhost:9999/autopsy)==
+
+==Click "New Case".==
+
+==Enter a case name==, such as "RedHatCompromised", and ==a description==, such as "Compromised Linux server", and ==enter your name==. ==Click "New Case".==
+
+==Click the "Add Host" button.==
+
+In section "6. Path of Ignore Hash Database", ==enter /root/evidence/md5s==
+
+==Click the "Add Host" button== at the bottom of the page
+
+==Click "Add Image".==
+
+==Click "Add Image File".==
+
+For section "1. Location", ==enter /root/evidence/hda1.img==
+
+For "2. Type", ==select "Partition".==
+
+For "3. Import Method", ==select "Symlink".==
+
+==Click "Next".==
+
+==Click "Add".==
+
+==Click "Ok".==
+
+## File type analysis and integrity checking
+
+Now that you have started and configured Autopsy with a new case and hash database, you can view the categories of files, while ignoring files that you know to be safe.
+
+==Click "Analyse".==
+
+==Click "File Type".==
+
+==Click "Sort Files by Type".==
+
+Confirm that "Ignore files that are found in the Exclude Hash Database" is selected.
+
+==Click "Ok"==, **this analysis takes quite some time, wait for the output to update with results**.
+
+Once complete, ==view the "Results Summary".==
+
+The output shows that over 16000 files have been ignored because they were found in the md5 hashes ("Hash Database Exclusions"). This is good news, since what it leaves us with are the interesting files that have changed or been created since the system was in a clean state. This includes archives, executables, and text files (amongst other categories).
+
+==Click "View Sorted Files".==
+
+Copy the results file location as reported by Autopsy, and ==open the report in a new tab within Firefox:==
+
+> <a href="file:///var/lib/autopsy/RedHatCompromised/host1/output/sorter-vol1/">/var/lib/autopsy/RedHatCompromised/host1/output/sorter-vol1/</a>
+> (Without the index.html)
+
+==Click "compress"==, to view the compressed files. You are greeted with a list of two compressed file archives, "/etc/opt/psyBNC2.3.1.tar.gz", and "/root/sslstop.tar.gz".
+
+==Figure out what `psyBNC2.3.1.tar.gz` is used for.==
+> Try using Google, to search for the file name, or part thereof.
+
+Browse the evidence in /mnt/compromised/etc/opt (on the Kali Linux system, using a file browser, such as Dolphin) and look at the contents of the archive (in /etc/opt, and you may find that the attacker has left an uncompressed version which you can assess in Autopsy). Remember, don't execute any files from the compromised system on your analysis machine: you don't want to end up infecting your analysis machine. For this reason, it is safer to assess these files via Autopsy. ==Browse to the directory by clicking back to the Results Summary tab of Autopsy, and clicking "File Analysis"==, then browse to the files from there (in /etc/opt). Read the psyBNC README file, and ==note what this software package is used for.==
+
+> **Help: if the README file did not display as expected,** click on the inode (meta) number at the right-hand side of the line containing the README file. You will need to click each direct block link in turn to see the content of the README file. The direct block links are displayed at the bottom left-hand side of the webpage.
+
+Next, we investigate what sslstop.tar.gz is used for. A quick Google brings up a CGSecurity.org page, which reports that this script modifies httpd.conf to disable SSL support from Apache. Interesting... Why would an attacker want to disable SSL support? This should soon become clear.
+
+==Return the page where "compress" was accessed== (/root/evidence/autopsy/RedHatCompromised/host1/output/sorter-vol1/index.html), and ==click "exec"==. This page lists a fairly extensive collection of new executables on our compromised server.
+
+==Make a list of all the executables that are likely trojanized.==
+> Hint: for now ignore the "relocatable" objects left from compiling the PSYBNC software, and focus on "executable" files, especially those in /bin/ and /usr/bin/.
+
+---
+
+Two of these have particularly interesting file names: `/usr/bin/smbd -D` and `/usr/bin/(swapd)`. These names are designed to be deceptive: for example, the inclusion of ` -D` is designed to trick system administrators into thinking that any processes were started with the "-D" command line argument flag.
+
+Note that /lib/.x/ contains a number of new executables, including one called "hide". These are likely part of a rootkit.
+> **Hint:** to view these files you will have to look in /mnt/compromised/lib/.x. The .x folder is a hidden folder (all folders and file in Linux that begin with a "." ar hidden files). Therefore, you will have to use the -a switch when using the ls command in a terminal or tell the graphical file manager to display hidden files ( View / Show Hidden Files or Ctrl+H).
+
+==Using Autopsy "File Analysis" mode, browse to "/lib/.x/"==. **Explicit language warning: if you are easily offended, then skip this next step.** View the contents of "install.log".
+> **Hint:** you will have to click **../** to move up the directory tree until you can see the lib directory in the root directory /.
+
+> **Help: if the install.log file did not display as expected,** click on the inode (meta) number at the right-hand side of the line containing the README file. You will need to click the direct block link to see the content of the install.log file. The direct block links are displayed at the bottom left-hand side of the webpage.
+
+This includes the lines:
+
+> \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
+> \# SucKIT version 1.3b by Unseen &lt; unseen@broken.org &gt; \#
+> \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
+
+SuckIT is a rootkit that tampers with the Linux kernel directly via /dev/kmem, rather than the usual approach of loading a loadable kernel module (LKM). The lines in the log may indicate that the rootkit had troubles loading.
+
+SuckIT and the rootkit technique is described in detail in Phrack issue 58, article 0x07 "Linux on-the-fly kernel patching without LKM"
+
+> [*http://www.textfiles.com/magazines/PHRACK/PHRACK58*](http://www.textfiles.com/magazines/PHRACK/PHRACK58)
+
+==Using Autopsy "File Analysis", view the file /lib/.x/.boot==
+
+> **Help:** again you may need to view the block directly that contains the .boot file. Make a note of the file's access times, this will come in handy soon.
+
+This shell script starts an SSH server (s/xopen), and sends an email to a specific email address to inform them that the machine is available. View the script, and ==determine what email address it will email the information to.==
+
+Return to the file type analysis (presumably still open in an Iceweasel tab), still viewing the "exec" category, also note the presence of "adore.o". Adore is another rootkit (and worm), this one loads via an LKM (loadable kernel module).
+
+Here is a concise description of a version of Adore:
+
+> [*http://lwn.net/Articles/75990/*](http://lwn.net/Articles/75990/)
+
+This system is well and truly compromised, with multiple kernel rootkits installed, and various trojanized binaries.

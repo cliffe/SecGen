@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>Gitlist 0.4.0 RCE</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>
+    Gitlist before 0.5.0 allows remote attackers to execute arbitrary commands via shell metacharacters in the file
+    name in the URI of a request for a (1) blame, (2) file, or (3) stats page, as demonstrated by requests to
+    blame/master/, master/, and stats/master/.
+  </description>
+
+  <type>webapp</type>
+  <type>in_the_wild</type>
+  <privilege>user_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>port</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>images_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+
+  <!-- [0] leaks flag to home directory, [1..n] leak messages to gitlist repository (visible through the webapp) -->
+  <default_input into="port">
+    <value>80</value>
+  </default_input>
+
+  <default_input into="strings_to_leak">
+    <generator type="flag_generator"/>
+    <generator type="message_generator"/>
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+    <generator type="filename_generator"/>
+  </default_input>
+
+  <!--optional vulnerability details-->
+  <cve>CVE-2014-4511</cve>
+
+  <cvss_base_score>7.5</cvss_base_score>
+  <cvss_vector>AV:N/AC:L/Au:N/C:P/I:P/A:P</cvss_vector>
+
+  <!--optional hints-->
+  <msf_module>exploit/linux/http/gitlist_exec</msf_module>
+  <hint>Visit the webapp in a browser at: ip:80/gitlist </hint>
+
+  <requires>
+    <module_path>.*apache.*compatible.*</module_path>
+  </requires>
+
+  <requires>
+    <module_path>.*mysql.*compatible.*</module_path>
+  </requires>
+
+  <requires>
+    <module_path>.*php.*compatible.*</module_path>
+  </requires>
+
+
+</vulnerability>

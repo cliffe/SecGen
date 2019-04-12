@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>HTML Snippet Generator</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Generates a HTML snippet with a heading and 1+ paragraphs.</description>
+
+  <type>html_snippet_generator</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <read_fact>heading</read_fact>
+  <read_fact>paragraphs</read_fact>
+
+  <default_input into="heading">
+    <value>Heading 1</value>
+  </default_input>
+
+  <default_input into="paragraphs">
+    <value>This is some text. Wrap me in p tags.</value>
+  </default_input>
+
+  <output_type>html</output_type>
+  
+</generator>

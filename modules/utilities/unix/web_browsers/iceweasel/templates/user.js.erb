@@ -1,0 +1,6 @@
+user_pref("browser.startup.homepage", "<%=@start_page-%>");
+user_pref("browser.startup.homepage_override.buildID", "20170816210634");
+user_pref("browser.startup.homepage_override.mstone", "55.0.2");
+<% if @disable_proxy -%>
+user_pref("network.proxy.type",0);
+<% end-%>

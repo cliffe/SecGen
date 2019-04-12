@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<encoder xmlns="http://www.github/cliffe/SecGen/encoder"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/encoder">
+  <name>Decimal Encoder</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Takes ASCII strings and encodes each character into it's decimal representation.</description>
+
+  <type>ascii_reversible</type>
+  <type>decimal_encoder</type>
+  <type>string_encoder</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+  <difficulty>low</difficulty>
+
+  <solution>Convert the decimal (base 10) string into its ASCII value, character by character in sets of 3.
+    Use an ascii table e.g. http://www.asciitable.com OR an online converter e.g. https://www.branah.com/ascii-converter
+  </solution>
+
+  <read_fact>strings_to_encode</read_fact>
+
+  <output_type>encoded_strings</output_type>
+</encoder>

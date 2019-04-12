@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Hackerbot config for an example bot</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>GPLv3</module_license>
+  <description>Generates a config file for a basic example config for hackerbot.</description>
+
+  <type>hackerbot_config</type>
+  <platform>linux</platform>
+
+  <read_fact>root_password</read_fact>
+
+  <default_input into="root_password">
+    <value>puppet</value>
+  </default_input>
+
+  <output_type>hackerbot</output_type>
+
+</generator>

@@ -1,0 +1,182 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+		  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		  xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>Flawed Fortress 1</name>
+	<author>Z. Cliffe Schreuders</author>
+	<author>Thomas Shaw</author>
+	<description>A three VM full day intermediate CTF, with a range of challenges of various difficulty.
+		The three VMs are not related to each other.
+		We have used this to host events with university students.
+	</description>
+
+	<type>ctf</type>
+	<type>attack-ctf</type>
+	<type>blind-audit</type>
+	<difficulty>intermediate</difficulty>
+
+	<!--some basic decoding challenges-->
+	<system>
+		<system_name>decode_me</system_name>
+		<base platform="linux" type="server"/>
+
+		<!-- comment describes using pseudo code (C#-like methods with named optional arguments) -->
+		<!-- vulnerability_nfs_share_leak(strings_to_leak: encoder_flag_generator() CONCAT encoder_ascii_reversible(strings_to_encode: encoder_flag_generator()) CONCAT ...) -->
+		<vulnerability name="NFS Share Leak">
+			<input into="strings_to_leak" unique_module_list="unique_encoders">
+				<generator type="flag_generator" />
+				<encoder type="ascii_reversible">
+					<input into="strings_to_encode">
+						<generator type="flag_generator" />
+					</input>
+				</encoder>
+				<encoder type="alpha_reversible">
+					<input into="strings_to_encode">
+						<generator type="flag_generator" />
+					</input>
+				</encoder>
+				<encoder type="ascii_reversible">
+					<input into="strings_to_encode">
+						<generator type="flag_generator" />
+					</input>
+				</encoder>
+				<encoder type="ascii_reversible">
+					<input into="strings_to_encode">
+						<generator type="flag_generator" />
+					</input>
+				</encoder>
+				<encoder type="ascii_reversible">
+					<input into="strings_to_encode">
+						<generator type="flag_generator" />
+					</input>
+				</encoder>
+				<encoder type="ascii_reversible">
+					<input into="strings_to_encode">
+						<encoder type="ascii_reversible">
+							<input into="strings_to_encode">
+								<generator type="flag_generator" />
+							</input>
+						</encoder>
+					</input>
+				</encoder>
+				<encoder type="alpha_reversible">
+					<input into="strings_to_encode">
+						<generator type="flag_generator" />
+					</input>
+				</encoder>
+			</input>
+		</vulnerability>
+
+		<network module_path=".*private_network_1"/>
+		<build type="cleanup">
+			<input into="root_password">
+				<generator type="strong_password_generator"/>
+			</input>
+		</build>
+	</system>
+
+
+	<!--a few vulnerabilities that are in the wild, with some flags that need decoding, some red herring services to keep things interesting-->
+	<system>
+		<system_name>in_the_wild</system_name>
+		<base platform="linux" type="server"/>
+
+		<vulnerability read_fact="strings_to_leak" access="remote" privilege="user_rwx">
+			<input into="strings_to_leak">
+				<generator type="flag_generator" />
+				<encoder type="ascii_reversible">
+					<input into="strings_to_encode">
+						<generator type="flag_generator" />
+					</input>
+				</encoder>
+			</input>
+		</vulnerability>
+
+		<!--double encoded-->
+		<vulnerability read_fact="strings_to_leak" access="remote" privilege="user_rwx">
+			<input into="strings_to_leak">
+				<generator type="flag_generator" />
+				<encoder type="ascii_reversible">
+					<input into="strings_to_encode">
+						<encoder type="ascii_reversible">
+							<input into="strings_to_encode">
+								<generator type="flag_generator" />
+							</input>
+						</encoder>
+					</input>
+				</encoder>
+			</input>
+		</vulnerability>
+
+		<!-- vulnerability which can leak images, leak 2 image challenges and a random red-herring image -->
+		<vulnerability read_fact="images_to_leak">
+			<input into="images_to_leak">
+				<generator read_fact="strings_to_leak" type="image_generator" >
+					<input into="strings_to_leak">
+						<generator type="flag_generator" />
+					</input>
+				</generator>
+				<generator type="image_generator"/>
+				<generator read_fact="strings_to_leak" type="image_generator" >
+					<input into="strings_to_leak">
+						<generator type="flag_generator" />
+					</input>
+				</generator>
+			</input>
+		</vulnerability>
+
+		<vulnerability read_fact="strings_to_leak">
+			<input into="strings_to_leak">
+				<generator type="flag_generator"/>
+			</input>
+		</vulnerability>
+
+		<service/>
+
+		<network module_path=".*private_network_1"/>
+		<build type="cleanup">
+			<input into="root_password">
+				<generator type="strong_password_generator"/>
+			</input>
+		</build>
+	</system>
+
+	<!-- an example remote storage system, with a remotely exploitable vulnerability that can then be escalated to root -->
+	<system>
+		<system_name>that_escalated_quickly</system_name>
+		<base platform="linux" type="server"/>
+
+		<vulnerability read_fact="images_to_leak" access="remote" privilege="user_rwx">
+			<input into="images_to_leak" >
+				<generator read_fact="strings_to_leak" type="image_generator" >
+					<input into="strings_to_leak">
+						<generator type="flag_generator" />
+					</input>
+				</generator>
+				<generator type="image_generator"/>
+			</input>
+			<input into="strings_to_leak">
+				<generator type="flag_generator" />
+				<generator type="ctf_challenge" />
+			</input>
+		</vulnerability>
+
+		<vulnerability read_fact="strings_to_leak" access="local" privilege="root_rwx">
+			<input into="strings_to_leak">
+				<generator type="flag_generator" />
+			</input>
+		</vulnerability>
+
+		<service/>
+
+		<network module_path=".*private_network_1"/>
+		<build type="cleanup">
+			<input into="root_password">
+				<generator type="strong_password_generator"/>
+			</input>
+		</build>
+	</system>
+
+</scenario>

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Docker Installation</name>
+  <author>Thomas Shaw</author>
+  <author>puppetlabs</author>
+  <module_license>Apache v2</module_license>
+  <description>An installation of Docker</description>
+
+  <type>container</type>
+  <type>docker</type>
+  <platform>linux</platform>
+
+  <!--optional details-->
+  <reference>https://forge.puppet.com/puppetlabs/docker</reference>
+
+  <software_name>docker</software_name>
+  <software_license>Apache v2</software_license>
+
+  <requires>
+    <type>update</type>
+  </requires>
+</utility>

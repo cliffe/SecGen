@@ -1,0 +1,1 @@
+maze --version

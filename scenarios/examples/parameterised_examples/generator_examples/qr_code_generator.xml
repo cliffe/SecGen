@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<system>
+		<system_name>example_server</system_name>
+		<base platform="linux" type="server"/>
+
+		<!-- Generator which outputs an image with a QR code containing a flag. -->
+		<vulnerability read_fact="images_to_leak">
+			<input into="images_to_leak">
+				<generator type="qr_code_generator"/>
+			</input>
+		</vulnerability>
+
+		<network type="private_network" range="dhcp"/>
+	</system>
+
+</scenario>

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Random Words Flag Generator</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>MIT</module_license>
+  <description>Uses a wordlist (Ruby gem + a wordlist) to generate a list of random (mostly English) dictionary words. May include punctuation.</description>
+
+  <type>flag_generator</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <reference>https://github.com/sophsec/wordlist</reference>
+  <reference>http://wordlist.sourceforge.net/</reference>
+
+  <output_type>generated_strings</output_type>
+  
+</generator>

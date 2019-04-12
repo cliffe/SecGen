@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <system>
+    <system_name>desktop</system_name>
+    <base platform="linux"/>
+
+    <utility module_path=".*kde_minimal"/>
+    <utility module_path=".*iceweasel" />
+
+    <network module_path=".*private_network_2"/>
+    
+  </system>
+
+</scenario>

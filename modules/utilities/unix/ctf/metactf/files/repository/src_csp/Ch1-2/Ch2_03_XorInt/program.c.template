@@ -1,0 +1,90 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <string.h>
+#include <sys/ptrace.h>
+#include <stdlib.h>
+#include <ctype.h>
+#define USERDEF 0xAAAAAA
+
+char msg[] =
+ "Try out my brand-new XOR cipher.  Enter a 4-byte hexadecimal number\n"
+ "(e.g. 4f91853a) and see how my cipher encrypts it.  While it is highly\n"
+ "unlikely you will be able to guess the key I am using out of the over\n"
+ "4 billion possible values, rather than crash, the program will instead\n"
+ "print \"Good Job.\" and exit if you happen to input the key I'm using\n"
+ "We have heard some rumors about XOR being vulnerable to chosen plaintext\n"
+ "attacks. Maybe if we find something on Google, we'll switch to another.\n"
+ "Since I know you are well-versed in debuggers and could probably pull\n"
+ "the key out of memory, I have conveniently disabled debugging for you.\n\n";
+
+void detectTrace(void) __attribute__((constructor));
+void detectTrace (void) {
+    if(ptrace(PTRACE_TRACEME, 0, 1, 0) < 0) {
+        printf("No tracing");
+        exit(1);
+    };
+};
+
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg[i%len] + msg[(i+1)%len];
+    h2 += msg[(i+1)%len] + msg[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg);
+  else
+    printf("%s",msg);
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main(void) {
+    unsigned int key=USERDEF;
+    unsigned int pass;
+
+    print_msg();
+
+    printf("Enter the password: ");
+    if(scanf("%x", &pass) == 1) {
+        printf("I have XOR encrypted the value you entered (%x).\n",pass);
+        printf("The encrypted result is: %x\n", pass^key);
+	if ((pass^key) == 0) {
+	    printf("Good Job.\n");
+		printflag();
+	}
+	else
+		printf("Try again.\n");
+    } else {
+        perror("Input error");
+    };
+    exit(0);
+};

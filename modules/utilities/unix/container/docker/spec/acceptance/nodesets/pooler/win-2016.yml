@@ -1,0 +1,24 @@
+HOSTS:
+  ubuntu-1604:
+    roles:
+      - master
+      - database
+      - dashboard
+    platform: ubuntu-16.04-amd64
+    hypervisor: vmpooler
+    template: Delivery/Quality Assurance/Templates/vCloud/ubuntu-1604-x86_64
+  win-2016:
+    roles:
+      - default
+      - agent
+    platform: windows-2016-x86_64
+    hypervisor: vmpooler
+    template: Delivery/Quality Assurance/Templates/vCloud/win-2016-x86_64
+CONFIG:
+  nfs_server: none
+  consoleport: 443
+  datastore: instance0
+  folder: Delivery/Quality Assurance/Enterprise/Dynamic
+  resourcepool: delivery/Quality Assurance/Enterprise/Dynamic
+  pooling_api: http://vcloud.delivery.puppetlabs.net/
+  type: foss

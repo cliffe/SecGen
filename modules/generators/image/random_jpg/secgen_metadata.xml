@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Random JPG Generator</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Randomly selects one of the png files in lib/resources and converts it to a jpg.</description>
+
+  <type>random_jpg</type>
+  <type>image_converter</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <output_type>selected_image</output_type>
+</generator>

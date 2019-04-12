@@ -1,0 +1,27 @@
+---
+HOSTS:
+  ubuntu-1204-agent:
+    roles:
+    - agent
+    - default
+    platform: ubuntu-12.04-amd64
+    template: Delivery/Quality Assurance/Templates/vCloud/ubuntu-1204-x86_64
+    hypervisor: vcloud
+  redhat-7-x86_64-master:
+    roles:
+    - master
+    - dashboard
+    - database
+    - agent
+    platform: el-7-x86_64
+    template: redhat-7-x86_64
+    hypervisor: vcloud
+CONFIG:
+  nfs_server: none
+  consoleport: 443
+  datastore: instance0
+  folder: Delivery/Quality Assurance/Enterprise/Dynamic
+  resourcepool: delivery/Quality Assurance/Enterprise/Dynamic
+  pooling_api: http://vcloud.delivery.puppetlabs.net/
+  ssh:
+    timeout: 600

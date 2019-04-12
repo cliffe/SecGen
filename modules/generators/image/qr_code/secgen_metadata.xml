@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>QR Code Generator</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Generates a QR code image from an input string. </description>
+
+  <type>image_generator</type>
+  <type>image_challenge_generator</type>
+  <type>qr_code_generator</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <reference>https://github.com/whomwah/rqrcode</reference>
+
+  <solution>Use a QR reader mobile app or online decoder e.g. https://online-barcode-reader.inliteresearch.com/</solution>
+
+  <read_fact>strings_to_leak</read_fact>
+  <default_input into="strings_to_leak">
+    <generator type="flag_generator"/>
+  </default_input>
+
+
+  <output_type>base64_encoded_image</output_type>
+  
+</generator>

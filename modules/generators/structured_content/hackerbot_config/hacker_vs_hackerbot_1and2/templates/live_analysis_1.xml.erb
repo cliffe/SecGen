@@ -1,0 +1,30 @@
+	<attack>
+<% $rand_port_live = rand(65535) %>
+		<pre_shell>sshpass -p <%= $root_password %> ssh -oStrictHostKeyChecking=no root@<%= $web_server_ip %> 'setsid nc -l -p <%= $rand_port_live %> &amp;' &amp; sleep 4; killall -9 ssh; echo 'OK'</pre_shell>
+
+		<get_shell>false</get_shell>
+		<post_command></post_command>
+
+		<prompt>About to do something to your web server, let it happen...</prompt>
+
+		<condition>
+			<output_matches>OK</output_matches>
+			<message>Ok, answer this.</message>
+			<trigger_quiz />
+		</condition>
+		<condition>
+			<output_matches>OK..</output_matches>
+			<message>Ok, answer this.</message>
+			<trigger_quiz />
+		</condition>
+		<else_condition>
+			<message>Ok...</message>
+		</else_condition>
+
+		<quiz>
+			<question>What port has just been opened by a process on your web server?</question>
+			<answer><%= $rand_port_live %></answer>
+			<correct_answer_response>:) <%= $flags.pop %></correct_answer_response>
+			<trigger_next_attack />
+		</quiz>
+	</attack>

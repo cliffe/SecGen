@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+	<!-- an example system with a maze solving challenge. -->
+	<system>
+		<system_name>solve_the_maze</system_name>
+		<base platform="linux" type="server"/>
+
+		<vulnerability module_path=".*maze.*" >
+			<input into="port">
+				<value>1337</value>
+			</input>
+		</vulnerability>
+
+		<network type="private_network" range="dhcp"/>
+	</system>
+
+</scenario>

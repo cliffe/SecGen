@@ -1,0 +1,39 @@
+<%require 'json' -%>
+<%$share_name = @secgen_parameters['share_name'].first
+  $share_comment = @secgen_parameters['share_comment'].first
+  $storage_directory = @secgen_parameters['storage_directory'].first
+  $raw_read_only_share = @secgen_parameters['read_only_share'].first
+  $raw_guests_allowed = @secgen_parameters['guests_allowed'].first
+  $read_only_share = $raw_read_only_share == 'true' ? 'yes' : 'no' # convert boolean to 'yes' or 'no'
+  $guests_allowed = $raw_guests_allowed  == 'true' ? 'yes' : 'no'
+
+  # structured_content/organisation overrides
+  $raw_org = @secgen_parameters['organisation']
+  if $raw_org and $raw_org[0] and $raw_org[0] != ''
+    $organisation = JSON.parse($raw_org[0])
+    $domain = $organisation['domain']
+    $share_name = $domain.split('.')[0] + '_public_share' # strip domain tld
+    $share_comment =  $organisation['business_name'] + ' Public SMB Share'
+  end -%>
+
+#
+# Share definition
+#
+[<%=$share_name%>]
+comment = <%=$share_comment%>
+# Path to directory
+path = <%=$storage_directory%>
+# Allow writing to share
+read only = <%=$read_only_share%>
+# Force connections as guests
+guest ok = <%=$guests_allowed%>
+locking = no
+# Sets the umask for files/directories created on this share
+force create mode = 777
+force directory mode = 777
+<%= if @symlink_traversal
+"# wide links for symlink traversal ( enabled by default in versions <= 3.4.5 )
+wide links = yes
+follow symlinks = yes
+"   end
+%>

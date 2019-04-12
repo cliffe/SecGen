@@ -1,0 +1,1 @@
+include hashcat::install

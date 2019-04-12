@@ -1,0 +1,15 @@
+<% $current_page = 'Security Audit Remit' %>
+<html>
+<%= scope.function_template(['parameterised_website/subtemplates/header.html.erb']) %>
+<body>
+  <%= scope.function_template(['parameterised_website/subtemplates/navbar.html.erb']) %>
+  <div id="main_container" class="container">
+    <div class="row">
+      <div class="main_page_content">
+         <%= @security_audit_remit %>
+      </div>
+    </div>
+  </div>
+  <%= scope.function_template(['parameterised_website/subtemplates/scripts.html.erb']) %>
+</body>
+</html>

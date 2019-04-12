@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<service xmlns="http://www.github/cliffe/SecGen/service"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
+  <name>Ntp utility Server</name>
+  <author>Jason Keighley</author>
+  <author>Puppet Labs, Inc.</author>
+  <module_license>Apache v2</module_license>
+  <description>An ntp installation</description>
+
+  <type>ntp</type>
+  <platform>linux</platform>
+
+  <!--optional details-->
+  <reference>http://www.ntp.org/</reference>
+  <software_name>ntp</software_name>
+  <software_license>GNU</software_license>
+
+  <!--Cannot co-exist with other ntp installations-->
+  <conflict>
+    <software_name>ntp</software_name>
+  </conflict>
+
+</service>

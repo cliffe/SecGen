@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>CyberDiscovery Cryptographic Challenges</title>
+	<link rel="shortcut icon" href="/static/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="/static/css/reset.css">
+
+	<link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+	<link href='http://fonts.googleapis.com/css?family=Nova+Square' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Roboto:400,500,300' rel='stylesheet' type='text/css'>
+	<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="/static/js/jquery-1.11.2.min.js"></script>
+	<script>
+		$(function(){
+			$(window).scroll(function(){
+				var winTop = $(this).scrollTop();
+				if(winTop >= 10){
+					$("body").addClass("shrink-header");
+				} else{
+					$("body").removeClass("shrink-header");
+				}
+			});
+		});
+	</script>
+</head>
+<body>
+<header>
+	{% block nav %}
+	<div id="nav">
+	<h1>Cyber Discovery Cryptographic Challenges</h1>
+	{% if 'username' in session %}
+	<ul id="navbar" class="clearfix">
+		<li><a href="{{url_for('solve')}}">solve</a></li>
+   		<form action="{{url_for('login')}}" method="post">
+        		<input type="submit" name="logout" value="logout" />
+    	</form>
+	</ul>
+	{% endif %}
+	</div>
+	{% endblock %}
+
+
+</header>
+<section>
+	<div id="content">
+		{% block body %} {% endblock %}
+	</div>
+	<div id="flashed">
+	<pre>
+	{% with messages = get_flashed_messages() %}
+	{% for message in messages %}
+		{{message}}
+	{% endfor %}
+	{% endwith %}
+	</pre>
+	</div>
+</section>
+<footer class="clearfix">
+	<p>PSU CyberDiscovery</p>
+</footer>
+</body>
+</html>

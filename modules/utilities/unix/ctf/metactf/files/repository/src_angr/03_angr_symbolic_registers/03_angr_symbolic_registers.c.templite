@@ -1,0 +1,104 @@
+${
+import random, os
+random.seed(os.urandom(8))
+
+def randomly_modify(var):
+  operator = random.choice(['+=', '^='])
+  random_int = random.randint(0, 0xFFFFFFFF)
+  write(var + operator + str(random_int) + ';')
+}$
+
+#include <stdio.h>
+#include <fcntl.h>
+#include <stdlib.h>
+
+register int eax asm("eax");
+register int ebx asm("ebx");
+register int edx asm("edx");
+
+char msg[] = "${ description }$";
+
+void print_msg() {
+  printf("%s", msg);
+}
+
+int complex_function_1(int input) {
+${
+for i in range(0, random.randint(16, 48)):
+  randomly_modify('input')
+}$
+  return input;
+}
+
+int complex_function_2(int input) {
+${
+for i in range(0, random.randint(16, 48)):
+  randomly_modify('input')
+}$
+  return input;
+}
+
+int complex_function_3(int input) {
+${
+for i in range(0, random.randint(16, 48)):
+  randomly_modify('input')
+}$
+  return input;
+}
+
+void get_user_input() {
+  int first, second, third;
+  scanf("%x %x %x", &first, &second, &third);
+  eax = first;
+  ebx = second;
+  edx = third;
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main(int argc, char* argv[]) {
+  //print_msg();
+  printf("Enter the password: ");
+  get_user_input();
+  int non_eax = eax;
+  int non_ebx = ebx;
+  int non_edx = edx;
+  non_eax = complex_function_1(non_eax);
+  non_ebx = complex_function_2(non_ebx);
+  non_edx = complex_function_3(non_edx);
+
+  if (non_eax || non_ebx || non_edx) {
+    printf("Try again.\n");
+  } else {
+    printf("Good Job.\n");
+    printflag();
+  }
+
+  return 0;
+}

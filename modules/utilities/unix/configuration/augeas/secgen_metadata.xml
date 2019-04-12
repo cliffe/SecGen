@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Augeas</name>
+  <author>Thomas Shaw</author>
+  <module_license>Apache v2</module_license>
+  <description>TODO</description>
+
+  <type>configuration_api</type>
+  <platform>linux</platform>
+
+  <software_name>augeas</software_name>
+</utility>

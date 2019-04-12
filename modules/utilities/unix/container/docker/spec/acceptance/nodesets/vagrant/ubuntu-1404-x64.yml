@@ -1,0 +1,12 @@
+HOSTS:
+  ubuntu-1404-x64:
+    roles:
+      - default
+    platform: ubuntu-14.04-amd64
+    box: puppetlabs/ubuntu-14.04-64-nocm
+    box_url: https://vagrantcloud.com/puppetlabs/ubuntu-14.04-64-nocm
+    hypervisor: vagrant
+
+CONFIG:
+  log_level: verbose
+  type: foss

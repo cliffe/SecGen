@@ -1,0 +1,68 @@
+# This file is being maintained by Puppet.
+# DO NOT EDIT
+
+service <%= @service_name %>
+{
+<% if @port -%>
+        port            = <%= @port %>
+<% end -%>
+        disable         = <%= @disable %>
+        socket_type     = <%= @socket_type %>
+        protocol        = <%= @protocol %>
+        wait            = <%= @_wait %>
+        user            = <%= @_user %>
+        group           = <%= @_group %>
+        groups          = <%= @groups %>
+        server          = <%= @server %>
+<% if @bind -%>
+        bind            = <%= @bind %>
+<% end -%>
+<% if @service_type -%>
+        type            = <%= @service_type %>
+<% end -%>
+<% if @server_args -%>
+        server_args     = <%= @server_args %>
+<% end -%>
+<% if @only_from -%>
+        only_from       = <%= @only_from %>
+<% end -%>
+<% if @per_source -%>
+        per_source      = <%= @per_source %>
+<% end -%>
+<% if @log_on_success -%>
+        log_on_success <%= @log_on_success_operator %> <%= @log_on_success %>
+<% end -%>
+<% if @log_on_failure -%>
+        log_on_failure <%= @log_on_failure_operator %> <%= @log_on_failure %>
+<% end -%>
+<% if @cps -%>
+        cps             = <%= @cps %>
+<% end -%>
+<% if @flags -%>
+        flags           = <%= @flags %>
+<% end -%>
+<% if @xtype -%>
+        type            = <%= @xtype %>
+<% end -%>
+<% if @no_access -%>
+        no_access       = <%= @no_access %>
+<% end -%>
+<% if @access_times -%>
+        access_times    = <%= @access_times %>
+<% end -%>
+<% if @log_type -%>
+        log_type        = <%= @log_type %>
+<% end -%>
+<% if @nice -%>
+        nice            = <%= @nice %>
+<% end -%>
+<% if @env -%>
+        env             = <%= @env %>
+<% end -%>
+<% if @instances -%>
+        instances       = <%= @instances %>
+<% end -%>
+<% if @redirect -%>
+        redirect        = <%= @redirect %>
+<% end -%>
+}

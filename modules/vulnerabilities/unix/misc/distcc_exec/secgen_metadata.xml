@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>DistCC Daemon Command Execution</name>
+  <author>Lewis Ardern</author>
+  <module_license>MIT</module_license>
+  <description>Distcc has a documented security weakness that enables remote code execution.</description>
+
+  <type>distcc</type>
+  <privilege>user_rwx</privilege>
+  <access>remote</access>
+  <platform>unix</platform>
+  <difficulty>medium</difficulty>
+
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+
+  <default_input into="strings_to_leak">
+    <generator type="message_generator"/>
+    <generator type="message_generator"/>
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+    <generator type="filename_generator"/>
+  </default_input>
+
+  <!--optional vulnerability details-->
+  <cve>CVE-2004-2687</cve>
+  <cvss_base_score>9.3</cvss_base_score>
+  <cvss_vector>AV:N/AC:M/Au:N/C:C/I:C/A:C</cvss_vector>
+  <reference>https://www.rapid7.com/db/modules/exploit/unix/misc/distcc_exec</reference>
+  <reference>OSVDB-13378</reference>
+  <software_name>distcc</software_name>
+  <software_license>GPLv2</software_license>
+
+  <!--optional hints-->
+  <msf_module>exploit/unix/misc/distcc_exec</msf_module>
+  <hint>On a non-standard port</hint>
+  <solution>Distcc is vulnerable, and on a high port number.</solution>
+
+  <!--Cannot co-exist with other installations-->
+  <conflict>
+    <software_name>distcc</software_name>
+  </conflict>
+  <requires>
+    <type>update</type>
+  </requires>
+
+</vulnerability>

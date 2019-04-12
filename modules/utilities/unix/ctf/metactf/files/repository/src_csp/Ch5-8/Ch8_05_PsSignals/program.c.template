@@ -1,0 +1,175 @@
+/* Jason Graalum, New Beginnings 12/2016 */
+#include <stdio.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <sys/resource.h>
+#include <signal.h>
+#include <unistd.h>
+#include <fcntl.h>
+#define USERDEF "AAAAAA"
+
+char msg[] = \
+"In this level, you will need run an additional terminal session to look at\n\
+and send signals to specific child processes of the main program. This\n\
+second terminal session must be run on the same host as the main program.\n\
+In the second terminal session, use the ps commmand with appropriate options\n\
+to find and signal four of the program's children.  If you send the correct\n\
+signals to the correct processes in the correct order the password will then\n\
+be displayed.\n\n";
+
+static pid_t pid[10];
+static pid_t nice_pid, busy_pid, greedy_pid, sleepy_pid, ppid;
+int status_code = 0;  /* 10 greedy, 20 nice, 30 busy, 40 sleepy */
+int need_code = 0;  /* 10 greedy, 20 nice, 30 busy, 40 sleepy */
+
+void print_msg(char *pgm_name)
+{
+   printf("%s",msg);
+   printf("Hint: the program name is: %s\n",pgm_name);
+}
+
+void alrm_handler(int sig)
+{
+/* printf("In alrm_handler for: %d  sending back %d\n",getpid(),status_code);*/
+   exit(status_code);
+}
+
+void chld_handler(int sig)
+{
+   int status,pid;
+   char p[20];
+   pid = waitpid(-1,&status,WNOHANG);
+   if (pid == 0) return;
+   if (WEXITSTATUS(status) == need_code) {
+        switch (need_code) {
+		case 10:
+			printf("Great! Now send the SIGALRM signal to the child with the lowest priority(nice level).\n");
+			break;
+		case 20:
+   			printf("Perfect! Now send the same signal to the child using the most CPU cycles.\n");
+			break;
+		case 30:
+   			printf("Good! For the last step, send the SIGCONT to the child that is asleep(i.e. stopped).\n");
+			break;
+		case 40:
+			strncpy(p,USERDEF,strlen(USERDEF));
+   			printf("The password is: %s\n", p);
+   			killpg(ppid,SIGINT);
+			exit(0);
+	}
+	need_code += 10;
+   } else {
+	printf("Error!  Wrong process.  Terminating\n");
+	exit(0);
+   }
+}
+
+// Fork off decoys
+void fork_decoys(){
+   int i;
+   for(i = 0; i < 10; i++)
+   {
+      if((pid[i] = fork()) == 0)
+      {
+        pause();
+        exit(0);
+      }
+   }
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main(int argc, char* argv[])
+{
+   int status,i;
+   char pass[10],p[10];
+   print_msg(argv[0]);
+   ppid = getpid();
+
+   signal(SIGALRM,alrm_handler);
+
+   fork_decoys();
+
+   // Fork the Nice Child
+   if((nice_pid = fork()) == 0) {
+      status_code = 20;
+      setpriority(PRIO_PROCESS,0,20);
+      pause();
+   }
+
+   // Fork the Busy Child
+   if((busy_pid = fork()) == 0) {
+      int a,b,c;
+      status_code = 30;
+      a = 1, b = 1;
+      while(1)
+      {
+         c = a + b;
+         a = b;
+         b = c;
+      }
+   }
+
+   // Fork the Greedy Child
+   if((greedy_pid = fork()) == 0) {
+      status_code = 10;
+      double *d;
+      d = calloc(sizeof(double),1000000);
+      pause();
+   }
+
+   // Fork the Sleepy Child
+   if((sleepy_pid = fork()) == 0) {
+      status_code = 40;
+      raise(SIGSTOP);
+      /* Exit after getting continue signal */
+      exit(status_code);
+   }
+
+   // Parent Instructions
+   pid_t wpid;
+
+   signal(SIGCHLD,chld_handler);
+   need_code = 10;
+   printf("If you don't know the password, send the SIGALRM signal to the\n");
+   printf("child using the most memory.  If you do know the password,\n");
+   printf("Enter the password: ");
+   scanf("%9s",pass);
+   strncpy(p,USERDEF,strlen(USERDEF));
+   p[strlen(USERDEF)] = 0;
+   if (strncmp(p,pass,strlen(p)))
+      printf("Try again.\n");
+   else {
+	  printf("Good Job.\n");
+      printflag();
+   }
+}

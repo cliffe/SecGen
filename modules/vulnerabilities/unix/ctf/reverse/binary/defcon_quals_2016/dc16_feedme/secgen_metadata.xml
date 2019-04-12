@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>DefCon Quals 2016 - feedme</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Binary Reverse Engineering CTF Challenge from the Defcon 2016 CTF Qualifier.</description>
+
+  <type>ctf_challenge</type>
+  <type>reverse_engineering</type>
+  <type>pwnable_binary</type>
+  <privilege>none</privilege>
+  <access>local</access>
+  <platform>linux</platform>
+
+  <challenge_type>reverse</challenge_type>
+  <challenge_subtype>binary</challenge_subtype>
+  <difficulty>high</difficulty>
+
+  <!-- binary dropped in account's home directory by default. -->
+  <read_fact>challenge_name</read_fact>
+  <read_fact>account</read_fact>
+  <read_fact>flag</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <!-- storage_directory: Blank by default. If supplied, store the files here. e.g. NFS or SMB storage location -->
+  <read_fact>storage_directory</read_fact>
+
+  <default_input into="challenge_name">
+    <value>feedme</value>
+  </default_input>
+  <default_input into="account">
+    <generator type="account">
+      <input into="username">
+        <value>challenges</value>
+      </input>
+      <input into="password">
+        <value>password</value>
+      </input>
+      <input into="leaked_filenames">
+        <value>feedme_instructons</value>
+      </input>
+      <!-- Blank $account['strings_to_leak'] as this module uses the read_fact level strings_to_leak -->
+      <input into="strings_to_leak">
+        <value/>
+      </input>
+    </generator>
+  </default_input>
+  <default_input into="flag">
+    <generator type="flag_generator"/>
+  </default_input>
+  <default_input into="strings_to_leak">
+    <value>Reverse me / pwn the binary to get the flag.</value>
+  </default_input>
+
+  <conflict>
+    <name>DefCon Quals 2016 - feedme</name>
+  </conflict>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+  <requires>
+    <module_path>utilities/unix/system/parameterised_accounts</module_path>
+  </requires>
+
+</vulnerability>

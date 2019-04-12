@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+  <!-- an example with a random vulnerability and the cleanup module with some inputs. -->
+  <system>
+    <system_name>storage_server</system_name>
+    <base platform="linux" type="server"/>
+
+    <vulnerability/>
+
+    <build type="cleanup">
+      <input into="root_password">
+        <value>pwnable</value>
+      </input>
+    </build>
+
+    <network type="private_network" range="dhcp"/>
+  </system>
+</scenario>

@@ -1,0 +1,84 @@
+{
+  "name": "elastic-elasticsearch",
+  "version": "6.3.3",
+  "author": "elastic",
+  "summary": "Module for managing and configuring Elasticsearch nodes",
+  "license": "Apache-2.0",
+  "source": "https://github.com/elastic/puppet-elasticsearch",
+  "project_page": "https://github.com/elastic/puppet-elasticsearch",
+  "issues_url": "https://github.com/elastic/puppet-elasticsearch/issues",
+  "dependencies": [
+    {"name":"elastic/elastic_stack","version_requirement":">= 6.1.0 < 7.0.0"},
+    {"name":"richardc/datacat","version_requirement":">= 0.6.2 < 1.0.0"},
+    {"name":"puppetlabs/stdlib","version_requirement":">= 4.13.0 < 6.0.0"}
+  ],
+  "data_provider": "hiera",
+  "description": "Module for managing and configuring Elasticsearch nodes",
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "OracleLinux",
+      "operatingsystemrelease": [
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Scientific",
+      "operatingsystemrelease": [
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "7",
+        "8"
+      ]
+    },
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "14.04",
+        "16.04"
+      ]
+    },
+    {
+      "operatingsystem": "OpenSuSE",
+      "operatingsystemrelease": [
+        "42.2"
+      ]
+    },
+    {
+      "operatingsystem": "SLES",
+      "operatingsystemrelease": [
+        "12.1",
+        "12.2"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 4.5.0 < 6.0.0"
+    }
+  ]
+}

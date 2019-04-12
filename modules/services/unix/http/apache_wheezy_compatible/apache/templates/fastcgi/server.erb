@@ -1,0 +1,22 @@
+<%
+  timeout = " -idle-timeout #{@timeout}"
+  flush = ""
+  if @flush
+    flush = " -flush"
+  end
+  if @socket
+    host_or_socket = " -socket #{@socket}"
+  else
+    host_or_socket = " -host #{@host}"
+  end
+
+  pass_header = ""
+  if @pass_header and ! @pass_header.empty?
+    pass_header = " -pass-header #{@pass_header}"
+  end
+
+  options = timeout + flush + host_or_socket + pass_header
+-%>
+FastCGIExternalServer <%= @faux_path %><%= options %>
+Alias <%= @fcgi_alias %> <%= @faux_path %>
+Action <%= @file_type %> <%= @fcgi_alias %>

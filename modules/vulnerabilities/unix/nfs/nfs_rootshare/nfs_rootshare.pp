@@ -1,0 +1,1 @@
+include nfs_rootshare::config

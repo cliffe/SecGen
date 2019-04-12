@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Random Email Address Generator</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Generates a random email address using the Faker ruby gem.</description>
+
+  <type>string_generator</type>
+  <type>email_address</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <reference>https://github.com/stympy/faker</reference>
+
+  <!--Optional: entering a name will use the name for the local part of the address with a random domain. -->
+  <read_fact>name</read_fact>
+
+  <!--No default_inputs as the module outputs a totally random email address from faker by default. -->
+
+  <output_type>email_address</output_type>
+</generator>

@@ -1,0 +1,84 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <string.h>
+#include <stdlib.h>
+#define USERDEF0 AAAAAA
+#define USERDEF1 BBBBBB
+
+char msg[] =
+ "To thwart static analysis, code and data are often encrypted by packers\n"
+ "using a random key.  In this level, we have taken the passcode and XOR'd\n"
+ "it with a constant byte. To find the password, you will need to use\n"
+ "\"objdump\" to reveal the key being used and then apply the key to the\n"
+ "appropriate data to determine the passcode.  Alternatively, you may use\n"
+ "\"gdb\" to trace execution at the XOR to reveal the password directly.\n"
+ "Note that the passcode is a 64-bit long integers that is being read in via\n"
+ "  scanf(\"%lx\");\n\n";
+
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg[i%len] + msg[(i+1)%len];
+    h2 += msg[(i+1)%len] + msg[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg);
+  else
+    printf("%s",msg);
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+unsigned long foo=USERDEF0;
+
+int main() {
+    unsigned long in;
+    unsigned char* c;
+    int i;
+
+    print_msg();
+
+    printf("Enter the password: ");
+    scanf("%lx",&in);
+
+    c = (unsigned char *) &foo;
+
+    for (i=0; i < sizeof(foo); i++)
+	c[i] ^= USERDEF1;
+
+    if (in != foo) {
+	printf("Try again.\n");
+	return 0;
+      }
+	printf("Good Job.\n");
+    printflag();
+    return 0;
+}

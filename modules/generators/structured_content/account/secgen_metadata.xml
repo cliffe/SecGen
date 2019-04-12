@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Account Generator</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Account Generator. Wrappers individually generated facts to create accounts. Enables leaking
+    facts on a per-account basis. The default generated accounts are not a super-users, override the value in scenarios
+    as required.
+  </description>
+
+  <type>account</type>
+  <platform>linux</platform>
+
+  <read_fact>username</read_fact>
+  <read_fact>password</read_fact>
+  <read_fact>super_user</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+  <read_fact>data_to_leak</read_fact>
+
+  <default_input into="username">
+    <generator type="username_generator"/>
+  </default_input>
+  <default_input into="password">
+    <generator type="password_generator"/>
+  </default_input>
+  <default_input into="super_user">
+    <value>false</value>
+  </default_input>
+  <default_input into="strings_to_leak">
+    <generator type="message_generator"/>
+  </default_input>
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+  </default_input>
+
+  <output_type>account</output_type>
+</generator>

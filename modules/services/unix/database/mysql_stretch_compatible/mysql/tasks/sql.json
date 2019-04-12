@@ -1,0 +1,22 @@
+{
+  "description": "Allows you to execute arbitary SQL",
+  "input_method": "stdin",
+  "parameters": {
+    "database": {
+      "description": "Database to connect to",
+      "type": "Optional[String[1]]"
+    },
+    "user": {
+      "description": "The user",
+      "type": "Optional[String[1]]"
+    },
+    "password": {
+      "description": "The password",
+      "type": "Optional[String[1]]"
+    },
+     "sql": {
+      "description": "The SQL you want to execute",
+      "type": "String[1]"
+    }
+  }
+}

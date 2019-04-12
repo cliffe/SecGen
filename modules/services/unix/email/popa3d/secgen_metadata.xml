@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<service xmlns="http://www.github/cliffe/SecGen/service"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
+  <name>POP3 Server popa3d</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>MIT</module_license>
+  <description>popa3d is a tiny POP3 daemon designed with security as the primary goal. Accepts logins from existing users on the system.
+  </description>
+
+  <type>pop3</type>
+  <platform>linux</platform>
+
+  <!--optional details-->
+  <software_name>popa3d</software_name>
+
+  <requires>
+    <type>update</type>
+  </requires>
+</service>

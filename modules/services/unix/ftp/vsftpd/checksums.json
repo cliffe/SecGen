@@ -1,0 +1,16 @@
+{
+  "LICENSE": "a300b604c66de62cf6e923cca89c9d83",
+  "README.md": "1139e02feb266043270d8a969c988399",
+  "Rakefile": "e90d68823ff237c89224eb139f8926ad",
+  "files/chroot_list": "8267598c7651338a103b5c45f795e98d",
+  "files/user_list": "945ae9aa4205d4fbe3b5cf6c6a7613f0",
+  "lib/facter/vsftpd_installed_version.rb": "10f09daaec3a519f14a49bd10c9eb87f",
+  "manifests/init.pp": "9e610510ccfaca204541cef0b5e843ef",
+  "manifests/params.pp": "d972c60591d88fee1ab53a38680cb34c",
+  "manifests/spec.pp": "5f9b01ce0e7b1a6ffdb86b38a835f3e9",
+  "metadata.json": "f05f1a36f6f667d8cd233b6d1c503699",
+  "spec/classes/vsftpd_spec.rb": "a9a5eefbfc0f534f993a221d49e9d225",
+  "spec/spec_helper.rb": "0db89c9a486df193c0e40095422e19dc",
+  "templates/spec.erb": "95554a191230174b3ba5942f8d8d5b1e",
+  "templates/vsftpd.conf.erb": "c75ca0075238f57ee93a29e6194675f3"
+}

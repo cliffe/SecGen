@@ -1,0 +1,52 @@
+${
+import random, os
+random.seed(os.urandom(16))
+
+def expanded_switch_statement(variable, miss_statement, hit_statement, samples):
+  target = random.choice(samples)
+
+  write('switch (%s) {' % (variable,))
+  for sample in samples:
+    write('case %d: %s; break;' % (sample, hit_statement if sample == target else miss_statement))
+  write('default: %s; break; }' % (miss_statement,))
+}$
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+#include <signal.h>
+
+char msg[] = "${ description }$";
+char* try_again = "Try again.";
+uint32_t key;
+
+void print_msg() {
+  printf("%s", msg);
+}
+
+struct overflow_me {
+  char buffer[16];
+  char* arbitrary_pointer;
+  char allocated_memory;
+  char random_char;
+}; 
+
+int main(int argc, char* argv[]) {
+  struct overflow_me locals;
+  memset(&locals, 0, sizeof(locals));
+  locals.arbitrary_pointer = &locals.allocated_memory;
+
+  print_msg();
+
+  printf("Enter the password: ");
+  scanf("%u %20s", &key, locals.buffer);
+
+  ${
+  hit_statement = 'locals.random_char = *(&locals.allocated_memory);'
+  miss_statement = 'locals.random_char = *locals.arbitrary_pointer;'
+  expanded_switch_statement('key', miss_statement, hit_statement, random.sample(xrange(2**26-1), 2))
+  }$
+
+  return 0;
+}

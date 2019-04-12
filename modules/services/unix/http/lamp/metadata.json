@@ -1,0 +1,61 @@
+{
+  "name": "alexggolovin-lamp",
+  "version": "1.1.0",
+  "author": "alexggolovin",
+  "summary": "LAMP basic configuration and deploy module",
+  "license": "Apache 2.0",
+  "source": "https://github.com/alexggolovin/alexggolovin-lamp",
+  "project_page": "https://github.com/alexggolovin/alexggolovin-lamp",
+  "issues_url": "https://github.com/alexggolovin/alexggolovin-lamp/issues",
+  "tags": [
+    "lamp",
+    "linux",
+    "apache",
+    "mysql",
+    "php"
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "10.04",
+        "12.04",
+        "14.04"
+      ]
+    }
+  ],
+  "description": "LAMP basic configuration and deploy module on RedHat/CentOS/Debian/Ubuntu Linux distributions",
+  "dependencies": [
+    {
+      "name": "puppetlabs/apache",
+      "version_requirement": "1.x"
+    },
+    {
+      "name": "puppetlabs/mysql",
+      "version_requirement": "3.x"
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+//Final Project - CTF
+//Liz Lawrens
+//New Beginnings 2016
+// Computer Systems Programming
+
+#include <stdio.h>
+#include <string.h>
+
+char pwd[] = "AAAAAA";
+char msg[] =
+ "In this level,you will be introduced to rr.rr is a modern debugging tool,\n"
+ "designed to record and reproduce execution state of a program.rr is\n"
+ "developed by Mozilla and was originally intended as a debugging tool for\n"
+ "Mozilla Firefox. rr aspires to be your primary debugging tool, enhancing\n"
+ "gdb.  With rr, you record a failure once, then debug the recording,\n"
+ "deterministically, as many times as you want. The same execution is\n"
+ "replayed every time. rr also provides efficient reverse execution under\n"
+ "gdb. Set breakpoints and data watchpoints and quickly reverse-execute to\n"
+ "where they were hit. Start by using rr to record your application : Type\n"
+ "the command \"rr record <your application>\" This creates a recording of\n"
+ "your execution and saves it to disk.  Because it is a recorded trace,\n"
+ "it can can now be debugged deterministically.   Unlike with live,\n"
+ "non-deterministic execution.  The replayed execution's address spaces,\n"
+ "register contents, system call data, etc. are exactly the same in every\n"
+ "run. To replay the recently recorded session, type the command\n"
+ "\"rr replay\" This will open a gdb session for you to debug your program.\n"
+ "Most of the common gdb commands can be used. To solve this level, use\n"
+ "your knowledge of gdb to break at the function call in main to the\n"
+ "function \"pwdFunction\" (eg. b pwdFunction) to which a pointer to the\n"
+ "password is passed in register rdi, the register that is used to pass\n"
+ "the first function parameter.\n\n";
+
+void pwdFunction(char* p) {
+	int x=1;
+	int y=2;
+	int z=3;
+	int w=4;
+}
+
+int main(int argc, char* argv[]) {
+    int i;
+    char buf[20];
+    printf("%s",msg);
+    pwdFunction(pwd);
+    printf("Enter the password: ");
+    scanf("%19s",buf);
+    int len = strlen(pwd);
+    if (strlen(buf) != len) {
+	printf("Try again.\n");
+	return 0;
+    }
+    if (strcmp(buf, pwd) != 0) {
+	printf("Try again.\n");
+	return 0;
+    }
+    printf("Good Job.\n");
+    return 0;
+}

@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+
+<hackerbot xmlns="http://www.github/cliffe/SecGen/hackerbotz"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/hackerbot">
+
+	<name>Bob</name>
+
+	<AIML_chatbot_rules>config/AIML</AIML_chatbot_rules>
+
+	<!--Method for gaining shell access, can be overwritten per-attack-->
+	<!--<get_shell>bash</get_shell>-->
+	<get_shell>sshpass -p randompassword ssh -oStrictHostKeyChecking=no root@{{chat_ip_address}} /bin/bash</get_shell>
+
+	<messages>
+		<greeting>Hi there. Just to introduce myself, I also work here.</greeting>
+
+		<!--Must provide alternatives for each message-->
+		<say_ready>Let me know when you are 'ready', if you want to move on to another attack, say 'next', or 'previous' and I'll move things along</say_ready>
+		<say_ready>When you are ready, simply say 'ready'.</say_ready>
+		<say_ready>'Ready'?</say_ready>
+		<say_ready>Better hurry, the attack is imminent... Let me know when you're 'ready'.</say_ready>
+		<next>Ok, I'll do what I can to move things along...</next>
+		<next>Moving things along to the next attack...</next>
+		<next>Ok, next attack...</next>
+		<previous>Ok, I'll do what I can to back things up...</previous>
+		<previous>Ok, previous attack...</previous>
+		<previous>Ok, backing up.</previous>
+		<goto>Ok, skiping it along.</goto>
+		<goto>Let me see what I can do to goto that attack.</goto>
+		<last_attack>That was the last attack for now. You can rest easy, until next time... (End.)</last_attack>
+		<last_attack>That was the last attack. Game over?</last_attack>
+		<first_attack>You are back to the beginning!</first_attack>
+		<first_attack>This is where it all began.</first_attack>
+		<getting_shell>Ok. Gaining shell access, and running post command...</getting_shell>
+		<getting_shell>Hacking in progress...</getting_shell>
+		<getting_shell>Attack underway...</getting_shell>
+		<getting_shell>Here we go...</getting_shell>
+		<got_shell>We are in to your system.</got_shell>
+		<got_shell>You are pwned.</got_shell>
+		<got_shell>We have shell.</got_shell>
+		<repeat>Let me know when you are 'ready', if you want to move on to another attack, say 'next', or 'previous' and I'll move things along</repeat>
+		<repeat>Say 'ready', 'next', or 'previous'.</repeat>
+
+		<!--Single responses:-->
+		<help>I am waiting for you to say 'ready', 'next', 'previous', 'list', 'goto *X*', or 'answer *X*'</help>
+		<say_answer>Say "The answer is *X*".</say_answer>
+		<no_quiz>There is no question to answer</no_quiz>
+		<correct_answer>Correct</correct_answer>
+		<incorrect_answer>Incorrect</incorrect_answer>
+		<invalid>That's not possible.</invalid>
+		<non_answer>Don't ask me. I just work here.</non_answer>
+
+		<!--can be overwritten per-attack-->
+		<shell_fail_message>Oh no. Failed to get shell... You need to let us in.</shell_fail_message>
+	</messages>
+
+	<attack>
+		<prompt>An attempt to delete /home/dropbear/trade_secrets/credit_card is coming. Stop the attack using access controls.</prompt>
+
+		<post_command>rm --interactive=never /home/dropbear/trade_secrets/credit_card; echo $?</post_command>
+		<condition>
+			<output_matches>Permission denied|Operation not permitted</output_matches>
+			<message>:) Well done!</message>
+			<trigger_next_attack>true</trigger_next_attack>
+		</condition>
+		<condition>
+			<output_equals>0</output_equals>
+			<message>:( We managed to delete your file! You need to use access controls to protect the file.</message>
+		</condition>
+		<condition>
+			<output_matches>No such file or directory</output_matches>
+			<message>:( The file should exist!</message>
+		</condition>
+		<else_condition>
+			<message>:( Something was not right...</message>
+		</else_condition>
+
+	</attack>
+
+
+
+</hackerbot>

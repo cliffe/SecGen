@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Leaked Data Generator</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>TODO:
+  </description>
+
+  <type>leaked_data</type>
+  <platform>linux</platform>
+
+  <read_fact>data</read_fact>
+  <read_fact>filename</read_fact>
+  <read_fact>ext</read_fact>
+  <read_fact>subdirectory</read_fact>
+
+  <default_input into="filename">
+    <value>leaked_file</value>
+  </default_input>
+  <default_input into="ext">
+    <value>txt</value>
+  </default_input>
+
+  <output_type>hash</output_type>
+</generator>

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Random Line Generator</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>MIT</module_license>
+  <description>Returns a line from a list of lines.</description>
+
+  <type>string_generator</type>
+  <type>random_line_generator</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <read_fact>linelist</read_fact>
+  <default_input into="linelist">
+    <value>server_greetings</value>
+  </default_input>
+
+  <output_type>generated_strings</output_type>
+
+</generator>

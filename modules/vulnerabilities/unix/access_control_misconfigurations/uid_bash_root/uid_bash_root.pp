@@ -1,0 +1,1 @@
+include uid_bash_root::config

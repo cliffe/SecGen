@@ -1,0 +1,326 @@
+<% if @_directories and ! @_directories.empty? -%>
+
+  <%- scope.setvar('_template_scope', {}) -%>
+  ## Directories, there should at least be a declaration for <%= @docroot %>
+  <%- [@_directories].flatten.compact.each do |directory| -%>
+    <%- if scope.function_versioncmp([@apache_version, '2.4']) >= 0 -%>
+      <%- if directory['allow'] and ! [ false, 'false', '' ].include?(directory['allow']) -%>
+        <%- scope.function_warning(["Apache::Vhost: Using allow is deprecated in your Apache version"]) -%>
+      <%- end -%>
+      <%- if directory['deny'] and ! [ false, 'false', '' ].include?(directory['deny']) -%>
+        <%- scope.function_warning(["Apache::Vhost: Using deny is deprecated in your Apache version"]) -%>
+      <%- end -%>
+      <%- if directory['order'] and ! [ false, 'false', '' ].include?(directory['order']) -%>
+        <%- scope.function_warning(["Apache::Vhost: Using order is deprecated in your Apache version"]) -%>
+      <%- end -%>
+      <%- if directory['satisfy'] and ! [ false, 'false', '' ].include?(directory['satisfy']) -%>
+        <%- scope.function_warning(["Apache::Vhost: Using satisfy is deprecated in your Apache version"]) -%>
+      <%- end -%>
+    <%- end -%>
+    <%- if directory['path'] and directory['path'] != '' -%>
+      <%- if directory['provider'] and directory['provider'].match('(directory|location|files|proxy)') -%>
+        <%- if /^(.*)match$/ =~ directory['provider'] -%>
+          <%- provider = $1.capitalize + 'Match' -%>
+        <%- else -%>
+          <%- provider = directory['provider'].capitalize -%>
+        <%- end -%>
+      <%- else -%>
+        <%- provider = 'Directory' -%>
+      <%- end -%>
+      <%- path = directory['path'] -%>
+
+  <<%= provider %> "<%= path %>">
+      <%- if directory['headers'] -%>
+        <%- Array(directory['headers']).each do |header| -%>
+    Header <%= header %>
+      <%- end -%>
+    <%- end -%>
+    <%- if ! directory['geoip_enable'].nil? -%>
+    GeoIPEnable <%= scope.function_bool2httpd([directory['geoip_enable']]) %>
+    <%- end -%>
+    <%- if directory['options'] -%>
+    Options <%= Array(directory['options']).join(' ') %>
+    <%- end -%>
+    <%- if provider == 'Directory' -%>
+      <%- if directory['index_options'] -%>
+    IndexOptions <%= Array(directory['index_options']).join(' ') %>
+      <%- end -%>
+      <%- if directory['index_order_default'] -%>
+    IndexOrderDefault <%= Array(directory['index_order_default']).join(' ') %>
+      <%- end -%>
+      <%- if directory['index_style_sheet'] -%>
+    IndexStyleSheet '<%= directory['index_style_sheet'] %>'
+      <%- end -%>
+      <%- if directory['allow_override'] -%>
+    AllowOverride <%= Array(directory['allow_override']).join(' ') %>
+      <%- elsif provider == 'Directory' -%>
+    AllowOverride None
+      <%- end -%>
+    <%- end -%>
+    <%- scope.lookupvar('_template_scope')[:item] = directory -%>
+<%= scope.function_template(["apache/vhost/_require.erb"]) -%>
+    <%- if directory['limit'] && directory['limit'] != '' -%>
+      <%- Array(directory['limit']).each do |lim| -%>
+    <Limit <%= lim['methods'] %>>
+    <%- scope.lookupvar('_template_scope')[:item] = lim -%>
+    <%= scope.function_template(["apache/vhost/_require.erb"]) -%>
+    </Limit>
+      <%- end -%>
+    <%- end -%>
+    <%- if directory['addhandlers'] and ! directory['addhandlers'].empty? -%>
+      <%- [directory['addhandlers']].flatten.compact.each do |addhandler| -%>
+    <FilesMatch ".+(<%= Array(addhandler['extensions']).collect { |s| Regexp.escape(s) }.join('|') %>)$">
+        SetHandler <%= addhandler['handler'] %>
+    </FilesMatch>
+      <%- end -%>
+    <%- end -%>
+    <%- if directory['sethandler'] and directory['sethandler'] != '' -%>
+    SetHandler <%= directory['sethandler'] %>
+    <%- end -%>
+    <%- if directory['passenger_enabled'] and directory['passenger_enabled'] != '' -%>
+    PassengerEnabled <%= directory['passenger_enabled'] %>
+    <%- end -%>
+    <%- if directory['php_flags'] and ! directory['php_flags'].empty? -%>
+      <%- directory['php_flags'].sort.each do |flag,value| -%>
+        <%- value = if value =~ /true|yes|on|1/i then 'on' else 'off' end -%>
+    php_flag <%= "#{flag} #{value}" %>
+      <%- end -%>
+    <%- end -%>
+    <%- if directory['php_values'] and ! directory['php_values'].empty? -%>
+      <%- directory['php_values'].sort.each do |key,value| -%>
+    php_value <%= "#{key} #{value}" %>
+      <%- end -%>
+    <%- end -%>
+    <%- if directory['php_admin_flags'] and ! directory['php_admin_flags'].empty? -%>
+      <%- directory['php_admin_flags'].sort.each do |flag,value| -%>
+        <%- value = if value =~ /true|yes|on|1/i then 'on' else 'off' end -%>
+    php_admin_flag <%= "#{flag} #{value}" %>
+      <%- end -%>
+    <%- end -%>
+    <%- if directory['php_admin_values'] and ! directory['php_admin_values'].empty? -%>
+      <%- directory['php_admin_values'].sort.each do |key,value| -%>
+    php_admin_value <%= "#{key} #{value}" %>
+      <%- end -%>
+    <%- end -%>
+    <%- if directory['directoryindex'] and directory['directoryindex'] != '' -%>
+    DirectoryIndex <%= directory['directoryindex'] %>
+    <%- end -%>
+    <%- if directory['additional_includes'] and ! directory['additional_includes'].empty? -%>
+      <%- directory['additional_includes'].each do |include| -%>
+    Include '<%= "#{include}" %>'
+      <%- end -%>
+    <%- end -%>
+    <%- if directory['error_documents'] and ! directory['error_documents'].empty? -%>
+      <%- [directory['error_documents']].flatten.compact.each do |error_document| -%>
+    ErrorDocument <%= error_document['error_code'] %> <%= error_document['document'] %>
+      <%- end -%>
+    <%- end -%>
+    <%- if directory['dav'] -%>
+    Dav <%= directory['dav'] %>
+    <%- if directory['dav_depth_infinity'] -%>
+    DavDepthInfinity <%= scope.function_bool2httpd([directory['dav_depth_infinity']]) %>
+    <%- end -%>
+    <%- if directory['dav_min_timeout'] -%>
+    DavMinTimeout <%= directory['dav_min_timeout'] %>
+    <%- end -%>
+    <%- end -%>
+    <%- if directory['auth_type'] -%>
+    AuthType <%= directory['auth_type'] %>
+    <%- end -%>
+    <%- if directory['auth_name'] -%>
+    AuthName "<%= directory['auth_name'] %>"
+    <%- end -%>
+    <%- if directory['auth_digest_algorithm'] -%>
+    AuthDigestAlgorithm <%= directory['auth_digest_algorithm'] %>
+    <%- end -%>
+    <%- if directory['auth_digest_domain'] -%>
+    AuthDigestDomain <%= Array(directory['auth_digest_domain']).join(' ') %>
+    <%- end -%>
+    <%- if directory['auth_digest_nonce_lifetime'] -%>
+    AuthDigestNonceLifetime <%= directory['auth_digest_nonce_lifetime'] %>
+    <%- end -%>
+    <%- if directory['auth_digest_provider'] -%>
+    AuthDigestProvider <%= directory['auth_digest_provider'] %>
+    <%- end -%>
+    <%- if directory['auth_digest_qop'] -%>
+    AuthDigestQop <%= directory['auth_digest_qop'] %>
+    <%- end -%>
+    <%- if directory['auth_digest_shmem_size'] -%>
+    AuthDigestShmemSize <%= directory['auth_digest_shmem_size'] %>
+    <%- end -%>
+    <%- if directory['auth_basic_authoritative'] -%>
+    AuthBasicAuthoritative <%= directory['auth_basic_authoritative'] %>
+    <%- end -%>
+    <%- if directory['auth_basic_fake'] -%>
+    AuthBasicFake <%= directory['auth_basic_fake'] %>
+    <%- end -%>
+    <%- if directory['auth_basic_provider'] -%>
+    AuthBasicProvider <%= directory['auth_basic_provider'] %>
+    <%- end -%>
+    <%- if directory['auth_user_file'] -%>
+    AuthUserFile <%= directory['auth_user_file'] %>
+    <%- end -%>
+    <%- if directory['auth_group_file'] -%>
+    AuthGroupFile <%= directory['auth_group_file'] %>
+    <%- end -%>
+    <%- if directory['auth_merging'] -%>
+    AuthMerging <%= directory['auth_merging'] %>
+    <%- end -%>
+    <%- if directory['auth_ldap_url'] -%>
+    AuthLDAPURL <%= directory['auth_ldap_url'] %>
+    <%- end -%>
+    <%- if directory['auth_ldap_bind_dn'] -%>
+    AuthLDAPBindDN <%= directory['auth_ldap_bind_dn'] %>
+    <%- end -%>
+    <%- if directory['auth_ldap_bind_password'] -%>
+    AuthLDAPBindPassword <%= directory['auth_ldap_bind_password'] %>
+    <%- end -%>
+    <%- if directory['auth_ldap_group_attribute'] -%>
+      <%- Array(directory['auth_ldap_group_attribute']).each do |groupattr| -%>
+    AuthLDAPGroupAttribute <%= groupattr %>
+      <%- end -%>
+    <%- end -%>
+    <%- if directory['auth_ldap_group_attribute_is_dn'] == 'off' -%>
+    AuthLDAPGroupAttributeIsDN Off
+    <%- end -%>
+    <%- if directory['auth_ldap_group_attribute_is_dn'] == 'on' -%>
+    AuthLDAPGroupAttributeIsDN On
+    <%- end -%>
+    <%- if directory['fallbackresource'] -%>
+    FallbackResource <%= directory['fallbackresource'] %>
+    <%- end -%>
+    <%- if directory['expires_active'] -%>
+    ExpiresActive <%= directory['expires_active'] %>
+    <%- end -%>
+    <%- if directory['expires_default'] -%>
+    ExpiresDefault <%= directory['expires_default'] %>
+    <%- end -%>
+    <%- if directory['expires_by_type'] -%>
+    <%- Array(directory['expires_by_type']).each do |rule| -%>
+    ExpiresByType <%= rule %>
+    <%- end -%>
+    <%- end -%>
+    <%- if directory['ext_filter_options'] -%>
+    ExtFilterOptions <%= directory['ext_filter_options'] %>
+    <%- end -%>
+    <%- if directory['force_type'] -%>
+    ForceType <%= directory['force_type'] %>
+    <%- end -%>
+    <%- if directory['ssl_options'] -%>
+    SSLOptions <%= Array(directory['ssl_options']).join(' ') %>
+    <%- end -%>
+    <%- if directory['suphp'] and @suphp_engine == 'on' -%>
+    suPHP_UserGroup <%= directory['suphp']['user'] %> <%= directory['suphp']['group'] %>
+    <%- end -%>
+    <%- if directory['fcgiwrapper'] -%>
+    FcgidWrapper <%= directory['fcgiwrapper']['command'] %> <%= directory['fcgiwrapper']['suffix'] %> <%= directory['fcgiwrapper']['virtual'] %>
+    <%- end -%>
+    <%- if directory['rewrites'] -%>
+    # Rewrite rules
+    RewriteEngine On
+      <%- directory['rewrites'].flatten.compact.each do |rewrite_details| -%>
+        <%- if rewrite_details['comment'] -%>
+    #<%= rewrite_details['comment'] %>
+        <%- end -%>
+        <%- if rewrite_details['rewrite_base'] -%>
+    RewriteBase <%= rewrite_details['rewrite_base'] %>
+        <%- end -%>
+        <%- if rewrite_details['rewrite_cond'] -%>
+          <%- Array(rewrite_details['rewrite_cond']).each do |commands| -%>
+            <%- Array(commands).each do |command| -%>
+    RewriteCond <%= command %>
+            <%- end -%>
+          <%- end -%>
+        <%- end -%>
+        <%- Array(rewrite_details['rewrite_rule']).each do |commands| -%>
+          <%- Array(commands).each do |command| -%>
+    RewriteRule <%= command %>
+          <%- end -%>
+        <%- end -%>
+      <%- end -%>
+    <%- end -%>
+    <%- if directory['setenv'] -%>
+      <%- Array(directory['setenv']).each do |setenv| -%>
+    SetEnv <%= setenv %>
+      <%- end -%>
+    <%- end -%>
+    <%- if directory['set_output_filter'] -%>
+    SetOutputFilter <%= directory['set_output_filter'] %>
+    <%- end -%>
+    <%- if @shibboleth_enabled -%>
+      <%- if directory['shib_require_session'] and ! directory['shib_require_session'].empty? -%>
+    ShibRequireSession <%= directory['shib_require_session'] %>
+      <%- end -%>
+      <%- if directory['shib_request_settings'] and ! directory['shib_request_settings'].empty? -%>
+        <%- directory['shib_request_settings'].each do |key,value| -%>
+    ShibRequestSetting <%= key %> <%= value %>
+        <%- end -%>
+      <%- end -%>
+      <%- if directory['shib_use_headers'] and ! directory['shib_use_headers'].empty? -%>
+    ShibUseHeaders <%= directory['shib_use_headers'] %>
+      <%- end -%>
+    <%- end -%>
+    <%- if @cas_enabled -%>
+      <%- if directory['cas_scope'] -%>
+    CASScope <%= directory['cas_scope'] %>
+      <%- end -%>
+      <%- if directory['cas_renew'] -%>
+    CASRenew <%= directory['cas_renew'] %>
+      <%- end -%>
+      <%- if directory['cas_gateway'] -%>
+    CASGateway <%= directory['cas_gateway'] %>
+      <%- end -%>
+      <%- if directory['cas_cookie'] -%>
+    CASCookie <%= directory['cas_cookie'] %>
+      <%- end -%>
+      <%- if directory['cas_secure_cookie'] -%>
+    CASSecureCookie <%= directory['cas_secure_cookie'] %>
+      <%- end -%>
+      <%- if directory['cas_gateway_cookie'] -%>
+    CASGatewayCookie <%= directory['cas_gateway_cookie'] %>
+      <%- end -%>
+      <%- if directory['cas_authn_header'] -%>
+    CASAuthNHeader <%= directory['cas_authn_header'] %>
+      <%- end -%>
+    <%- end -%>
+    <%- if directory['mellon_enable'] -%>
+    MellonEnable "<%= directory['mellon_enable'] %>"
+      <%- if directory['mellon_endpoint_path'] -%>
+    MellonEndpointPath "<%= directory['mellon_endpoint_path'] %>"
+      <%- end -%>
+      <%- if directory['mellon_sp_private_key_file'] -%>
+    MellonSPPrivateKeyFile "<%= directory['mellon_sp_private_key_file'] %>"
+      <%- end -%>
+      <%- if directory['mellon_sp_cert_file'] -%>
+    MellonSPCertFile "<%= directory['mellon_sp_cert_file'] %>"
+      <%- end -%>
+      <%- if directory['mellon_sp_metadata_file'] -%>
+    MellonSPMetadataFile "<%= directory['mellon_sp_metadata_file'] %>"
+      <%- end -%>
+      <%- if directory['mellon_idp_metadata_file'] -%>
+    MellonIDPMetadataFile "<%= directory['mellon_idp_metadata_file'] %>"
+      <%- end -%>
+      <%- if directory['mellon_set_env_no_prefix'] -%>
+        <%- directory['mellon_set_env_no_prefix'].each do |key, value| -%>
+    MellonSetEnvNoPrefix "<%= key %>" "<%= value %>"
+        <%- end -%>
+      <%- end -%>
+      <%- if directory['mellon_user'] -%>
+    MellonUser "<%= directory['mellon_user'] %>"
+      <%- end -%>
+      <%- if directory['mellon_saml_response_dump'] -%>
+    MellonSamlResponseDump "<%= directory['mellon_saml_response_dump'] %>"
+      <%- end -%>
+      <%- if directory['mellon_cond'] -%>
+        <%- Array(directory['mellon_cond']).each do |cond| -%>
+    MellonCond <%= cond %>
+         <%- end -%>
+      <%- end -%>
+    <%- end -%>
+    <%- if directory['custom_fragment'] -%>
+    <%= directory['custom_fragment'] %>
+    <%- end -%>
+  </<%= provider %>>
+    <%- end -%>
+  <%- end -%>
+<% end -%>

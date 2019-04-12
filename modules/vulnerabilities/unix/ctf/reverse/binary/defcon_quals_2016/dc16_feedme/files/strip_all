@@ -1,0 +1,4 @@
+#!/bin/sh
+
+strip -s feedme
+strip --remove-section .note --remove-section .comment --remove-section .note.gnu.build-id feedme

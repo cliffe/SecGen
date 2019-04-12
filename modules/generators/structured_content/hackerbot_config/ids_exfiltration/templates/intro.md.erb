@@ -1,0 +1,71 @@
+# Data Loss Prevention and Exfiltration Detection
+
+This week's lab is entirely problem-based.
+
+## Getting started
+### VMs in this lab
+
+==Start these VMs== (if you haven't already):
+
+- hackerbot_server (leave it running, you don't log into this)
+- ids_snoop (IP address: <%= $ids_server_ip %>)
+- web_server (IP address: <%= $web_server_ip %>, leave it running, you don't log into this through the gui console, you may ssh to it later in the lab)
+- desktop
+
+All of these VMs need to be running to complete the lab.
+
+**Ensure the ids_snoop VM is allowed promiscuous mode.** If you are completing this lab on Leeds Beckett oVirt infrastructure, this should be sorted. Otherwise, if you have used SecGen to spin up VMs, you need to ensure your VMs have permission to monitor networks using promiscuous mode. On the Leeds Beckett oVirt infrastructure we have snoop networks, which mirror all the traffic between systems. On Virtualbox, you would need to go to Advanced network settings for the host-only network on the ids_snoop and enable promiscious mode.
+
+### Your login details for the "desktop" and "ids_snoop" VMs
+User: <%= $main_user %>
+Password: tiaspbiqe2r (**t**his **i**s **a** **s**ecure **p**assword **b**ut **i**s **q**uite **e**asy **2** **r**emember)
+
+You won't login to the hackerbot_server or web_server, but all the VMs need to be running to complete the lab.
+
+### For marks in the module
+1. **You need to submit flags**. Note that the flags and the challenges in your VMs are different to other's in the class. Flags will be revealed to you as you complete challenges throughout the module. Flags look like this: ==flag{*somethingrandom*}==. Follow the link on the module page to submit your flags.
+2. **You need to document the work and your solutions in a workbook**. This needs to include screenshots (including the flags) of how you solved each Hackerbot challenge and a writeup describing your solution to each challenge, and answering any "Workbook Questions". The workbook will be submitted later in the semester.
+
+## Hackerbot!
+![small-right](images/skullandusb.svg)
+
+This exercise involves interacting with Hackerbot, a chatbot who will task you to monitor the network and will attack your systems. If you satisfy Hackerbot by completing the challenges, she will reveal flags to you.
+
+Work through the below exercises, completing the Hackerbot challenges as noted.
+
+---
+## Getting Snort up and running
+
+**On the ids_snoop VM:**
+
+==Ensure Snort's output== includes something more readable:
+
+```bash
+sudo vi /etc/snort/snort.conf
+```
+> (Remember: editing using vi involves pressing "i" to insert/edit text, then *Esc*,
+
+> ":wq" to write changes and quit)
+
+==Check for the following line:==
+`output alert_fast`
+
+==Ensure Snort's interface is correctly configured== to the interface with IP address <%= $ids_server_ip %> (likely ens3), and set the local network to your IP address range (or "any"):
+
+```bash
+sudo vi /etc/snort/snort.debian.conf
+```
+> If you are not sure which interface to use, list the interfaces with `ifconfig` or `ip a s`
+> Set the interface and HOME network range, and exit vi (Esc, ":wq").
+
+==Restart Snort:==
+
+```bash
+sudo service snort stop
+sudo service snort start
+```
+> Using "reload" or "restart" may not update the interface.
+
+Snort should now be running, monitoring network traffic for activity.
+
+It can be helpful to monitor network traffic while writing IDS rules. You can start Wireshark with `kdesudo wireshark &`

@@ -9,6 +9,8 @@ Boxes like Metasploitable2 are always the same, this project uses Vagrant, Puppe
 
 [Please complete a short survey to tell us how you are using SecGen.](https://tinyurl.com/SecGenFeedback)
 
+More vulnerable virtual machines can be found at [VulnHub](https://vulnhub.com)
+
 ## Introduction
 Computer security students benefit from engaging in hacking challenges. Practical lab work and pre-configured hacking challenges are common practice both in security education and also as a pastime for security-minded individuals. Competitive hacking challenges, such as capture the flag (CTF) competitions have become a mainstay at industry conferences and are the focus of large online communities. Virtual machines (VMs) provide an effective way of sharing targets for hacking, and can be designed in order to test the skills of the attacker. Websites such as Vulnhub host pre-configured hacking challenge VMs and are a valuable resource for those learning and advancing their skills in computer security. However, developing these hacking challenges is time consuming, and once created, essentially static. That is, once the challenge has been "solved" there is no remaining challenge for the student, and if the challenge is created for a competition or assessment, the challenge cannot be reused without risking plagiarism, and collusion.
 

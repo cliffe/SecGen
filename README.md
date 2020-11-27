@@ -51,6 +51,15 @@ cd /home/user/bin/SecGen
 bundle install
 ```
 
+
+If you get the following error, then install the newest version of vagrant:
+
+`No usable default provider could be found for your system.`
+
+https://www.vagrantup.com/vmware/downloads
+ 
+
+
 To use the Windows basesboxes you will need to install Packer. Use the following command:
 ```bash
 curl -SL https://releases.hashicorp.com/packer/1.3.2/packer_1.3.2_linux_amd64.zip -o packer_1.3.2_linux_amd64.zip

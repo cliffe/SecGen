@@ -40,7 +40,7 @@ Install all the required packages:
 wget https://releases.hashicorp.com/vagrant/1.9.8/vagrant_1.9.8_x86_64.deb
 sudo apt install ./vagrant_1.9.8_x86_64.deb
 # install other required packages via repos
-sudo apt-get install ruby-dev zlib1g-dev liblzma-dev build-essential patch virtualbox ruby-bundler imagemagick libmagickwand-dev exiftool libpq-dev libcurl4-openssl-dev libxml2-dev graphviz graphviz-dev libpcap0.8-dev git
+sudo apt-get install ruby-dev zlib1g-dev liblzma-dev build-essential patch virtualbox ruby-bundler imagemagick libmagickwand-dev exiftool libpq-dev libcurl4-openssl-dev libxml2-dev graphviz graphviz-dev libpcap0.8-dev git rsync
 ```
 
 Copy SecGen to a directory of your choosing, such as */home/user/bin/SecGen*

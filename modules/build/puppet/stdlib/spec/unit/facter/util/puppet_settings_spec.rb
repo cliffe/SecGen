@@ -3,33 +3,32 @@ require 'spec_helper'
 require 'facter/util/puppet_settings'
 
 describe Facter::Util::PuppetSettings do
-
-  describe "#with_puppet" do
-    context "Without Puppet loaded" do
+  describe '#with_puppet' do
+    context 'without Puppet loaded' do
       before(:each) do
-        Module.expects(:const_get).with("Puppet").raises(NameError)
+        Module.expects(:const_get).with('Puppet').raises(NameError)
       end
 
-      it 'should be nil' do
+      it 'is nil' do
         expect(subject.with_puppet { Puppet[:vardir] }).to be_nil
       end
-      it 'should not yield to the block' do
+      it 'does not yield to the block' do
         Puppet.expects(:[]).never
         expect(subject.with_puppet { Puppet[:vardir] }).to be_nil
       end
     end
-    context "With Puppet loaded" do
+    context 'with Puppet loaded' do
       module Puppet; end
-      let(:vardir) { "/var/lib/puppet" }
+      let(:vardir) { '/var/lib/puppet' }
 
       before :each do
         Puppet.expects(:[]).with(:vardir).returns vardir
       end
 
-      it 'should yield to the block' do
+      it 'yields to the block' do
         subject.with_puppet { Puppet[:vardir] }
       end
-      it 'should return the nodes vardir' do
+      it 'returns the nodes vardir' do
         expect(subject.with_puppet { Puppet[:vardir] }).to eq vardir
       end
     end

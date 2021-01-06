@@ -3,46 +3,45 @@ require 'spec_helper_acceptance'
 
 describe 'empty function' do
   describe 'success' do
-    it 'recognizes empty strings' do
-      pp = <<-EOS
+    pp1 = <<-DOC
       $a = ''
       $b = true
       $o = empty($a)
       if $o == $b {
         notify { 'output correct': }
       }
-      EOS
-
-      apply_manifest(pp, :catch_failures => true) do |r|
-        expect(r.stdout).to match(/Notice: output correct/)
+    DOC
+    it 'recognizes empty strings' do
+      apply_manifest(pp1, :catch_failures => true) do |r|
+        expect(r.stdout).to match(%r{Notice: output correct})
       end
     end
-    it 'recognizes non-empty strings' do
-      pp = <<-EOS
+
+    pp2 = <<-DOC
       $a = 'aoeu'
       $b = false
       $o = empty($a)
       if $o == $b {
         notify { 'output correct': }
       }
-      EOS
-
-      apply_manifest(pp, :catch_failures => true) do |r|
-        expect(r.stdout).to match(/Notice: output correct/)
+    DOC
+    it 'recognizes non-empty strings' do
+      apply_manifest(pp2, :catch_failures => true) do |r|
+        expect(r.stdout).to match(%r{Notice: output correct})
       end
     end
-    it 'handles numerical values' do
-      pp = <<-EOS
+
+    pp3 = <<-DOC
       $a = 7
       $b = false
       $o = empty($a)
       if $o == $b {
         notify { 'output correct': }
       }
-      EOS
-
-      apply_manifest(pp, :catch_failures => true) do |r|
-        expect(r.stdout).to match(/Notice: output correct/)
+    DOC
+    it 'handles numerical values' do
+      apply_manifest(pp3, :catch_failures => true) do |r|
+        expect(r.stdout).to match(%r{Notice: output correct})
       end
     end
   end

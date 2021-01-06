@@ -3,8 +3,7 @@ require 'spec_helper_acceptance'
 
 describe 'grep function' do
   describe 'success' do
-    it 'greps arrays' do
-      pp = <<-EOS
+    pp = <<-DOC
       $a = ['aaabbb','bbbccc','dddeee']
       $b = 'bbb'
       $c = ['aaabbb','bbbccc']
@@ -12,10 +11,10 @@ describe 'grep function' do
       if $o == $c {
         notify { 'output correct': }
       }
-      EOS
-
+    DOC
+    it 'greps arrays' do
       apply_manifest(pp, :catch_failures => true) do |r|
-        expect(r.stdout).to match(/Notice: output correct/)
+        expect(r.stdout).to match(%r{Notice: output correct})
       end
     end
   end

@@ -20,4 +20,4 @@
 # > Note that you need to use Variant[Integer[0, 10], Float[0, 10]] if you want to match both integers and floating point numbers.
 #
 # This allows you to find all places where a consumers of your code call it with unexpected values.
-type Stdlib::Compat::Integer = Variant[Integer, Pattern[/^-?(?:(?:[1-9]\d*)|0)$/], Array[Variant[Integer, Pattern[/^-?(?:(?:[1-9]\d*)|0)$/]]]]
+type Stdlib::Compat::Integer = Variant[Integer, Pattern[/^-?(?:(?:[1-9]\d*)|0)$/], Array[Variant[Integer, Pattern[/^-?(?:(?:[1-9]\d*)|0)$/]]]] # lint:ignore:140chars

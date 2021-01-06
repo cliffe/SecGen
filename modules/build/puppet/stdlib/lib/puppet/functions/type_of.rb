@@ -10,7 +10,7 @@
 # See the documentation for "The Puppet Type System" for more information about types.
 # See the `assert_type()` function for flexible ways to assert the type of a value.
 #
-# The built-in type() function in puppet is generally preferred over this function 
+# The built-in type() function in puppet is generally preferred over this function
 # this function is provided for backwards compatibility.
 Puppet::Functions.create_function(:type_of) do
   def type_of(value)

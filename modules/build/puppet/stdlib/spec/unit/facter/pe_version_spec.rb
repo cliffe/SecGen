@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe "PE Version specs" do
+describe 'PE Version specs' do
   before :each do
     # Explicitly load the pe_version.rb file which contains generated facts
     # that cannot be automatically loaded.  Puppet 2.x implements
@@ -14,29 +14,32 @@ describe "PE Version specs" do
       Facter.collection.loader.load(:pe_version)
     end
   end
-  
-  context "When puppetversion is nil" do
+
+  context 'when puppetversion is nil' do
     before :each do
       Facter.fact(:puppetversion).stubs(:value).returns(nil)
     end
-    
-    it "pe_version is nil" do
+
+    it 'puppetversion is nil' do
       expect(Facter.fact(:puppetversion).value).to be_nil
+    end
+
+    it 'pe_version is nil' do
       expect(Facter.fact(:pe_version).value).to be_nil
     end
   end
 
-  context "If PE is installed" do
-    %w{ 2.6.1 2.10.300 }.each do |version|
+  context 'when PE is installed' do
+    %w[2.6.1 2.10.300].each do |version|
       puppetversion = "2.7.19 (Puppet Enterprise #{version})"
       context "puppetversion => #{puppetversion}" do
         before :each do
           Facter.fact(:puppetversion).stubs(:value).returns(puppetversion)
         end
 
-        (major,minor,patch) = version.split(".")
+        (major, minor, patch) = version.split('.')
 
-        it "Should return true" do
+        it 'returns true' do
           expect(Facter.fact(:is_pe).value).to eq(true)
         end
 
@@ -59,30 +62,29 @@ describe "PE Version specs" do
     end
   end
 
-  context "When PE is not installed" do
+  context 'when PE is not installed' do
     before :each do
-      Facter.fact(:puppetversion).stubs(:value).returns("2.7.19")
+      Facter.fact(:puppetversion).stubs(:value).returns('2.7.19')
     end
 
-    it "is_pe is false" do
+    it 'is_pe is false' do
       expect(Facter.fact(:is_pe).value).to eq(false)
     end
 
-    it "pe_version is nil" do
+    it 'pe_version is nil' do
       expect(Facter.fact(:pe_version).value).to be_nil
     end
 
-    it "pe_major_version is nil" do
+    it 'pe_major_version is nil' do
       expect(Facter.fact(:pe_major_version).value).to be_nil
     end
 
-    it "pe_minor_version is nil" do
+    it 'pe_minor_version is nil' do
       expect(Facter.fact(:pe_minor_version).value).to be_nil
     end
 
-    it "Should have a patch version" do
+    it 'has a patch version' do
       expect(Facter.fact(:pe_patch_version).value).to be_nil
     end
   end
-
 end

@@ -3,8 +3,7 @@ require 'spec_helper_acceptance'
 
 describe 'validate_cmd function' do
   describe 'success' do
-    it 'validates a true command' do
-      pp = <<-EOS
+    pp1 = <<-DOC
       $one = 'foo'
       if $::osfamily == 'windows' {
         $two = 'echo' #shell built-in
@@ -12,12 +11,12 @@ describe 'validate_cmd function' do
         $two = '/bin/echo'
       }
       validate_cmd($one,$two)
-      EOS
-
-      apply_manifest(pp, :catch_failures => true)
+    DOC
+    it 'validates a true command' do
+      apply_manifest(pp1, :catch_failures => true)
     end
-    it 'validates a fail command' do
-      pp = <<-EOS
+
+    pp2 = <<-DOC
       $one = 'foo'
       if $::osfamily == 'windows' {
         $two = 'C:/aoeu'
@@ -25,12 +24,12 @@ describe 'validate_cmd function' do
         $two = '/bin/aoeu'
       }
       validate_cmd($one,$two)
-      EOS
-
-      apply_manifest(pp, :expect_failures => true)
+    DOC
+    it 'validates a fail command' do
+      apply_manifest(pp2, :expect_failures => true)
     end
-    it 'validates a fail command with a custom error message' do
-      pp = <<-EOS
+
+    pp3 = <<-DOC
       $one = 'foo'
       if $::osfamily == 'windows' {
         $two = 'C:/aoeu'
@@ -38,10 +37,10 @@ describe 'validate_cmd function' do
         $two = '/bin/aoeu'
       }
       validate_cmd($one,$two,"aoeu is dvorak")
-      EOS
-
-      apply_manifest(pp, :expect_failures => true) do |output|
-        expect(output.stderr).to match(/aoeu is dvorak/)
+    DOC
+    it 'validates a fail command with a custom error message' do
+      apply_manifest(pp3, :expect_failures => true) do |output|
+        expect(output.stderr).to match(%r{aoeu is dvorak})
       end
     end
   end

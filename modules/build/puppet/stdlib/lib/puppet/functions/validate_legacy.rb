@@ -17,7 +17,8 @@ Puppet::Functions.create_function(:validate_legacy) do
     repeated_param 'Any', :args
   end
 
-  # Workaround PUP-4438 (fixed: https://github.com/puppetlabs/puppet/commit/e01c4dc924cd963ff6630008a5200fc6a2023b08#diff-c937cc584953271bb3d3b3c2cb141790R221) to support puppet < 4.1.0 and puppet < 3.8.1.
+  # Workaround PUP-4438 (fixed: https://github.com/puppetlabs/puppet/commit/e01c4dc924cd963ff6630008a5200fc6a2023b08#diff-
+  #   c937cc584953271bb3d3b3c2cb141790R221) to support puppet < 4.1.0 and puppet < 3.8.1.
   def call(scope, *args)
     manipulated_args = [scope] + args
     self.class.dispatcher.dispatch(self, scope, manipulated_args)
@@ -48,12 +49,11 @@ Puppet::Functions.create_function(:validate_legacy) do
 
   def previous_validation(scope, function_name, value, *prev_args)
     # Call the previous validation function and catch any errors. Return true if no errors are thrown.
-    begin
-      scope.send("function_#{function_name}".to_s, [value, *prev_args])
-      true
-    rescue Puppet::ParseError
-      false
-    end
+
+    scope.send("function_#{function_name}".to_s, [value, *prev_args])
+    true
+  rescue Puppet::ParseError
+    false
   end
 
   def assert_type(type, value)

@@ -3,34 +3,33 @@ require 'spec_helper_acceptance'
 
 describe 'prefix function' do
   describe 'success' do
-    it 'prefixes array of values' do
-      pp = <<-EOS
+    pp1 = <<-DOC
       $o = prefix(['a','b','c'],'p')
       notice(inline_template('prefix is <%= @o.inspect %>'))
-      EOS
-
-      apply_manifest(pp, :catch_failures => true) do |r|
-        expect(r.stdout).to match(/prefix is \["pa", "pb", "pc"\]/)
+    DOC
+    it 'prefixes array of values' do
+      apply_manifest(pp1, :catch_failures => true) do |r|
+        expect(r.stdout).to match(%r{prefix is \["pa", "pb", "pc"\]})
       end
     end
-    it 'prefixs with empty array' do
-      pp = <<-EOS
+
+    pp2 = <<-DOC
       $o = prefix([],'p')
       notice(inline_template('prefix is <%= @o.inspect %>'))
-      EOS
-
-      apply_manifest(pp, :catch_failures => true) do |r|
-        expect(r.stdout).to match(/prefix is \[\]/)
+    DOC
+    it 'prefixs with empty array' do
+      apply_manifest(pp2, :catch_failures => true) do |r|
+        expect(r.stdout).to match(%r{prefix is \[\]})
       end
     end
-    it 'prefixs array of values with undef' do
-      pp = <<-EOS
+
+    pp3 = <<-DOC
       $o = prefix(['a','b','c'], undef)
       notice(inline_template('prefix is <%= @o.inspect %>'))
-      EOS
-
-      apply_manifest(pp, :catch_failures => true) do |r|
-        expect(r.stdout).to match(/prefix is \["a", "b", "c"\]/)
+    DOC
+    it 'prefixs array of values with undef' do
+      apply_manifest(pp3, :catch_failures => true) do |r|
+        expect(r.stdout).to match(%r{prefix is \["a", "b", "c"\]})
       end
     end
   end

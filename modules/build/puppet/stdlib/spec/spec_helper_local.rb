@@ -1,7 +1,7 @@
 # automatically load any shared examples or contexts
-Dir["./spec/support/**/*.rb"].sort.each { |f| require f }
+Dir['./spec/support/**/*.rb'].sort.each { |f| require f }
 
-# hack to enable all the expect syntax (like allow_any_instance_of) in rspec-puppet examples
+# HACK: to enable all the expect syntax (like allow_any_instance_of) in rspec-puppet examples
 RSpec::Mocks::Syntax.enable_expect(RSpec::Puppet::ManifestMatchers)
 
 RSpec.configure do |config|
@@ -16,7 +16,7 @@ RSpec.configure do |config|
     # Facter.collection.loader.load(:ipaddress)
     Facter.clear
     Facter.clear_messages
-    
+
     RSpec::Mocks.setup
   end
 

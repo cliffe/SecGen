@@ -3,8 +3,7 @@ require 'spec_helper_acceptance'
 
 describe 'values function' do
   describe 'success' do
-    it 'returns an array of values' do
-      pp = <<-EOS
+    pp1 = <<-DOC
       $arg = {
         'a' => 1,
         'b' => 2,
@@ -12,19 +11,20 @@ describe 'values function' do
       }
       $output = values($arg)
       notice(inline_template('<%= @output.sort.inspect %>'))
-      EOS
-      expect(apply_manifest(pp, :catch_failures => true).stdout).to match(/\[1, 2, 3\]/)
+    DOC
+    it 'returns an array of values' do
+      expect(apply_manifest(pp1, :catch_failures => true).stdout).to match(%r{\[1, 2, 3\]})
     end
   end
+
   describe 'failure' do
-    it 'handles non-hash arguments' do
-      pp = <<-EOS
+    pp2 = <<-DOC
       $arg = "foo"
       $output = values($arg)
       notice(inline_template('<%= @output.inspect %>'))
-      EOS
-
-      expect(apply_manifest(pp, :expect_failures => true).stderr).to match(/Requires hash/)
+    DOC
+    it 'handles non-hash arguments' do
+      expect(apply_manifest(pp2, :expect_failures => true).stderr).to match(%r{Requires hash})
     end
   end
 end

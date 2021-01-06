@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe 'is_domain_name' do
   it { is_expected.not_to eq(nil) }
-  it { is_expected.to run.with_params().and_raise_error(Puppet::ParseError, /wrong number of arguments/i) }
-  it { is_expected.to run.with_params('one', 'two').and_raise_error(Puppet::ParseError, /wrong number of arguments/i) }
+  it { is_expected.to run.with_params.and_raise_error(Puppet::ParseError, %r{wrong number of arguments}i) }
+  it { is_expected.to run.with_params('one', 'two').and_raise_error(Puppet::ParseError, %r{wrong number of arguments}i) }
   it { is_expected.to run.with_params(1).and_return(false) }
   it { is_expected.to run.with_params([]).and_return(false) }
   it { is_expected.to run.with_params({}).and_return(false) }
@@ -28,7 +28,7 @@ describe 'is_domain_name' do
     it { is_expected.to run.with_params('www.foo-bar.example.com').and_return(true) }
     it { is_expected.to run.with_params('www.foo-bar.example.com.').and_return(true) }
     it { is_expected.to run.with_params('-foo.example.com').and_return(false) }
-    it { is_expected.to run.with_params('-foo.example.com').and_return(false) }
+    it { is_expected.to run.with_params('-foo.example.com.').and_return(false) }
   end
   # Values obtained from Facter values will be frozen strings
   # in newer versions of Facter:

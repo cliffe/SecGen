@@ -6,54 +6,53 @@ describe 'validate_augeas function', :unless => (fact('osfamily') == 'windows') 
     it 'installs augeas for tests'
   end
   describe 'success' do
-    context 'valid inputs with no 3rd argument' do
+    context 'with valid inputs with no 3rd argument' do
       {
         'root:x:0:0:root:/root:/bin/bash\n'                        => 'Passwd.lns',
-        'proc /proc   proc    nodev,noexec,nosuid     0       0\n' => 'Fstab.lns'
-      }.each do |line,lens|
-        it "validates a single argument for #{lens}" do
-          pp = <<-EOS
+        'proc /proc   proc    nodev,noexec,nosuid     0       0\n' => 'Fstab.lns',
+      }.each do |line, lens|
+        pp1 = <<-DOC
           $line = "#{line}"
           $lens = "#{lens}"
           validate_augeas($line, $lens)
-          EOS
-
-          apply_manifest(pp, :catch_failures => true)
+        DOC
+        it "validates a single argument for #{lens}" do
+          apply_manifest(pp1, :catch_failures => true)
         end
       end
     end
-    context 'valid inputs with 3rd and 4th arguments' do
-      it "validates a restricted value" do
-        line        = 'root:x:0:0:root:/root:/bin/barsh\n'
-        lens        = 'Passwd.lns'
-        restriction = '$file/*[shell="/bin/barsh"]'
-        pp = <<-EOS
+
+    context 'with valid inputs with 3rd and 4th arguments' do
+      line        = 'root:x:0:0:root:/root:/bin/barsh\n'
+      lens        = 'Passwd.lns'
+      restriction = '$file/*[shell="/bin/barsh"]'
+      pp2 = <<-DOC
         $line        = "#{line}"
         $lens        = "#{lens}"
         $restriction = ['#{restriction}']
         validate_augeas($line, $lens, $restriction, "my custom failure message")
-        EOS
-
-        expect(apply_manifest(pp, :expect_failures => true).stderr).to match(/my custom failure message/)
+      DOC
+      it 'validates a restricted value' do
+        expect(apply_manifest(pp2, :expect_failures => true).stderr).to match(%r{my custom failure message})
       end
     end
-    context 'invalid inputs' do
+
+    context 'with invalid inputs' do
       {
         'root:x:0:0:root' => 'Passwd.lns',
-        '127.0.1.1'       => 'Hosts.lns'
-      }.each do |line,lens|
-        it "validates a single argument for #{lens}" do
-          pp = <<-EOS
+        '127.0.1.1'       => 'Hosts.lns',
+      }.each do |line, lens|
+        pp3 = <<-DOC
           $line = "#{line}"
           $lens = "#{lens}"
           validate_augeas($line, $lens)
-          EOS
-
-          apply_manifest(pp, :expect_failures => true)
+        DOC
+        it "validates a single argument for #{lens}" do
+          apply_manifest(pp3, :expect_failures => true)
         end
       end
     end
-    context 'garbage inputs' do
+    context 'with garbage inputs' do
       it 'raises an error on invalid inputs'
     end
   end

@@ -3,8 +3,7 @@ require 'spec_helper_acceptance'
 
 describe 'intersection function' do
   describe 'success' do
-    it 'intersections arrays' do
-      pp = <<-EOS
+    pp = <<-DOC
       $a = ['aaa','bbb','ccc']
       $b = ['bbb','ccc','ddd','eee']
       $c = ['bbb','ccc']
@@ -12,10 +11,10 @@ describe 'intersection function' do
       if $o == $c {
         notify { 'output correct': }
       }
-      EOS
-
+    DOC
+    it 'intersections arrays' do
       apply_manifest(pp, :catch_failures => true) do |r|
-        expect(r.stdout).to match(/Notice: output correct/)
+        expect(r.stdout).to match(%r{Notice: output correct})
       end
     end
     it 'intersections empty arrays'

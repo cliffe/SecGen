@@ -1,15 +1,18 @@
+#
+# floor.rb
+#
 module Puppet::Parser::Functions
-  newfunction(:floor, :type => :rvalue, :doc => <<-EOS
+  newfunction(:floor, :type => :rvalue, :doc => <<-DOC
     Returns the largest integer less or equal to the argument.
     Takes a single numeric value as an argument.
-    EOS
-  ) do |arguments|
+    DOC
+             ) do |arguments|
 
     raise(Puppet::ParseError, "floor(): Wrong number of arguments given (#{arguments.size} for 1)") if arguments.size != 1
 
     begin
       arg = Float(arguments[0])
-    rescue TypeError, ArgumentError => e
+    rescue TypeError, ArgumentError => _e
       raise(Puppet::ParseError, "floor(): Wrong argument type given (#{arguments[0]} for Numeric)")
     end
 

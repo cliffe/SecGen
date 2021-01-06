@@ -3,15 +3,14 @@ require 'spec_helper_acceptance'
 
 describe 'keys function' do
   describe 'success' do
-    it 'keyss hashes' do
-      pp = <<-EOS
+    pp = <<-DOC
       $a = {'aaa'=>'bbb','ccc'=>'ddd'}
       $o = keys($a)
       notice(inline_template('keys is <%= @o.sort.inspect %>'))
-      EOS
-
+    DOC
+    it 'keyss hashes' do
       apply_manifest(pp, :catch_failures => true) do |r|
-        expect(r.stdout).to match(/keys is \["aaa", "ccc"\]/)
+        expect(r.stdout).to match(%r{keys is \["aaa", "ccc"\]})
       end
     end
     it 'handles non hashes'

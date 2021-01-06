@@ -1,18 +1,17 @@
 #
 # delete_at.rb
 #
-
 module Puppet::Parser::Functions
-  newfunction(:delete_at, :type => :rvalue, :doc => <<-EOS
-Deletes a determined indexed value from an array.
+  newfunction(:delete_at, :type => :rvalue, :doc => <<-DOC
+    Deletes a determined indexed value from an array.
 
-*Examples:*
+    *Examples:*
 
-    delete_at(['a','b','c'], 1)
+        delete_at(['a','b','c'], 1)
 
-Would return: ['a','c']
-    EOS
-  ) do |arguments|
+    Would return: ['a','c']
+  DOC
+             ) do |arguments|
 
     raise(Puppet::ParseError, "delete_at(): Wrong number of arguments given (#{arguments.size} for 2)") if arguments.size < 2
 
@@ -24,7 +23,7 @@ Would return: ['a','c']
 
     index = arguments[1]
 
-    if index.is_a?(String) and not index.match(/^\d+$/)
+    if index.is_a?(String) && !index.match(%r{^\d+$})
       raise(Puppet::ParseError, 'delete_at(): You must provide non-negative numeric index')
     end
 

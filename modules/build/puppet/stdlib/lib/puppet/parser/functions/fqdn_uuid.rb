@@ -1,8 +1,9 @@
 require 'digest/sha1'
-
+#
+# fqdn_uuid.rb
+#
 module Puppet::Parser::Functions
-  newfunction(:fqdn_uuid, :type => :rvalue, :doc => <<-END) do |args|
-
+  newfunction(:fqdn_uuid, :type => :rvalue, :doc => <<-DOC) do |args|
     Creates a UUID based on a given string, assumed to be the FQDN
 
     For example, to generate a UUID based on the FQDN of a system:
@@ -31,17 +32,11 @@ module Puppet::Parser::Functions
     No verification is present at the moment as whether the domain name given
     is in fact a correct fully-qualified domain name.  Therefore any arbitrary
     string and/or alpha-numeric value can subside for a domain name.
-    EOS
+    DOC
 
-    END
-
-    if args.length == 0
-      raise(ArgumentError, "fqdn_uuid: No arguments given")
-    elsif args.length == 1
-      fqdn = args[0]
-    else
-      raise(ArgumentError, "fqdn_uuid: Too many arguments given (#{args.length})")
-    end
+    raise(ArgumentError, 'fqdn_uuid: No arguments given') if args.empty?
+    raise(ArgumentError, "fqdn_uuid: Too many arguments given (#{args.length})") unless args.length == 1
+    fqdn = args[0]
 
     # Code lovingly taken from
     # https://github.com/puppetlabs/marionette-collective/blob/master/lib/mcollective/ssl.rb
@@ -51,22 +46,21 @@ module Puppet::Parser::Functions
     #  6ba7b810-9dad-11d1-80b4-00c04fd430c8
     #
     uuid_name_space_dns = [0x6b,
-      0xa7,
-      0xb8,
-      0x10,
-      0x9d,
-      0xad,
-      0x11,
-      0xd1,
-      0x80,
-      0xb4,
-      0x00,
-      0xc0,
-      0x4f,
-      0xd4,
-      0x30,
-      0xc8
-    ].map {|b| b.chr}.join
+                           0xa7,
+                           0xb8,
+                           0x10,
+                           0x9d,
+                           0xad,
+                           0x11,
+                           0xd1,
+                           0x80,
+                           0xb4,
+                           0x00,
+                           0xc0,
+                           0x4f,
+                           0xd4,
+                           0x30,
+                           0xc8].map { |b| b.chr }.join
 
     sha1 = Digest::SHA1.new
     sha1.update(uuid_name_space_dns)
@@ -83,7 +77,7 @@ module Puppet::Parser::Functions
     bytes[8] &= 0x3f
     bytes[8] |= 0x80
 
-    bytes = [4, 2, 2, 2, 6].collect do |i|
+    bytes = [4, 2, 2, 2, 6].map do |i|
       bytes.slice!(0, i).pack('C*').unpack('H*')
     end
 

@@ -22,4 +22,5 @@ gettext:
   # Patterns for +Dir.glob+ used to find all files that might contain
   # translatable content, relative to the project root directory
   source_files:
+      - './lib/**/*.rb'
   

@@ -1,16 +1,15 @@
 #
 # is_function_available.rb
 #
-
 module Puppet::Parser::Functions
-  newfunction(:is_function_available, :type => :rvalue, :doc => <<-EOS
-This function accepts a string as an argument, determines whether the
-Puppet runtime has access to a function by that name.  It returns a
-true if the function exists, false if not.
-    EOS
-  ) do |arguments|
+  newfunction(:is_function_available, :type => :rvalue, :doc => <<-DOC
+    This function accepts a string as an argument, determines whether the
+    Puppet runtime has access to a function by that name.  It returns a
+    true if the function exists, false if not.
+    DOC
+             ) do |arguments|
 
-    if (arguments.size != 1) then
+    if arguments.size != 1
       raise(Puppet::ParseError, "is_function_available?(): Wrong number of arguments given #{arguments.size} for 1")
     end
 
@@ -18,7 +17,7 @@ true if the function exists, false if not.
     return false unless arguments[0].is_a?(String)
 
     function = Puppet::Parser::Functions.function(arguments[0].to_sym)
-    function.is_a?(String) and not function.empty?
+    function.is_a?(String) && !function.empty?
   end
 end
 

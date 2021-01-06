@@ -1,30 +1,33 @@
 #
 # unique.rb
 #
-
 module Puppet::Parser::Functions
-  newfunction(:unique, :type => :rvalue, :doc => <<-EOS
-This function will remove duplicates from strings and arrays.
+  newfunction(:unique, :type => :rvalue, :doc => <<-DOC
+    This function will remove duplicates from strings and arrays.
 
-*Examples:*
+    *Examples:*
 
-    unique("aabbcc")
+        unique("aabbcc")
 
-Will return:
+    Will return:
 
-    abc
+        abc
 
-You can also use this with arrays:
+    You can also use this with arrays:
 
-    unique(["a","a","b","b","c","c"])
+        unique(["a","a","b","b","c","c"])
 
-This returns:
+    This returns:
 
-    ["a","b","c"]
-    EOS
-  ) do |arguments|
+        ["a","b","c"]
+    DOC
+             ) do |arguments|
 
-    raise(Puppet::ParseError, "unique(): Wrong number of arguments given (#{arguments.size} for 1)") if arguments.size < 1
+    if Puppet::Util::Package.versioncmp(Puppet.version, '5.0.0') >= 0
+      function_deprecation([:unique, 'This method is deprecated, please use the core puppet unique function. There is further documentation for the function in the release notes of Puppet 5.0.'])
+    end
+
+    raise(Puppet::ParseError, "unique(): Wrong number of arguments given (#{arguments.size} for 1)") if arguments.empty?
 
     value = arguments[0]
 

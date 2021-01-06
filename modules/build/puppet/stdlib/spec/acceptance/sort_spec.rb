@@ -3,27 +3,26 @@ require 'spec_helper_acceptance'
 
 describe 'sort function' do
   describe 'success' do
-    it 'sorts arrays' do
-      pp = <<-EOS
+    pp1 = <<-DOC
       $a = ["the","public","art","galleries"]
       # Anagram: Large picture halls, I bet
       $o = sort($a)
       notice(inline_template('sort is <%= @o.inspect %>'))
-      EOS
-
-      apply_manifest(pp, :catch_failures => true) do |r|
-        expect(r.stdout).to match(/sort is \["art", "galleries", "public", "the"\]/)
+    DOC
+    it 'sorts arrays' do
+      apply_manifest(pp1, :catch_failures => true) do |r|
+        expect(r.stdout).to match(%r{sort is \["art", "galleries", "public", "the"\]})
       end
     end
-    it 'sorts strings' do
-      pp = <<-EOS
+
+    pp2 = <<-DOC
       $a = "blowzy night-frumps vex'd jack q"
       $o = sort($a)
       notice(inline_template('sort is <%= @o.inspect %>'))
-      EOS
-
-      apply_manifest(pp, :catch_failures => true) do |r|
-        expect(r.stdout).to match(/sort is "    '-abcdefghijklmnopqrstuvwxyz"/)
+    DOC
+    it 'sorts strings' do
+      apply_manifest(pp2, :catch_failures => true) do |r|
+        expect(r.stdout).to match(%r{sort is "    '-abcdefghijklmnopqrstuvwxyz"})
       end
     end
   end

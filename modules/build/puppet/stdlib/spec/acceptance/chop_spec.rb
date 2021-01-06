@@ -3,8 +3,7 @@ require 'spec_helper_acceptance'
 
 describe 'chop function' do
   describe 'success' do
-    it 'should eat the last character' do
-      pp = <<-EOS
+    pp1 = <<-DOC
       $input = "test"
       if size($input) != 4 {
         fail("Size of ${input} is not 4.")
@@ -13,13 +12,12 @@ describe 'chop function' do
       if size($output) != 3 {
         fail("Size of ${input} is not 3.")
       }
-      EOS
-
-      apply_manifest(pp, :catch_failures => true)
+    DOC
+    it 'eats the last character' do
+      apply_manifest(pp1, :catch_failures => true)
     end
 
-    it 'should eat the last two characters of \r\n' do
-      pp = <<-'EOS'
+    pp2 = <<-'DOC'
       $input = "test\r\n"
       if size($input) != 6 {
         fail("Size of ${input} is not 6.")
@@ -28,18 +26,17 @@ describe 'chop function' do
       if size($output) != 4 {
         fail("Size of ${input} is not 4.")
       }
-      EOS
-
-      apply_manifest(pp, :catch_failures => true)
+    DOC
+    it 'eats the last two characters of \r\n' do
+      apply_manifest(pp2, :catch_failures => true)
     end
 
-    it 'should not fail on empty strings' do
-      pp = <<-EOS
+    pp3 = <<-DOC
       $input = ""
       $output = chop($input)
-      EOS
-
-      apply_manifest(pp, :catch_failures => true)
+    DOC
+    it 'does not fail on empty strings' do
+      apply_manifest(pp3, :catch_failures => true)
     end
   end
 end

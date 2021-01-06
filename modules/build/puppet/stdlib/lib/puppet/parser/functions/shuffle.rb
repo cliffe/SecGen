@@ -1,14 +1,13 @@
 #
 # shuffle.rb
 #
-
 module Puppet::Parser::Functions
-  newfunction(:shuffle, :type => :rvalue, :doc => <<-EOS
-Randomizes the order of a string or array elements.
-    EOS
-  ) do |arguments|
+  newfunction(:shuffle, :type => :rvalue, :doc => <<-DOC
+    Randomizes the order of a string or array elements.
+  DOC
+             ) do |arguments|
 
-    raise(Puppet::ParseError, "shuffle(): Wrong number of arguments given (#{arguments.size} for 1)") if arguments.size < 1
+    raise(Puppet::ParseError, "shuffle(): Wrong number of arguments given (#{arguments.size} for 1)") if arguments.empty?
 
     value = arguments[0]
 

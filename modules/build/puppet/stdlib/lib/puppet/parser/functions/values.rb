@@ -1,27 +1,26 @@
 #
 # values.rb
 #
-
 module Puppet::Parser::Functions
-  newfunction(:values, :type => :rvalue, :doc => <<-EOS
-When given a hash this function will return the values of that hash.
+  newfunction(:values, :type => :rvalue, :doc => <<-DOC
+    When given a hash this function will return the values of that hash.
 
-*Examples:*
+    *Examples:*
 
-    $hash = {
-      'a' => 1,
-      'b' => 2,
-      'c' => 3,
-    }
-    values($hash)
+        $hash = {
+          'a' => 1,
+          'b' => 2,
+          'c' => 3,
+        }
+        values($hash)
 
-This example would return:
+    This example would return:
 
-    [1,2,3]
-    EOS
-  ) do |arguments|
+        [1,2,3]
+    DOC
+             ) do |arguments|
 
-    raise(Puppet::ParseError, "values(): Wrong number of arguments given (#{arguments.size} for 1)") if arguments.size < 1
+    raise(Puppet::ParseError, "values(): Wrong number of arguments given (#{arguments.size} for 1)") if arguments.empty?
 
     hash = arguments[0]
 

@@ -3,8 +3,7 @@ require 'spec_helper_acceptance'
 
 describe 'getvar function' do
   describe 'success' do
-    it 'getvars from classes' do
-      pp = <<-EOS
+    pp = <<-DOC
       class a::data { $foo = 'aoeu' }
       include a::data
       $b = 'aoeu'
@@ -12,10 +11,10 @@ describe 'getvar function' do
       if $o == $b {
         notify { 'output correct': }
       }
-      EOS
-
+    DOC
+    it 'getvars from classes' do
       apply_manifest(pp, :catch_failures => true) do |r|
-        expect(r.stdout).to match(/Notice: output correct/)
+        expect(r.stdout).to match(%r{Notice: output correct})
       end
     end
   end

@@ -1,6 +1,8 @@
+#
+# validate_array.rb
+#
 module Puppet::Parser::Functions
-
-  newfunction(:validate_array, :doc => <<-'ENDHEREDOC') do |args|
+  newfunction(:validate_array, :doc => <<-'DOC') do |args|
     Validate that all passed values are array data structures. Abort catalog
     compilation if any value fails this check.
 
@@ -16,20 +18,19 @@ module Puppet::Parser::Functions
         $undefined = undef
         validate_array($undefined)
 
-    ENDHEREDOC
+    DOC
 
-    function_deprecation([:validate_array, 'This method is deprecated, please use the stdlib validate_legacy function, with Stdlib::Compat::Array. There is further documentation for validate_legacy function in the README.'])
+    function_deprecation([:validate_array, 'This method is deprecated, please use the stdlib validate_legacy function,
+      with Stdlib::Compat::Array. There is further documentation for validate_legacy function in the README.'])
 
-    unless args.length > 0 then
-      raise Puppet::ParseError, ("validate_array(): wrong number of arguments (#{args.length}; must be > 0)")
+    if args.empty?
+      raise Puppet::ParseError, "validate_array(): wrong number of arguments (#{args.length}; must be > 0)"
     end
 
     args.each do |arg|
       unless arg.is_a?(Array)
-        raise Puppet::ParseError, ("#{arg.inspect} is not an Array.  It looks to be a #{arg.class}")
+        raise Puppet::ParseError, "#{arg.inspect} is not an Array.  It looks to be a #{arg.class}"
       end
     end
-
   end
-
 end

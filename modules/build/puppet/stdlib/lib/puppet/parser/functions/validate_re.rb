@@ -1,5 +1,8 @@
+#
+# validate.rb
+#
 module Puppet::Parser::Functions
-  newfunction(:validate_re, :doc => <<-'ENDHEREDOC') do |args|
+  newfunction(:validate_re, :doc => <<-'DOC') do |args|
     Perform simple validation of a string against one or more regular
     expressions. The first argument of this function should be a string to
     test, and the second argument should be a stringified regular expression
@@ -28,11 +31,12 @@ module Puppet::Parser::Functions
 
         validate_re("${::operatingsystemmajrelease}", '^[57]$')
 
-    ENDHEREDOC
+    DOC
 
-    function_deprecation([:validate_re, 'This method is deprecated, please use the stdlib validate_legacy function, with Stdlib::Compat::Re. There is further documentation for validate_legacy function in the README.'])
+    function_deprecation([:validate_re, 'This method is deprecated, please use the stdlib validate_legacy function,
+                            with Stdlib::Compat::Re. There is further documentation for validate_legacy function in the README.'])
 
-    if (args.length < 2) or (args.length > 3) then
+    if (args.length < 2) || (args.length > 3)
       raise Puppet::ParseError, "validate_re(): wrong number of arguments (#{args.length}; must be 2 or 3)"
     end
 
@@ -45,6 +49,5 @@ module Puppet::Parser::Functions
     raise Puppet::ParseError, msg unless [args[1]].flatten.any? do |re_str|
       args[0] =~ Regexp.compile(re_str)
     end
-
   end
 end

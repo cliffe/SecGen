@@ -3,24 +3,23 @@ require 'spec_helper_acceptance'
 
 describe 'range function' do
   describe 'success' do
-    it 'ranges letters' do
-      pp = <<-EOS
+    pp1 = <<-DOC
       $o = range('a','d')
       notice(inline_template('range is <%= @o.inspect %>'))
-      EOS
-
-      apply_manifest(pp, :catch_failures => true) do |r|
-        expect(r.stdout).to match(/range is \["a", "b", "c", "d"\]/)
+    DOC
+    it 'ranges letters' do
+      apply_manifest(pp1, :catch_failures => true) do |r|
+        expect(r.stdout).to match(%r{range is \["a", "b", "c", "d"\]})
       end
     end
-    it 'ranges letters with a step' do
-      pp = <<-EOS
+
+    pp2 = <<-DOC
       $o = range('a','d', '2')
       notice(inline_template('range is <%= @o.inspect %>'))
-      EOS
-
-      apply_manifest(pp, :catch_failures => true) do |r|
-        expect(r.stdout).to match(/range is \["a", "c"\]/)
+    DOC
+    it 'ranges letters with a step' do
+      apply_manifest(pp2, :catch_failures => true) do |r|
+        expect(r.stdout).to match(%r{range is \["a", "c"\]})
       end
     end
     it 'ranges letters with a negative step'

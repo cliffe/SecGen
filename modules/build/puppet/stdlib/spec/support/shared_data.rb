@@ -14,7 +14,7 @@ module SharedData
     '8.8.8.8/16',
     '8.8.8.8/255.255.0.0',
     '8.8.8.8/32',
-  ]
+  ].freeze
   IPV4_NEGATIVE_PATTERNS = [
     '',
     '0000',
@@ -34,5 +34,5 @@ module SharedData
     '9999.9999.9999.9999',
     'affe::beef',
     'nope',
-  ]
+  ].freeze
 end

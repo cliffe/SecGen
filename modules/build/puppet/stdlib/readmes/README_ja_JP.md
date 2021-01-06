@@ -4,8 +4,8 @@
 
 1. [モジュールの説明 - モジュールの機能とその有益性](#モジュールの説明)
 1. [セットアップ - stdlib導入の基本](#セットアップ)
-1. [使用 - 設定オプションと追加機能](#使用)
-1. [リファレンス - モジュールの機能と動作について](#リファレンス)
+1. [使用 - 設定オプションと追加機能](#使用方法)
+1. [リファレンス - モジュールの機能と動作について](#参考)
     1. [クラス](#クラス)
     1. [定義タイプ](#定義タイプ)
     1. [データタイプ](#データタイプ)
@@ -18,7 +18,7 @@
 
 ## モジュールの説明
 
-このモジュールでは、Puppetモジュールのリソースの 標準ライブラリを提供しています。Puppetモジュールでは、この標準ライブラリを広く使用しています。stdlibモジュールは、以下のリソースをPuppetに追加します。
+このモジュールでは、Puppetモジュールリソースの標準ライブラリを提供しています。Puppetモジュールでは、この標準ライブラリを広く使用しています。stdlibモジュールは、以下のリソースをPuppetに追加します。
 
  * ステージ
  * Facts
@@ -35,7 +35,7 @@ stdlibモジュールを[インストール](https://docs.puppet.com/puppet/late
 
 stdlibに依存するモジュールを記述する場合は、必ずmetadata.jsonで[依存関係を特定](https://docs.puppet.com/puppet/latest/modules_metadata.html#specifying-dependencies)してください。
 
-## 使用
+## 使用方法
 
 stdlibのほとんどの機能は、Puppetに自動的にロードされます。Puppetで標準化されたランステージを使用するには、`include stdlib`を用いてマニフェスト内でこのクラスを宣言してください。
 
@@ -63,12 +63,12 @@ node default {
 
 ## リファレンス
 
-* [パブリッククラス][]
-* [プライベートクラス][]
-* [定義タイプ][]
-* [データタイプ][]
-* [Facts][]
-* [関数][]
+* [パブリッククラス](#パブリッククラス)
+* [プライベートクラス](#プライベートクラス)
+* [定義タイプ](#定義タイプ)
+* [データタイプ](#データタイプ)
+* [Facts](#facts)
+* [関数](#関数)
 
 ### クラス
 
@@ -115,19 +115,51 @@ file_line { 'bashrc_proxy':
 
 上の例では、`match`により、'export'で始まり'HTTP_PROXY'と続く行が探され、その行が行内の値に置き換えられます。
 
- `ensure => absent`を用いたマッチ例:
+マッチ例:
+
+```puppet
+file_line { 'bashrc_proxy':
+  ensure             => present,
+  path               => '/etc/bashrc',
+  line               => 'export HTTP_PROXY=http://squid.puppetlabs.vm:3128',
+  match              => '^export\ HTTP_PROXY\=',
+  append_on_no_match => false,
+}
+```
+
+このコードの例では、`match`によってexportで始まり'HTTP_PROXY'が続く行が検索され、その行が行内の値に置き換えられます。マッチするものが見つからない場合、ファイルは変更されません。
+
+ `ensure => absent`の例:
+
+`ensure => absent`を設定する場合に、このタイプの動作には2通りがあります。
+
+1つは`match => ...`と`match_for_absence => true`の設定です。`match`により、'export'で始まり'HTTP_PROXY'と続く行が探され、その行が削除されます。複数の行がマッチし、`multiple => true`パラメータが設定されていない場合は、エラーが生じます。
+
+この例で`line => ...`パラメータは承認されますが無視されます。
+
+例:
 
 ```puppet
 file_line { 'bashrc_proxy':
   ensure            => absent,
   path              => '/etc/bashrc',
-  line              => 'export HTTP_PROXY=http://squid.puppetlabs.vm:3128',
   match             => '^export\ HTTP_PROXY\=',
   match_for_absence => true,
 }
 ```
 
-上の例では、`match`により、'export'で始まり'HTTP_PROXY'と続く行が探され、その行が削除されます。複数の行がマッチし、`multiple => true`パラメータが設定されていない場合は、エラーが生じます。
+`ensure => absent`を設定する場合のもう1つの動作は、`line => ...`の指定と一致なしです。行が存在しないことを確認した場合のデフォルトの動作では、マッチするすべての行を削除します。この動作を無効にすることはできません。
+
+例:
+
+```puppet
+file_line { 'bashrc_proxy':
+  ensure => absent,
+  path   => '/etc/bashrc',
+  line   => 'export HTTP_PROXY=http://squid.puppetlabs.vm:3128',
+}
+```
+
 
 エンコード例:
 
@@ -145,89 +177,97 @@ file_line { "XScreenSaver":
 
 **Autorequire:** Puppetが管理しているファイルに、管理対象となる行が含まれている場合は、`file_line`リソースと当該ファイルの暗黙的な依存関係が設定されます。
 
-##### パラメータ
+**パラメータ**
 
 パラメータは、別途説明がない限り、すべてオプションです。
 
-* `after`
+##### `after`
 
-  このパラメータで指定された行の後に、Puppetが正規表現を用いて新規の行を追加します(既存の行が規定の位置に追加されます)。
+このパラメータで指定された行の後に、Puppetが正規表現を用いて新規の行を追加します(既存の行が規定の位置に追加されます)。
 
-  値: 正規表現を含む文字列
-  
-  デフォルト値: `undef`
-  
-* `encoding`
-  
-  適正なファイルエンコードを指定します。
+値: 正規表現を含む文字列
 
-  値: 有効なRuby文字エンコードを指定する文字列
-  
-  デフォルト: 'UTF-8'
+デフォルト値: `undef`
 
-* `ensure`: リソースが存在するかどうかを指定します。
+##### `encoding`
 
-  値: 'present'、'absent'
-  
-  デフォルト値: 'present'
-  
-* `line`
+適正なファイルエンコードを指定します。
 
-  **必須**
-  
-  `path`パラメータにより位置を示されたファイルに追加する行を設定します。
-    
-  値: 文字列
-  
-* `match`
+値: 有効なRuby文字エンコードを指定する文字列
 
-  ファイル内の既存の行と比較する正規表現を指定します。マッチが見つかった場合、新規の行を追加するかわりに、置き換えられます。正規表現の比較は行の値に照らして行われ、マッチしない場合は、例外が発生します。
-  
-  値: 正規表現を含む文字列
-  
-  デフォルト値: `undef`
-  
+デフォルト: 'UTF-8'
 
-* `match_for_absence`
+##### `ensure`: リソースが存在するかどうかを指定します。
 
-  `ensure => absent`の場合にマッチを適用するかどうかを指定します。`true`に設定してマッチを設定すると、マッチする行が削除されます。`false`に設定すると(デフォルト)、`ensure => absent`の場合にマッチが無視され、代わりに`line`の値が使用されます。`ensure => present`になっている場合は、このパラメータは無視されます。
-  
-  ブーリアン
-  
-  デフォルト値: `false`
-  
-* `multiple`
+値: 'present'、'absent'
 
-  `match`および`after`により複数の行を変更できるかどうかを指定します。`false`に設定すると、複数の行がマッチする場合に例外が発生します。
-  
-  値: `true`、`false`
-  
-  デフォルト値: `false`
-  
-  
-* `name`
+デフォルト値: 'present'
 
-  リソースの名称として使用する名前を指定します。リソースのnamevarをリソースの規定の`title`と異なるものにしたい場合は、`name`で名前を指定します。 
-  
-  値: 文字列
-  
-  デフォルト値: タイトルの値
-  
-* `path`
+##### `line`
 
-  **必須**
-  
-  `line`で指定された行を確保するファイルを指定します。 
-  
-  値: 当該ファイルの絶対パスを指定する文字列
-  
-* `replace`
+**必須**
 
-  `match`パラメータとマッチする既存の行を上書きするかどうかを指定します。`false`に設定すると、`match`パラメータにマッチする行が見つかった場合、その行はファイルに配置されません。
-  
-  ブーリアン
-  
-  デフォルト値: `true`
+`path`パラメータにより位置を示されたファイルに追加する行を設定します。
+
+値: 文字列
+
+##### `match`
+
+ファイル内の既存の行と比較する正規表現を指定します。マッチが見つかった場合、新規の行を追加する代わりに、置き換えられます。
+
+値: 正規表現を含む文字列
+
+デフォルト値: `undef`
+
+
+##### `match_for_absence`
+
+`ensure => absent`の場合にマッチを適用するかどうかを指定します。`true`に設定してマッチを設定すると、マッチする行が削除されます。`false`に設定すると(デフォルト)、`ensure => absent`の場合にマッチが無視され、代わりに`line`の値が使用されます。`ensure => present`になっている場合は、このパラメータは無視されます。
+
+ブーリアン
+
+デフォルト値: `false`
+
+##### `multiple`
+
+`match`および`after`により複数の行を変更できるかどうかを指定します。`false`に設定すると、file_lineは1つの行のみ置き換えることができますが、複数の行を置き換えようとするとエラーが発生します。`true`に設定すると、file_lineは1つまたは複数の行を置き換えることができます。
+
+値: `true`、`false`
+
+デフォルト値: `false`
+
+
+##### `name`
+
+リソースの名称として使用する名前を指定します。リソースのnamevarをリソースの規定の`title`と異なるものにしたい場合は、`name`で名前を指定します。
+
+値: 文字列
+
+デフォルト値: タイトルの値
+
+##### `path`
+
+**必須**
+
+`line`で指定された行を確保するファイルを指定します。
+
+値: 当該ファイルの絶対パスを指定する文字列
+
+##### `replace`
+
+`match`パラメータとマッチする既存の行をリソースで上書きするかどうかを指定します。`false`に設定すると、`match`パラメータにマッチする行が見つかった場合、その行はファイルに配置されません。
+
+`false`に設定すると、`match`パラメータにマッチする行が見つかった場合、その行はファイルに配置されません。
+
+ブーリアン
+
+デフォルト値: `true`
+
+##### `replace_all_matches_not_matching_line`
+
+`line`がファイルにすでに存在する場合でも、`match`パラメータに一致するすべての行が置き換えられます。
+
+デフォルト値: `false`
 
 ### データタイプ
 
@@ -253,6 +293,24 @@ C:\\WINDOWS\\System32
 
 ```shell
 ../relative_path
+```
+
+#### `Stdlib::Ensure::Service`
+
+サービスリソースの使用可能なensure値と一致します。
+
+使用可能なインプット例:    
+
+```shell
+停止済み
+実行中
+```
+
+使用不可能なインプット例:   
+
+```shell
+true
+false
 ```
 
 #### `Stdlib::Httpsurl`
@@ -289,6 +347,10 @@ http://hello.com
 httds://notquiteright.org
 ```
 
+#### `Stdlib::MAC`
+
+[RFC5342](https://tools.ietf.org/html/rfc5342)で定義されるMACアドレスに一致します。
+
 #### `Stdlib::Unixpath`
 
 Unixオペレーティングシステムのパスに一致します。
@@ -307,11 +369,35 @@ Unixオペレーティングシステムのパスに一致します。
 C:/whatever
 ```
 
+#### `Stdlib::Filemode`
+
+８進数で有効な4桁モードと一致します。
+
+使用可能なインプット例:
+
+```shell
+0644
+```
+
+```shell
+1777
+```
+
+使用不可能なインプット例:
+
+```shell
+644
+```
+
+```shell
+0999
+```
+
 #### `Stdlib::Windowspath`
 
 Windowsオペレーティングシステムのパスに一致します。
 
-使用可能なインプット例: 
+使用可能なインプット例:
 
 ```shell
 C:\\WINDOWS\\System32
@@ -468,10 +554,10 @@ base64('decode', 'aHR0cHM6Ly9wdXBwZXRsYWJzLmNvbQ==', 'urlsafe')
 
 * `false`、'f'、'0'、'n'、'no'を0に変換します。
 * `true`、't'、'1'、'y'、'yes'を1に変換します。
-  
-  引数: インプットとして、単一のブーリアンまたは文字列。
-  
-  *タイプ*: 右辺値
+
+引数: インプットとして、単一のブーリアンまたは文字列。
+
+*タイプ*: 右辺値
 
 #### `bool2str`
 
@@ -538,8 +624,8 @@ bool2str(false, 't', 'f')         => 'f'
   * `clamp('24', [575, 187])`は187を返します。
   * `clamp(16, 88, 661)`は88を返します。
   * `clamp([4, 3, '99'])`は4を返します。
-  
-引数: 文字列、配列、数字。 
+
+引数: 文字列、配列、数字。
 
 *タイプ*: 右辺値
 
@@ -690,7 +776,7 @@ Puppetの他の設定は、stdlibの`deprecation`関数に影響を与えます�
   非推奨警告を記録するかどうかを指定します。これは特に、自動テストの際、移行の準備ができる前にログに情報が氾濫するのを避けるうえで役立ちます。
 
   この変数はブーリアンで、以下の効果があります:
-  
+
   * `true`: 警告を記録します。
   * `false`: 警告は記録されません。
   * 値を設定しない場合: Puppet 4は警告を出しますが、Puppet 3は出しません。
@@ -791,7 +877,7 @@ $value = dig44($data, ['a', 'b', 'c', 'd'], 'not_found')
 与えられた文字列のUnixバージョンを返します。クロスプラットフォームテンプレートでファイルリソースを使用する場合に非常に役立ちます。
 
 ```puppet
-file{$config_file:
+file { $config_file:
   ensure  => file,
   content => dos2unix(template('my_module/settings.conf.erb')),
 }
@@ -895,7 +981,32 @@ userlist:
 ensure_resources('user', hiera_hash('userlist'), {'ensure' => 'present'})
 ```
 
-### `flatten`
+#### `fact`
+
+指定されたfactの値を返します。構造化されたfactを参照する場合にドット表記を使用することができます。指定されたfactが存在しない場合は、Undefを返します。
+
+使用例:
+
+```puppet
+fact('kernel')
+fact('osfamily')
+fact('os.architecture')
+```
+
+配列のインデックス: 
+
+```puppet
+$first_processor  = fact('processors.models.0')
+$second_processor = fact('processors.models.1')
+```
+
+名前に「.」を含むfact:
+
+```puppet
+fact('vmware."VRA.version"')
+```
+
+#### `flatten`
 
 ネストの深いアレイを平坦化し、結果として単一のフラット配列を返します。
 
@@ -1167,6 +1278,13 @@ if $baz.is_a(String) {
 
 *タイプ*: 右辺値
 
+#### `is_email_address`
+
+この関数に渡された文字列が有効なメールアドレスである場合にtrueを返します。
+
+*タイプ*: 右辺値
+
+
 #### `is_float`
 
 **非推奨。今後のバージョンのstdlibでは削除されます。[`validate_legacy`](#validate_legacy)を参照してください。**
@@ -1253,7 +1371,7 @@ if $baz.is_a(String) {
 
 #### `join_keys_to_values`
 
-区切り文字を用いて、ハッシュの各キーをそのキーに対応する値と結合し、結果を文字列として返します。 
+区切り文字を用いて、ハッシュの各キーをそのキーに対応する値と結合し、結果を文字列として返します。
 
 値が配列の場合は、キーは各要素の前に置かれます。返される値は、平坦化した配列になります。
 
@@ -1407,7 +1525,7 @@ YAMLの文字列を正確なPuppet構造に変換します。
 * 第1の引数として、変換されるYAML文字列。
 * オプションで、第2のエラーとして、変換に失敗した場合に返される結果。
 
-*タイプ*: 右辺値 
+*タイプ*: 右辺値
 
 #### `pick`
 
@@ -1509,6 +1627,10 @@ crypt関数を用いてパスワードをハッシュします。ほとんどの
 
 文字列または配列の順序を逆転します。
 
+#### `round`
+
+ 数値を最も近い整数に丸めます。
+
 *タイプ*: 右辺値
 
 #### `rstrip`
@@ -1570,6 +1692,22 @@ shell_split('foo\ bar ba\"z') => ['foo bar', 'ba"z']
 文字列、配列、ハッシュの要素数を返します。この関数は、今後のリリースでは廃止されます。Puppet 4では、`length`関数を使用してください。
 
 *タイプ*: 右辺値
+
+#### `sprintf_hash`
+
+名前が指定されたテキストのリファレンスでprintfスタイルのフォーマットを実行します。
+
+最初のパラメータは、ハッシュ内での残りのパラメータのフォーマット方法を記述するフォーマット文字列です。詳細については、Rubyの`Kernel::sprintf`機能のマニュアルを参照してください。
+
+例:
+
+```puppet
+$output = sprintf_hash('String: %<foo>s / number converted to binary: %<number>b',
+                       { 'foo' => 'a string', 'number' => 5 })
+# $output = 'String: a string / number converted to binary: 101'
+```
+
+*Type*: rvalue
 
 #### `sort`
 
@@ -1696,9 +1834,33 @@ OS Xバージョン10.7以上で使用されるソルト付きSHA512パスワー
 
 引数をバイトに変換します。
 
-たとえば、"4 kB"は"4096"になります。 
+たとえば、"4 kB"は"4096"になります。
 
 引数: 単一の文字列。
+
+*タイプ*: 右辺値
+
+#### `to_json`
+
+入力値をJSON形式の文字列に変換します。
+
+例えば、`{ "key" => "value" }`は`{"key":"value"}`になります。
+
+*タイプ*: 右辺値
+
+#### `to_json_pretty`
+
+入力値を整形されたJSON形式の文字列に変換します。
+
+例えば、`{ "key" => "value" }`は`{\n  \"key\": \"value\"\n}`になります。
+
+*タイプ*: 右辺値
+
+#### `to_yaml`
+
+入力値をYAML形式の文字列に変換します。
+
+例えば、`{ "key" => "value" }`は`"---\nkey: value\n"`になります。
 
 *タイプ*: 右辺値
 
@@ -1708,7 +1870,7 @@ OS Xバージョン10.7以上で使用されるソルト付きSHA512パスワー
 
 ハッシュおよび配列の複数レイヤー内の値を取得します。
 
-引数: 
+引数:
 
 * 第1の引数として、パスを含む文字列。この引数は、ゼロではじまり、パス区切り文字(デフォルトは"/")で区切ったハッシュキーまたは配列インデックスの文字列として提示してください。この関数は各パスコンポーネントにより構造内を移動し、パスの最後で値を返すよう試みます。
 
@@ -1799,7 +1961,7 @@ $value = try_get_value($data, 'a|b', [], '|')
 *タイプ*: 右辺値
 
 ```puppet
-file{$config_file:
+file { $config_file:
   ensure  => file,
   content => unix2dos(template('my_module/settings.conf.erb')),
 }
@@ -1819,7 +1981,7 @@ file{$config_file:
 
 #### `uriescape`
 
-文字列または文字列の配列をURLエンコードします。 
+文字列または文字列の配列をURLエンコードします。
 
 引数: 単一の文字列または文字列の配列。
 
@@ -1915,7 +2077,7 @@ validate_augeas($sudoerscontent, 'Sudoers.lns', [], 'Failed to validate sudoers 
 
 **非推奨。今後のバージョンのstdlibでは削除されます。[`validate_legacy`](#validate_legacy)を参照してください。**
 
-渡されたすべての値が`true`または`false`のいずれかであることを確認します。 
+渡されたすべての値が`true`または`false`のいずれかであることを確認します。
 このチェックで不合格となった値がある場合は、カタログコンパイルが中止されます。
 
 以下の値が渡されます:
@@ -1958,6 +2120,53 @@ validate_cmd($haproxycontent, '/usr/sbin/haproxy -f % -c', 'Haproxy failed to va
 
 *タイプ*: ステートメント
 
+#### `validate_domain_name`
+
+**非推奨。今後のバージョンのstdlibでは削除されます。[`validate_legacy`](#validate_legacy)を参照してください。**
+
+渡されたすべての値が構文的に正しいドメイン名であることを確認します。このチェックで不合格となった値がある場合は、カタログコンパイルが中止されます。
+
+以下の値が渡されます:
+
+~~~
+$my_domain_name = 'server.domain.tld'
+validate_domain_name($my_domain_name)
+validate_domain_name('domain.tld', 'puppet.com', $my_domain_name)
+~~~
+
+以下の値が不合格となり、コンパイルが中止されます: 
+
+~~~
+validate_domain_name(1)
+validate_domain_name(true)
+validate_domain_name('invalid domain')
+validate_domain_name('-foo.example.com')
+validate_domain_name('www.example.2com')
+~~~
+
+*タイプ*: ステートメント
+
+#### `validate_email_address`
+
+渡されたすべての値が有効なメールアドレスであることを確認します。このチェックで不合格となった値がある場合、コンパイルが失敗します。
+
+以下の値が渡されます:
+
+~~~
+$my_email = "waldo@gmail.com"
+validate_email_address($my_email)
+validate_email_address("bob@gmail.com", "alice@gmail.com", $my_email)
+~~~
+
+以下の値が不合格となり、コンパイルが中止されます: 
+
+~~~
+$some_array = [ 'bad_email@/d/efdf.com' ]
+validate_email_address($some_array)
+~~~
+
+*タイプ*: ステートメント
+
 #### `validate_hash`
 
 **非推奨。今後のバージョンのstdlibでは削除されます。[`validate_legacy`](#validate_legacy)を参照してください。**
@@ -1992,7 +2201,7 @@ validate_hash($undefined)
 
 * 第1の引数として、整数または整数の配列。
 * オプションの第2の引数として、最大値。第1の引数(のすべての要素)は、この最大値以下でなければなりません。
-* オプションの第3の引数として、最小値。第1の引数(のすべての要素)は、この最小値以上でなければなりません。 
+* オプションの第3の引数として、最小値。第1の引数(のすべての要素)は、この最小値以上でなければなりません。
 
 第1の引数が整数または整数の配列でない場合や、第2または第3の引数が整数に変換できない場合は、この関数は失敗になります。ただし、最小値が与えられている場合は(この場合に限られます)、第2の引数を空文字列または`undef`にすることが可能です。これは、最小チェックを確実に行うためのプレースホルダーとして機能します。
 
@@ -2046,7 +2255,7 @@ validate_integer(1, 3, true)
 
 **非推奨。今後のバージョンのstdlibでは削除されます。[`validate_legacy`](#validate_legacy)を参照してください。**
 
-IPv4アドレスかIPv6アドレスかにかかわらず、引数がIPアドレスであることを確認します。また、ネットマスクによりIPアドレスを確認します。 
+IPv4アドレスかIPv6アドレスかにかかわらず、引数がIPアドレスであることを確認します。また、ネットマスクによりIPアドレスを確認します。
 
 引数: IPアドレスを指定する文字列。
 
@@ -2091,7 +2300,7 @@ validate_ip_address('260.2.32.43')
 例:
 
 ```puppet
-validate_legacy("Optional[String]", "validate_re", "Value to be validated", ["."])
+validate_legacy('Optional[String]', 'validate_re', 'Value to be validated', ["."])
 ```
 
 この関数は、Puppet 3形式の引数確認(stdlibの`validate_*`関数を使用)からPuppet 4データタイプへのモジュールのアップデートに対応しており、Puppet 3形式の確認に頼っている場合も機能性が中断することはありません。
@@ -2117,7 +2326,7 @@ Puppet 4とともに、非推奨の `validate_*`関数を用いたモジュー�
 
 `validate_legacy`関数は、モジュールユーザの使用している機能を中断させずに、 Puppet 3形式の確認からPuppet 4形式の確認に移行するのに役立ちます。
 
-Puppet 4形式の確認に移行すれば、[データタイプ](https://docs.puppet.com/puppet/latest/reference/lang_data.html)を用いた、より明確な定義タイプチェックが可能になります。Puppet 3の`validate_*` 関数の多くは、確認という点で驚くほど多くの穴があります。たとえば、[validate_numeric](#validate_numeric)では、細部をコントロールできないため、数字だけでなく、数字の配列や数字のように見える文字列も許可されます。 
+Puppet 4形式の確認に移行すれば、[データタイプ](https://docs.puppet.com/puppet/latest/reference/lang_data.html)を用いた、より明確な定義タイプチェックが可能になります。Puppet 3の`validate_*` 関数の多くは、確認という点で驚くほど多くの穴があります。たとえば、[validate_numeric](#validate_numeric)では、細部をコントロールできないため、数字だけでなく、数字の配列や数字のように見える文字列も許可されます。
 
 クラスおよび定義タイプの各パラメータについて、使用する新しいPuppet 4データタイプを選択してください。たいていの場合、新しいデータタイプにより、元の`validate_*`関数とは異なる値のセットを使用できるようになります。以下のような状況になります:
 

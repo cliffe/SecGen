@@ -1,12 +1,11 @@
 #
 # is_hash.rb
 #
-
 module Puppet::Parser::Functions
-  newfunction(:is_hash, :type => :rvalue, :doc => <<-EOS
-Returns true if the variable passed to this function is a hash.
-    EOS
-  ) do |arguments|
+  newfunction(:is_hash, :type => :rvalue, :doc => <<-DOC
+    Returns true if the variable passed to this function is a hash.
+    DOC
+             ) do |arguments|
 
     raise(Puppet::ParseError, "is_hash(): Wrong number of arguments given (#{arguments.size} for 1)") if arguments.size != 1
 

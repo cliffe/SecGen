@@ -1,8 +1,11 @@
 require 'puppet/util/execution'
 require 'tempfile'
 
+#
+# validate_cmd.rb
+#
 module Puppet::Parser::Functions
-  newfunction(:validate_cmd, :doc => <<-'ENDHEREDOC') do |args|
+  newfunction(:validate_cmd, :doc => <<-'DOC') do |args|
     Perform validation of a string with an external command.
     The first argument of this function should be a string to
     test, and the second argument should be a path to a test command
@@ -23,9 +26,9 @@ module Puppet::Parser::Functions
         # % as file location
         validate_cmd($haproxycontent, '/usr/sbin/haproxy -f % -c', 'Haproxy failed to validate config content')
 
-    ENDHEREDOC
-    if (args.length < 2) or (args.length > 3) then
-      raise Puppet::ParseError, ("validate_cmd(): wrong number of arguments (#{args.length}; must be 2 or 3)")
+    DOC
+    if (args.length < 2) || (args.length > 3)
+      raise Puppet::ParseError, "validate_cmd(): wrong number of arguments (#{args.length}; must be 2 or 3)"
     end
 
     msg = args[2] || "validate_cmd(): failed to validate content with command #{args[1].inspect}"
@@ -34,16 +37,16 @@ module Puppet::Parser::Functions
     checkscript = args[1]
 
     # Test content in a temporary file
-    tmpfile = Tempfile.new("validate_cmd")
+    tmpfile = Tempfile.new('validate_cmd')
     begin
       tmpfile.write(content)
       tmpfile.close
 
-      if checkscript =~ /\s%(\s|$)/
-        check_with_correct_location = checkscript.gsub(/%/,tmpfile.path)
-      else
-        check_with_correct_location = "#{checkscript} #{tmpfile.path}"
-      end
+      check_with_correct_location = if checkscript =~ %r{\s%(\s|$)}
+                                      checkscript.gsub(%r{%}, tmpfile.path)
+                                    else
+                                      "#{checkscript} #{tmpfile.path}"
+                                    end
 
       if Puppet::Util::Execution.respond_to?('execute')
         Puppet::Util::Execution.execute(check_with_correct_location)

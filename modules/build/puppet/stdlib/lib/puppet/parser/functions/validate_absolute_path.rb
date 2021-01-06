@@ -1,5 +1,8 @@
+#
+# validate_absolute_path.rb
+#
 module Puppet::Parser::Functions
-  newfunction(:validate_absolute_path, :doc => <<-'ENDHEREDOC') do |args|
+  newfunction(:validate_absolute_path, :doc => <<-'DOC') do |args|
     Validate the string represents an absolute path in the filesystem.  This function works
     for windows and unix style paths.
 
@@ -24,15 +27,12 @@ module Puppet::Parser::Functions
         $undefined = undef
         validate_absolute_path($undefined)
 
-    ENDHEREDOC
-
-    # The deprecation function was being called twice, as validate_absolute_path calls is_absolute_path. I have removed it from here so it only calls deprecation once within is_absolute_path.
-    # function_deprecation([:validate_absolute_path, 'This method is deprecated, please use the stdlib validate_legacy function, with Stdlib::Compat::Absolute_path. There is further documentation for validate_legacy function in the README.'])
+    DOC
 
     require 'puppet/util'
 
-    unless args.length > 0 then
-      raise Puppet::ParseError, ("validate_absolute_path(): wrong number of arguments (#{args.length}; must be > 0)")
+    if args.empty?
+      raise Puppet::ParseError, "validate_absolute_path(): wrong number of arguments (#{args.length}; must be > 0)"
     end
 
     args.each do |arg|
@@ -40,13 +40,13 @@ module Puppet::Parser::Functions
       candidates = arg
       # if arg is just a string with a path to test, convert it to an array
       # to avoid test code duplication
-      unless arg.is_a?(Array) then
-        candidates = Array.new(1,arg)
+      unless arg.is_a?(Array)
+        candidates = Array.new(1, arg)
       end
       # iterate over all paths within the candidates array
       candidates.each do |path|
         unless function_is_absolute_path([path])
-          raise Puppet::ParseError, ("#{path.inspect} is not an absolute path.")
+          raise Puppet::ParseError, "#{path.inspect} is not an absolute path."
         end
       end
     end

@@ -1,6 +1,8 @@
+#
+# validate_hash.rb
+#
 module Puppet::Parser::Functions
-
-  newfunction(:validate_hash, :doc => <<-'ENDHEREDOC') do |args|
+  newfunction(:validate_hash, :doc => <<-'DOC') do |args|
     Validate that all passed values are hash data structures. Abort catalog
     compilation if any value fails this check.
 
@@ -16,20 +18,19 @@ module Puppet::Parser::Functions
         $undefined = undef
         validate_hash($undefined)
 
-    ENDHEREDOC
+    DOC
 
-    function_deprecation([:validate_hash, 'This method is deprecated, please use the stdlib validate_legacy function, with Stdlib::Compat::Hash. There is further documentation for validate_legacy function in the README.'])
+    function_deprecation([:validate_hash, 'This method is deprecated, please use the stdlib validate_legacy function,
+                          with Stdlib::Compat::Hash. There is further documentation for validate_legacy function in the README.'])
 
-    unless args.length > 0 then
-      raise Puppet::ParseError, ("validate_hash(): wrong number of arguments (#{args.length}; must be > 0)")
+    if args.empty?
+      raise Puppet::ParseError, "validate_hash(): wrong number of arguments (#{args.length}; must be > 0)"
     end
 
     args.each do |arg|
       unless arg.is_a?(Hash)
-        raise Puppet::ParseError, ("#{arg.inspect} is not a Hash.  It looks to be a #{arg.class}")
+        raise Puppet::ParseError, "#{arg.inspect} is not a Hash.  It looks to be a #{arg.class}"
       end
     end
-
   end
-
 end

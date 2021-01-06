@@ -1,24 +1,23 @@
 #
 # reject.rb
 #
-
 module Puppet::Parser::Functions
-  newfunction(:reject, :type => :rvalue, :doc => <<-EOS) do |args|
-This function searches through an array and rejects all elements that match
-the provided regular expression.
+  newfunction(:reject, :type => :rvalue, :doc => <<-DOC) do |args|
+    This function searches through an array and rejects all elements that match
+    the provided regular expression.
 
-*Examples:*
+    *Examples:*
 
-    reject(['aaa','bbb','ccc','aaaddd'], 'aaa')
+        reject(['aaa','bbb','ccc','aaaddd'], 'aaa')
 
-Would return:
+    Would return:
 
-    ['bbb','ccc']
-EOS
+        ['bbb','ccc']
+DOC
 
-    if (args.size != 2)
+    if args.size != 2
       raise Puppet::ParseError,
-        "reject(): Wrong number of arguments given #{args.size} for 2"
+            "reject(): Wrong number of arguments given #{args.size} for 2"
     end
 
     ary = args[0]

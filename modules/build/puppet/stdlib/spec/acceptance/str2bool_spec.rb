@@ -3,14 +3,13 @@ require 'spec_helper_acceptance'
 
 describe 'str2bool function' do
   describe 'success' do
-    it 'works with "y"' do
-      pp = <<-EOS
+    pp = <<-DOC
       $o = str2bool('y')
       notice(inline_template('str2bool is <%= @o.inspect %>'))
-      EOS
-
+    DOC
+    it 'works with "y"' do
       apply_manifest(pp, :catch_failures => true) do |r|
-        expect(r.stdout).to match(/str2bool is true/)
+        expect(r.stdout).to match(%r{str2bool is true})
       end
     end
     it 'works with "Y"'

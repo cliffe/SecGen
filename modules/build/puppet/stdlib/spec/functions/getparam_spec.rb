@@ -2,11 +2,11 @@ require 'spec_helper'
 
 describe 'getparam' do
   it { is_expected.not_to eq(nil) }
-  it { is_expected.to run.with_params().and_raise_error(ArgumentError, /Must specify a reference/) }
-  it { is_expected.to run.with_params('User[one]').and_raise_error(ArgumentError, /Must specify name of a parameter/) }
-  it { is_expected.to run.with_params('User[one]', 2).and_raise_error(ArgumentError, /Must specify name of a parameter/) }
-  it { is_expected.to run.with_params('User[one]', []).and_raise_error(ArgumentError, /Must specify name of a parameter/) }
-  it { is_expected.to run.with_params('User[one]', {}).and_raise_error(ArgumentError, /Must specify name of a parameter/) }
+  it { is_expected.to run.with_params.and_raise_error(ArgumentError, %r{Must specify a reference}) }
+  it { is_expected.to run.with_params('User[one]').and_raise_error(ArgumentError, %r{Must specify name of a parameter}) }
+  it { is_expected.to run.with_params('User[one]', 2).and_raise_error(ArgumentError, %r{Must specify name of a parameter}) }
+  it { is_expected.to run.with_params('User[one]', []).and_raise_error(ArgumentError, %r{Must specify name of a parameter}) }
+  it { is_expected.to run.with_params('User[one]', {}).and_raise_error(ArgumentError, %r{Must specify name of a parameter}) }
 
   describe 'when compared against a user resource with no params' do
     let(:pre_condition) { 'user { "one": }' }
@@ -30,6 +30,5 @@ describe 'getparam' do
 
     it { is_expected.to run.with_params('User[三]', 'ensure').and_return('present') }
     it { is_expected.to run.with_params('User[ƒốưř]', 'ensure').and_return('present') }
-
   end
 end

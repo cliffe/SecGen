@@ -3,8 +3,7 @@ require 'spec_helper_acceptance'
 
 describe 'clamp function' do
   describe 'success' do
-    it 'clamps list of values' do
-      pp = <<-EOS
+    pp1 = <<-DOC
       $x = 17
       $y = 225
       $z = 155
@@ -12,24 +11,24 @@ describe 'clamp function' do
       if $o == $z {
         notify { 'output correct': }
       }
-      EOS
-
-      apply_manifest(pp, :catch_failures => true) do |r|
-        expect(r.stdout).to match(/Notice: output correct/)
+    DOC
+    it 'clamps list of values' do
+      apply_manifest(pp1, :catch_failures => true) do |r|
+        expect(r.stdout).to match(%r{Notice: output correct})
       end
     end
-    it 'clamps array of values' do
-      pp = <<-EOS
+
+    pp2 = <<-DOC
       $a = [7, 19, 66]
       $b = 19
       $o = clamp($a)
       if $o == $b {
         notify { 'output correct': }
       }
-      EOS
-
-      apply_manifest(pp, :catch_failures => true) do |r|
-        expect(r.stdout).to match(/Notice: output correct/)
+    DOC
+    it 'clamps array of values' do
+      apply_manifest(pp2, :catch_failures => true) do |r|
+        expect(r.stdout).to match(%r{Notice: output correct})
       end
     end
   end

@@ -3,15 +3,14 @@ require 'spec_helper_acceptance'
 
 describe 'to_bytes function' do
   describe 'success' do
-    it 'converts kB to B' do
-      pp = <<-EOS
+    pp = <<-DOC
       $o = to_bytes('4 kB')
       notice(inline_template('to_bytes is <%= @o.inspect %>'))
-      EOS
-
+    DOC
+    it 'converts kB to B' do
       apply_manifest(pp, :catch_failures => true) do |r|
-        m = r.stdout.match(/to_bytes is (\d+)\D/)
-        expect(m[1]).to eq("4096")
+        m = r.stdout.match(%r{to_bytes is (\d+)\D})
+        expect(m[1]).to eq('4096')
       end
     end
     it 'works without the B in unit'

@@ -3,24 +3,24 @@ require 'puppet/parser/functions'
 
 Puppet::Parser::Functions.newfunction(:defined_with_params,
                                       :type => :rvalue,
-                                      :doc => <<-'ENDOFDOC'
-Takes a resource reference and an optional hash of attributes.
+                                      :doc => <<-'DOC'
+    Takes a resource reference and an optional hash of attributes.
 
-Returns true if a resource with the specified attributes has already been added
-to the catalog, and false otherwise.
+    Returns true if a resource with the specified attributes has already been added
+    to the catalog, and false otherwise.
 
-    user { 'dan':
-      ensure => present,
-    }
+        user { 'dan':
+          ensure => present,
+        }
 
-    if ! defined_with_params(User[dan], {'ensure' => 'present' }) {
-      user { 'dan': ensure => present, }
-    }
-ENDOFDOC
-) do |vals|
+        if ! defined_with_params(User[dan], {'ensure' => 'present' }) {
+          user { 'dan': ensure => present, }
+        }
+DOC
+                                     ) do |vals|
   reference, params = vals
   raise(ArgumentError, 'Must specify a reference') unless reference
-  if (! params) || params == ''
+  if !params || params == ''
     params = {}
   end
   ret = false
@@ -36,14 +36,15 @@ ENDOFDOC
     else
       raise(ArgumentError, "Reference is not understood: '#{reference.class}'")
     end
-    #end workaround
+    # end workaround
   else
     type = reference.to_s
     title = nil
   end
 
-  if resource = findresource(type, title)
-    matches = params.collect do |key, value|
+  resource = findresource(type, title)
+  if resource
+    matches = params.map do |key, value|
       # eql? avoids bugs caused by monkeypatching in puppet
       resource_is_undef = resource[key].eql?(:undef) || resource[key].nil?
       value_is_undef = value.eql?(:undef) || value.nil?

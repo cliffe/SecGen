@@ -3,14 +3,13 @@ require 'spec_helper_acceptance'
 
 describe 'strftime function' do
   describe 'success' do
-    it 'gives the Century' do
-      pp = <<-EOS
+    pp = <<-DOC
       $o = strftime('%C')
       notice(inline_template('strftime is <%= @o.inspect %>'))
-      EOS
-
+    DOC
+    it 'gives the Century' do
       apply_manifest(pp, :catch_failures => true) do |r|
-        expect(r.stdout).to match(/strftime is "20"/)
+        expect(r.stdout).to match(%r{strftime is "20"})
       end
     end
     it 'takes a timezone argument'

@@ -6,7 +6,7 @@ if Puppet::Util::Package.versioncmp(Puppet.version, '4.4.0') >= 0
     it { is_expected.to run.with_params.and_raise_error(ArgumentError) }
 
     describe 'when passing the type assertion and passing the previous validation' do
-      before do
+      before(:each) do
         scope.expects(:function_validate_foo).with([5]).once
         Puppet.expects(:notice).never
       end
@@ -16,7 +16,7 @@ if Puppet::Util::Package.versioncmp(Puppet.version, '4.4.0') >= 0
     end
 
     describe 'when passing the type assertion and failing the previous validation' do
-      before do
+      before(:each) do
         scope.expects(:function_validate_foo).with([5]).raises(Puppet::ParseError, 'foo').once
         Puppet.expects(:notice).with(includes('Accepting previously invalid value for target type'))
       end
@@ -26,7 +26,7 @@ if Puppet::Util::Package.versioncmp(Puppet.version, '4.4.0') >= 0
     end
 
     describe 'when failing the type assertion and passing the previous validation' do
-      before do
+      before(:each) do
         scope.expects(:function_validate_foo).with(['5']).once
         subject.func.expects(:call_function).with('deprecation', 'validate_legacy', includes('Integer')).once
       end
@@ -36,7 +36,7 @@ if Puppet::Util::Package.versioncmp(Puppet.version, '4.4.0') >= 0
     end
 
     describe 'when failing the type assertion and failing the previous validation' do
-      before do
+      before(:each) do
         scope.expects(:function_validate_foo).with(['5']).raises(Puppet::ParseError, 'foo').once
         subject.func.expects(:call_function).with('fail', includes('Integer')).once
       end
@@ -46,7 +46,7 @@ if Puppet::Util::Package.versioncmp(Puppet.version, '4.4.0') >= 0
     end
 
     describe 'when passing in undef' do
-      before do
+      before(:each) do
         scope.expects(:function_validate_foo).with([:undef]).once
         Puppet.expects(:notice).never
       end
@@ -56,7 +56,7 @@ if Puppet::Util::Package.versioncmp(Puppet.version, '4.4.0') >= 0
     end
 
     describe 'when passing in multiple arguments' do
-      before do
+      before(:each) do
         scope.expects(:function_validate_foo).with([:undef, 1, 'foo']).once
         Puppet.expects(:notice).never
       end

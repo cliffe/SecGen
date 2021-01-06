@@ -3,7 +3,7 @@ require 'spec_helper_acceptance'
 
 describe 'validate_absolute_path function' do
   describe 'success' do
-    %w{
+    %w[
       C:/
       C:\\\\
       C:\\\\WINDOWS\\\\System32
@@ -13,13 +13,12 @@ describe 'validate_absolute_path function' do
       /var/tmp
       /var/lib/puppet
       /var/opt/../lib/puppet
-    }.each do |path|
-      it "validates a single argument #{path}" do
-        pp = <<-EOS
+    ].each do |path|
+      pp = <<-DOC
         $one = '#{path}'
         validate_absolute_path($one)
-        EOS
-
+      DOC
+      it "validates a single argument #{path}" do
         apply_manifest(pp, :catch_failures => true)
       end
     end

@@ -1,0 +1,32 @@
+	<attack>
+
+<% $home_dir_dead1 = '/home/' + $third_user + '/'
+	 $rand_path_dead1 = $home_dir_dead1 + SecureRandom.hex(3) %>
+		<pre_shell>sshpass -p <%= $third_password %> ssh -oStrictHostKeyChecking=no <%= $third_user %>@<%= $web_server_ip %> 'touch <%= $rand_path_dead1 %>; rm <%= $rand_path_dead1 %>; echo "vi <%= $rand_path_dead1 %>" > <%= $home_dir_dead1 %>.bash_history; echo "rm <%= $rand_path_dead1 %>" >> <%= $home_dir_dead1 %>.bash_history;';echo "OK"</pre_shell>
+
+		<get_shell>false</get_shell>
+		<post_command></post_command>
+
+		<prompt>About to do something to your web server, let it happen...</prompt>
+
+		<condition>
+			<output_matches>OK</output_matches>
+			<message>Ok, answer this.</message>
+			<trigger_quiz />
+		</condition>
+		<condition>
+			<output_matches>OK..</output_matches>
+			<message>Ok, answer this.</message>
+			<trigger_quiz />
+		</condition>
+		<else_condition>
+			<message>Ok...</message>
+		</else_condition>
+
+		<quiz>
+			<question>The <%= $third_user %> user has just performed some actions on your web server. Find out what happened and provide the full path to the file that was impacted. </question>
+			<answer><%= $rand_path_dead1 %></answer>
+			<correct_answer_response>:) <%= $flags.pop %></correct_answer_response>
+			<trigger_next_attack />
+		</quiz>
+	</attack>

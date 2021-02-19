@@ -1,0 +1,105 @@
+/* Derived from a level by Deborah Hur, New Beginnings 12/2016 */
+#include <stdio.h>
+#include <fcntl.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <limits.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+#define USERDEF0 AAAAAA
+#define USERDEF1 BBBBBB
+#define USERDEF2 CCCCCC
+
+char msg1[] = \
+  "Each unsigned integer data type has a maximum limit that will wraparound\n"
+  "to 0 if exceeded.  In this level, you are given an unsigned char, an\n"
+  "unsigned short, and an unsigned int in hexadecimal.  The password is\n"
+  "the corresponding 3 positive numbers (in decimal) that can be added\n"
+  "to each to overflow the data type to produce a sum of 0.\n\n";
+
+char msg2[] = \
+  "  unsigned char addc, c=0x%hhx;\n  unsigned short adds, s=0x%hx;\n"
+  "  unsigned int addi, i=0x%x;\n  ...\n"
+  "  printf(\"Your numbers are: %%hhx %%hx %%x\\n\", c, s, i);\n  ...\n"
+  "  printf(\"Enter the password: \");\n"
+  "  scanf(\"%%hhu %%hu %%u\", &addc, &adds, &addi);\n"
+  "  c += addc;   s += adds;   i += addi;  ...\n"
+  "  if (!c && !s && !i)\n"
+  "    printf(\"Good Job.\");\n";
+
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg1);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg1[i%len] + msg1[(i+1)%len];
+    h2 += msg1[(i+1)%len] + msg1[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg1);
+  else
+    printf("%s",msg1);
+  printf(msg2,USERDEF0,USERDEF1,USERDEF2);
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main() {
+    unsigned char addc, c=USERDEF0;
+    unsigned short adds, s=USERDEF1;
+    unsigned int addi, i=USERDEF2;
+    char input[20];
+
+    print_msg();
+
+    printf("\nYour numbers are: %hhx %hx %x\n",USERDEF0,USERDEF1,USERDEF2);
+    printf("Enter the password: ");
+    scanf("%30[^\n]s",input);
+    if (strchr(input,'-')) {
+       printf("Negative numbers not allowed.\nTry again.\n");
+       exit(0);
+    }
+    if (sscanf(input,"%hhu %hu %u",&addc,&adds,&addi) != 3) {
+       printf("Need 3 numbers.\nTry again.\n");
+       exit(0);
+    }
+
+    c+= addc; s+=adds; i+=addi;
+    if (!c && !s && !i) {
+	    printf("Good Job.\n");
+	    printflag();
+    } else {
+	sleep(1);
+        printf("isZero(char)? %d  isZero(short)? %d  isZero(int)? %d\n",!c, !s, !i);
+	printf("Try again.\n");
+    }
+    return 0;
+}

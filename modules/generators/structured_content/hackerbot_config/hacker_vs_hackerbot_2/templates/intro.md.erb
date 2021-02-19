@@ -2,7 +2,9 @@
 
 ## Troubleshooting with oVirt during the test
 
-In the unlikely event you experience technical issues with our infrastructure during the test, which you believe to be outside your control, let us know before you leave the room. However, keep in mind we won't give hints for the actual test challenges.
+In the unlikely event you experience technical issues with our infrastructure during the test, which you believe to be outside your control, make sure to record evidence (such as screenshots) and let us know asap the same day.
+
+However, keep in mind we won't give any hints for the actual test challenges while the test is available.
 
 ## Getting started
 ### VMs in this test
@@ -59,39 +61,5 @@ Remember you can learn more about the commands by running:
 ```bash
 man *command*
 ```
-
-## Getting Snort up and running
-
-**On the ids_snoop VM:**
-
-==Ensure Snort's output== includes something more readable:
-
-```bash
-sudo vi /etc/snort/snort.conf
-```
-> (Remember: editing using vi involves pressing "i" to insert/edit text, then *Esc*,
-
-> ":wq" to write changes and quit)
-
-==Check for the following line:==
-`output alert_fast`
-
-==Ensure Snort's interface is correctly configured== to the interface with IP address <%= $ids_server_ip %> (likely ens3), and set the local network to your IP address range (or "any"):
-
-```bash
-sudo vi /etc/snort/snort.debian.conf
-```
-> If you are not sure which interface to use, list the interfaces with `ifconfig` or `ip a s`
-> Set the interface and HOME network range, and exit vi (Esc, ":wq").
-
-==Restart Snort:==
-
-```bash
-sudo service snort stop
-sudo service snort start
-```
-> Using "reload" or "restart" may not update the interface.
-
-Snort should now be running, monitoring network traffic for activity.
 
 ### Good luck!

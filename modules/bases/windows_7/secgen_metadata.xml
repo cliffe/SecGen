@@ -14,7 +14,7 @@
   <distro>7</distro>
   <url>http://TODO</url>
   <esxi_url></esxi_url>
-  <ovirt_template>win7_20200227</ovirt_template>
+  <ovirt_template>win7_20200928</ovirt_template>
 
   <software_license>various</software_license>
 

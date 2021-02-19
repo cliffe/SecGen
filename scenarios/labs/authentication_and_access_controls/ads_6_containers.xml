@@ -26,7 +26,7 @@ A Hackerbot lab. Work through the labsheet, then when prompted interact with Hac
 
   <system>
     <system_name>desktop</system_name>
-    <base distro="Debian 9" type="desktop" name="KDE"/>
+    <base distro="Debian 10" type="desktop" name="KDE"/>
 
     <input into_datastore="IP_addresses">
       <value>172.16.0.2</value>
@@ -39,7 +39,7 @@ A Hackerbot lab. Work through the labsheet, then when prompted interact with Hac
     <input into_datastore="accounts">
       <generator type="account">
         <input into="username">
-          <generator type="random_word_generator">
+          <generator type="random_sanitised_word">
             <input into="wordlist">
               <value>mythical_creatures</value>
             </input>
@@ -60,7 +60,7 @@ A Hackerbot lab. Work through the labsheet, then when prompted interact with Hac
       </generator>
       <generator type="account">
         <input into="username">
-          <generator type="random_word_generator">
+          <generator type="random_sanitised_word">
             <input into="wordlist">
               <value>mythical_creatures</value>
             </input>
@@ -81,7 +81,7 @@ A Hackerbot lab. Work through the labsheet, then when prompted interact with Hac
       </generator>
       <generator type="account">
         <input into="username">
-          <generator type="random_word_generator">
+          <generator type="random_sanitised_word">
             <input into="wordlist">
               <value>mythical_creatures</value>
             </input>
@@ -226,7 +226,7 @@ A Hackerbot lab. Work through the labsheet, then when prompted interact with Hac
 
 	<system>
 		<system_name>chroot_esc_server</system_name>
-		<base distro="Debian 9" type="desktop" name="KDE"/>
+		<base distro="Debian 10" type="desktop" name="KDE"/>
 
 		<utility module_path=".*/handy_cli_tools"/>
 		<utility module_path=".*/nmap"/>
@@ -262,7 +262,7 @@ A Hackerbot lab. Work through the labsheet, then when prompted interact with Hac
 
 	<system>
 		<system_name>docker_esc_server</system_name>
-		<base distro="Debian 9" type="desktop" name="KDE"/>
+		<base distro="Debian 10" type="desktop" name="KDE"/>
 
 		<utility module_path=".*/handy_cli_tools"/>
 

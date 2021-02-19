@@ -23,6 +23,7 @@ class chroot_debootstrap::install {
     provider     => 'shell',
     creates => "$chroot_dir/usr/bin/ncat",
     path  => ['/bin', '/usr/bin', '/usr/sbin', '/sbin',],
+    logoutput => 'true',
   } ->
 
   file_line { "${chroot_dir}_chroot_proc":

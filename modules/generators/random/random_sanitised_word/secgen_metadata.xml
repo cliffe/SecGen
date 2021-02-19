@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Random Sanitised Word Generator</name>
+  <author>Z. Cliffe Schreuders</author>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Uses a wordlist (Ruby gem + a wordlist) to generate a random (mostly English) dictionary word.
+    Removes most special characters (other than -_, which are valid for usernames)</description>
+
+  <type>string_generator</type>
+  <type>random_sanitised_word</type>
+  <type>random_word_generator</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <reference>https://github.com/sophsec/wordlist</reference>
+  <reference>http://wordlist.sourceforge.net/</reference>
+
+  <read_fact>wordlist</read_fact>
+  <read_fact>min_length</read_fact>
+  <read_fact>max_length</read_fact>
+
+  <default_input into="wordlist">
+    <value>wordlist</value>
+  </default_input>
+
+  <output_type>generated_strings</output_type>
+  
+</generator>

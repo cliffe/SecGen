@@ -91,10 +91,10 @@ sudo bash -c 'echo "hello there" > /etc/hello'
 And now lets ==create differential backups== of our changes to /etc (both local and remote backup copies):
 
 ```bash
-#local
+ # local
 sudo rsync -av /etc --compare-dest=/home/<%= $main_user %>/backups/rsync_backup/ /home/<%= $main_user %>/backups/rsync_backup_week1/
 
-#remote
+ # remote
 sudo rsync -avzh --fake-super /etc --compare-dest=/home/<%= $main_user %>/remote-rsync-backup/ <%= $main_user %>@<%= $server_ip %>:/home/<%= $main_user %>/remote-rsync-backup-week1/
 ```
 > The **-\-compare-dest** flag tells rsync to search these backup copies, and only copy files if they have changed since a backup. Refer the the man page for further explanation.
@@ -116,10 +116,10 @@ sudo bash -c 'echo "hello there!" > /etc/hi'
 To ==make another differential backup== (saving changes since the last full backup), we just repeat the previous command(s), with a new destination directory:
 
 ```bash
-#local
+ # local
 sudo rsync -av /etc --compare-dest=/home/<%= $main_user %>/backups/rsync_backup/ /home/<%= $main_user %>/backups/rsync_backup_week2/
 
-#remote
+ # remote
 sudo rsync -avzh --fake-super /etc --compare-dest=/home/<%= $main_user %>/remote-rsync-backup/ <%= $main_user %>@<%= $server_ip %>:/home/<%= $main_user %>/remote-rsync-backup-week2/
 ```
 
@@ -171,10 +171,10 @@ sudo bash -c 'echo "Another test change" > /etc/test2'
 Now ==create an incremental backup based on the last differential backup and the last incremental backup:==
 
 ```bash
-#local
+ # local
 sudo rsync -av /etc --compare-dest=/home/<%= $main_user %>/backups/rsync_backup/ --compare-dest=/home/<%= $main_user %>/backups/rsync_backup_week2/ --compare-dest=/home/<%= $main_user %>/backups/rsync_backup_monday/ /home/<%= $main_user %>/backups/rsync_backup_tuesday/
 
-#remote
+ # remote
 sudo rsync -avzh --fake-super /etc --compare-dest=/home/<%= $main_user %>/remote-rsync-backup/ --compare-dest=/home/<%= $main_user %>/remote-rsync-backup-week2/ --compare-dest=/home/<%= $main_user %>/remote-rsync-backup-monday/ <%= $main_user %>@<%= $server_ip %>:/home/<%= $main_user %>/remote-rsync-backup-tuesday/
 ```
 

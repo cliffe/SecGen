@@ -25,7 +25,7 @@ sudo debsums -ac
 
 Verify the files installed by a specific package:
 ```bash
-sudo debsums firefox
+sudo debsums firefox-esr
 ```
 
 Choose any system file on the computer, such as /etc/securetty. To determine which package the file belongs to:
@@ -47,7 +47,7 @@ sudo debsums -a *package-name*
 
 Try to understand the cause of any files failing the integrity checks.
 
-==Workbook question: What are the limitations of this approach?==
+==Log Book question: What are the limitations of this approach?==
 
 - What files will (and won't) this approach to integrity management cover?
 - Are the hashes protected against tampering?

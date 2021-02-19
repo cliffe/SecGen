@@ -210,6 +210,28 @@ class MetaCTFChallengeGenerator < StringGenerator
      {:difficulty => 'hard', :path => 'src_malware/Ch18-21/Ch21x64_ParamsRegs'},
      {:difficulty => 'hard', :path => 'src_malware/Ch18-21/Ch21x64_ParamsStack'}]
   end
+
+  def src_malware
+    [{:difficulty => 'easy', :path => 'src_sse/Ch1-2/Ch2_03_IntOverflow'},
+     {:difficulty => 'medium', :path => 'src_sse/Ch3-ExtraFormatStr/Ch3_Format0_Leak'},
+     {:difficulty => 'medium', :path => 'src_sse/Ch3-ExtraFormatStr/Ch3_Format1_LeakDollar'},
+     {:difficulty => 'medium', :path => 'src_sse/Ch3-ExtraFormatStr/Ch3_Format2_nCorruptKey'},
+     {:difficulty => 'medium', :path => 'src_sse/Ch3-ExtraFormatStr/Ch3_Format3_nWriteKey'},
+     {:difficulty => 'medium', :path => 'src_sse/Ch3-ExtraFormatStr/Ch3_Format4_nWriteFnP'},
+     {:difficulty => 'medium', :path => 'src_sse/Ch3-ExtraFormatStr/Ch3_Format5_nTargetWrite'},
+     {:difficulty => 'medium', :path => 'src_sse/Ch3-ExtraFormatStr/Ch3_Format6_PLTHijack'},
+     {:difficulty => 'medium', :path => 'src_sse/Ch3.6-3.7/Ch3_07_ParamsRegs'},
+     {:difficulty => 'medium', :path => 'src_sse/Ch3.6-3.7/Ch21x64_ParamsStack'},
+     {:difficulty => 'medium', :path => 'src_sse/Ch3.6-3.7/Ch3_07_SegvBacktrace'},
+     {:difficulty => 'medium', :path => 'src_sse/Ch3.7-3.9/Ch3_07_CanaryBypass'},
+     {:difficulty => 'medium', :path => 'src_sse/Ch3.7-3.9/Ch3_07_HijackPLT'},
+     {:difficulty => 'medium', :path => 'src_sse/Ch3.7-3.9/Ch3_07_ScanfOverflow'},
+     {:difficulty => 'medium', :path => 'src_sse/Ch3.7-3.9/Ch3_07_StackSmash'},
+     {:difficulty => 'medium', :path => 'src_sse/SSE/Ch_BashInjection_1'},
+     {:difficulty => 'medium', :path => 'src_sse/SSE/Ch_Fuzz_1'},
+     {:difficulty => 'medium', :path => 'src_sse/SSE/Ch_Fuzz_2'}
+   ]
+  end
 end
 
 MetaCTFChallengeGenerator.new.run

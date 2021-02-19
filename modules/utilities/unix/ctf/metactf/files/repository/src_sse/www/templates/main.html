@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block body %}
+<center>
+	{% if 'username' in session %}
+		<p>Logged in as: {{session['username']}}</p>
+	{% else %}
+	This site hosts the Portland State University Reverse-Engineering CTF.<br>  For each level, find the password or passcode that causes the binary to print "Good Job."
+	<!--Course material can be found <a href="http://thefengs.com/wuchang/courses/cs201/">here</a>-->
+	<p>Guests may use a login of 'demo0' to 'demo9' with a password of 'malware'</a>
+	<p>Please <a href="{{url_for('login')}}">login</a></p>
+	{% endif %}
+</center>
+{% endblock %}

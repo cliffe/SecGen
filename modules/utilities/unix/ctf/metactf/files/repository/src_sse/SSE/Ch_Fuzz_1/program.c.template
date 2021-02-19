@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <signal.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <string.h>
+
+
+static void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+  printf("Seg Fault detected!\n");
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	exit(1);
+}
+
+int main() {
+        char name [AAAAAA];
+        printf("This challenge has no password -- you need to exploit a weakness to access the flag\n");
+        printf("Crash this program to receive the flag.\n\n");
+
+        signal(SIGSEGV, printflag);
+
+        printf("What is your name?\n");
+        fflush(stdout);
+        scanf("%s", &name);
+        printf("Hello, %s.\n", name);
+        fflush(stdout);
+}

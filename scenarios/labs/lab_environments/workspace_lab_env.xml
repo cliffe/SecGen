@@ -11,8 +11,8 @@
   <type>lab-environment</type>
 
 	<system>
-		<system_name>debian_9_desktop</system_name>
-		<base distro="Debian 9" type="desktop" name="KDE"/>
+		<system_name>debian_10_desktop</system_name>
+		<base distro="Debian 10" type="desktop" name="KDE"/>
 
 		<input into_datastore="IP_addresses">
 			<!-- 0 linux desktop -->
@@ -27,7 +27,7 @@
 		<input into_datastore="accounts">
 			<generator type="account">
 				<input into="username">
-					<generator type="random_word_generator">
+					<generator type="random_sanitised_word">
 						<input into="wordlist">
 							<value>mythical_creatures</value>
 						</input>
@@ -105,7 +105,7 @@
 			<input into="accounts" into_datastore="accounts">
 				<generator type="account">
 					<input into="username">
-						<generator type="random_word_generator">
+						<generator type="random_sanitised_word">
 							<input into="wordlist">
 								<value>mythical_creatures</value>
 							</input>
@@ -133,7 +133,6 @@
 			</input>
 		</network>
 	</system>
-
 
 	<system>
 		<system_name>kali_linux</system_name>

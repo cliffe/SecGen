@@ -28,7 +28,7 @@
 		<input into_datastore="accounts">
 			<generator type="account">
 				<input into="username">
-					<generator type="random_word_generator">
+					<generator type="random_sanitised_word">
 						<input into="wordlist">
 							<value>mythical_creatures</value>
 						</input>
@@ -49,7 +49,7 @@
 			</generator>
 			<generator type="account">
 				<input into="username">
-					<generator type="random_word_generator">
+					<generator type="random_sanitised_word">
 						<input into="wordlist">
 							<value>mythical_creatures</value>
 						</input>
@@ -70,7 +70,7 @@
 			</generator>
 			<generator type="account">
 				<input into="username">
-					<generator type="random_word_generator">
+					<generator type="random_sanitised_word">
 						<input into="wordlist">
 							<value>mythical_creatures</value>
 						</input>

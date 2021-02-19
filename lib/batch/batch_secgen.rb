@@ -205,11 +205,13 @@ def start(options)
         # Update job status and back-up paths
         if status.exitstatus == 0
           puts "Job #{job_id} Complete: successful"
+          `paplay /usr/share/sounds/freedesktop/stereo/complete.oga`
           update_status(db_conn, threadwide_statements, job_id, :success)
           log_prefix = ''
           backup_path = 'batch/successful/'
         else
           puts "Job #{job_id} Complete: failed"
+          `paplay /usr/share/sounds/freedesktop/stereo/dialog-error.oga`
           update_status(db_conn, threadwide_statements, job_id, :error)
           log_prefix = 'ERROR_'
           backup_path = 'batch/failed/'

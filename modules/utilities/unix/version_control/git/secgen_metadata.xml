@@ -15,10 +15,6 @@
   <reference>https://git-scm.com/</reference>
   <software_name>git</software_name>
 
-  <conflict>
-    <name>Stretch</name>
-  </conflict>
-
   <requires>
     <type>update</type>
   </requires>

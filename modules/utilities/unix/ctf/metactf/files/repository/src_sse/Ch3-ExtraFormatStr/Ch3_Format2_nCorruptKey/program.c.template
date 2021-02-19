@@ -1,0 +1,119 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#define USERDEF AAAAAA
+
+// Introduction message
+char msg[] =
+"Previous levels have shown how you can read arbitrary data off of the\n"
+"stack when a format string vulnerability exists.  While leaking data\n"
+"is problematic, what makes the vulnerability devastating is the format\n"
+"specifier %n.  The %n specifier treats the function parameter as a pointer\n"
+"and outputs the number of bytes that printf has output so far into that\n"
+"pointer.  For example: printf(\"test%noutput\", &key) will write 4 into\n"
+"the variable key as there are 4 bytes written before %n (i.e. \"test\").\n" 
+"In this problem, you are given a variable 'key'.  A pointer to 'key'\n"
+"is stored on the stack.  The goal of this level is to use %n to write\n"
+"into this pointer in order to change the value of key to something\n"
+"different.  Use %08x to dump out hex values from the stack and find\n"
+"potential addresses to write into. As in previous levels, you can use\n"
+"the %<parameter_number>$x notation to access a specific parameter number.\n"
+"Then for parameters that look to be addresses on the stack that may hold\n"
+"the variable 'key', use the %<parameter_number>$n notation to corrupt\n"
+"the location with the number of bytes written out by the printf call\n"
+"For example: %2$n will result in $n storing 0 into the second parameter,\n"
+"while aaaaaa%3$n will result in storing 6 into the third parameter.\n"
+"You may have to try and write to a few pointers before you find the\n"
+"correct one.\n\n";
+
+// Print introduction message
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg[i%len] + msg[(i+1)%len];
+    h2 += msg[(i+1)%len] + msg[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg);
+  else
+    printf("%s",msg);
+}
+
+// Vulnerable format string function
+int format_string(char input[]) {
+
+	// Give a pointer to key
+	int key = USERDEF;
+	int *ptr = &key;
+
+	printf("You input: ");
+	printf(input);
+	printf("\n");
+
+	return key;
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main() {
+	char input[51];
+	int i;
+
+	// Initializing input
+	for(i = 0; i < 51; i++) {
+		input[i] = 0;
+	}
+
+	// Print introduction message
+	print_msg();
+
+	// Get user input
+	printf("The key should not equal to %d.\n", USERDEF);
+	printf("Enter the password: ");
+	//fgets(input, 51, stdin);
+	scanf("%50s",input);
+
+	// Check if key from format_string is equal to random int
+
+	int key = format_string(input);
+	printf("The key is equal to %d.\n", key);
+
+	if(key != USERDEF){
+	    printf("Good Job.\n");
+		printflag();
+	} else {
+		printf("Try again.\n");
+	}
+
+	return 0;
+}

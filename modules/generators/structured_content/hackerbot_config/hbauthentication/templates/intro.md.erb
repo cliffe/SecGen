@@ -137,7 +137,7 @@ id
 
 ==Change identity to fred.==
 
-> Hint: `su - fred`
+> Hint: `su - fred` or `sudo -i -u fred`
 
 ==Run:(after su)==
 
@@ -155,7 +155,7 @@ Run the single command "id" as root:
 sudo id
 ```
 
-==Log Book Question: What is the difference between sudo and su? Which is most likely protect against accidental damage and also log the commands used?==
+==Log Book Question: What is the difference between sudo and su? Which is most likely protect against accidental damage and also log the commands used? Do they authenticate users (that is, use passwords) differently?==
 
 ## Users and SSH
 
@@ -239,13 +239,14 @@ passwd
 
 > When prompted, enter a new password of your choosing.
 
+==Make a note of your new password! You will need this!==
+
 View the shadow file, and confirm that the stored password has changed.
 
-With reference to the shadow file, and the man page for crypt (Hint: "man crypt"), ==answer these Log Book questions==:
+With reference to the shadow file, and the man page for crypt (Hint: "man crypt", command or Google if not installed), ==answer these Log Book questions==:
 
 -   On Linux, the password hash stored in /etc/shadow has a prefix that specifies the hash function used.\
     > ==What hash function is used for your password?==
-    > Hint: the `hash-identifier` command line tool may also help.
 
 -   ==When was the root password last changed?==
 
@@ -277,7 +278,8 @@ Add some new users with these passwords:
 ==Use John the Ripper (or Johnny a GUI for the John the Ripper) to crack the passwords.==
 > Hint: `man john`, on the Kali Linux system.
 > You will need to combine the passwd and shadow files (manually or with the kali `unshadow` command.)
-> Tip: you can make a copy of the passwd and shadow files on the desktop (to your <%= $main_user %> home directory), then from the Kali VM scp them over (`ssh <%= $main_user %>@DESKTOP_IP:FILENAME .`), run unshadow, then start cracking them with your software of choice.
+> Tip: you can make a copy of the passwd and shadow files on the desktop (to your <%= $main_user %> home directory), then from the Kali VM scp them over (`scp <%= $main_user %>@DESKTOP_IP:FILENAME .`), run unshadow, then start cracking them with your software of choice.
+> Hint: some users like to use a word followed by some numbers as their password.
 
 ==Log Book Questions:==
 - Which passwords are cracked the fastest?

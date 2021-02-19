@@ -31,7 +31,8 @@ define relative_path_suid_hardlinks::account($username, $password, $strings_to_l
     path    => [ '/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/' ],
   }
 
-  file { '/etc/sysctl.d/hardlinks.conf':
+  # overwrite any existing content (exists on Debian Buster)
+  file { '/etc/sysctl.d/protect-links.conf':
     content => "fs.protected_hardlinks = 0",
   }
 

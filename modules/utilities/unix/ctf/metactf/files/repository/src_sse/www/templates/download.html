@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block body %}
+	<div class="download">
+	<h2>Choose binary set to download</h2>
+	<form action="{{url_for('download')}}" method="post">
+		{% for set in sets %}
+		<input type="radio" name="setname" value="{{set}}" />{{set}}<br>
+		{% endfor %}
+		<br><input type="submit" value="Download" />
+	</form>
+	</div>
+{% endblock %}

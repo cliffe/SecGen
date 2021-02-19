@@ -1,7 +1,15 @@
 class reversing_tools::install {
 
   Exec { path => ['/bin', '/usr/bin', '/usr/local/bin', '/sbin', '/usr/sbin'] }
-  ensure_packages(['gdb', 'git', 'ltrace', 'strace', 'pax-utils', 'binwalk', 'vbindiff', 'ssdeep', 'pyew'])
+  ensure_packages(['gdb', 'git', 'ltrace', 'strace', 'valgrind', 'pax-utils', 'binwalk', 'vbindiff', 'ssdeep', 'pyew'])
+
+  # ensure ncat is installed for testing purposes
+  ensure_packages("nmap")
+  case $operatingsystemrelease {
+    /^(10).*/: { # do buster stuff
+      ensure_packages("ncat")
+    }
+  }
 
   # Install Radare2
 

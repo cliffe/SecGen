@@ -1,0 +1,108 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <string.h>
+#include <unistd.h>
+
+#define USERDEF "AAAAAA"
+
+char msg[] =
+ "In this level, you will need to use gdb to find the password as it is\n"
+ "being passed as a parameter to a function with 10 parameters.  In x86-64,\n"
+ "the first six parameters are passed in rdi, rsi, rdx, rcx, r8, and r9.\n"
+ "Beyond that, they are placed in memory on the stack with the address of\n"
+ "the top of the stack held in rsp.  The password is not among the first\n"
+ "six parameters to the function call you must examine.\n\n";
+
+char chaff0[] = "IeuxMect";
+char chaff1[] = "s27lzXgT";
+char chaff2[] = "H62Pe7ky";
+char chaff3[] = "Br0MSLjX";
+char chaff4[] = "kO7wao8Q";
+char chaff5[] = "s3sOylCO";
+char chaff6[] = "KpMCmNKz";
+char chaff7[] = "yZUEEOFo";
+char chaff8[] = "rQwHzJrk";
+char chaff9[] = "SeCmlYB0";
+char chaff15[] = "CIBSxkFx";
+char chaff16[] = "mGtaBzhM";
+char chaff17[] = "DZmfAtix";
+char chaff18[] = "dgZgKpcm";
+char chaff19[] = "h0mJInkQ";
+
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg[i%len] + msg[(i+1)%len];
+    h2 += msg[(i+1)%len] + msg[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg);
+  else
+    printf("%s",msg);
+}
+
+int foo(char *a, char *b, char *c, char *d, char *e, char *f, char *g, char *h, char *j, char *k) {
+    int flag=1;
+    int i;
+    int len = strlen(h);
+    if (len != strlen(k))
+	flag=0;
+    for (i=0; i < len; i++) {
+	if (h[i] != k[i]) {
+		flag = 0;
+		break;
+	}
+    }
+    return flag;
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main() {
+    char buff[12];
+    char chaff11[] = "Y8FinB6z";
+    char chaff12[] = "pesncFkD";
+    char chaff10[] = USERDEF;
+    char chaff13[] = "ULrrP3lx";
+    char chaff14[] = "ZKudcEdd";
+
+    print_msg();
+    printf("Enter the password: ");
+    scanf("%11s", buff);
+
+    if ( foo("TYdfExPX", chaff0, chaff1, chaff2, "Ys1QXVxq", "uyQMBeoD", "Kr3Pp6kr", chaff10, chaff9, buff)) {
+    	printf("Good Job.\n");
+        printflag();
+    } else {
+        printf("Try again.\n");
+    }
+    return 0;
+}

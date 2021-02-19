@@ -24,7 +24,7 @@ This week we learn how to scan networks to get an understanding of and to map ou
 
 	<system>
 		<system_name>linux_victim_server</system_name>
-		<base distro="Debian 9" type="server"/>
+		<base distro="Debian 10" type="desktop"/>
 
 
 		<input into_datastore="IP_addresses">

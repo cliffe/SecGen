@@ -1,5 +1,5 @@
 	<attack>
-<%  $services = {'FTP'=>'20','Telnet'=>'23','SMTP'=>'25','POP3'=>'110','IMAP'=>'143','SNMP'=>'161','LDAP'=>'389','HTTPS'=>'443','LDAPS'=>'636'}
+<%  $services = {'FTP'=>'20,21','Telnet'=>'23','SMTP'=>'25','POP3'=>'110','IMAP'=>'143','SNMP'=>'161','LDAP'=>'389','HTTPS'=>'443','LDAPS'=>'636'}
     $rand_service1 = $services.keys.sample
     $rand_alert3 = SecureRandom.hex(3) %>
 		<pre_shell>sshpass -p <%= $root_password %> scp -prv -oStrictHostKeyChecking=no root@<%= $ids_server_ip %>:/var/log/snort/alert /tmp/snort_alert_before; stat1=$?; nmap -sT -p 1000,<%= $services[$rand_service1] %> <%= $web_server_ip %> > /dev/null; stat2=$?; sleep 1; sshpass -p <%= $root_password %> scp -prv -oStrictHostKeyChecking=no root@<%= $ids_server_ip %>:/var/log/snort/alert /tmp/snort_alert_after; stat3=$?; echo --$stat1$stat2$stat3; diff -u /tmp/snort_alert_before /tmp/snort_alert_after | tail -n 5</pre_shell>

@@ -1,0 +1,12 @@
+#include <stdio.h>
+int main() {
+        char name [20];
+        char command [100];
+        printf("This challenge has no password -- you need to exploit a weakness to access the flag\n");
+        printf("A program is vulnerable to command injection if you can change the behaviour of software by inserting commands into input that get interpreted as commands for the program to execute.\n\n");
+        printf("What is your name?\n");
+        scanf("%19[^\n]s", &name);
+        sprintf(command, "echo Hello %s; echo The time is "
+        "currently:; date", name);
+        system(command);
+}

@@ -24,7 +24,7 @@
 		<input into_datastore="accounts">
 			<generator type="account">
 				<input into="username">
-					<generator type="random_word_generator">
+					<generator type="random_sanitised_word">
 						<input into="wordlist">
 							<value>mythical_creatures</value>
 						</input>
@@ -176,7 +176,7 @@ Iain Wright,iain.wright@democrats.com,28013651
 			</generator>
 			<generator type="account">
 				<input into="username">
-					<generator type="random_word_generator">
+					<generator type="random_sanitised_word">
 						<input into="wordlist">
 							<value>mythical_creatures</value>
 						</input>
@@ -197,7 +197,7 @@ Iain Wright,iain.wright@democrats.com,28013651
 			</generator>
 			<generator type="account">
 				<input into="username">
-					<generator type="random_word_generator">
+					<generator type="random_sanitised_word">
 						<input into="wordlist">
 							<value>mythical_creatures</value>
 						</input>

@@ -138,14 +138,14 @@ sudo vi /etc/pam.d/common-password
 ==Edit the pam_pwquality line, so it reads:==
 
 ```
-password requisite pam_pwquality.so minlen=10
+password requisite pam_pwquality.so minlen=7
 ```
 
 > **Reminder**: Vi is 'modal': it has an insert mode, where you can type text into the file, and normal mode, where what you type is interpreted as commands. Press the "i" key to enter "insert mode". Type your changes to the file, then exit back to "normal mode" by pressing the Esc key. Now to exit and save the file press the ":" key, followed by "wq" (write quit), and press Enter.
 
 ==Change a normal user's password using passwd.==
 
-==Confirm that normal users can no longer use a password that is less than 10 characters long.==
+==Confirm that normal users can no longer use a password that is less than 7 characters long.==
 
 ==View the man page== for this PAM module[^1]:
 

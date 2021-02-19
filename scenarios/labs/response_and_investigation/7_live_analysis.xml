@@ -18,7 +18,7 @@
 		<base distro="Debian 10" type="desktop" name="KDE"/>
 
 		<input into_datastore="main_username">
-			<generator type="random_word_generator">
+			<generator type="random_sanitised_word">
 				<input into="wordlist">
 					<value>mythical_creatures</value>
 				</input>
@@ -145,6 +145,9 @@
 			</generator>
 		</input>
 
+		<!-- Install LiME as /proc/kcore dump doesn't work with 64-bit bases since Linux 4.8 -->
+		<utility module_path=".*./lime"/>
+
 		<vulnerability module_path=".*/nc_backdoor">
 			<input into="port" into_datastore="nc_port">
 				<generator module_path=".*/random_unregistered_port" />
@@ -160,7 +163,7 @@
 				<datastore>nc_port</datastore>
 			</input>
 			<input into="hidden_strings">
-				<value>nc</value>
+				<value>ncat</value>
 				<value>hme</value>
 				<datastore>hidden_string</datastore>
 			</input>

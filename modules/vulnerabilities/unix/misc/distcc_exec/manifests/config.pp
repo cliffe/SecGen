@@ -25,6 +25,12 @@ class distcc_exec::config{
     command => 'usermod -d /home/distccd distccd'
   }
 
+  # newer versions of distcc have a directory of symlinks for whitelisting compilers
+  exec {"check_presence_compiler_list":
+    command => '/bin/ln -s /bin/sh /usr/lib/distcc/sh',
+    onlyif => '/usr/bin/test -d /usr/lib/distcc -a ! -e /usr/lib/distcc/sh',
+  }
+
   ::secgen_functions::leak_files { 'distcc_exec-file-leak':
     storage_directory => "/home/distccd",
     leaked_filenames  => $leaked_filenames,

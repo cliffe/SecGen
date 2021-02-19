@@ -1,0 +1,31 @@
+	<attack>
+<% $random_deleted_file = "/tmp/#{SecureRandom.hex}"
+	 %>
+		<pre_shell>sshpass -p <%= $root_password %> ssh -oStrictHostKeyChecking=no root@<%= $web_server_ip %> 'echo hi > <%= $random_deleted_file %>; echo File.open \"<%= $random_deleted_file %>\"\; sleep 10000000 > /tmp/script; chmod +x /tmp/script; (setsid nohup ruby /tmp/script >/dev/null) &amp; sleep 2; rm <%= $random_deleted_file %> /tmp/script'; echo 'OK'</pre_shell>
+
+		<get_shell>false</get_shell>
+		<post_command></post_command>
+
+		<prompt>About to do something to your web server, let it happen...</prompt>
+
+		<condition>
+			<output_matches>OK</output_matches>
+			<message>Ok, answer this.</message>
+			<trigger_quiz />
+		</condition>
+		<condition>
+			<output_matches>OK..</output_matches>
+			<message>Ok, answer this.</message>
+			<trigger_quiz />
+		</condition>
+		<else_condition>
+			<message>Ok...</message>
+		</else_condition>
+
+		<quiz>
+			<question>What deleted file from /tmp/ is currently still opened by a program for reading?</question>
+			<answer><%= $random_deleted_file %></answer>
+			<correct_answer_response>:) <%= $flags.pop %></correct_answer_response>
+			<trigger_next_attack />
+		</quiz>
+	</attack>

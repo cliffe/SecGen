@@ -48,7 +48,7 @@ class WordGenerator < StringGenerator
     until flag_word != ''
       selected_word = File.readlines("#{WORDLISTS_DIR}/#{self.wordlist.sample.chomp}").sample.chomp
       if suitable_word_length(selected_word) and !blacklist.is_blacklisted?(selected_word)
-        flag_word = selected_word.gsub(/[^\w]/, '')
+        flag_word = selected_word
       end
     end
 

@@ -25,7 +25,7 @@ You don't need to login to the backup_server or web_server, but you will connect
 
 ### For marks in the module
 1. **You need to submit flags**. Note that the flags and the challenges in your VMs are different to other's in the class. Flags will be revealed to you as you complete challenges throughout the module. Flags look like this: ==flag{*somethingrandom*}==. Follow the link on the module page to submit your flags.
-2. **You need to document the work and your solutions in a workbook**. This needs to include screenshots (including the flags) of how you solved each Hackerbot challenge and a writeup describing your solution to each challenge, and answering any "Workbook Questions". The workbook will be submitted later in the semester.
+2. **You need to document the work and your solutions in a Log Book**. This needs to include screenshots (including the flags) of how you solved each Hackerbot challenge and a writeup describing your solution to each challenge, and answering any "Log Book Questions". The Log Book will be submitted later in the semester.
 
 ## Hackerbot!
 ![small-right](images/skullandusb.svg)
@@ -91,7 +91,7 @@ tcpdump -q
 ```bash
 tcpdump -A
 ```
-> Shows the packet content without the information about the source and destination. 
+> Shows the packet content without the information about the source and destination.
 
 When you ==access a web page in a browser on the desktop VM== (go ahead... ==reload this labsheet== webpage), Tcpdump will display the content, so long as the traffic is not SSL encrypted (for example, so long as the URL doesn't start with http**s**://).
 
@@ -167,7 +167,7 @@ vi /etc/snort/snort.conf
 
 > ":wq" to write changes and quit)
 
-==Comment out== the line starting with "`output` …" 
+==Comment out== the line starting with "`output` …"
 > (Put a \# in front of it)
 
 ==Add the following line:==
@@ -268,7 +268,7 @@ Add the following line below the other include rules (at the end of the file):
 `include $RULE_PATH/my.rules`
 
 Save your changes to snort.conf
-> (For example, in vi, press Esc, then type ":wq"). 
+> (For example, in vi, press Esc, then type ":wq").
 
 > Hint: you may find it easier to use Esc, then type ":w" to write your changes to disk and then type ":q" to exit (or "x" shorthand for "wq").
 
@@ -405,7 +405,7 @@ Create a rule that only triggers on loading the Webserver's homepage (http://<%=
 
 ---
 
-Create a rule that triggers on the 
+Create a rule that triggers on the
 
 ##TODO
 Create a Snort rule that detects visits to the Leeds Beckett website from the Kali VM, but does not get triggered by general web browsing.
@@ -428,5 +428,3 @@ Randomly specified content
 Randomly generated content (requires network monitoring)
 attacks
 random port number (by service name?)
-
-

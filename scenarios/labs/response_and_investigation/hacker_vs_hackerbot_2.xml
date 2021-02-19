@@ -32,7 +32,7 @@
 		<input into_datastore="accounts">
 			<generator type="account">
 				<input into="username" into_datastore="main_username">
-					<generator type="random_word_generator">
+					<generator type="random_sanitised_word">
 						<input into="wordlist">
 							<value>mythical_creatures</value>
 						</input>
@@ -94,7 +94,7 @@
 			</generator>
 			<generator type="account">
 				<input into="username">
-					<generator type="random_word_generator">
+					<generator type="random_sanitised_word">
 						<input into="wordlist">
 							<value>mythical_creatures</value>
 						</input>
@@ -132,6 +132,21 @@
 						[80383.925811] usb 3-1: USB disconnect, device number 4
 					</value>
 					<generator type="person" />
+				</input>
+			</generator>
+			<generator type="account">
+				<input into="username">
+					<generator type="random_sanitised_word">
+						<input into="wordlist">
+							<value>mythical_creatures</value>
+						</input>
+					</generator>
+				</input>
+				<input into="password">
+					<generator type="strong_password_generator"/>
+				</input>
+				<input into="super_user">
+					<value>true</value>
 				</input>
 			</generator>
 		</input>
@@ -368,7 +383,6 @@
 				</input>
 				<input into="leaked_filenames">
 					<value>u_r_powned-hme</value>
-					<value>.hidden_flag-hme</value>
 					<datastore>hidden_string</datastore>
 				</input>
 				<input into="strings_to_leak">
@@ -377,7 +391,6 @@
 							<value>powned_messages</value>
 						</input>
 					</generator>
-					<generator type="flag_generator" />
 					<generator type="flag_generator" />
 				</input>
 			</generator>

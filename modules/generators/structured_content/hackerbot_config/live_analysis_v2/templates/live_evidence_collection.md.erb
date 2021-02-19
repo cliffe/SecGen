@@ -188,12 +188,25 @@ ssh -t <%= $compromised_server_ip %> "sudo /media/cdrom0/statbins/linux2.2_x86/c
 
 **Creating images of the system state**
 
-We can take a snapshot of the live state of the computer by dumping the entire contents of memory (what is in RAM/swap) into a file. On a Linux system /proc/kcore contains an ELF-formatted core dump of the kernel. Save a snapshot of the kernel state:
+We can take a snapshot of the live state of the computer by dumping the entire contents of memory (what is in RAM/swap) into a file. First, check whether we are running a 32-bit or 64-bit operating system.
+```bash
+uname -m
+```
+
+On a **32-bit** Linux system /proc/kcore contains an ELF-formatted core dump of the kernel. Save a snapshot of the kernel state:
 
 ```bash
 ssh -t <%= $compromised_server_ip %> "sudo /media/cdrom0/statbins/linux2.2_x86/dd if=/proc/kcore conv=noerror,sync" | tee evidence/kcore
 ```
 ==After 10 seconds or so press Ctrl-C to stop.==
+
+On a **64-bit** Linux system since kernel version 4.8 we cannot dump /proc/kcore directly as there has been randomisation added to the start of the memory mapping. Instead we can dump the contents of live memory with an open source tool called LiME - Linux Memory Extractor and then copy them to our desktop VM for analysis.
+
+```bash
+ssh -t <%= $compromised_server_ip %> 'sudo insmod /root/LiME/src/lime-$(uname -r).ko "path=/home/<%= $main_user %>/lime_dump format=raw"'
+sudo scp <%= $main_user %>@<%= $compromised_server_ip %>:/home/<%= $main_user %>/lime_dump evidence/kcore
+```
+
 
 Next, we can copy entire partitions to our other system, to preserve the exact state of stored data, and so that we can conduct offline analysis without modifying the filesystem.
 
@@ -286,7 +299,7 @@ echo $PATH
 Set the \$PATH environment variable to use our static binaries wherever possible, so that when chkrootkit calls external programs it will (wherever possible) use the ones stored on the IR disk:
 
 ```bash
-export PATH=/media/cdrom0/statbins:$PATH
+export PATH=/media/cdrom0/statbins/linux2.2_x86:$PATH
 ```
 
 Confirm that now if we were to run less, we would be running the static version:

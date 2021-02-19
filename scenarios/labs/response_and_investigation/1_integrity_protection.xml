@@ -26,7 +26,7 @@
 		<input into_datastore="accounts">
 			<generator type="account">
 				<input into="username">
-					<generator type="random_word_generator">
+					<generator type="random_sanitised_word">
 						<input into="wordlist">
 							<value>mythical_creatures</value>
 						</input>
@@ -68,7 +68,7 @@ Diner's Club	3000 0000 0000 04</value>
 			</generator>
 			<generator type="account">
 				<input into="username">
-					<generator type="random_word_generator">
+					<generator type="random_sanitised_word">
 						<input into="wordlist">
 							<value>mythical_creatures</value>
 						</input>
@@ -89,7 +89,7 @@ Diner's Club	3000 0000 0000 04</value>
 			</generator>
 			<generator type="account">
 				<input into="username">
-					<generator type="random_word_generator">
+					<generator type="random_sanitised_word">
 						<input into="wordlist">
 							<value>mythical_creatures</value>
 						</input>

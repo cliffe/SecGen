@@ -1,0 +1,122 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+void printflag();
+
+// Introduction message
+char msg[] =
+"The format string vulnerability is particularly deadly when it is used to\n"
+"modify locations that hold function pointers such as return addresses on\n"
+"the stack, global offset tables implementing dynamic library calls, and\n"
+"function pointers in programs that are evenutally called.  In this level,\n"
+"a function pointer on the stack currently has the value of the function\n"
+"print_again.  This function pointer is eventually called by the program\n"
+"after the vulnerable printf call.  Both the function pointer and a variable\n"
+"containing its address are stored on the stack next to each other.  First,\n"
+"use objdump or gdb to find the address of print_again.  Then, use the format\n"
+"string vulnerability to leak the parameter number which corresponds to the\n"
+"function pointer on the stack.  Since adjacent to this pointer is the\n"
+"pointer's address on the stack, you will use this as your argument to the\n"
+"%n specifier.  Using objdump or gdb, find the address of print_good.  Then,\n"
+"calculate its address in decimal.  Finally, craft the format string\n"
+"%<num1>x%<num2>$n , where <num1> is the decimal number that will cause the\n"
+"subsequent %n to write the address of print_good and <num2> is the function\n"
+"parameter number of the address of the function pointer.\n\n";
+
+// Function pointer variable type
+typedef void (*functionp)();
+
+// Print introduction message
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg[i%len] + msg[(i+1)%len];
+    h2 += msg[(i+1)%len] + msg[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg);
+  else
+    printf("%s",msg);
+}
+
+// Good/Again
+void print_good(){
+	printf("Good Job.\n");
+	printflag();
+}
+
+void print_again(){
+	printf("Try again.\n");
+}
+
+// Vulnerable format string function
+void format_string(char input[]) {
+
+	// Pointer to function
+	functionp fp = print_again;
+	functionp *ptr = &fp;
+
+	printf("You input: ");
+	printf(input);
+	printf("\n");
+
+	printf("\nFP now has the address of %p\n", (void *)fp);
+
+	fp();
+	return;
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main() {
+	char input[51];
+	int i;
+
+	// Initializing input
+	for(i = 0; i < 51; i++) {
+		input[i] = 0;
+	}
+
+	// Print introduction message
+	print_msg();
+
+	// Get user input
+	printf("Enter the password: ");
+	scanf("%50s", input);
+
+	// Calling vulnerable function
+	format_string(input);
+
+	return 0;
+}

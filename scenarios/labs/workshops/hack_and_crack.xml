@@ -29,28 +29,28 @@
 		<!-- generate some usernames to use -->
 		<input into_datastore="usernames">
 			<!-- main user -->
-			<generator type="random_word_generator">
+			<generator type="random_sanitised_word">
 				<input into="wordlist">
 					<value>mythical_creatures</value>
 				</input>
 			</generator>
 			<!-- 4 other users -->
-			<generator type="random_word_generator">
+			<generator type="random_sanitised_word">
 				<input into="wordlist">
 					<value>mythical_creatures</value>
 				</input>
 			</generator>
-			<generator type="random_word_generator">
+			<generator type="random_sanitised_word">
 				<input into="wordlist">
 					<value>mythical_creatures</value>
 				</input>
 			</generator>
-			<generator type="random_word_generator">
+			<generator type="random_sanitised_word">
 				<input into="wordlist">
 					<value>mythical_creatures</value>
 				</input>
 			</generator>
-			<generator type="random_word_generator">
+			<generator type="random_sanitised_word">
 				<input into="wordlist">
 					<value>mythical_creatures</value>
 				</input>

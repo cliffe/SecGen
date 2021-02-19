@@ -27,7 +27,7 @@ A Hackerbot lab. Work through the labsheet, then when prompted interact with Hac
 
 	<system>
 		<system_name>shared_desktop</system_name>
-		<base distro="Debian 9" type="desktop" name="KDE"/>
+		<base distro="Debian 10" type="desktop" name="KDE"/>
 
 		<input into_datastore="IP_addresses">
 			<!-- 0 desktop -->
@@ -41,28 +41,28 @@ A Hackerbot lab. Work through the labsheet, then when prompted interact with Hac
 		<!-- generate some usernames to use -->
 		<input into_datastore="usernames">
 			<!-- main user -->
-			<generator type="random_word_generator">
+			<generator type="random_sanitised_word">
 				<input into="wordlist">
 					<value>mythical_creatures</value>
 				</input>
 			</generator>
 			<!-- 4 other users -->
-			<generator type="random_word_generator">
+			<generator type="random_sanitised_word">
 				<input into="wordlist">
 					<value>mythical_creatures</value>
 				</input>
 			</generator>
-			<generator type="random_word_generator">
+			<generator type="random_sanitised_word">
 				<input into="wordlist">
 					<value>mythical_creatures</value>
 				</input>
 			</generator>
-			<generator type="random_word_generator">
+			<generator type="random_sanitised_word">
 				<input into="wordlist">
 					<value>mythical_creatures</value>
 				</input>
 			</generator>
-			<generator type="random_word_generator">
+			<generator type="random_sanitised_word">
 				<input into="wordlist">
 					<value>mythical_creatures</value>
 				</input>
@@ -94,6 +94,18 @@ A Hackerbot lab. Work through the labsheet, then when prompted interact with Hac
 				<input into="password">
 					<value>tiaspbiqe2r</value>
 				</input>
+
+				<input into="leaked_filenames">
+					<value>mysecret</value>
+				</input>
+				<input into="strings_to_leak">
+					<generator type="random_line_generator">
+						<input into="linelist">
+							<value>secrets</value>
+						</input>
+					</generator>
+				</input>
+
 				<input into="super_user">
 					<value>true</value>
 				</input>
@@ -201,7 +213,7 @@ A Hackerbot lab. Work through the labsheet, then when prompted interact with Hac
 
 	<system>
 		<system_name>server</system_name>
-		<base distro="Debian 9" type="server"/>
+		<base distro="Debian 10" type="desktop"/>
 
 		<!-- user accounts on the server, with matching usernames and passwords, but with flags to find -->
 		<input into_datastore="user_accounts_server">

@@ -36,7 +36,7 @@ class IDS < HackerbotConfigGenerator
       when '--ids_server_ip'
         self.ids_server_ip << arg;
       when '--hackerbot_server_ip'
-        self.ids_server_ip << arg;
+        self.hackerbot_server_ip << arg;
     end
   end
 

@@ -45,7 +45,7 @@ Chapter 1 "An Overview of Computer Security": Bishop, M. (2005), Introduction to
 			<!-- main user, sudoer -->
 			<generator type="account">
 				<input into="username">
-					<generator type="random_word_generator">
+					<generator type="random_sanitised_word">
 						<input into="wordlist">
 							<value>mythical_creatures</value>
 						</input>

@@ -57,4 +57,20 @@ class metactf::install {
     logoutput => on_failure,
     require => Exec['src_malware chmod executable'],
   }
+
+  # Build src_sse
+  exec { 'src_sse chmod executable':
+    command => 'chmod -R +x */*/*.zsh',
+    cwd     => "$install_dir/src_sse/",
+    logoutput => on_failure,
+  }
+
+  # Build src_sse
+  exec { 'build src_sse binaries':
+    cwd     => "$install_dir/src_sse/",
+    command => "/usr/bin/make",
+    logoutput => on_failure,
+    require => Exec['src_sse chmod executable'],
+  }
+
 }

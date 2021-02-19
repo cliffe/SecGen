@@ -2,13 +2,13 @@
 
 An *access control list (ACL)* is attached to an object (resource) and lists all the subjects (users / active entities) that are allowed access, along with the kind of access that is authorised.
 
-We have explored standard Unix file permissions, which is an abbreviated (simplified) form of ACL. With standard Unix file permissions all authorisation is defined in terms of the owning user (u), groups (g), and others (o), and the type of access that can be granted are read (r), write (r), and execute (x) -- along with some special permission flags, SUID, SGID, and stickybit, which change the meaning of these.
+We have explored standard Unix file permissions, which is an abbreviated (simplified) form of ACL. With standard Unix file permissions all authorisation is defined in terms of the owning user (u), groups (g), and others (o), and the type of access that can be granted are read (r), write (w), and execute (x) -- along with some special permission flags, SUID, SGID, and stickybit, which change the meaning of these.
 
-The Unix file permissions (0664) `-rw-rw-r-- 1 user1 group1 5 Feb 5 test` can be thought of as a simplified ACL with:
+The Unix file permissions (0664) `-rw-rw-r-- 1 <%= $main_user %> group1 5 Feb 5 test` can be thought of as a simplified ACL with:
 
 Subject | Permission
 --- | ---
-user1 | read, write
+<%= $main_user %> | read, write
 members of group1 | read, write
 everyone else | read
 
@@ -20,8 +20,8 @@ A more expressive ACL for a file can represent a state such as:
 
 Subject | Permission
 --- | ---
-user1 | read, write
-user2 | read, write
+<%= $main_user %> | read, write
+<%= $second_user %> | read, write
 members of group1 | read, write
 members of group2 | read
 everyone else | nothing
@@ -48,7 +48,7 @@ The Owner (user::xxx) and Other (other:xxx) permissions are automatically synced
 ==Set a file ACL on your mysecret file==, using the setfacl command:
 
 ```bash
-setfacl -m u:user2:r ~/mysecret
+setfacl -m u:<%= $second_user %>:r ~/mysecret
 ```
 
 > The `-m` flag specifies that the ACL is to be modified
@@ -57,15 +57,17 @@ setfacl -m u:user2:r ~/mysecret
 > This is followed by the name of the user or group
 > Finally read (r), write (w), and/or execute (x) can be specified using letters (rwx) or a number (7, which is the octet representing wrx)
 
-This grants user2 read access to the file (without requiring access granted to any other groups or users).
+This grants <%= $second_user %> read access to the file (without requiring access granted to any other groups or users).
 
-==Confirm you can access the file from user2:==
+==Confirm you can access the file from <%= $second_user %>:==
 
 ```bash
-su - user2
-cat /home/user1/mysecret
+su - <%= $second_user %>
+cat /home/<%= $main_user %>/mysecret
 exit
 ```
+
+Tip: You'll need to ensure that the user has permission to enter the directory.
 
 Note that the stat program is not usually ACL aware, so won't report anything out of the usual. ==Run:==
 
@@ -79,7 +81,7 @@ The ls program can be used to detect File ACLs. ==Run:==
 ls -la ~/mysecret
 ```
 
-`-rw-r-----+ 1 user1 user1 22 Feb 28 11:47 mysecret`
+`-rw-r-----+ 1 <%= $main_user %> <%= $main_user %> 22 Feb 28 11:47 mysecret`
 
 Note that the output includes a `+`. This indicates an ACL is in place.
 
@@ -93,10 +95,10 @@ getfacl ~/mysecret
 
 Extended ACLs contain a mask entry that defines the upper bound (maximum permissions) that can be assigned by the ACL rules that apply to any named users or groups. This mask (mask::xxx) is typically automatically updated to the union (maximum) of all permissions granted, and automatically synced with the value of the group Unix file permission bits.
 
-==Grant full rwx permission to user2:==
+==Grant full rwx permission to <%= $second_user %>:==
 
 ```bash
-setfacl -m u:user2:rwx ~/mysecret
+setfacl -m u:<%= $second_user %>:rwx ~/mysecret
 ```
 
 ==View the updated permissions visible via `ls`:==
@@ -118,7 +120,7 @@ Note that the mask has changed.
 ==Change the mask value to "r"==
 > Hint: see the table above that describes the text representation.
 
-==Confirm user2 can no longer access the file due to the mask, even though they have rwx permission.==
+==Confirm <%= $second_user %> can no longer access the file due to the mask, even though they have rwx permission.==
 
 ## Understanding the access check behaviour
 
@@ -161,11 +163,11 @@ Default ACLs set the ACL rules that are applied to any new files created in the 
 
 When a default ACL is specified on the parent directory, `umask` has no effect on the permissions of new files.
 
-==Create a directory to share with user2:==
+==Create a directory to share with <%= $second_user %>:==
 
 ```bash
 mkdir shared
-setfacl -m u:user2:rw -d -m u:user2:rw shared
+setfacl -m u:<%= $second_user %>:rw -d -m u:<%= $second_user %>:rw shared
 ```
 
 ==Create a new file in the shared directory.==

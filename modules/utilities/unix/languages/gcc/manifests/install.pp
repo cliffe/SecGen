@@ -1,5 +1,14 @@
 class gcc::install {
-  package { ['build-essential', 'gcc-multilib']:
+
+  if $operatingsystemrelease == 'kali-rolling' {
+      # first remove the currently installed gcc versions
+    package { 'libgcc-9-dev':
+      ensure => 'purged',
+    }
+  }
+
+
+  package { ['gcc-multilib', 'build-essential']:
     ensure => 'installed',
   }
 }

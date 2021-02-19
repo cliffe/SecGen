@@ -1,0 +1,142 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <sys/ptrace.h>
+#include <string.h>
+#include <unistd.h>
+#define MAXSIZE 4096
+#define USERDEF AAAAAA
+
+// Base64 encoding table
+static char encoding_table[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+				'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+				'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+				'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
+				'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
+				'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+				'w', 'x', 'y', 'z', '0', '1', '2', '3',
+				'4', '5', '6', '7', '8', '9', '+', '/'};
+
+// Introduction message
+char msg[] =
+"Similar to the previous level, the binary echoes your input using a\n"
+"vulnerable call to printf. You will again need to insert format specifiers\n"
+"to discover a pointer to the password located on the stack.  Unlike the\n"
+"previous level, however, the password is hidden deeper in the stack.\n"
+"With input being limited to only 8 characters, you will need to\n"
+"use a different method for accessing the pointer.  Format specifiers\n"
+"have a shorthand notation that allow you to specify the function argument\n"
+"you want formated.  Specifically, if one uses %3$x, printf will use the\n"
+"the third function parameter and output its hexadecimal representation.\n"
+"Similarly, %3$s is short hand for treating the third parameter as a\n"
+"pointer to a character array and printing the string that is located\n"
+"there.  So, if the pointer to the password is the third parameter,\n"
+"then instead of using %x%x%s to get at it, you can simply use %3$s to\n"
+"access it directly.  The general syntax is %<parameter_number>$<type>.\n"
+"The password for this level is hidden deep in the stack.  Find it\n"
+"to solve the level.\n\n";
+
+// Print introduction message
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg[i%len] + msg[(i+1)%len];
+    h2 += msg[(i+1)%len] + msg[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg);
+  else
+    printf("%s",msg);
+}
+
+// Debugger prevention
+/* void detectTrace(void) __attribute__((constructor));
+void detectTrace(void) {
+	if(ptrace(PTRACE_TRACEME, 0, 1, 0) < 0) {
+		printf("Sorry, we have disallowed debuggers on this assignment.\n");
+		exit(1);
+	};
+};*/
+
+// Format string vulnerable method (pushing flag onto stack as argument)
+void format_string(char input[], char fakeoutput[9], char output[9]){
+	printf("You input: ");
+	printf(input);
+	printf("\n");
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main(){
+	// Declare variables for password generation
+	char input[9], output[9];
+	unsigned int seed=USERDEF;
+	int i, flag, cnt = 0;
+	char modulus;
+
+	// Initialize input and output and flag
+	for(i = 0; i < 9; i++) {
+		input[i] = 0;
+		output[i] = 0;
+	}
+
+	flag = 0;
+
+	// Print introduction message
+	print_msg();
+
+	// Get user input
+	printf("Enter the password: ");
+	scanf("%8s",input);
+
+	// Password Generation
+	for(i = 0; (i < MAXSIZE) && (cnt < 8); i++) {
+		seed = (seed * 214013) + 2531011;
+		modulus = seed % 61;
+		if(!(i % 256)) {
+			flag += abs(input[cnt]-encoding_table[modulus]);
+			output[cnt] = encoding_table[modulus % 64];
+			cnt++;
+		}
+	}
+
+	// Call vulnerable method
+	format_string(input, "almost!!", output);
+
+	if(flag){
+	    printf("Try again.\n");
+	} else {
+        printf("Good Job.\n");
+        printflag();
+	}
+
+	return 0;
+}

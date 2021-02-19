@@ -1,0 +1,124 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+void printflag();
+
+// Introduction message
+char msg[] =
+"If we're trying to use %n to output an address, it might require an\n"
+"extremely large number of characters to arrive at the proper value\n"
+"It is possible to split this write up into smaller pieces, however.\n"
+"For 32-bit architectures, addresses are 4 bytes.  If we wish to write\n"
+"the address in two parts, we can first write the low two bytes then the\n"
+"high two bytes.  To do so, we can use the %hn format specifier which\n"
+"emits the number of bytes written so far by printf as a short.  For\n"
+"example, consider the case where the format string begins at the fourth\n"
+"argument of our vulnerable printf call.  If our input string is then\n"
+"\"4CBA6CBA%10000x%4$hn%11111x%5$hn\", the %4$hn will write 10008 (0x2718)\n"
+"into the address represented by '4CBA' (0x41424334) and %5$hn will write\n"
+"10008+11111 (21119 = 0x527F) into the address represented by '6CBA'\n"
+"(0x41424336).  Together, the four bytes at 0x41424334 would be 0x527F2718.\n"
+"In this level, perform a PLT Hijack on the function rand(), replacing the\n"
+"PLT entry with the address of print_good()\n\n";
+
+// Print introduction message
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg[i%len] + msg[(i+1)%len];
+    h2 += msg[(i+1)%len] + msg[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg);
+  else
+    printf("%s",msg);
+}
+
+// Good/Again
+void print_good(){
+	printf("Good Job.\n");
+	printflag();
+	exit(0);
+}
+
+void print_again(){
+	printf("Try again.\n");
+}
+
+
+// Vulnerable format string function
+void format_string(char input[]) {
+	char key[128];
+
+	// Putting input on the stack
+	strcpy(key, input);
+
+	printf("You input: ");
+	printf(input);
+	printf("\n");
+
+	return;
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+// Main
+int main() {
+	char input[128];
+	int i;
+
+	// Initializing input
+	for(i = 0; i < 128; i++) {
+		input[i] = 0;
+	}
+
+	// Print introduction message
+	print_msg();
+
+	// Get user input
+	printf("Enter the password: ");
+	//fgets(input, 128, stdin);
+	scanf("%127s",input);
+
+	// Calling vulnerable function
+	format_string(input);
+
+	// Random function to hijack PLT
+	rand();
+
+	// Print again if unable to hijack PLT
+	print_again();
+
+	return 0;
+}

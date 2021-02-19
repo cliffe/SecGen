@@ -1,6 +1,6 @@
 class easyftp_rce::install {
   $edb_app_path = "http://www.exploit-db.com/apps"
-  $mirror_app_path = "http://hacktivity.aet.leedsbeckett.ac.uk/files/exploit-db-apps"
+  $mirror_app_path = "http://schreuders.org/exploitdb-apps-mirror"
   $filename = "cf7a11d305a1091b71fe3e5ed5b6a55c-easyftpsvr-1.7.0.2.zip"
   $zipfile = "C:/easyftp.zip"
   $install_path = "C:/Users/vagrant/Downloads/easyftp"
@@ -13,13 +13,8 @@ class easyftp_rce::install {
   #  } ->
 
    exec {'fetch easyftp':
-     command => "(new-object System.Net.WebClient).DownloadFile( '$edb_app_path/$filename', '$zipfile') ",
-     provider     => 'powershell',
-     creates => "$zipfile",
-     logoutput => true,
-   }->
-   exec {'fetch easyftp from mirror':
-     command => "(new-object System.Net.WebClient).DownloadFile( '$mirror_app_path/$filename', '$zipfile') ",
+     command => "(new-object System.Net.WebClient).DownloadFile( '$edb_app_path/$filename', '$zipfile'); (new-object System.Net.WebClient).DownloadFile( '$mirror_app_path/$filename', '$zipfile'); \$true ",
+     # command => "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri \"$mirror_app_path\" -OutFile \"$install_path\" ",
      provider     => 'powershell',
      creates => "$zipfile",
      logoutput => true,

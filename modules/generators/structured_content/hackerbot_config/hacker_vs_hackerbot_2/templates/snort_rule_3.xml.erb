@@ -8,7 +8,7 @@
 		<get_shell>false</get_shell>
 		<post_command></post_command>
 
-		<prompt>Create a Snort rule that detects any unencrypted POP3 email *user authentication attempt* (someone trying to log in), to a mail server on <%= $web_server_ip %>. The alert must include the message "<%= $rand_alert4 %>". Up to three flags will be awarded, based on the quality of the rule.</prompt>
+		<prompt>Create a Snort rule that detects any unencrypted POP3 email *user authentication attempt* (someone trying to log in), to a mail server on <%= $web_server_ip %>. The alert must include the message "<%= $rand_alert4 %>". One flags will be awarded, based on the quality of the rule.</prompt>
 
 		<condition>
 			<output_matches>^--1</output_matches>

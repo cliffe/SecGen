@@ -1,6 +1,15 @@
 # Backing Up and Recovering from Disaster: SSH/SCP, Deltas, and Rsync
 
 ## Getting started
+### Tips for completing this lab
+This lab **needs to be completed in order**.
+
+You should use the rsync dry run option (by adding `-n` to the command) to test which files are going to be backed up, without making the changes.
+
+You should manually check you have done your backups correctly **before** telling Hackerbot you are ready. It may be a good idea to ssh to your backup server in a separate console tab `ssh <%= $server_ip %>` (but do keep an eye on which system you are running each command on!).
+
+Also remember that Hackerbot's FYI outputs can include error messages that don't indicate that you did something wrong. For example, an error might state that a file doesn't exist -- this only gives you some transparancy about what Hackerbot is looking at, that error doesn't really tell you whether or not Hackerbot wanted to see that error.
+
 ### VMs in this lab
 
 ==Start these VMs== (if you haven't already):
@@ -21,7 +30,7 @@ You don't need to login to the backup_server, but you will connect to it via SSH
 
 ### For marks in the module
 1. **You need to submit flags**. Note that the flags and the challenges in your VMs are different to other's in the class. Flags will be revealed to you as you complete challenges throughout the module. Flags look like this: ==flag{*somethingrandom*}==. Follow the link on the module page to submit your flags.
-2. **You need to document the work and your solutions in a workbook**. This needs to include screenshots (including the flags) of how you solved each Hackerbot challenge and a writeup describing your solution to each challenge, and answering any "Workbook Questions". The workbook will be submitted later in the semester.
+2. **You need to document the work and your solutions in a Log Book**. This needs to include screenshots (including the flags) of how you solved each Hackerbot challenge and a writeup describing your solution to each challenge, and answering any "Log Book Questions". The Log Book will be submitted later in the semester.
 
 ## Hackerbot!
 ![small-right](images/skullandusb.svg)

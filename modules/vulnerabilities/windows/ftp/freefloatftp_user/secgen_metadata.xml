@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>Free Float FTP Server USER Command Buffer Overflow</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>MIT</module_license>
+  <description>Installs a vulnerable FTP server, with muliple RCE buffer overflow vulnerabilities.
+  No exploit code available for Win7</description>
+
+  <type>ftp</type>
+  <privilege>root_rwx</privilege>
+  <access>remote</access>
+  <platform>windows</platform>
+  <difficulty>medium</difficulty>
+
+
+  <!--optional vulnerability details-->
+  <reference>https://www.exploit-db.com/exploits/23243</reference>
+  <software_name>easyftp</software_name>
+
+  <!--optional hints-->
+  <msf_module>exploit/windows/ftp/freefloatftp_user</msf_module>
+  <hint>Vulnerable ftp software</hint>
+
+  <!-- for now we just make all windows modules conflict with linux bases -->
+  <conflict>
+    <module_path>bases/.*</module_path>
+    <platform>linux</platform>
+  </conflict>
+
+  <requires>
+    <module_path>.*puppet_windows</module_path>
+  </requires>
+
+
+</vulnerability>

@@ -1,0 +1,169 @@
+/*  Derived from CTF level by Jialu Wang New Beginnings Fall 2015 */
+#include <stdio.h>
+#include <fcntl.h>
+#include <string.h>
+#include <unistd.h>
+
+#define CH00 "ZjMzOWVj"
+#define CH01 "NjYxOWM3"
+#define CH02 "OTJjMzJk"
+#define CH03 "ZDBmMjQx"
+#define CH04 "MmE0N2I1"
+#define CH05 "OTk4OTQx"
+#define CH06 "ZGVjZTAz"
+#define CH07 "MmRiMGRm"
+#define CH08 "NjNhMTRi"
+#define CH09 "YWNlOTVm"
+#define USERDEF "AAAAAA"
+#define CH10 "ZGU3ZGJl"
+#define CH11 "ZGVlOGMx"
+#define CH12 "NjhiMjQ3"
+#define CH13 "OGI4N2Qx"
+#define CH14 "ZWFkMmQy"
+#define CH15 "ZWNkNmYy"
+#define CH16 "ZWRkMzYy"
+#define CH17 "ZmUyOTFk"
+#define CH18 "YzVmNzdm"
+#define CH19 "Y2MwNjgw"
+
+char msg[] =
+ "In this level, you will use gdb's backtrace command to find the password.\n"
+ "When a program runs into segmentation fault while being debugged, the\n"
+ "backtrace command displays a stack trace listing the function call path\n"
+ "the program was in when the segmentation fault happened.  Run the binary\n"
+ "in the debugger and enter in a password.  If the password is incorrect,\n"
+ "the program will incur a segmentation fault.  The correct password to this\n"
+ "level is hidden as a parameter to one of the function calls in the call\n"
+ "path shown in the stack trace.\n\n";
+
+char* pineapple(char*);
+char* grapefruit(char*);
+char* watermelon(char*);
+char* blackberry(char*);
+char* orange(char*);
+char* pear(char*);
+char* pomegranate(char*);
+char* lemon(char*);
+char* lime(char*);
+char* banana(char*);
+char* avocado(char*);
+char* coconut(char*);
+char* plum(char*);
+char* kiwi(char*);
+
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg[i%len] + msg[(i+1)%len];
+    h2 += msg[(i+1)%len] + msg[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg);
+  else
+    printf("%s",msg);
+}
+char* pineapple(char* c){
+  return grapefruit("grf");
+}
+char* orange(char* c) {
+  return lemon("lem");
+}
+char* lemon(char* c) {
+  return lime("lim");
+}
+char* lime(char* c) {
+  return kiwi("kiw");
+}
+char* kiwi(char* c) {
+  return pomegranate("pom");
+}
+char* pomegranate(char* c) {
+  return avocado("avo");
+}
+char* grapefruit(char* c){
+  return watermelon(USERDEF);
+}
+char* avocado(char* c) {
+  return coconut("coc");
+}
+char* coconut(char* c) {
+  return banana("ban");
+}
+char* banana(char* c) {
+  return pear("pea");
+}
+char* pear(char* c) {
+  return plum("plu");
+}
+char* plum(char* c) {
+  return c;
+}
+char* watermelon(char* c){
+   return blackberry("grape");
+}
+char* blackberry(char* c){
+    char* num;
+    num = 0;
+    int r =  *num;
+}
+int foo(char* a0, char* a1, char* a2, char* a3, char* a4, char* a5, char* a6, char* a7, char* a8, char* a9, char* a10, char* a11, char* a12, char* a13, char* a14, char* a15, char* a16, char* a17, char* a18, char* a19, char* guess, char* answer) {
+    int flag=1;
+    int i;
+    int len = strlen(guess);
+    if (len != strlen(answer))
+        flag=0;
+    for (i=0; i < len; i++) {
+        if (guess[i] != answer[i]) {
+                flag = 0;
+                break;
+        }
+    }
+    return flag;
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main() {
+    print_msg();
+    printf("Enter the password: ");
+    char ans[20];
+    scanf("%19s", ans);
+
+    if (foo(CH00,CH01,CH02,CH03,CH04,CH05,CH06,CH07,CH08,CH09,CH10,CH11,CH12,CH13,CH14,CH15,CH16,CH17,CH18,CH19,ans,USERDEF)) {
+    	printf("Good Job.\n");
+        printflag();
+    } else {
+        printf("Try again.\n");
+	orange("ora");
+        pineapple("cherry");
+    }
+    return 0;
+}

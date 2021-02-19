@@ -1,10 +1,13 @@
 class nc_message::install {
-  package { 'nmap':
-    ensure => installed
-  }
-
   $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
   $port = $secgen_parameters['port'][0]
+
+  ensure_packages("nmap")
+  case $operatingsystemrelease {
+    /^(10).*/: { # do buster stuff
+      ensure_packages("ncat")
+    }
+  }
 
   # join all the strings to leak
   # escape single quotes and semicolons, so we can use echo

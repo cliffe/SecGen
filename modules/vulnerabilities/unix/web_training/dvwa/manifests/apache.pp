@@ -21,7 +21,7 @@ class dvwa::apache {
         }
       }
       'kali-rolling': { # do kali
-        $php_version = "php7.3"
+        $php_version = "php7.4"
       }
       default: {
         $php_version = "php"

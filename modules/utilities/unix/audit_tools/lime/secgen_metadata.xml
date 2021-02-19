@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>LiME - Linux Memory Extractor</name>
+  <author>Thomas Shaw</author>
+  <module_license>GPLv2</module_license>
+  <description>Installs LiME from github repo.</description>
+
+  <type>audit_tools</type>
+  <platform>linux</platform>
+
+  <reference>https://github.com/504ensicsLabs/LiME</reference>
+
+  <requires>
+    <type>update</type>
+  </requires>
+</utility>

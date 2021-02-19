@@ -21,7 +21,7 @@ You don't need to login to the backup_server, but you will connect to it via SSH
 
 ### For marks in the module
 1. **You need to submit flags**. Note that the flags and the challenges in your VMs are different to other's in the class. Flags will be revealed to you as you complete challenges throughout the module. Flags look like this: ==flag{*somethingrandom*}==. Follow the link on the module page to submit your flags.
-2. **You need to document the work and your solutions in a workbook**. This needs to include screenshots (including the flags) of how you solved each Hackerbot challenge and a writeup describing your solution to each challenge, and answering any "Workbook Questions". The workbook will be submitted later in the semester.
+2. **You need to document the work and your solutions in a Log Book**. This needs to include screenshots (including the flags) of how you solved each Hackerbot challenge and a writeup describing your solution to each challenge, and answering any "Log Book Questions". The Log Book will be submitted later in the semester.
 
 ## Meet Hackerbot!
 ![small-right](images/skullandusb.svg)
@@ -54,7 +54,7 @@ uptime
 15:32:38 up 4 days, 23:50,  4 users,  load average: 1.01, 1.24, 1.17
 ``
 
-A common goal is to aim for "five nines" availability (99.999%). If you only have one server, that means keeping it running constantly, other than for scheduled maintenance. 
+A common goal is to aim for "five nines" availability (99.999%). If you only have one server, that means keeping it running constantly, other than for scheduled maintenance.
 
 ==In your log book, list a few legitimate security reasons for performing off-line maintenance.==
 
@@ -84,7 +84,7 @@ Note (and take the time to understand) the differences in the output from these 
 
 ## SSH (secure shell) and SCP (secure copy)
 
-Using SSH (secure shell), scp (secure copy) can transfer files securely (encrypted) over a network. 
+Using SSH (secure shell), scp (secure copy) can transfer files securely (encrypted) over a network.
 > This replaces the old insecure rcp command, which sends files over the network in-the-clear (not encrypted). Rcp should never be used.
 
 ==Backup your /etc/ directory to the backup_server== computer using scp:
@@ -328,7 +328,7 @@ And ==make a new snapshot==, with copies of files that have changed:
 sudo rsync -avh --delete --link-dest=/tmp/etc_snapshot_full /etc /tmp/etc_snapshot2
 ```
 
-==Delete some files==, and ==make a new differential snapshot==. Although Rsync does not report a deletion, the deleted files will be absent from the new snapshot. 
+==Delete some files==, and ==make a new differential snapshot==. Although Rsync does not report a deletion, the deleted files will be absent from the new snapshot.
 
 ==Recover a file from a previous snapshot.==
 

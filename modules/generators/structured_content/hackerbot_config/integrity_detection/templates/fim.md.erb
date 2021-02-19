@@ -28,7 +28,7 @@ Note that using hashes, there is no need to have the backup on-hand in order to 
 
 ==Repeat the above two commands using shasum== rather than md5sum.
 
-SHA1, SHA2, and SHA3 are considered to be more secure than the 'cryptographically broken' MD5 algorithm. Although MD5 is still in use today, it is safer to use a stronger hash algorithm, since MD5 is not collision-resistant, meaning it is possible to find multiple files that result in the same hash. SHA1 is considered partially broken, so a new algorithm such as SHA2, or the newest SHA3 are currently a good options. There are a number of related commands for generating hashes, named md5sum, shasum, sha224sum, sha256sum, and so on. These commands (as well as those in the next section) are readily available on most Unix systems, and are also available for Windows.
+SHA1, SHA2, and SHA3 are considered to be more secure than the 'cryptographically broken' MD5 algorithm. Although MD5 is still in use today, it is safer to use a stronger hash algorithm, since MD5 is not collision-resistant, meaning it is possible to find multiple files that result in the same hash. SHA1 is considered partially broken, so a new algorithm such as SHA2, or the newest SHA3 are currently good options. There are a number of related commands for generating hashes, named md5sum, shasum, sha224sum, sha256sum, and so on. These commands (as well as those in the next section) are readily available on most Unix systems, and are also available for Windows.
 
 #### File integrity checkers
 
@@ -66,7 +66,7 @@ shasum -c /home/<%= $main_user %>/hashes/hash.sha
 ==Make a change== to the end of <%= $example_file %>:
 
 ```bash
-echo "hello" >> *your-name*
+echo "hello" >> <%= $example_file %>
 ```
 
 Check whether anything has changed since we generated hashes:
@@ -79,47 +79,46 @@ You should see a nice explanation of the files that have changed since generatin
 
 #### Scripted integrity checking
 
-The above can also be accomplished via a simple script (in this case a Perl script):
+The above can also be accomplished via a simple script (in this case a Ruby script):
 
-```perl
-  #!/usr/bin/perl
-  # Copyleft Z. Cliffe Schreuders
-  # Licenced under the terms of the GPLv3
+```ruby
+#!/usr/bin/ruby
+# Copyleft Z. Cliffe Schreuders
+# Licenced under the terms of the GPLv3
 
-  use warnings;
-  use strict;
+require 'digest'
 
-  my %files_hashes = (
-    "/etc/passwd"=>"69773dcef97bca8f689c5bc00e9335f7dd3d9e08",
-    "/bin/ls"=>"9304c5cba4e2a7dc25c2d56a6da6522e929eb848",
-    "/bin/bash"=>"54d0d9610e49a654843497c19f6211b3ae41b7c0",
-  );
+hashes = {
+  "/bin/ls" => "075e188324c2f4e54359128371a01e4d5e3b7be08382e4433bd53523f8bf6217",
+  "/etc/passwd" => "8a9d9fa67078d83274fae27e4ffd3d100db51501dfdef42dde7b190c91a899ef",
+  "/bin/bash" => "059fce560704769f9ee72e095e85c77cbcd528dc21cc51d9255cfe46856b5f02"
+}
 
-  foreach my $file_entry (keys %files_hashes) {
-    my $hash = `sha1sum $file_entry|awk '{print \$1}'|head -n1`;
-    chomp($hash);
-    if($hash ne $files_hashes{$file_entry}){
-      warn "FILE CHANGED: $file_entry (hash was $hash, expected $files_hashes{$file_entry})\n";
-    } else {
-      print "File unmodified: $file_entry (hash was $hash, as expected)\n";
-    }
-  }
+hashes.each { |filepath,hash|
+  calculated_hash = Digest::SHA256.hexdigest File.read filepath
+  puts "#{filepath}: #{calculated_hash}"
+  if calculated_hash == hash
+    puts "OK: file unmodified"
+  else
+    puts "FILE CHANGED: expected #{hash}"
+  end
+}
 ```
 
-This script iterates over a list of file paths with SHA1 hashes (stored in an associative array), and runs sha1sum for each one to check whether the files are still the same.
+This script iterates over a list of file paths with SHA256 hashes (stored in an associative array), and calculates the hash for each one to check whether the files are still the same.
 
-==Save the script as checker.pl==
-> Tip: you may wish to use the default KDE GUI text editor Kate. You should be able to copy the script and paste it into Kate to save it as checker.pl.
+==Save the script as checker.rb==
+> Tip: you may wish to use the default KDE GUI text editor Kate. You should be able to copy the script and paste it into Kate to save it as checker.rb.
 >
 > Alternatively you can type:
-> "cat > checker.pl"
+> "cat > checker.rb"
 > Paste with Ctrl-Shift-V.
 > Then, Ctrl-D, to end the input.
 
 Then ==run the script== with:
 
 ```bash
-perl checker.pl
+ruby checker.rb
 ```
 
 ==Lab book question: Are the files reported as unmodified, or have they changed? Why might they be different to when I wrote the script?==

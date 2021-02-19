@@ -1,0 +1,130 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#define USERDEF AAAAAA
+
+// Global variable to hijack
+int key;
+// = 0;
+
+// Introduction message
+char msg[] =
+"Previously, we placed the address to write to onto the stack so that it\n"
+"was easy to discover and target with %n.  Unfortunately, this will not\n"
+"always be present.  However, because the input string being used in the\n"
+"printf call is usually stored on the stack, it is possible to inject the\n"
+"address we want to write into as part of our input and then use a targeted\n"
+"%n to write into the injected address. To do so, you will first locate\n"
+"where the input string characters are located on the stack relative to\n"
+"the vulnerable printf call by injecting a well-known string and then using\n"
+"a series of %x format specifiers to determine its offset on the stack from\n"
+"the printf call.  To do so, use an input string similar to:\n"
+"   \"ABCD-%x-%x-%x-%x-%x....\"\n"
+"Look at the resultant output to see where the hexadecimal representation\n"
+"of ABCD appears (e.g. 44434241 for little-endian machines).  Once we find\n"
+"our input on the stack, note its parameter number since this is the\n"
+"number we will then target with a subsequent %n.  After noting this number\n"
+"we can then replace the \"ABCD\" part of the input with an actual address.\n"
+"At this point, we need to find what address to write to and the value\n"
+"we need to write.  For this level, you are asked to overwrite a variable\n"
+"called key with a specific number.  To determine the address of key and\n"
+"the value to write into it, examine the disassembly of the program.\n"
+"Locate the comparison that determines whether or not the level has been\n"
+"completed.  The value of key is moved from a specific memory location\n"
+"to a register before being checked against a specific value.  Note that\n"
+"we have made the address of this memory location representable as an ASCII\n"
+"string to make things easier for you to input as a string.  By using this\n"
+"in place of ABCD, you will then be able to follow it with an appropriately\n"
+"calculated %<num1>x%<num2>$n to solve the level.\n\n";
+
+// Print introduction message
+/* Symbolic execution trap */
+void print_msg() {
+  unsigned int i,h1,h2;
+  unsigned int len=strlen(msg);
+  for (i = 0; i < 100*len; i++) {
+    h1 += msg[i%len] + msg[(i+1)%len];
+    h2 += msg[(i+1)%len] + msg[(i+2)%len];
+  }
+  if (h1 == h2)
+    printf("%s",msg);
+  else
+    printf("%s",msg);
+}
+
+// Vulnerable format string function
+int format_string(char input[]) {
+
+	char string[128];
+	// Putting input on the stack
+	strcpy(string, input);
+
+	printf("You input: ");
+	printf(input);
+	printf("\n");
+
+}
+
+void printflag()
+{
+	int fd;
+	int len;
+	unsigned char data[128];
+
+	fd = open("flag", O_RDONLY);
+
+	if ( fd <= 0 ) {
+		printf("Failed to open flag.\n");
+		return;
+	}
+
+	len = lseek( fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	if ( len > 128 ) {
+		len = 128;
+	}
+
+	memset(data, 0, 128);
+	read( fd, data, len);
+	close(fd);
+
+	printf("%s\n", data);
+	return;
+}
+
+int main() {
+	char input[128];
+	int i;
+
+	// Initializing input
+	for(i = 0; i < 128; i++) {
+		input[i] = 0;
+	}
+
+	// Print introduction message
+	print_msg();
+
+	// Get user input
+	printf("The key should equal to %d.\n", USERDEF);
+	printf("Enter the password: ");
+	//fgets(input, 51, stdin);
+	scanf("%50s",input);
+
+	// Calling vulnerable function
+	format_string(input);
+
+	printf("The key is equal to %d.\n", key);
+
+	// Check if key has been hijacked
+	if(key == USERDEF){
+    	printf("Good Job.\n");
+		printflag();
+	} else {
+		printf("Try again.\n");
+	}
+
+	return 0;
+}

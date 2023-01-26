@@ -13,7 +13,7 @@
   <platform>linux</platform>
   <platform>unix</platform>
   <distro>Debian 9.5.0 Stretch amd64</distro>
-  <url>https://app.vagrantup.com/secgen/boxes/debian_stretch_desktop_kde/versions/1.2/providers/virtualbox.box</url>
+  <url>https://app.vagrantup.com/secgen/boxes/debian_stretch_desktop_kde/versions/1.0/providers/virtualbox.box</url>
   <esxi_url>https://app.vagrantup.com/redwiz666/boxes/debian_stretch_desktop_kde/versions/1.0.0/providers/vmware.box</esxi_url>
   <ovirt_template>stretch_desktop_kde_20210911</ovirt_template>
   <proxmox_template>StretchDesktopKDE20210911</proxmox_template>

@@ -68,6 +68,11 @@ Update gems:
 ```bash
 bundle update
 ```
+Create the VirtualBox network configuration:
+```bash
+sudo mkdir /etc/vbox
+sudo echo '* 0.0.0.0/0 ::/0' > /etc/vbox/networks.conf
+```
 
 ### On Ubuntu (16.04) these commands will get you up and running
 Install all the required packages:

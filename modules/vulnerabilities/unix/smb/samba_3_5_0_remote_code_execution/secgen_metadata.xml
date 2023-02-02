@@ -7,7 +7,7 @@
   <author>Anaas Naveed</author>
   <author>Thomas Shaw</author>
   <module_license>MIT</module_license>
-  <description>TODO</description>
+  <description>Samba since version 3.5.0 and before 4.6.4, 4.5.10 and 4.4.14 is vulnerable to remote code execution vulnerability, allowing a malicious client to upload a shared library to a writable share, and then cause the server to load and execute it.</description>
 
   <type>samba</type>
   <privilege>root_rwx</privilege>

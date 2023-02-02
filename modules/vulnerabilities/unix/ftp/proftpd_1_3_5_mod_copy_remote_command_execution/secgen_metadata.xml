@@ -78,10 +78,11 @@
     <type>update</type>
   </requires>
 
+  <!-- TODO: Update the CyBOK's -->
+  <!-- TODO: Add - web shell; remote command exec; -->
   <CyBOK KA="MAT" topic="Attacks and exploitation">
     <keyword>EXPLOITATION</keyword>
     <keyword>EXPLOITATION FRAMEWORKS</keyword>
-    <!-- TODO: Add - web shell; remote command exec; -->
   </CyBOK>
   <CyBOK KA="SOIM" topic="PENETRATION TESTING">
     <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>

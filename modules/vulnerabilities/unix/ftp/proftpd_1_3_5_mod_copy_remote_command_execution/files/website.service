@@ -1,0 +1,15 @@
+[Unit]
+Description=BusyBox httpd Server
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=root
+Restart=always
+RestartSec=1
+WorkingDirectory=/usr/bin/
+ExecStart=/usr/bin/WebServer.sh
+
+[Install]
+WantedBy=multi-user.target

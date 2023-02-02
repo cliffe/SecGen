@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>ProFTPD v1.3.5 Mod Copy Remote Command Execution</name>
+  <author>Anass Naveed</author>
+  <module_license>MIT</module_license>
+  <description>The mod_copy module in ProFTPD 1.3.5 allows remote attackers to read and write to arbitrary files via the site cpfr and site cpto commands.</description>
+
+  <type>ftp</type>
+  <privilege>root_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>server_name</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+  <read_fact>welcome_msg</read_fact>
+  <read_fact>port</read_fact>
+  <read_fact>strings_to_pre_leak</read_fact>
+  <read_fact>pre_leaked_filenames</read_fact>
+
+  <!-- No organisation by default, overrides other values if provided through scenario. -->
+  <read_fact>organisation</read_fact>
+
+  <default_input into="port">
+    <value>21</value>
+  </default_input>
+
+  <default_input into="server_name">
+    <generator type="username_generator"/>
+  </default_input>
+
+  <default_input into="strings_to_leak">
+    <generator type="message_generator"/>
+  </default_input>
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+  </default_input>
+
+  <default_input into="welcome_msg">
+    <generator type="message_generator"/>
+  </default_input>
+
+  <!-- pre-leaked, these details are leaked before the main vuln is exploited, for example hidden content or hosted files -->
+  <default_input into="strings_to_pre_leak">
+    <generator type="message_generator"/>
+  </default_input>
+
+  <default_input into="pre_leaked_filenames">
+    <value>note</value>
+  </default_input>
+
+
+  <!--optional vulnerability details-->
+  <cve>CVE-2015-3306</cve>
+  <cvss_base_score>10</cvss_base_score>
+  <cvss_vector>AV:N/AC:L/Au:N/C:C/I:C/A:C</cvss_vector>
+  <reference>https://www.rapid7.com/db/modules/exploit/unix/ftp/proftpd_modcopy_exec/</reference>
+  <software_name>proftpd</software_name>
+  <software_license>GPL</software_license>
+
+  <!--optional hints-->
+  <msf_module>exploit/unix/ftp/proftpd_modcopy_exec</msf_module>
+
+  <!--Cannot co-exist with other installations-->
+  <conflict>
+    <software_name>proftpd</software_name>
+  </conflict>
+  <!--Cannot co-exist with other ftp servers (default to same ports)-->
+  <conflict>
+    <type>^ftp$</type>
+  </conflict>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION</keyword>
+    <keyword>EXPLOITATION FRAMEWORKS</keyword>
+    <!-- TODO: Add - web shell; remote command exec; -->
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+  <CyBOK KA="NS" topic="PENETRATION TESTING">
+    <keyword>FILE - TRANSFER PROTOCOL (FTP)</keyword>
+  </CyBOK>
+
+</vulnerability>

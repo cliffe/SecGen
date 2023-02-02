@@ -5,7 +5,7 @@
           xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
   <system>
     <system_name>samba_3_5_0</system_name>
-    <base platform="linux" distro="Debian 10" type="KDE"/>
+    <base distro="Debian 10" type="desktop" name="KDE"/>
 
     <input into_datastore="IP_addresses">
       <value>172.16.0.2</value>
@@ -30,7 +30,7 @@
 
   <system>
     <system_name>webmin_1_890</system_name>
-    <base platform="linux" distro="Debian 10" type="KDE"/>
+    <base distro="Debian 10" type="desktop" name="KDE"/>
 
     <vulnerability module_path=".*webmin_1_890_unauthenticated_remote_code_execution">
       <!-- TODO: Add Parameters -->
@@ -48,7 +48,7 @@
 
   <system>
     <system_name>apache_http_server_2_4_4_9</system_name>
-    <base platform="linux" distro="Debian 10" type="KDE"/>
+    <base distro="Debian 10" type="desktop" name="KDE"/>
 
     <vulnerability module_path=".*apache_http_server_2_4_4_9_path_traversal_and_remote_code_execution">
       <!-- TODO: Add Parameters -->
@@ -67,7 +67,7 @@
 
   <system>
     <system_name>proftpd_1_3_5</system_name>
-    <base platform="linux" distro="Debian 7.8" type="server"/>
+    <base distro="Debian 10" type="desktop" name="KDE"/>
 
     <vulnerability module_path=".*proftpd_1_3_5_mod_copy_remote_command_execution">
       <!-- TODO: Add Parameters -->

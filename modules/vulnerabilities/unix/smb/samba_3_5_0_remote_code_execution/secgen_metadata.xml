@@ -10,7 +10,7 @@
   <description>TODO</description>
 
   <type>samba</type>
-  <privilege>info_leak</privilege>
+  <privilege>root_rwx</privilege>
   <access>remote</access>
   <platform>linux</platform>
   <difficulty>low</difficulty>
@@ -66,10 +66,13 @@
 
   <!--optional details-->
 <!--  TODO: Add CVE and CVSS details -->
-
-<!--  <reference>http://allarsblog.com/2015/11/07/Setting-Up-Samba-No-Security/</reference>-->
-<!--  <software_name>smbd</software_name>-->
-<!--  <software_license>MIT</software_license>-->
+  <cve>CVE-2017-7494</cve>
+  <cvss_base_score>10</cvss_base_score>
+  <cvss_vector>AV:N/AC:L/Au:N/C:C/I:C/A:C</cvss_vector>
+  <reference>https://github.com/advisories/GHSA-453q-q3mp-9cq4</reference>
+  <reference>https://nvd.nist.gov/vuln/detail/CVE-2017-7494</reference>
+  <software_name>smbd</software_name>
+  <software_license>MIT</software_license>
 
   <conflict>
     <name>.*Stretch.*</name>

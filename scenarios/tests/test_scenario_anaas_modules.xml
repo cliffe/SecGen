@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+  <system>
+    <system_name>samba_3_5_0</system_name>
+    <base platform="linux" distro="Debian 10" type="KDE"/>
+
+    <input into_datastore="IP_addresses">
+      <value>172.16.0.2</value>
+      <value>172.16.0.3</value>
+      <value>172.16.0.4</value>
+      <value>172.16.0.5</value>
+    </input>
+
+    <vulnerability module_path=".*/samba_3_5_0_remote_code_execution">
+      <!-- TODO: Add Parameters -->
+<!--      <input into="IP_address">-->
+<!--        <datastore access="0">IP_addresses</datastore>-->
+<!--      </input>-->
+    </vulnerability>
+
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="0">IP_addresses</datastore>
+      </input>
+    </network>
+  </system>
+
+  <system>
+    <system_name>webmin_1_890</system_name>
+    <base platform="linux" distro="Debian 10" type="KDE"/>
+
+    <vulnerability module_path=".*webmin_1_890_unauthenticated_remote_code_execution">
+      <!-- TODO: Add Parameters -->
+<!--      <input into="IP_address">-->
+<!--        <datastore access="1">IP_addresses</datastore>-->
+<!--      </input>-->
+    </vulnerability>
+
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="1">IP_addresses</datastore>
+      </input>
+    </network>
+  </system>
+
+  <system>
+    <system_name>apache_http_server_2_4_4_9</system_name>
+    <base platform="linux" distro="Debian 10" type="KDE"/>
+
+    <vulnerability module_path=".*apache_http_server_2_4_4_9_path_traversal_and_remote_code_execution">
+      <!-- TODO: Add Parameters -->
+<!--      <input into="IP_address">-->
+<!--        <datastore access="2">IP_addresses</datastore>-->
+<!--      </input>-->
+    </vulnerability>
+
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="2">IP_addresses</datastore>
+      </input>
+    </network>
+  </system>
+
+
+  <system>
+    <system_name>proftpd_1_3_5</system_name>
+    <base platform="linux" distro="Debian 7.8" type="server"/>
+
+    <vulnerability module_path=".*proftpd_1_3_5_mod_copy_remote_command_execution">
+      <!-- TODO: Add Parameters -->
+<!--      <input into="IP_address">-->
+<!--        <datastore access="3">IP_addresses</datastore>-->
+<!--      </input>-->
+    </vulnerability>
+
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="3">IP_addresses</datastore>
+      </input>
+    </network>
+  </system>
+
+</scenario>

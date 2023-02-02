@@ -1,0 +1,15 @@
+[Unit]
+Description=Samba 3.5.0
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=root
+ExecStart=/usr/local/samba/sbin/nmbd -D
+WorkingDirectory=/usr/local/samba/sbin
+
+[Install]
+WantedBy=multi-user.target

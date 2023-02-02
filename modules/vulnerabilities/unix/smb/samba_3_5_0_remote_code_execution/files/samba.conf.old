@@ -1,0 +1,42 @@
+[global]
+        server string = Samba Server#
+        security = SHARE#
+        log file = /usr/local/samba/var/log.%m#
+        max log size = 50#
+        dns proxy = No
+
+[homes]
+        comment = Home Directories
+        read only = No
+        browseable = No
+
+[printers]
+        comment = All Printers
+        path = /usr/spool/samba
+        printable = Yes
+        browseable = No
+
+[tmp]
+        comment = Temporary file space
+        path = /tmp
+        read only = No
+        guest ok = Yes
+
+[public]
+        comment = Public Stuff
+        path = /home/samba/Public
+        guest ok = Yes
+
+[BobsShare]
+        comment = Bobs Share
+        path = /home/samba/Bob
+        guest ok = Yes
+        public = Yes
+        writable = Yes
+
+[JohnsShare]
+        comment = Johns Share
+        path = /home/samba/John
+        guest ok = Yes
+        public = Yes
+        writable = Yes

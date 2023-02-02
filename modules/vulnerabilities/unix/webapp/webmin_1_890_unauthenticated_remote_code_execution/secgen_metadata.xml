@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>Webmin 1.809 Unauthenticated RCE</name>
+  <author>Anaas Naveed</author>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>TODO</description>
+
+  <type>webapp</type>
+  <type>in_the_wild</type>
+  <type>webapp_with_db</type>
+  <privilege>user_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>medium</difficulty>
+
+  <read_fact>port</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+  <read_fact>strings_to_pre_leak</read_fact>
+  <read_fact>images_to_leak</read_fact>
+
+  <default_input into="port">
+    <value>80</value>
+  </default_input>
+
+  <default_input into="strings_to_leak">
+    <generator type="message_generator"/>
+  </default_input>
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+  </default_input>
+
+  <default_input into="strings_to_pre_leak">
+    <generator type="message_generator"/>
+  </default_input>
+
+  <default_input into="images_to_leak">
+    <generator type="image_generator"/>
+  </default_input>
+
+  <!--optional vulnerability details-->
+  <!--  TODO: Update vuln details -->
+<!--  <cve>CVE-2012-6080</cve>-->
+<!--  <cve>CVE-2012-6081</cve>-->
+
+<!--  <cvss_base_score>6</cvss_base_score>-->
+<!--  <cvss_vector>AV:N/AC:M/Au:S/C:P/I:P/A:P</cvss_vector>-->
+<!--  <reference>https://moinmo.in/SecurityFixes</reference>-->
+<!--  <reference>http://hg.moinmo.in/moin/1.9/rev/7e7e1cbb9d3f</reference>-->
+<!--  <reference>https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2012-6081</reference>-->
+<!--  <software_name>moinmoin</software_name>-->
+<!--  <software_license>GPL</software_license>-->
+
+  <!--optional hints-->
+  <!--  TODO: Update hints-->
+<!--  <msf_module>exploit/unix/webapp/moinmoin_twikidraw</msf_module>-->
+<!--  <solution>-->
+<!--    Remote code execution possible in twikidraw and anywikidraw modules.-->
+<!--    Path traversal found in AttachFile module.-->
+<!--  </solution>-->
+
+  <!-- can't live alongside other web sites, since they it accepts any virtual host name -->
+  <conflict>
+    <type>webapp</type>
+  </conflict>
+
+<!--  <requires>-->
+<!--    <module_path>.*/apache.*</module_path>-->
+<!--  </requires>-->
+
+<!--  TODO: Update CyBOKs-->
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>server-side misconfiguration and vulnerable components</keyword>
+    <keyword>Directory traversal</keyword>
+  </CyBOK>
+	<CyBOK KA="MAT" topic="Attacks and exploitation">
+		<keyword>EXPLOITATION</keyword>
+		<keyword>EXPLOITATION FRAMEWORKS</keyword>
+	</CyBOK>
+	<CyBOK KA="SS" topic="Categories of Vulnerabilities">
+		<keyword>CVEs and CWEs</keyword>
+	</CyBOK>
+	<CyBOK KA="SOIM" topic="PENETRATION TESTING">
+		<keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+		<keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+	</CyBOK>
+
+</vulnerability>

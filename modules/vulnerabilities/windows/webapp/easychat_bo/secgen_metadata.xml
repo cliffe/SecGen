@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>Easy Chat Server 3.1 - Remote Stack Buffer Overflow (SEH)</name>
+  <author>James Davis</author>
+  <module_license>MIT</module_license>
+  <description>The exploit breakdown is pretty simple, there are only 2 bad chars to avoid, thus,
+    none of which mangles the return address. Firstly, we send 217 bytes of 'A's to reach nseh, also
+    known as an offset. Then, we hop over it with a 6 byte jump to seh, which contains the address
+    location 'POP POP Ret' which puts us neatly at the start of our evil shellcode. </description>
+
+  <type>webapp</type>
+  <privilege>user_rwx</privilege>
+  <access>remote</access>
+  <platform>windows</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>port</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+
+  <default_input into="port">
+    <value>80</value>
+  </default_input>
+
+  <default_input into="port">
+    <value>443</value>
+  </default_input>
+
+  <!-- flags or other secrets exposed after exploitation -->
+  <default_input into="strings_to_leak">
+    <generator type="message_generator" />
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator" />
+  </default_input>
+
+  <reference>
+    https://www.exploit-db.com/exploits/50999</reference>
+  <reference>
+    https://www.r00tpgp.com/2018/06/easychat-server-31-remote-buffer.html</reference>
+  <software_name>Easychat</software_name>
+  <software_license>Shareware License</software_license>
+
+  <!--optional hints-->
+  <hint>Visit ip:80</hint>
+
+</vulnerability>

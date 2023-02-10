@@ -1,0 +1,44 @@
+/**** To Do List ****\
+
+/**** Movies to watch! ****\
+<%
+movies_count = 1
+movies_sample.each { |movie|
+%>
+<%= movies_count %>. <%= movie %>
+<% movies_count += 1 %>
+<%
+}
+%>
+
+/**** Chores to do! ****\
+<%
+chores_count = 1
+chores_sample.each { |chores|
+%>
+<%= chores_count %>. <%= chores %>
+<% chores_count = chores_count + 1 %>
+<%
+}
+%>
+
+/**** New music to listen to! ****\
+<%
+music_count = 1
+music_sample.each { |song|
+%>
+<%= music_count %>. <%= song %>
+<% music_count += 1 %>
+<%
+}
+%>
+/**** New games to try! ****\
+<%
+games_count = 1
+games_sample.each { |game|
+%>
+<%= games_count %>. <%= game %>
+<% games_count += 1 %>
+<%
+}
+%>

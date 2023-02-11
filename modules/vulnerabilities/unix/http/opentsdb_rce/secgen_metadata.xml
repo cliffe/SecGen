@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>OpenTSDB 2.4.0 unauthenticated command injection</name>
+  <author>James Davis</author>
+  <module_license>MIT</module_license>
+  <description>
+    This module exploits an unauthenticated command injection
+    vulnerability in the yrange parameter in OpenTSDB through
+    2.4.0 (CVE-2020-35476) in order to achieve unauthenticated
+    remote code execution as the root user.
+  </description>
+
+  <type>http</type>
+  <type>bruteforceable</type>
+  <type>in_the_wild</type>
+  <privilege>user_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>
+    low</difficulty>
+
+  <read_fact>port</read_fact>
+  <read_fact>organisation</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>
+    leaked_filenames</read_fact>
+  <read_fact>known_username</read_fact>
+  <read_fact>known_password</read_fact>
+  <read_fact>
+    strings_to_pre_leak</read_fact>
+  <read_fact>web_pre_leak_filename</read_fact>
+
+  <default_input into="port">
+    <value>4242</value>
+  </default_input>
+
+  <!-- flags or other secrets exposed after exploitation -->
+  <default_input into="strings_to_leak">
+    <generator type="message_generator" />
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator" />
+  </default_input>
+
+  <!--optional
+  vulnerability details-->
+  <cve>CVE-2020-35476</cve>
+  <cvss_base_score>9.8</cvss_base_score>
+  <cvss_vector>CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H</cvss_vector>
+  <software_name>OpenTSDB</software_name>
+  <software_license>LGPL-2.1, GPLv3</software_license>
+  <reference>
+    https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/linux/http/opentsdb_yrange_cmd_injection.rb</reference>
+  <reference>https://github.com/OpenTSDB/opentsdb/releases/tag/v2.3.0</reference>
+
+  <!--optional
+  hints-->
+  <hint>Visit
+    the webapp in a browser at: ip:80/index.php </hint>
+
+  <!-- can't live alongside other web sites, since it accepts any virtual host name -->
+  <conflict>
+    <type>webapp</type>
+  </conflict>
+
+  <requires>
+    <module_path>services/unix/http/apache_stretch_compatible/apache</module_path>
+  </requires>
+
+  <requires>
+    <module_path>services/unix/http/**check this later**</module_path>
+  </requires>
+
+</vulnerability>

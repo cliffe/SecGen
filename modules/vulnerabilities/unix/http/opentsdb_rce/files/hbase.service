@@ -1,0 +1,15 @@
+[Unit]
+Description=Hbase start script
+After=network.target
+
+[Service]
+Type=forking
+User=root
+Environment="PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/usr/local/share/hbase-0.98.24-hadoop2/bin/"
+WorkingDirectory=/usr/local/share/hbase-0.98.24-hadoop2/bin/
+ExecStart=/usr/local/share/hbase-0.98.24-hadoop2/bin/start-hbase.sh
+Restart=on-abort
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target

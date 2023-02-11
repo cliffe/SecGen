@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>Tiki-Wiki CMS Calendar Command Execution</name>
+  <author>James Davis</author>
+  <module_license>MIT</module_license>
+  <description>
+    Tiki-Wiki CMS's calendar module contains a remote code execution
+    vulnerability within the viewmode GET parameter.
+  </description>
+
+  <type>
+    webapp</type>
+  <type>bruteforceable</type>
+  <type>in_the_wild</type>
+  <privilege>user_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>
+    low</difficulty>
+
+  <read_fact>port</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>
+    leaked_filenames</read_fact>
+  <read_fact>known_username</read_fact>
+  <read_fact>known_password</read_fact>
+  <read_fact>
+    strings_to_pre_leak</read_fact>
+  <read_fact>web_pre_leak_filename</read_fact>
+
+  <default_input into="port">
+    <value>80</value>
+  </default_input>
+
+  <!-- flags or other secrets exposed after exploitation -->
+  <default_input into="strings_to_leak">
+    <generator type="message_generator" />
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator" />
+  </default_input>
+
+  <!-- these details need to be known or bruteforced to successful exploit the service -->
+  <!-- By default the username is admin, but it can be something else, so long as they can easily
+  guess it (for example leak it to them) -->
+  <default_input into="known_username">
+    <!-- <generator type="random_sanitised_word">
+			<input into="wordlist">
+    <value>admin_name</value>
+			</input>
+		</generator> -->
+    <value>admin</value>
+  </default_input>
+
+  <default_input into="known_password">
+    <generator type="weak_password_generator" />
+  </default_input>
+
+  <!-- pre-leaked, these details are leaked before the main vuln is exploited, for example hidden
+  content or hosted files -->
+  <default_input into="strings_to_pre_leak">
+    <generator type="message_generator" />
+  </default_input>
+
+  <!-- ideally something found by dirbuster -->
+  <default_input into="web_pre_leak_filename">
+    <generator type="random_sanitised_word">
+      <input into="wordlist">
+        <value>www_buster_filename</value>
+      </input>
+    </generator>
+  </default_input>
+
+  <software_name>TikiWiki</software_name>
+  <software_license>GNU GPLv2.1</software_license>
+  <reference>https://tiki.org/article414-Important-Security-Fix-for-all-versions-of-Tiki</reference>
+  <reference>
+    https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/linux/http/tiki_calendar_exec.rb</reference>
+
+  <!--optional
+  hints-->
+  <hint>Visit the webapp in a browser at: ip:80/index.php </hint>
+
+  <requires>
+    <module_path>services/unix/http/apache_stretch_compatible/apache</module_path>
+  </requires>
+
+  <requires>
+    <module_path>services/unix/database/mysql_stretch_compatible/mysql</module_path>
+  </requires>
+  <!-- php package here -->
+  <requires>
+    <module_path>services/unix/http/**check
+      this later**</module_path>
+  </requires>
+
+
+</vulnerability>

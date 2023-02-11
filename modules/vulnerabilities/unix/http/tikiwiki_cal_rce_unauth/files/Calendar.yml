@@ -1,0 +1,7 @@
+---
+permissions:
+  Anonymous:
+    allow: [view_calendar]
+preferences:
+  feature_calendar: true
+objects:

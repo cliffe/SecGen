@@ -1,0 +1,45 @@
+{"docs":[
+{
+    "id": 1,
+	"pantone_value": "11-0103",
+    "name": "egret",
+    "hex": "#f3ece0"
+
+     },
+     {
+      "id": 2,
+     "pantone_value": "11-0602",
+    "name": "snow-white",
+    "hex": "#f2f0eb"
+
+     },
+     {
+      "id": 3, 
+      "name": "true red", 
+      "year": 2002, 
+      "color": "#BF1932", 
+      "pantone_value": "19-1664" 
+     }, 
+     {
+      "id": 4, 
+      "name": "aqua sky",
+      "year": 2003,
+      "color": "#7BC4C4",
+      "pantone_value": "14-4811"
+     },
+     { 
+      "id": 5,
+      "year": 2004, 
+      "color": "#E2583E", 
+      "pantone_value": "17-1456" 
+     },
+     {  
+      "id": 6, 
+      "name": "blue turquoise", 
+      "year": 2005,            
+      "color": "#53B0AE",
+      "pantone_value": "15-5217"
+     }
+
+
+]} 

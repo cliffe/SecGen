@@ -9,7 +9,7 @@ class USAddressGenerator < StringGenerator
   end
 
   def generate
-    street_name = [Faker::Address.street_address, Faker::Address.street_address(true)].sample
+    street_name = [Faker::Address.street_address, Faker::Address.street_address(include_secondary: true)].sample
     city = Faker::Address.city
     state = Faker::Address.state
     zip_code = Faker::Address.zip

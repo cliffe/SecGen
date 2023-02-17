@@ -15,7 +15,7 @@ class EmailAddressGenerator < StringEncoder
     if self.name.empty?
       self.name = nil
     end
-    self.outputs << Faker::Internet.email(self.name)
+    self.outputs << Faker::Internet.email(name: self.name)
   end
 
   def get_options_array

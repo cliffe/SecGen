@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+  <system>
+    <system_name>testing_faker</system_name>
+    <base platform="linux" distro="Debian 7.8" type="server"/>
+
+    <input into_datastore="IP_addresses">
+      <value>172.17.0.0</value>
+    </input>
+
+    <input into_datastore="faker_gems_with_parameters">
+      <generator type="email_address"/>
+
+      <generator type="business_email">
+        <input into="name">
+          <value>Tom Shaw</value>
+        </input>
+        <input into="business_name">
+          <value>Leeds Beckett University</value>
+        </input>
+      </generator>
+
+      <generator module_path=".*username.*"/>
+      <generator module_path=".*hipster_paragraph.*"/>
+      <generator module_path=".*lipsum_paragraph.*"/>
+      <generator module_path=".*random_filename.*"/>
+      <generator module_path=".*address_us.*"/>
+
+    </input>
+
+  <network type="private_network">
+      <input into="IP_address">
+        <datastore access="0">IP_addresses</datastore>
+      </input>
+    </network>
+  </system>
+
+</scenario>

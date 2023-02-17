@@ -21,7 +21,7 @@ class BusinessEmailEncoder < StringEncoder
     self.business_name = Faker::Company::name if self.business_name.empty?
 
     # generate parts of email
-    local_part = Faker::Internet.user_name(self.name, ['-'])
+    local_part = Faker::Internet.user_name(specifier: self.name, separators: ['-'])
 
     if self.domain.empty?
       self.domain = craft_domain

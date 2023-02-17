@@ -15,14 +15,8 @@ class hadoop_yarn_rce::install {
 	#unzip
 	exec {'unzip-hadoop':
 		cwd => '/usr/local/src',
-		command => "tar -xvzf ${releasename}.tar.gz -C ${docroot}",
-		creates => $docroot,			
-	}->
-	#unzip
-	exec {'unzip-hadoop':
-		cwd => '/usr/local/src',
 		command => "tar -xvzf ${releasename}.tar.gz -C /usr/local",
-		creates => $docroot,			
+		creates => /usr/local/${releasename},			
 	}->
 	#rename folder
 	exec {'rename-hadoop directory':

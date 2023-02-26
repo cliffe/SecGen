@@ -6,10 +6,10 @@
   <author>Sofia Markusfeld</author>
   <module_license>Apache</module_license>
   
-     <!--  fix -->
+
   <description>Apache CouchDB versions 3.2.1 and below default installation settings are vulnerable to an Earling RCE exploit.  
   </description>
- <!--  cleanup/add -->
+
   <type>remote</type>
   <type></type>
   <type></type>
@@ -33,6 +33,9 @@
   <default_input into="strings_to_leak">
     <generator type="message_generator"/>
   </default_input>
+    <default_input into="leaked_filenames">
+    <generator type="message_generator"/>
+  </default_input>
   
   
   
@@ -49,10 +52,9 @@
   <software_license>Apache</software_license>
   
   <!--optional hints-->
-  <!--update for module-->
   <hint>This exploit is based off on 1F98D's Erlang Cookie - Remote Code Execution  </hint>
   
-    <!-- find any conflicts ie webapp -->
+   
   <conflict>
     <type></type>
   </conflict>

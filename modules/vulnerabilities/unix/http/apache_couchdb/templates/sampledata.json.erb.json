@@ -39,6 +39,11 @@
       "year": 2005,            
       "color": "#53B0AE",
       "pantone_value": "15-5217"
+     },
+     {  
+      "id": 7, 
+      "leaked_filenames": "<%=@leaked_filenames%>",  
+	  "strings_to_leak": "<%=@strings_to_leak%>", 
      }
 
 

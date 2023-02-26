@@ -5,8 +5,8 @@ class elfinder::configure {
 	$strings_to_leak = ["this is a list of strings that are secrets / flags","another secret"] ##$secgen_parameters['strings_to_leak']
 	$releasename = 'elFinder-2.1.58'
 	$docroot = "/var/www/$releasename"
-	$dir_array=['folder1', 'folder2', 'folder3'] ##$secgen_parameters['storage_directory'][0], $secgen_parameters['storage_directory'][1], $secgen_parameters['storage_directory'][2]
-	
+	$dir_array=['folder1', 'folder2', 'folder3'] ##$secgen_parameters['strings_to_pre_leak'], 
+
 	 Exec { path => ['/bin', '/usr/bin', '/usr/local/bin', '/sbin', '/usr/sbin'] }
 	 
 	#create public directory
@@ -17,7 +17,7 @@ class elfinder::configure {
 	
 	#add read only folders 
 	$dir_array.each |String $dir_array| {
-	  file { "${docroot}/files/${dir_array}":
+	  file { "${docroot}/files/${leaked_filenames}":
 		ensure => directory,
 		owner  => 'www-data',
 		mode   => '0444',

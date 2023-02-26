@@ -19,6 +19,7 @@
 
    <read_fact>port</read_fact>
    <read_fact>strings_to_leak</read_fact>
+      <read_fact>strings_to_preleak</read_fact>
      <read_fact>leaked_filenames</read_fact>
 	 <read_fact>storage_directory</read_fact>
    

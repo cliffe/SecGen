@@ -41,7 +41,7 @@ class elfinder::apache{
 		content  => template('elfinder/connector.minimal.php')
     }->
 	#removed url for 3rd party source and added custom congfigurations 
-    file { "$docroot/elfinder.html":
+    file { "$docroot/index.html":
 		ensure  => present,
 		content  => template('elfinder/elfinder.html')
     }->

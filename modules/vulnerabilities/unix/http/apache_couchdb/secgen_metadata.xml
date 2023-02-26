@@ -23,6 +23,7 @@
    <read_fact>known_username</read_fact>
     <read_fact>known_password</read_fact>
    <read_fact>strings_to_leak</read_fact>
+     <read_fact>strings_to_preleak</read_fact>
    <read_fact>leaked_filenames</read_fact>
    
    <default_input into="port">

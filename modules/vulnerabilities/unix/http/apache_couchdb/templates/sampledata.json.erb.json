@@ -42,8 +42,7 @@
      },
      {  
       "id": 7, 
-      "leaked_filenames": "<%=@leaked_filenames%>",  
-	  "strings_to_leak": "<%=@strings_to_leak%>", 
+      "name": "<%=@strings_to_pre_leak%>",  
      }
 
 

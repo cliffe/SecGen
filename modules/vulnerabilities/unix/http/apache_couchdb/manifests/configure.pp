@@ -7,6 +7,7 @@ class apache_couchdb::configure {
 	$jsondb = 'sampledata' ##TODO secgen
 	$strings_to_leak = ["this is a list of strings that are secrets / flags","another secret"]##$secgen_parameters['strings_to_leak']
 	$leaked_filenames = ["flagtest"]##$secgen_parameters['leaked_filenames']
+	$strings_to_preleak = ["preleak"]##$secgen_parameters['strings_to_pre_leak'], 
 	
 	Exec { path => ['/bin', '/usr/bin', '/usr/local/bin', '/sbin', '/usr/sbin'] }
 	

@@ -2,7 +2,7 @@ class apache_couchdb::install {
 
 	$responsefile= 'installresponse'
 	$packagename = 'couchdb_3.2.1_buster_amd64'
-	$jsondb = 'sampledata.json'
+	$jsondb = 'sampledata'
 	ensure_packages(['build-essential','pkg-config', 'erlang','libicu-dev', 'libmozjs-60-dev','libcurl4-openssl-dev', 'gnupg'])
 	Exec { path => ['/bin', '/usr/bin', '/usr/local/bin', '/sbin', '/usr/sbin'] }
 	
@@ -16,9 +16,9 @@ class apache_couchdb::install {
 		 ensure => file,
 		 content => template("apache_couchdb/${responsefile}.erb"),
 	}->
-	file { "/usr/bin/${jsondb}" :
+	file { "/usr/bin/${jsondb}.json" :
 		 ensure => file,
-		 content => template("apache_couchdb/${jsondb}.erb"),
+		 content => template("apache_couchdb/${jsondb}.json"),
 	}->
 	#install couch db from deb file
 	package {'couchdb-install':

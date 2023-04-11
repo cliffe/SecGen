@@ -1,0 +1,93 @@
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+<name>Apache CouchDB Unauthenticated RCE /name>
+  <author>Sofia Markusfeld</author>
+  <module_license>Apache</module_license>
+  
+
+  <description>Apache CouchDB versions 3.2.1 and below default installation settings are vulnerable to an Earling RCE exploit.  
+  </description>
+
+  <type>remote</type>
+  <type></type>
+  <type></type>
+  <privilege></privilege>
+  <access>remote</access>
+  <platform>linux_apache_php</platform>
+  <difficulty>low</difficulty>
+  
+
+   <read_fact>port</read_fact>
+   <read_fact>known_username</read_fact>
+    <read_fact>known_password</read_fact>
+   <read_fact>strings_to_leak</read_fact>
+     <read_fact>strings_to_preleak</read_fact>
+   <read_fact>leaked_filenames</read_fact>
+   
+   <default_input into="port">
+		<value>34023</value>
+   </default_input>
+   
+<!-- flags or other secrets exposed after exploitation -->
+  <default_input into="strings_to_leak">
+    <generator type="message_generator"/>
+  </default_input>
+    <default_input into="leaked_filenames">
+    <generator type="message_generator"/>
+  </default_input>
+  
+  
+  
+    <!--optional vulnerability details-->
+  <!-- rce vuln -->
+  <cve>CVE-2022-24706</cve>
+
+  
+      <cvss_base_score>9</cvss_base_score>
+  <cvss_vector>AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H</cvss_vector>
+  <reference>https://www.exploit-db.com/exploits/50914</reference>
+   <reference>https://github.com/rapid7/metasploit-framework/blob/master//modules/exploits/multi/http/apache_couchdb_erlang_rce.rb</reference>
+  <software_name>Apache CouchDB</software_name>
+  <software_license>Apache</software_license>
+  
+  <!--optional hints-->
+  <hint>This exploit is based off on 1F98D's Erlang Cookie - Remote Code Execution  </hint>
+  
+   
+  <conflict>
+    <type></type>
+  </conflict>
+
+
+  <requires>
+    <module_path>.*apache.*compatible.*</module_path>
+  </requires>
+
+  <requires>
+    <module_path>.*php.*compatible.*</module_path>
+  </requires>
+  
+  
+  
+  <!-- CyBOK metadata - related security concepts / knowledge required -->
+  
+    <CyBOK KA="WAM" topic="Fundamental Concepts and Approaches">
+    <keyword>authentication</keyword>
+    <keyword>passwords and alternatives</keyword>
+  </CyBOK>
+  
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION</keyword>
+    <keyword>EXPLOITATION FRAMEWORKS</keyword>
+  </CyBOK>
+  <CyBOK KA="SS" topic="Categories of Vulnerabilities">
+    <keyword>CVEs and CWEs</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+
+</vulnerability>

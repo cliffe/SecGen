@@ -1,0 +1,8 @@
+<%= @packagename %> couchdb/mode select standalone
+<%= @packagename %> couchdb/mode seen true
+<%= @packagename %> couchdb/bindaddress string 127.0.0.1
+<%= @packagename %> couchdb/bindaddress seen true
+<%= @packagename %> couchdb couchdb/adminpass password ${<%= @password %>}
+<%= @packagename %> couchdb couchdb/adminpass seen true
+<%= @packagename %> couchdb couchdb/adminpass_again password ${<%= @password %>}
+<%= @packagename %> couchdb couchdb/adminpass_again seen true

@@ -114,7 +114,7 @@ class StringGenerator
     end
 
     enforce_utf8(self.outputs)
-    print_outputs if has_base64_inputs
+    print_outputs
   end
 
   def enforce_utf8(values)

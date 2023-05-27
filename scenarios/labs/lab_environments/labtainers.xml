@@ -108,7 +108,7 @@
     <!-- <service type="ircd"/>
 
     <utility module_path=".*/hackerbot">
-      <input into="hackerbot_configs">
+      <input into="hackerbot_configs" into_datastore="hackerbot_instructions">
         <generator module_path=".*/integrity_protection">
           <input into="accounts">
             <datastore>accounts</datastore>

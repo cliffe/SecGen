@@ -10,7 +10,7 @@
   <description>exploits symlink to shadow, weak password so users can crack the hash</description>
 
   <type>system</type>
-  <privilege>none</privilege>
+  <privilege>info_leak</privilege>
   <access>local</access>
   <platform>linux</platform>
 
@@ -56,5 +56,5 @@
     <keyword>Access controls and operating systems</keyword>
     <keyword>Linux security model</keyword>
   </CyBOK>
-  
+
 </vulnerability>

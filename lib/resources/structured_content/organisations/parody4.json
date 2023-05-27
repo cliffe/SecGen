@@ -1,0 +1,48 @@
+{
+  "business_name": "Pickle Palace",
+  "business_motto": "We've got the pickles to satisfy even the most outrageous cravings!",
+  "business_address": "42 Dimension C-137, Citadel of Ricks",
+  "domain": "picklepalace.com",
+  "office_telephone": "555-555-5555",
+  "office_email": "info@picklepalace.com",
+  "industry": "Food and Beverage",
+  "manager": {
+    "name": "Rick Sanchez",
+    "address": "1313 Mockingbird Lane, Citadel of Ricks",
+    "phone_number": "555-555-5555 ext 100",
+    "email_address": "rick@picklepalace.com",
+    "username": "ricksanchez",
+    "password": ""
+  },
+  "employees": [
+    {
+      "name": "Morty Smith",
+      "address": "42 Dimension C-137, Citadel of Ricks",
+      "phone_number": "555-555-5555 ext 101",
+      "email_address": "morty@picklepalace.com",
+      "username": "mortysmith",
+      "password": ""
+    },
+    {
+      "name": "Summer Smith",
+      "address": "42 Dimension C-137, Citadel of Ricks",
+      "phone_number": "555-555-5555 ext 103",
+      "email_address": "summer@picklepalace.com",
+      "username": "summersmith",
+      "password": ""
+    },
+    {
+      "name": "Jerry Smith",
+      "address": "42 Dimension C-137, Citadel of Ricks",
+      "phone_number": "555-555-5555 ext 110",
+      "email_address": "jerry@picklepalace.com",
+      "username": "jerrysmith",
+      "password": ""
+    }
+  ],
+  "product_name": "Pickle Pack",
+  "intro_paragraph": [
+    "At Pickle Palace, we've got pickles to satisfy every palate in the multiverse.",
+    "Our Pickle Pack includes a variety of pickled delights from across the multiverse, hand-selected by Rick Sanchez himself. From the briny goodness of Earth cucumbers to the exotic flavors of alien vegetables, there's a pickle for everyone in our Pickle Pack."
+  ]
+}

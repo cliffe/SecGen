@@ -1,0 +1,48 @@
+{
+  "business_name": "Green Valley Agriculture",
+  "business_motto": "Providing healthy and sustainable food for everyone.",
+  "business_address": "23B Hilltop Lane, Sheffield S6 5BR",
+  "domain": "greenvalleyagriculture.com",
+  "office_telephone": "0114 123 4567",
+  "office_email": "info@greenvalleyagriculture.com",
+  "industry": "Agriculture",
+  "manager": {
+    "name": "Oliver Johnson",
+    "address": "23B Hilltop Lane, Sheffield S6 5BR",
+    "phone_number": "0114 123 4567 ext 101",
+    "email_address": "o.johnson@greenvalleyagriculture.com",
+    "username": "johnson_o",
+    "password": ""
+  },
+  "employees": [
+    {
+      "name": "Maria Rodriguez",
+      "address": "Office A, 23B Hilltop Lane, Sheffield S6 5BR",
+      "phone_number": "0114 123 4567 ext 102",
+      "email_address": "m.rodriguez@greenvalleyagriculture.com",
+      "username": "rodriguez_m",
+      "password": ""
+    },
+    {
+      "name": "William Lee",
+      "address": "Office B, 23B Hilltop Lane, Sheffield S6 5BR",
+      "phone_number": "0114 123 4567 ext 103",
+      "email_address": "w.lee@greenvalleyagriculture.com",
+      "username": "lee_w",
+      "password": ""
+    },
+    {
+      "name": "Samantha Patel",
+      "address": "Office C, 23B Hilltop Lane, Sheffield S6 5BR",
+      "phone_number": "0114 123 4567 ext 104",
+      "email_address": "s.patel@greenvalleyagriculture.com",
+      "username": "patel_s",
+      "password": ""
+    }
+  ],
+  "product_name": "Organic Produce",
+  "intro_paragraph": [
+    "Our organic produce is grown using sustainable and environmentally friendly practices.",
+    "We take great care in selecting only the best seeds and using natural fertilizers to ensure that our produce is of the highest quality. By choosing our organic produce, you're not only doing your body a favour but also contributing to a healthier planet."
+  ]
+}

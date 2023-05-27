@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+    <name>Disastrous Development</name>
+    <author>James Davis</author>
+    <description>Sometimes developers aren't always the smartest...</description>
+
+    <type>ctf</type>
+    <type>attack-ctf</type>
+    <type>pwn-ctf</type>
+    <difficulty>medium</difficulty>
+
+    <!-- http -->
+    <CyBOK KA="MAT" topic="Attacks and exploitation">
+        <keyword>EXPLOITATION</keyword>
+        <keyword>EXPLOITATION FRAMEWORKS</keyword>
+    </CyBOK>
+    <CyBOK KA="SS" topic="Categories of Vulnerabilities">
+        <keyword>CVEs and CWEs</keyword>
+    </CyBOK>
+    <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+        <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+        <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+    </CyBOK>
+    <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+        <keyword>server-side misconfiguration and vulnerable components</keyword>
+        <keyword>Arbitrary file write</keyword>
+    </CyBOK>
+
+    <CyBOK KA="AAA" topic="Authorisation">
+        <keyword>access control</keyword>
+        <keyword>Elevated privileges</keyword>
+        <keyword>Vulnerabilities and attacks on access control misconfigurations</keyword>
+    </CyBOK>
+    <CyBOK KA="OSV" topic="Primitives for Isolation and Mediation">
+        <keyword>Access controls and operating systems</keyword>
+        <keyword>Linux security model</keyword>
+    </CyBOK>
+
+    <system>
+        <system_name>attack_vm</system_name>
+        <base distro="Kali" name="MSF" />
+
+        <input into_datastore="IP_addresses">
+            <!-- 0 attack_vm -->
+            <value>172.16.0.2</value>
+            <!-- 1 hackme_server -->
+            <value>172.16.0.3</value>
+        </input>
+
+        <utility module_path=".*/iceweasel">
+            <input into="accounts">
+                <value>
+                    {"username":"root","password":"toor","super_user":"","strings_to_leak":[],"leaked_filenames":[]}</value>
+            </input>
+            <input into="autostart">
+                <value>false</value>
+            </input>
+        </utility>
+
+        <utility module_path=".*/kali_top10" />
+        <utility module_path=".*/kali_web" />
+
+        <network type="private_network">
+            <input into="IP_address">
+                <datastore access="0">IP_addresses</datastore>
+            </input>
+        </network>
+    </system>
+
+    <system>
+        <system_name>lucee_web</system_name>
+        <base distro="Debian 10" type="desktop" name="KDE" />
+
+        <vulnerability module_path=".*/lucee_rce">
+            <input into="strings_to_leak">
+                <generator type="flag_generator" />
+            </input>
+        </vulnerability>
+
+        <vulnerability module_path=".*/ssh_root_login"></vulnerability>
+
+        <network type="private_network">
+            <input into="IP_address">
+                <datastore access="1">IP_addresses</datastore>
+            </input>
+        </network>
+    </system>
+
+</scenario>

@@ -15,10 +15,8 @@ This week we will cover one of the major threats in computer security: software 
 
 # Reading
 [Chapter 8: Using Metasploit. Harper, A. and Harris, S. and Ness, J. and Eagle, C. and Lenkey, G, and Williams, T. (2011), Gray hat hacking : the ethical hacker's handbook, McGraw-Hill. (ISBN: 978-0-07-174256-6) Available online via the library](https://www-dawsonera-com.ezproxy.leedsbeckett.ac.uk/readonline/9780071742566)
-
-# Lab
-[Lab sheet here](https://docs.google.com/document/d/11I8xMUXrT5ArJIsAhwGDtQ4RkH4l9CR4C2wh9_wz8xM/edit?usp=sharing).
   </description>
+  <lab_sheet_url>https://docs.google.com/document/d/11I8xMUXrT5ArJIsAhwGDtQ4RkH4l9CR4C2wh9_wz8xM/edit?usp=sharing</lab_sheet_url>
 
   <type>ctf-lab</type>
   <type>lab-sheet</type>

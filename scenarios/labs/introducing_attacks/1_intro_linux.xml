@@ -19,11 +19,8 @@ This topic covers lots of ground regarding fundamentals of Linux and free open s
 Suggested:
 
 Chapter 1 "An Overview of Computer Security": Bishop, M. (2005), Introduction to Computer Security, Addison-Wesley. (ISBN-10: 0321247442)
-
-# Lab
-[Lab sheet here](https://docs.google.com/document/d/1vA_Ev_GPqPg3cGZblgVclWmTU-sUEEBqwYpFH09mQjg/edit?usp=sharing).
   </description>
-
+  <lab_sheet_url>https://docs.google.com/document/d/1vA_Ev_GPqPg3cGZblgVclWmTU-sUEEBqwYpFH09mQjg/edit?usp=sharing</lab_sheet_url>
   <type>ctf-lab</type>
   <type>lab-sheet</type>
   <difficulty>easy</difficulty>

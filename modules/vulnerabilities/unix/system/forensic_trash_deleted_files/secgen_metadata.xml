@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>Forensic Artifact: KDE/Linux Trash Deleted Files</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>MIT</module_license>
+  <description>Files that are deleted on a Linux desktop (KDE).
+  </description>
+
+  <type>forensic_artifact</type>
+  <privilege>info_leak</privilege>
+  <access>local</access>
+  <platform>linux</platform>
+
+  <!-- passed in as base64 but leaked as decoded binary data -->
+  <read_fact>binary_base64_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>accounts</read_fact>
+  <read_fact>leaked_base64_filenames</read_fact>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename"/>
+  </default_input>
+  <default_input into="strings_to_leak">
+    <generator type="flag_generator"/>
+  </default_input>
+
+  <default_input into="leaked_base64_filenames">
+    <generator type="filename"/>
+  </default_input>
+
+  <default_input into="binary_base64_to_leak">
+    <encoder module_path=".*/base64">
+      <input into="strings_to_encode">
+        <generator type="flag_generator" module_path=".*/flag_words"/>
+      </input>
+    </encoder>
+  </default_input>
+
+  <!-- must be passed an existing account on the system, no default input for account -->
+
+
+  <hint>Look for deleted files</hint>
+  <solution>Deleted files are stored in ~/.local/share/Trash</solution>
+
+  <requires>
+    <module_path>utilities/unix/system/.*/accounts</module_path>
+  </requires>
+
+  <CyBOK KA="F" topic="Operating System Analysis">
+    <keyword>artifact analysis</keyword>
+    <keyword>Deleted files</keyword>
+    <keyword>SEARCH FOR EVIDENCE</keyword>
+    <keyword>data recovery and file content carving</keyword>
+    <keyword>storage forensics</keyword>
+    <keyword>data abstraction layers</keyword>
+    <keyword>data acquisition</keyword>
+  </CyBOK>
+</vulnerability>

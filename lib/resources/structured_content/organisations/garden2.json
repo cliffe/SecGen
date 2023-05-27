@@ -1,0 +1,49 @@
+{
+   "business_name":"Green Acres Nursery",
+   "business_motto":"Where plants thrive and gardeners blossom",
+   "business_address":"123 Main Street, Springfield, IL 62704",
+   "domain":"greenacresnursery.com",
+   "office_telephone":"(217) 555-1234",
+   "office_email":"info@greenacresnursery.com",
+   "industry":"Horticulture",
+   "manager":{
+      "name":"David Greene",
+      "address":"123 Main Street, Springfield, IL 62704",
+      "phone_number":"(217) 555-1234 ext 100",
+      "email_address":"d.greene@greenacresnursery.com",
+      "username":"greene_d",
+      "password":""
+   },
+   "employees":[
+      {
+         "name":"Sarah Johnson",
+         "address":"Office A, 123 Main Street, Springfield, IL 62704",
+         "phone_number":"(217) 555-1234 ext 101",
+         "email_address":"s.johnson@greenacresnursery.com",
+         "username":"johnson_s",
+         "password":""
+      },
+      {
+         "name":"Juan Rodriguez",
+         "address":"Office B, 123 Main Street, Springfield, IL 62704",
+         "phone_number":"(217) 555-1234 ext 103",
+         "email_address":"j.rodriguez@greenacresnursery.com",
+         "username":"rodriguez_j",
+         "password":""
+      },
+      {
+         "name":"Emily Nguyen",
+         "address":"Office B, 123 Main Street, Springfield, IL 62704",
+         "phone_number":"(217) 555-1234 ext 110",
+         "email_address":"e.nguyen@greenacresnursery.com",
+         "username":"nguyen_e",
+         "password":""
+      }
+   ],
+   "product_name":"Garden Design",
+   "intro_paragraph":[
+      "At Green Acres Nursery, we offer expert garden design services to help you transform your outdoor space into a beautiful and functional oasis.",
+      "Our team of experienced horticulturists and designers will work with you to create a customized garden design that meets your needs and fits your style. From plant selection and placement to hardscape design and installation, we'll guide you through every step of the process.",
+      "Whether you're looking to create a peaceful retreat, a thriving vegetable garden, or a stunning landscape for your home or business, we have the expertise and passion to make it happen. Contact us today to learn more about our garden design services!"
+   ]
+}

@@ -1,0 +1,200 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>Digital Forensics: Trashed Evidence</name>
+  <author>Z. Cliffe Schreuders</author>
+  <description>
+  # Introduction
+  Welcome to the world of digital forensics!
+
+  In this CTF problem-based learning task, you will be given a virtual machine (VM) representing a seized PC from an operative who works for an evil organization bent on global domination. Your task is to analyze the contents of the VM to gather evidence and identify any evidence of malicious activities on the machine.
+
+  In this task, you will be using digital forensics techniques to extract information from the VM, including files, and internet history, and and will involve retrieving deleted files and identifying and extracting data hidden using steganography.
+
+  These tasks will require a combination of technical skills, creativity, and critical thinking. With your help we can discover more about their evil plans!
+
+  The password to login is: tiaspbiqe2r
+  </description>
+  <type>ctf-lab</type>
+  <difficulty>medium</difficulty>
+
+  <CyBOK KA="F" topic="Operating System Analysis">
+    <keyword>artifact analysis</keyword>
+    <keyword>Steganography</keyword>
+    <keyword>Encoding and alternative data formats</keyword>
+    <keyword>Deleted files</keyword>
+    <keyword>SEARCH FOR EVIDENCE</keyword>
+    <keyword>METADATA</keyword>
+    <keyword>data recovery and file content carving</keyword>
+    <keyword>storage forensics</keyword>
+    <keyword>data abstraction layers</keyword>
+    <keyword>application artifacts</keyword>
+    <keyword>data acquisition</keyword>
+    <keyword>encryption concerns</keyword>
+    <keyword>Hidden files</keyword>
+  </CyBOK>
+  <CyBOK KA="F" topic="Application Forensics">
+    <keyword>APPLICATION ARTIFACTS</keyword>
+    <keyword>web browsers</keyword>
+    <keyword>url history</keyword>
+    <keyword>SEARCH FOR EVIDENCE</keyword>
+    <keyword>URL HISTORY</keyword>
+    <keyword>Command history</keyword>
+    <keyword>Database analysis</keyword>
+  </CyBOK>
+
+  <CyBOK KA="POR" topic="Privacy Technologies and Democratic Values">
+    <keyword>METADATA</keyword>
+    <keyword>STEGANOGRAPHY</keyword>
+  </CyBOK>
+
+
+  <system>
+    <system_name>seized_desktop</system_name>
+    <base distro="Debian 10" type="desktop" name="KDE"/>
+
+    <input into_datastore="IP_addresses">
+      <value>172.16.0.2</value>
+    </input>
+
+    <!-- this can be a random secure password, if the hdd is being analysed, as it is leaked -->
+    <input into_datastore="password">
+      <value>tiaspbiqe2r</value>
+    </input>
+
+    <input into_datastore="accounts">
+      <generator type="account">
+        <input into="username">
+          <generator type="random_sanitised_word">
+            <input into="wordlist">
+              <value>mythical_creatures</value>
+            </input>
+          </generator>
+        </input>
+        <input into="password">
+          <datastore>password</datastore>
+        </input>
+        <input into="super_user">
+          <value>true</value>
+        </input>
+        <input into="leaked_filenames">
+          <value>.they_will_never_find_us</value>
+        </input>
+        <input into="strings_to_leak">
+          <value>Trash the evidence, hide in plain sight, and they will never uncover our plans.</value>
+          <generator type="flag_generator" />
+        </input>
+      </generator>
+    </input>
+
+    <utility module_path=".*/stego_tools"/>
+
+    <!--Create the users-->
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts">
+        <datastore>accounts</datastore>
+      </input>
+    </utility>
+
+    <vulnerability module_path=".*/forensic_trash_deleted_files">
+      <input into="account">
+        <datastore>accounts</datastore>
+      </input>
+
+      <input into="leaked_filenames">
+        <value>.bash_history</value>
+        <generator type="filename"/>
+      </input>
+      <input into="strings_to_leak">
+        <generator module_path=".*/bash_history">
+          <input into="password">
+            <datastore>password</datastore>
+          </input>
+        </generator>
+        <generator type="flag_generator"/>
+      </input>
+
+      <!-- need a file name for each base64 encoded file -->
+      <input into="leaked_base64_filenames">
+        <generator type="filename"/>
+        <generator type="filename"/>
+        <generator type="filename"/>
+        <generator type="filename"/>
+        <generator type="filename"/>
+        <generator type="filename"/>
+        <generator type="filename"/>
+      </input>
+
+      <input into="binary_base64_to_leak">
+        <!-- firefox history -->
+        <generator module_path=".*/firefox_places_history_bookmarks">
+          <input into="strings_to_leak">
+            <generator type="flag_generator"/>
+          </input>
+        </generator>
+        <!-- png with strings -->
+        <generator module_path=".*/hidden_data_in_image_file">
+          <input into="strings_to_leak">
+            <generator type="flag_generator"/>
+            <generator type="evil_file_generator"/>
+          </input>
+        </generator>
+        <!-- png with zip -->
+        <generator module_path=".*/hidden_data_in_image_file">
+          <input into="binary_base64_to_leak">
+            <generator module_path=".*/zip$">
+              <input into="strings_to_leak">
+                <generator type="flag_generator"/>
+                <generator type="evil_file_generator"/>
+              </input>
+            </generator>
+          </input>
+        </generator>
+        <!-- png with password encrypted zip -->
+        <generator module_path=".*/hidden_data_in_image_file">
+          <input into="binary_base64_to_leak">
+            <generator module_path=".*/zip$">
+              <input into="strings_to_leak">
+                <generator type="flag_generator"/>
+                <generator type="evil_file_generator"/>
+              </input>
+              <input into="password">
+                <generator type="weak_password_generator"/>
+              </input>
+            </generator>
+          </input>
+        </generator>
+        <!-- qr code -->
+        <generator module_path=".*/qr_code">
+          <input into="strings_to_leak">
+            <generator type="flag_generator"/>
+          </input>
+        </generator>
+        <!-- exif metadata -->
+        <generator module_path=".*/exif$">
+          <input into="strings_to_leak">
+            <generator type="flag_generator"/>
+            <value>Secret Kill Switch</value>
+          </input>
+        </generator>
+        <!-- jpg with password protected steghide -->
+        <generator module_path=".*/steghide">
+          <input into="password">
+            <datastore>password</datastore>
+          </input>
+          <input into="strings_to_leak">
+            <generator type="evil_file_generator"/>
+            <generator type="flag_generator"/>
+          </input>
+        </generator>
+
+      </input>
+    </vulnerability>
+
+    <network type="private_network" range="dhcp"/>
+  </system>
+
+</scenario>

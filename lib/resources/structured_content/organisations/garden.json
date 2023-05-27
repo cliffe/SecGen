@@ -1,0 +1,49 @@
+{
+   "business_name":"Green Solutions Landscaping",
+   "business_motto":"Making your outdoor space beautiful and sustainable",
+   "business_address":"456 Oak Street, Manchester M1 2AB",
+   "domain":"greensolutionslandscaping.co.uk",
+   "office_telephone":"+44 161 123 4567",
+   "office_email":"info@greensolutionslandscaping.co.uk",
+   "industry":"Landscaping Services",
+   "manager":{
+      "name":"David Nguyen",
+      "address":"456 Oak Street, Manchester M1 2AB",
+      "phone_number":"+44 161 123 4567 ext 100",
+      "email_address":"d.nguyen@greensolutionslandscaping.co.uk",
+      "username":"nguyen_d",
+      "password":""
+   },
+   "employees":[
+      {
+         "name":"Jessica Patel",
+         "address":"Office A, 456 Oak Street, Manchester M1 2AB",
+         "phone_number":"+44 161 123 4567 ext 101",
+         "email_address":"j.patel@greensolutionslandscaping.co.uk",
+         "username":"patel_j",
+         "password":""
+      },
+      {
+         "name":"Mark Thompson",
+         "address":"Office B, 456 Oak Street, Manchester M1 2AB",
+         "phone_number":"+44 161 123 4567 ext 103",
+         "email_address":"m.thompson@greensolutionslandscaping.co.uk",
+         "username":"thompson_m",
+         "password":""
+      },
+      {
+         "name":"Sophie Lee",
+         "address":"Office B, 456 Oak Street, Manchester M1 2AB",
+         "phone_number":"+44 161 123 4567 ext 110",
+         "email_address":"s.lee@greensolutionslandscaping.co.uk",
+         "username":"lee_s",
+         "password":""
+      }
+   ],
+   "product_name":"Sustainable Garden Design",
+   "intro_paragraph":[
+      "At Green Solutions Landscaping, we believe that a beautiful outdoor space doesn't have to come at the expense of the environment. That's why we offer sustainable garden design services that prioritize eco-friendly practices and materials.",
+      "Our team of experts will work with you to create a garden that's both visually stunning and environmentally responsible. From native plants to rainwater harvesting, we'll incorporate the latest sustainable techniques into your garden design.",
+      "Transform your outdoor space into a haven for both you and the planet. Contact us today to learn more about our sustainable garden design services!"
+   ]
+}

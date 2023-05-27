@@ -1,0 +1,48 @@
+{
+  "business_name":"Galactic Fast Food",
+  "business_motto":"We'll feed your hunger in less than 12 parsecs!",
+  "business_address":"123 Mos Eisley St, Tatooine",
+  "domain":"galacticfastfood.com",
+  "office_telephone":"+1-555-555-5555",
+  "office_email":"info@galacticfastfood.com",
+  "industry":"Fast Food",
+  "manager":{
+    "name":"Darth Burger",
+    "address":"501 Death Star, Outer Rim",
+    "phone_number":"+1-555-555-5555",
+    "email_address":"darthburger@galacticfastfood.com",
+    "username":"darthburger",
+    "password":""
+  },
+  "employees":[
+    {
+      "name":"Jedi Frywalker",
+      "address":"123 Mos Eisley St, Tatooine",
+      "phone_number":"+1-555-555-5555",
+      "email_address":"jedifrywalker@galacticfastfood.com",
+      "username":"jedifrywalker",
+      "password":""
+    },
+    {
+      "name":"Hamburg Solo",
+      "address":"321 Millennium Falcon, Corellia",
+      "phone_number":"+1-555-555-5555",
+      "email_address":"hamburgsolo@galacticfastfood.com",
+      "username":"hamburgsolo",
+      "password":""
+    },
+    {
+      "name":"Princess Lettuce",
+      "address":"789 Alderaan St, Alderaan",
+      "phone_number":"+1-555-555-5555",
+      "email_address":"princesslettuce@galacticfastfood.com",
+      "username":"princesslettuce",
+      "password":""
+    }
+  ],
+  "product_name":"The Galactic Burger",
+  "intro_paragraph":[
+    "The Galactic Burger is out of this world! Made with the finest ingredients from across the galaxy, our burger will satisfy even the hungriest of Jedi knights.",
+    "Whether you're a fan of the dark side or the light, the Galactic Burger is the perfect meal for any occasion. Come to Galactic Fast Food and try it for yourself!"
+  ]
+}

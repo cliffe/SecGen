@@ -22,6 +22,7 @@ class Module
 
   attr_accessor :conflicts
   attr_accessor :requires
+  attr_accessor :cybok_coverage # a list of xml doc nodes
   attr_accessor :puppet_file
   attr_accessor :puppet_other_path
   attr_accessor :local_calc_file
@@ -34,6 +35,7 @@ class Module
     self.module_type = module_type
     self.conflicts = []
     self.requires = []
+    self.cybok_coverage = []
     self.attributes = {}
     self.output = []
     self.write_to_module_with_id = write_output_variable = ''
@@ -96,13 +98,17 @@ class Module
   def attributes_for_scenario_output
     attr_flattened = {}
 
-    attributes.each do |key, array|
-      unless "#{key}" == 'module_type' || "#{key}" == 'conflict' || "#{key}" == 'default_input' || "#{key}" == 'requires'
-        # creates a valid regexp that can match the original module
-        attr_flattened["#{key}"] = Regexp.escape(array.join('~~~')).gsub(/\n\w*/, '.*').gsub(/\\ /, ' ').gsub(/~~~/, '|')
-      end
-    end
+    # this alternative approach populates all the filters in the generated senario,
+    # but this means that changes to the metadata breaks the selection
+    # attributes.each do |key, array|
+    #   unless "#{key}" == 'module_type' || "#{key}" == 'conflict' || "#{key}" == 'default_input' || "#{key}" == 'requires'
+    #     # creates a valid regexp that can match the original module
+    #     attr_flattened["#{key}"] = Regexp.escape(array.join('~~~')).gsub(/\n\w*/, '.*').gsub(/\\ /, ' ').gsub(/~~~/, '|')
+    #   end
+    # end
 
+    # just specify modules by their path
+    attr_flattened["module_path"] = Regexp.escape(attributes["module_path"][0])
     attr_flattened
   end
 

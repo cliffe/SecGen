@@ -12,7 +12,7 @@
 
   <type>zip_file</type>
   <type>system</type>
-  <privilege>none</privilege>
+  <privilege>info_leak</privilege>
   <access>local</access>
   <platform>linux</platform>
 

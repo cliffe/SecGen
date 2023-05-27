@@ -11,7 +11,7 @@
   <type>web_training_platform</type>
   <type>webapp</type>
   <privilege>info_leak</privilege>
-  <access>remote</access>
+  <access>physical</access>
   <platform>linux</platform>
 
   <read_fact>port</read_fact>

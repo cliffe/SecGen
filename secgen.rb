@@ -2,7 +2,7 @@ require 'getoptlong'
 require 'fileutils'
 require 'nori'
 require 'open3'
-# require 'nokogiri/class_resolver'
+require 'nokogiri/class_resolver'
 require 'nokogiri'
 
 require_relative 'lib/helpers/constants.rb'

@@ -1,0 +1,12 @@
+[Unit]
+Description=Vulnerable JBOSS server.
+
+[Service]
+Type=simple
+User=<%= @user %>
+ExecStart=/opt/jboss-6.1.0.Final/bin/run.sh
+Restart=on-abort
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target

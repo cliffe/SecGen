@@ -1,0 +1,49 @@
+{
+   "business_name":"Sparkling Cleaning Services",
+   "business_motto":"We clean it all, big or small",
+   "business_address":"28 Park Avenue, Glasgow G1 1AB",
+   "domain":"sparklingcleaningservices.co.uk",
+   "office_telephone":"+44 141 555 1234",
+   "office_email":"info@sparklingcleaningservices.co.uk",
+   "industry":"Cleaning Services",
+   "manager":{
+      "name":"Karen Robertson",
+      "address":"28 Park Avenue, Glasgow G1 1AB",
+      "phone_number":"+44 141 555 1234 ext 100",
+      "email_address":"k.robertson@sparklingcleaningservices.co.uk",
+      "username":"robertson_k",
+      "password":""
+   },
+   "employees":[
+      {
+         "name":"Liam Campbell",
+         "address":"Office A, 28 Park Avenue, Glasgow G1 1AB",
+         "phone_number":"+44 141 555 1234 ext 101",
+         "email_address":"l.campbell@sparklingcleaningservices.co.uk",
+         "username":"campbell_l",
+         "password":""
+      },
+      {
+         "name":"Hannah Patel",
+         "address":"Office B, 28 Park Avenue, Glasgow G1 1AB",
+         "phone_number":"+44 141 555 1234 ext 103",
+         "email_address":"h.patel@sparklingcleaningservices.co.uk",
+         "username":"patel_h",
+         "password":""
+      },
+      {
+         "name":"Linda Wong",
+         "address":"Office B, 28 Park Avenue, Glasgow G1 1AB",
+         "phone_number":"+44 141 555 1234 ext 110",
+         "email_address":"l.wong@sparklingcleaningservices.co.uk",
+         "username":"wong_l",
+         "password":""
+      }
+   ],
+   "product_name":"Commercial Cleaning",
+   "intro_paragraph":[
+      "At Sparkling Cleaning Services, we offer top-notch commercial cleaning services that will leave your business looking and feeling clean and fresh.",
+      "Our team of experienced professionals are dedicated to providing high-quality cleaning services for businesses of all sizes. We offer a range of services, including regular cleaning, deep cleaning, and specialized cleaning for specific industries.",
+      "We understand that a clean workplace is essential for productivity and professionalism, which is why we work hard to deliver exceptional cleaning services at an affordable price. Contact us today to learn more about our commercial cleaning services!"
+   ]
+}

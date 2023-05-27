@@ -1,0 +1,15 @@
+[Unit]
+Description=Apache Spark Shell
+After=network.target
+
+[Service]
+Type=forking
+User=<%= @user %>
+Environment="PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/usr/local/spark/sbin"
+WorkingDirectory=/usr/local/spark/bin/
+ExecStart=/usr/local/spark/sbin/start-master.sh
+Restart=on-abort
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target

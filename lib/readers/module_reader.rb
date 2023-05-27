@@ -160,6 +160,11 @@ class ModuleReader < XMLReader
         new_module.requires.push(require)
       end
 
+      # for each CyBOK in the module -- we just store the xml node for later
+      doc.xpath("/#{module_type}/CyBOK").each do |cybok_doc|
+        new_module.cybok_coverage.push(cybok_doc.clone)
+      end
+
       # for each default input
       doc.xpath("/#{module_type}/default_input").each do |inputs_doc|
         inputs_doc.xpath('descendant::vulnerability | descendant::service | descendant::utility | descendant::network | descendant::base | descendant::encoder | descendant::generator').each do |module_node|

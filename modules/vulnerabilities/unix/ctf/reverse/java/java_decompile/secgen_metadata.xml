@@ -11,7 +11,7 @@
 
   <type>ctf_challenge</type>
   <type>reverse_engineering</type>
-  <privilege>none</privilege>
+  <privilege>info_leak</privilege>
   <access>local</access>
   <platform>linux</platform>
 

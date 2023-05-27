@@ -4,20 +4,31 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
 
-  <name>Let's go phishing</name>
+  <name>Let's Go Phishing</name>
   <author>Z. Cliffe Schreuders</author>
   <description>
 # Introduction
-
-# Lab
-[Lab sheet here](https://docs.google.com/document/d/1Yb28GYRLD0Ihnb5oeFp-TGurhb8BZfm_qFbSSrGEknI/edit?usp=sharing).
+Humans play a crucial role in the cyber security of systems and information. Many attacks target users and their mental models of cyber security systems and risk. For example, if an attacker can trick a user into performing tasks for them, the attacker can achieve their goals and gain access that they are not authorised to.
   </description>
-
+  <lab_sheet_url>https://docs.google.com/document/d/1Yb28GYRLD0Ihnb5oeFp-TGurhb8BZfm_qFbSSrGEknI/edit?usp=sharing</lab_sheet_url>
   <type>ctf-lab</type>
   <type>lab-sheet</type>
   <difficulty>easy</difficulty>
 
-<!-- TODO: CyBOK -->
+  <CyBOK KA="HF" topic="Human Error">
+    <keyword>latent usability failures in systems-of-systems</keyword>
+  </CyBOK>
+  <CyBOK KA="AB" topic="Attacks">
+    <keyword>SOCIAL ENGINEERING</keyword>
+    <keyword>MALICIOUS ACTIVITIES BY MALICIOUS ATTACHMENTS</keyword>
+  </CyBOK>
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION FRAMEWORKS</keyword>
+    <keyword>MALCODE/MALWARE - SOCIAL ENGINEERING - BAITING</keyword>
+    <keyword>MALCODE/MALWARE - SOCIAL ENGINEERING - PRETEXTING</keyword>
+    <keyword>MALCODE/MALWARE - VIRUSES - COUNTERMEASUMALCODE/MALWARE - VIRUSES - MACRO VIRUSES</keyword>
+    <keyword>MALCODE/MALWARE - SPAM . . . . .MALCODE/MALWARE - SPOOFING</keyword>
+  </CyBOK>
 
   <system>
     <system_name>victim_server</system_name>

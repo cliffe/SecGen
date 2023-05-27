@@ -54,10 +54,11 @@ SCENARIOS_HASH.keys.each{|scenario|
 | Key | Data |
 | --- | --- |
 |Name | <%= SCENARIOS_FULL_HASH[scenario][0]["name"].to_s %> |
-|Description | <%= SCENARIOS_FULL_HASH[scenario][0]["description"].to_s.delete('#').gsub(/\n/,'</br>') %>|
+|Description | <%= SCENARIOS_FULL_HASH[scenario][0]["description"].to_s.delete('#').gsub(/\n/,'</br>') %> |
+|Lab sheet | <%= SCENARIOS_FULL_HASH[scenario][0]["lab_sheet_url"].to_s.delete('#').gsub(/\n/,'</br>') %> |
 |Type | <%= SCENARIOS_FULL_HASH[scenario][0]["type"].to_s.gsub(/"|\[|\]/, '').gsub(',',';') %> |
 |Author | <%= SCENARIOS_FULL_HASH[scenario][0]["author"].to_s %> |
-|Linked videos| <%= SCENARIOS_FULL_HASH[scenario][0].dig_deep(:url).to_s.gsub(/"|\[|\]/, '').gsub(',',';') %>|
+|Linked videos| <%= SCENARIOS_FULL_HASH[scenario][0].dig_deep(:url).to_s.gsub(/"|\[|\]/, '').gsub(',',';') %> |
 |VM names|  <%=
 systems = SCENARIOS_FULL_HASH[scenario][0].dig_deep(:system_name).to_s.gsub(/"|\[|\]/, '').gsub(',',';') %> |
 

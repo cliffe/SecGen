@@ -1,0 +1,48 @@
+{
+  "business_name":"Greenway Organic Foods",
+  "business_motto":"Healthy food for a healthy life.",
+  "business_address":"223 Main Street, Leeds LS1 4AD",
+  "domain":"greenwayorganicfoods.co.uk",
+  "office_telephone":"0113 123 4567",
+  "office_email":"info@greenwayorganicfoods.co.uk",
+  "industry":"Organic Foods",
+  "manager":{
+    "name":"Emma Patel",
+    "address":"23A Park Avenue, Leeds LS6 3AW",
+    "phone_number":"0113 123 4567 ext 100",
+    "email_address":"e.patel@greenwayorganicfoods.co.uk",
+    "username":"patel_e",
+    "password":""
+  },
+  "employees":[
+    {
+      "name":"Adam Khan",
+      "address":"Office A, 223 Main Street, Leeds LS1 4AD",
+      "phone_number":"0113 123 4567 ext 101",
+      "email_address":"a.khan@greenwayorganicfoods.co.uk",
+      "username":"khan_a",
+      "password":""
+    },
+    {
+      "name":"Sophie Lee",
+      "address":"Office B, 223 Main Street, Leeds LS1 4AD",
+      "phone_number":"0113 123 4567 ext 103",
+      "email_address":"s.lee@greenwayorganicfoods.co.uk",
+      "username":"lee_s",
+      "password":""
+    },
+    {
+      "name":"Mark Thompson",
+      "address":"Office B, 223 Main Street, Leeds LS1 4AD",
+      "phone_number":"0113 123 4567 ext 110",
+      "email_address":"m.thompson@greenwayorganicfoods.co.uk",
+      "username":"thompson_m",
+      "password":""
+    }
+  ],
+  "product_name":"Organic Fruit Box",
+  "intro_paragraph":[
+    "Our Organic Fruit Box is packed with seasonal, fresh fruits straight from our local farms.",
+    "We take pride in delivering the best quality organic produce straight to your doorstep. All of our fruits are free from any chemicals and additives to ensure you get the healthiest and tastiest experience. Order now and taste the difference!"
+  ]
+}

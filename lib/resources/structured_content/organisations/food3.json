@@ -1,0 +1,48 @@
+{
+  "business_name":"The Cheesecake Factory",
+  "business_motto":"We put the cheese in cheesecake.",
+  "business_address":"123 Sweet Street, Sugarland, TX 77478",
+  "domain":"cheesecakefactorytx.com",
+  "office_telephone":"832-555-5555",
+  "office_email":"info@cheesecakefactorytx.com",
+  "industry":"Desserts",
+  "manager":{
+    "name":"Cheesy McCheesecake",
+    "address":"456 Creamy Way, Sugarland, TX 77478",
+    "phone_number":"832-555-5556",
+    "email_address":"cheesy@cheesecakefactorytx.com",
+    "username":"cheesymccheesecake",
+    "password":""
+  },
+  "employees":[
+    {
+      "name":"Cheddar Cheese",
+      "address":"123 Sweet Street, Sugarland, TX 77478",
+      "phone_number":"832-555-5557",
+      "email_address":"cheddar@cheesecakefactorytx.com",
+      "username":"cheddar",
+      "password":""
+    },
+    {
+      "name":"Brie Baker",
+      "address":"123 Sweet Street, Sugarland, TX 77478",
+      "phone_number":"832-555-5558",
+      "email_address":"brie@cheesecakefactorytx.com",
+      "username":"brie",
+      "password":""
+    },
+    {
+      "name":"Mozzarella Melt",
+      "address":"123 Sweet Street, Sugarland, TX 77478",
+      "phone_number":"832-555-5559",
+      "email_address":"mozzarella@cheesecakefactorytx.com",
+      "username":"mozzarella",
+      "password":""
+    }
+  ],
+  "product_name":"Cheesecake Sampler",
+  "intro_paragraph":[
+    "Our cheesecake sampler is the perfect way to get a taste of our cheesy goodness.",
+    "With four delicious flavors to choose from, you'll be in cheesecake heaven in no time. Don't forget to top it off with our signature whipped cream!"
+  ]
+}

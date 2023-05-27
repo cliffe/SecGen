@@ -1,0 +1,93 @@
+locate test2
+curl -I http://google.com
+whoami
+passwd
+which ls
+uptime
+touch /tmp/
+tail -n 100 /var/log/messages
+stat /bin/ls
+tar -cvf archive.tar ~
+tar -xvf archive.tar -C ~
+traceroute google.com
+uname -a
+uptime -p
+wc -l /var/log/messages
+watch -n 1 ls
+wget http://google.com
+who
+id
+zip -r archive.zip ~
+unzip archive.zip -d ~
+rsync -avz ~ /tmp/
+ps -ef | grep "firefox"
+netstat -antp | grep "80"
+ifconfig -a
+ip a
+ip a s
+hostnamectl set-hostname server
+dig google.com
+cat /proc/cpuinfo
+ls /usr/bin
+du -h /home/user
+mkdir test
+mkdir tmp
+awk '{print $2}' /proc/meminfo
+df -h
+du -sh *
+free -m
+grep -i "test" file.txt
+killall -9 firefox
+hostname -i
+hostname -I
+nc -l 4444
+passwd
+ping -c 5 8.8.8.8
+ps -aux | grep "firefox"
+rmdir tmp
+ssh-keygen -t rsa -b 4096
+touch -d "1 day ago" test.txt
+uptime -s
+uname -r
+whois google.com
+zip -r archive.zip ~
+locate whoami
+find . -type d -empty -delete
+cat /proc/mdstat
+route
+ping 8.8.8.8
+md5sum
+dig google.com
+traceroute google.co.uk
+clear
+du -sh
+debsums -c
+debsums
+v4l2-ctl -c white_balance_temperature=3000
+top
+kill -9 2342
+kill -9 436
+kill -9 4693
+kill -9 85803
+man usermod
+gem list
+xwininfo
+man sync
+sync
+traceroute6 google.com
+traceroute6 google.co.uk
+dhclient -h
+man
+konsole
+dolphin
+firefox
+kate
+uptime
+date
+ps aux
+jobs
+crotab -e
+chmod 700 ~
+ls /tmp
+ls -la /tmp
+ls -la

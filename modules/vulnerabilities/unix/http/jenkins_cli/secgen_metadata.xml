@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>Jenkins CLI Deserialization - Unauthenticated RCE - v2.56 and below</name>
+  <author>James Davis</author>
+  <module_license>MIT</module_license>
+  <description>An unauthenticated Java object deserialization vulnerability exists
+    in the CLI component for Jenkins versions `v2.56` and below.
+    The `readFrom` method within the `Command` class in the Jenkins
+    CLI remoting component deserializes objects received from clients without
+    first checking / sanitizing the data. Because of this, a malicious serialized
+    object contained within a serialized `SignedObject` can be sent to the Jenkins
+    endpoint to achieve code execution on the target.</description>
+
+  <type>http</type>
+  <type>bruteforceable</type>
+  <type>in_the_wild</type>
+  <privilege>user_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>port</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+  <read_fact>unix_username</read_fact>
+
+  <default_input into="port">
+    <generator module_path=".*/random_unregistered_port" />
+  </default_input>
+
+  <default_input into="strings_to_leak">
+    <generator type="message_generator"/>
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+  </default_input>
+
+  <default_input into="unix_username">
+    <value>jenkins</value>
+  </default_input>
+
+  <!--optional
+  vulnerability details-->
+  <cve>CVE-2017-1000353</cve>
+  <cvss_base_score>9.8</cvss_base_score>
+  <cvss_vector>AV:N/AC:L/Au:N/C:C/I:C/A:C</cvss_vector>
+  <reference>
+    https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/linux/http/jenkins_cli_deserialization.rb</reference>
+  <reference>
+    https://github.com/rapid7/metasploit-framework/blob/master/documentation/modules/exploit/linux/http/jenkins_cli_deserialization.md</reference>
+  <software_name>Jenkins</software_name>
+  <software_license>MIT</software_license>
+
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION</keyword>
+    <keyword>EXPLOITATION FRAMEWORKS</keyword>
+  </CyBOK>
+  <CyBOK KA="SS" topic="Categories of Vulnerabilities">
+    <keyword>CVEs and CWEs</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>server-side misconfiguration and vulnerable components</keyword>
+    <keyword>Serialized objects</keyword>
+  </CyBOK>
+
+</vulnerability>

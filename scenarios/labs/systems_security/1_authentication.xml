@@ -263,6 +263,16 @@ A Hackerbot lab. Work through the lab instructions, then when prompted interact 
         <datastore access="0">IP_addresses</datastore>
       </input>
     </network>
+
+    <!-- an admin account only for spoilers/administration of the challenge -->
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
   </system>
 
   <system>
@@ -362,6 +372,11 @@ A Hackerbot lab. Work through the lab instructions, then when prompted interact 
         <datastore access="1">IP_addresses</datastore>
       </input>
     </network>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
   </system>
 
   <system>
@@ -377,7 +392,7 @@ A Hackerbot lab. Work through the lab instructions, then when prompted interact 
     <service type="httpd"/>
 
     <utility module_path=".*/hackerbot">
-      <input into="hackerbot_configs">
+      <input into="hackerbot_configs" into_datastore="hackerbot_instructions">
         <generator module_path=".*/hbauthentication">
           <input into="accounts">
             <datastore>user_accounts_desktop</datastore>
@@ -400,7 +415,7 @@ A Hackerbot lab. Work through the lab instructions, then when prompted interact 
 
     <build type="cleanup">
       <input into="root_password">
-        <generator type="strong_password_generator"/>
+        <datastore>spoiler_admin_pass</datastore>
       </input>
     </build>
   </system>

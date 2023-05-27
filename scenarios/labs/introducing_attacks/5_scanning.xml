@@ -12,10 +12,8 @@ This week we learn how to scan networks to get an understanding of and to map ou
 
 # Reading
 [Chapter 2 Reconnaissance and Chapter 3 Scanning. Engebretson, P. (2011), The Basics of Hacking and Penetration Testing: Ethical Hacking and Penetration Testing Made Easy, Elsevier Inc. (ISBN: 978-1-59749-655-1) Available online via the library](http://www.sciencedirect.com/science/book/9781597496551)
-
-# Lab
-[Lab sheet here](https://docs.google.com/document/d/1KScKw7M4Bt_FE5F_2tI6tnK1NrKNAJkyh5F2TpOh9hA/edit?usp=sharing).
   </description>
+  <lab_sheet_url>https://docs.google.com/document/d/1KScKw7M4Bt_FE5F_2tI6tnK1NrKNAJkyh5F2TpOh9hA/edit?usp=sharing</lab_sheet_url>
 
   <type>ctf-lab</type>
   <type>lab-sheet</type>

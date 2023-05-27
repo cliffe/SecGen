@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>Apache Spark Unauthenticated Command Injection</name>
+  <author>James Davis</author>
+  <module_license>MIT</module_license>
+  <description>The Apache Spark UI offers the possibility to enable ACLs via the configuration
+    option spark.acls.enable.
+    With an authentication filter, this checks whether a user has access permissions to view or
+    modify the application.
+    If ACLs are enabled, a code path in HttpSecurityFilter can allow someone to perform
+    impersonation by providing an arbitrary user name.
+    A malicious user might then be able to reach a permission check function that will ultimately
+    build a Unix shell command based on their input, and execute it.
+    This will result in arbitrary shell command execution as the user Spark is currently running as.
+    This affects Apache Spark versions 3.0.3 and earlier, versions 3.1.1 to 3.1.2, and versions
+    3.2.0 to 3.2.1.</description>
+
+  <type>http</type>
+  <privilege>user_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>port</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+  <read_fact>unix_username</read_fact>
+
+  <default_input into="port">
+    <generator module_path=".*/random_unregistered_port" />
+  </default_input>
+
+  <!-- flags or other secrets exposed after exploitation -->
+  <default_input into="strings_to_leak">
+    <generator type="message_generator" />
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator" />
+  </default_input>
+
+  <default_input into="unix_username">
+    <value>spark</value>
+  </default_input>
+
+  <!--optional
+  vulnerability details-->
+  <cve>CVE-2022-33891</cve>
+  <cvss_base_score>8.8</cvss_base_score>
+  <cvss_vector>AV:N/AC:L/Au:N/C:C/I:C/A:C</cvss_vector>
+  <reference>
+    https://packetstormsecurity.com/files/168309/Apache-Spark-Unauthenticated-Command-Injection.html</reference>
+  <reference>
+    https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/linux/http/apache_spark_rce_cve_2022_33891.rb</reference>
+  <reference>https://spark.apache.org/docs/3.1.2/</reference>
+  <reference>https://archive.apache.org/dist/spark/spark-3.1.2/spark-3.1.2-bin-hadoop3.2.tgz</reference>
+  <software_name>Apache Spark</software_name>
+  <software_license>Apache License 2.0</software_license>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>server-side misconfiguration and vulnerable components</keyword>
+    <keyword>Command injection</keyword>
+  </CyBOK>
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION</keyword>
+    <keyword>EXPLOITATION FRAMEWORKS</keyword>
+  </CyBOK>
+  <CyBOK KA="SS" topic="Categories of Vulnerabilities">
+    <keyword>CVEs and CWEs</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+
+</vulnerability>

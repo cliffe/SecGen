@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+    <name>Automation Woes</name>
+    <author>James Davis</author>
+    <description>
+        There is a process hosted on a remote server that is vulnerable to exploit.
+        Find a way in then escalate to root.
+    </description>
+
+    <type>ctf</type>
+    <type>attack-ctf</type>
+    <difficulty>intermediate</difficulty>
+
+    <CyBOK KA="MAT" topic="Attacks and exploitation">
+        <keyword>EXPLOITATION</keyword>
+        <keyword>EXPLOITATION FRAMEWORKS</keyword>
+    </CyBOK>
+    <CyBOK KA="SS" topic="Categories of Vulnerabilities">
+        <keyword>CVEs and CWEs</keyword>
+    </CyBOK>
+    <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+        <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+        <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+    </CyBOK>
+    <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+        <keyword>server-side misconfiguration and vulnerable components</keyword>
+        <keyword>Serialized objects</keyword>
+    </CyBOK>
+
+    <CyBOK KA="AAA" topic="Authorisation">
+        <keyword>access control</keyword>
+        <keyword>Elevated privileges</keyword>
+        <keyword>Vulnerabilities and attacks on access control misconfigurations</keyword>
+    </CyBOK>
+    <CyBOK KA="OSV" topic="Primitives for Isolation and Mediation">
+        <keyword>Access controls and operating systems</keyword>
+        <keyword>Linux security model</keyword>
+    </CyBOK>
+
+    <system>
+        <system_name>server</system_name>
+        <base distro="Debian 10" type="desktop" name="KDE" />
+
+        <vulnerability module_path=".*/jenkins_cli">
+            <input into="strings_to_leak">
+                <generator type="flag_generator" />
+            </input>
+            <input into="strings_to_pre_leak">
+                <encoder type="^(ascii|alpha)_reversible$" difficulty="low">
+                    <input into="strings_to_encode">
+                        <generator type="flag_generator" />
+                    </input>
+                </encoder>
+            </input>
+        </vulnerability>
+
+        <vulnerability module_path=".*/writable_groups"></vulnerability>
+
+        <network type="private_network">
+            <input into="IP_address">
+                <datastore access="1">IP_addresses</datastore>
+            </input>
+        </network>
+    </system>
+
+    <system>
+        <system_name>attack_vm</system_name>
+        <base distro="Kali" name="MSF" />
+
+        <input into_datastore="IP_addresses">
+            <!-- 0 attack_vm -->
+            <value>172.16.0.2</value>
+            <!-- 1 hackme_server -->
+            <value>172.16.0.3</value>
+        </input>
+
+        <utility module_path=".*/iceweasel">
+            <input into="accounts">
+                <value>
+                    {"username":"root","password":"toor","super_user":"","strings_to_leak":[],"leaked_filenames":[]}</value>
+            </input>
+            <input into="autostart">
+                <value>false</value>
+            </input>
+        </utility>
+
+        <utility module_path=".*/kali_web" />
+        <utility module_path=".*/metasploit_framework" />
+        <utility module_path=".*/nmap" />
+        <utility module_path=".*/handy_cli_tools" />
+
+        <network type="private_network">
+            <input into="IP_address">
+                <datastore access="0">IP_addresses</datastore>
+            </input>
+        </network>
+    </system>
+
+</scenario>

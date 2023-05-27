@@ -1,0 +1,49 @@
+{
+   "business_name":"Paws & Claws Pet Grooming",
+   "business_motto":"Making your pets look and feel their best",
+   "business_address":"123 Main Street, London NW1 1AA",
+   "domain":"pawsandclawspetgrooming.co.uk",
+   "office_telephone":"+44 20 123 4567",
+   "office_email":"info@pawsandclawspetgrooming.co.uk",
+   "industry":"Pet Services",
+   "manager":{
+      "name":"Sarah Patel",
+      "address":"123 Main Street, London NW1 1AA",
+      "phone_number":"+44 20 123 4567 ext 100",
+      "email_address":"s.patel@pawsandclawspetgrooming.co.uk",
+      "username":"patel_s",
+      "password":""
+   },
+   "employees":[
+      {
+         "name":"Rachel Chen",
+         "address":"Office A, 123 Main Street, London NW1 1AA",
+         "phone_number":"+44 20 123 4567 ext 101",
+         "email_address":"r.chen@pawsandclawspetgrooming.co.uk",
+         "username":"chen_r",
+         "password":""
+      },
+      {
+         "name":"Michael Davis",
+         "address":"Office B, 123 Main Street, London NW1 1AA",
+         "phone_number":"+44 20 123 4567 ext 103",
+         "email_address":"m.davis@pawsandclawspetgrooming.co.uk",
+         "username":"davis_m",
+         "password":""
+      },
+      {
+         "name":"Natalie Jones",
+         "address":"Office B, 123 Main Street, London NW1 1AA",
+         "phone_number":"+44 20 123 4567 ext 110",
+         "email_address":"n.jones@pawsandclawspetgrooming.co.uk",
+         "username":"jones_n",
+         "password":""
+      }
+   ],
+   "product_name":"Full Grooming Package",
+   "intro_paragraph":[
+      "At Paws & Claws Pet Grooming, we understand that your pets are like family, which is why we offer top-notch grooming services to keep them looking and feeling their best.",
+      "Our full grooming package includes a bath, haircut, nail trim, and ear cleaning, all done with gentle care and attention to detail.",
+      "Trust us to pamper your furry friends and bring out their natural beauty. Contact us today to schedule an appointment!"
+   ]
+}

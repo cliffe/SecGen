@@ -2,6 +2,7 @@
 require_relative '../../../../../lib/objects/local_string_encoder.rb'
 require 'rubygems'
 require 'zip'
+require 'securerandom'
 
 class ZipGenerator < StringEncoder
   attr_accessor :file_name
@@ -14,11 +15,12 @@ class ZipGenerator < StringEncoder
     self.file_name = ''
     self.strings_to_leak = []
     self.password = ''
-    Dir.mkdir '../tmp/' unless Dir.exists? '../tmp/'
   end
 
   def encode_all
-    zip_file_path = GENERATORS_DIR + 'compression/zip/tmp/archive' + Time.new.strftime("%Y%m%d_%H%M%S") + '.zip'
+    zip_file_path = "/tmp/zip#{SecureRandom.hex(6)}.zip"
+
+    # zip_file_path = GENERATORS_DIR + 'compression/zip/tmp/archive' + Time.new.strftime("%Y%m%d_%H%M%S") + '.zip'
     file_contents = ''
     data = self.strings_to_leak.join("\n")
 

@@ -40,6 +40,7 @@ gem 'CFPropertyList'
 gem 'artii'
 gem 'rest-client'
 gem 'retryable'
+gem 'sqlite3'
 
 #development only gems go here
 group :test, :development do

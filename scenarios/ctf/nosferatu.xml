@@ -107,7 +107,7 @@
       </input>
     </vulnerability>
 
-    <vulnerability module_path=".*/suid_root_man">
+    <vulnerability module_path=".*/sudo_root_less">
       <input into="strings_to_leak">
         <generator type="flag_generator"/>
       </input>

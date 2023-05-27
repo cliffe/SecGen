@@ -1,0 +1,15 @@
+[Unit]
+Description=Lucee
+[Service]
+Type=forking
+User=<%= @user %>
+ExecStart=/usr/local/src/bin/startup.sh
+ExecStop=/usr/local/src/bin/shutdown.sh
+TimeoutStopSec=5
+# The exit code of the tomcat java process when terminated via shutdown.sh is 143.
+# Don't treat that non-zero exit code as a failure.
+SuccessExitStatus=143
+Restart=always
+RestartSec=5
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>JBOSS EAP/AS Remoting Unified Invoker RCE</name>
+  <author>Harry J. Hall</author>
+  <author>James Davis</author>
+  <module_license>MIT</module_license>
+  <description>JBOSS EAP versions 6.x contain an RCE vulnerability that can be executed by a
+    unauthenticated user.
+    This invovles sending a serialized Java object to JBOSS EAP over a network.</description>
+
+  <type>Java web exploit</type>
+  <privilege>user_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>medium</difficulty>
+
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+  <read_fact>unix_username</read_fact>
+
+  <default_input into="strings_to_leak">
+    <generator type="message_generator" />
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator" />
+  </default_input>
+
+  <default_input into="unix_username">
+    <value>jboss</value>
+  </default_input>
+
+  <reference>https://s3.amazonaws.com/files.joaomatosf.com/slides/alligator_slides.pdf</reference>
+  <software_name>jboss</software_name>
+  <software_license>LGPL v2.1</software_license>
+
+  <msf_module>exploit/multi/misc/jboss_remoting_unified_invoker_rce</msf_module>
+  <solution>JBoss is vulnerable.</solution>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION</keyword>
+    <keyword>EXPLOITATION FRAMEWORKS</keyword>
+  </CyBOK>
+  <CyBOK KA="SS" topic="Categories of Vulnerabilities">
+    <keyword>CVEs and CWEs</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>server-side misconfiguration and vulnerable components</keyword>
+    <keyword>Serialized objects</keyword>
+  </CyBOK>
+
+</vulnerability>

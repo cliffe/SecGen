@@ -9,7 +9,7 @@ class RandomExifStringField < StringGenerator
 
   def generate
 
-    fields = %w(title comment make)
+    fields = %w(title comment make UserComment)
 
     self.outputs << fields.sample.chomp
   end

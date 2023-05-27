@@ -1,0 +1,49 @@
+{
+  "business_name": "Jabba's Joke Emporium",
+  "business_motto": "Bringing laughter to the galaxy, one joke at a time!",
+  "business_address": "123 Mos Eisley Spaceport, Tatooine",
+  "domain": "jabbasjokeemporium.com",
+  "office_telephone": "555-5555",
+  "office_email": "info@jabbasjokeemporium.com",
+  "industry": "Comedy Services",
+  "manager": {
+    "name": "Jabba the Hutt",
+    "address": "Jabba's Palace, Dune Sea, Tatooine",
+    "phone_number": "555-1234",
+    "email_address": "jabba@jabbasjokeemporium.com",
+    "username": "jabbathehutt",
+    "password": ""
+  },
+  "employees": [
+    {
+      "name": "Max Rebo",
+      "address": "Jabba's Palace, Dune Sea, Tatooine",
+      "phone_number": "555-2345",
+      "email_address": "maxrebo@jabbasjokeemporium.com",
+      "username": "maxrebo",
+      "password": ""
+    },
+    {
+      "name": "Salacious B. Crumb",
+      "address": "Jabba's Palace, Dune Sea, Tatooine",
+      "phone_number": "555-3456",
+      "email_address": "salacious@jabbasjokeemporium.com",
+      "username": "salaciousbcrumb",
+      "password": ""
+    },
+    {
+      "name": "Bib Fortuna",
+      "address": "Jabba's Palace, Dune Sea, Tatooine",
+      "phone_number": "555-4567",
+      "email_address": "bibfortuna@jabbasjokeemporium.com",
+      "username": "bibfortuna",
+      "password": ""
+    }
+  ],
+  "product_name": "Jabba's Joke of the Day",
+  "intro_paragraph": [
+    "Welcome to Jabba's Joke Emporium, the funniest business in the galaxy!",
+    "We offer a wide range of jokes and gags to make you laugh and forget about the stresses of the galaxy.",
+    "Sign up for Jabba's Joke of the Day and receive a daily dose of laughter, delivered straight to your inbox!"
+  ]
+}

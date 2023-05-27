@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Image Steghide (using package)</name>
+  <author>Z. Cliffe Schreuders</author>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Modifies an image's data to leak a string (password protected with a weak password).</description>
+
+  <type>image_generator</type>
+  <type>image_challenge_generator</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  <platform>windows</platform>
+
+  <hint>The image has a hidden message
+  </hint>
+
+  <read_fact>base64_image</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+
+  <default_input into="base64_image">
+    <generator type="random_jpg"/>
+  </default_input>
+
+  <default_input into="strings_to_leak">
+    <generator type="flag_generator"/>
+  </default_input>
+
+  <default_input into="password">
+    <generator type="weak_password_generator"/>
+  </default_input>
+
+  <output_type>generated_image</output_type>
+
+  <CyBOK KA="F" topic="Operating System Analysis">
+    <keyword>artifact analysis</keyword>
+    <keyword>Steganography</keyword>
+    <keyword>SEARCH FOR EVIDENCE</keyword>
+    <keyword>data acquisition</keyword>
+    <keyword>encryption concerns</keyword>
+  </CyBOK>
+
+  <CyBOK KA="POR" topic="Privacy Technologies and Democratic Values">
+    <keyword>STEGANOGRAPHY</keyword>
+  </CyBOK>
+</generator>

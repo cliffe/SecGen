@@ -1,0 +1,48 @@
+{
+  "business_name":"Jabba's Snack Emporium",
+  "business_motto":"We'll feed you like a Hutt!",
+  "business_address":"Tatooine, Mos Eisley Cantina, Booth #3",
+  "domain":"jabbassnackemporium.com",
+  "office_telephone":"555-555-1234",
+  "office_email":"info@jabbassnackemporium.com",
+  "industry":"Food Services",
+  "manager":{
+    "name":"Jabba the Hutt",
+    "address":"Tatooine, Dune Sea Palace, Jabba's Private Chamber",
+    "phone_number":"555-555-4321",
+    "email_address":"jabba@jabbassnackemporium.com",
+    "username":"jabba",
+    "password":"pass123"
+  },
+  "employees":[
+    {
+      "name":"Salacious B. Crumb",
+      "address":"Tatooine, Mos Eisley Cantina, Booth #4",
+      "phone_number":"555-555-0001",
+      "email_address":"salacious@jabbassnackemporium.com",
+      "username":"salacious",
+      "password":"pass123"
+    },
+    {
+      "name":"Max Rebo",
+      "address":"Tatooine, Mos Eisley Cantina, Booth #5",
+      "phone_number":"555-555-0002",
+      "email_address":"max@jabbassnackemporium.com",
+      "username":"max",
+      "password":"pass123"
+    },
+    {
+      "name":"Droopy McCool",
+      "address":"Tatooine, Mos Eisley Cantina, Booth #6",
+      "phone_number":"555-555-0003",
+      "email_address":"droopy@jabbassnackemporium.com",
+      "username":"droopy",
+      "password":"pass123"
+    }
+  ],
+  "product_name":"Jabba's Snack Pack",
+  "intro_paragraph":[
+    "Feeling hungry? Come to Jabba's Snack Emporium and satisfy your cravings!",
+    "Our famous Jabba's Snack Pack includes a delicious array of Hutt-approved treats, including Bantha Chips, Rancor Rinds, and Wampa Sticks. Wash it down with our signature Blue Milk Shake and you'll be ready to take on the galaxy."
+  ]
+}

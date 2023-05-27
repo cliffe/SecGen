@@ -1,0 +1,243 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>Agent Zero: Licence to Hack</name>
+  <author>Z. Cliffe Schreuders</author>
+  <description>In this scenario, as a secret agent analyst specializing in cyber security, you are authorized to conduct offensive operations against those who threaten the digital safety and security of your country.
+
+You have been tasked with conducting a cyber attack and to investigate the operations of 'The Organization' in order to discover their evil plans. As the exercise progresses, you will uncover more and more evidence of the organization's evil plans. We beleive they are using aliases, and cover businesses.
+
+The only reliable intel we have is that there is an operative that goes by the alias 'viper'.
+
+You will need to use a variety of tools and techniques to perform an attack: network scanning and exploitation to gain a foothold, escalate privileges as necessary, and gather and analyze data data to collect evidence.
+
+Submit the flags you find to track your progress.
+
+This challenge will be different each time, and can be taken again and again to hone your skills and experience different attacks.
+
+  </description>
+
+  <type>ctf</type>
+  <type>attack-ctf</type>
+  <type>pwn-ctf</type>
+  <difficulty>medium</difficulty>
+
+  <!-- CyBOK is further generated based on which modules are selected -->
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+  <CyBOK KA="AB" topic="Models">
+    <keyword>kill chains</keyword>
+  </CyBOK>
+  <CyBOK KA="MAT" topic="Malicious Activities by Malware">
+    <keyword>cyber kill chain</keyword>
+  </CyBOK>
+
+
+  <system>
+    <system_name>attack_vm</system_name>
+    <base distro="Kali" name="MSF"/>
+
+    <input into_datastore="IP_addresses">
+      <!-- 0 attack_vm -->
+      <value>172.16.0.2</value>
+      <!-- 1 hackme_server -->
+      <value>172.16.0.3</value>
+    </input>
+
+    <utility module_path=".*/iceweasel">
+      <input into="accounts">
+        <value>{"username":"root","password":"toor","super_user":"","strings_to_leak":[],"leaked_filenames":[]}</value>
+      </input>
+      <input into="autostart">
+        <value>false</value>
+      </input>
+    </utility>
+
+    <utility module_path=".*/kali_top10"/>
+    <utility module_path=".*/kali_web"/>
+
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="0">IP_addresses</datastore>
+      </input>
+    </network>
+  </system>
+
+  <system>
+    <system_name>evil_server</system_name>
+    <base distro="Debian 10" type="desktop" name="KDE"/>
+
+    <input into_datastore="organisation">
+      <encoder type="line_selector">
+        <input into="file_path">
+          <value>lib/resources/structured_content/organisations/json_organisations</value>
+        </input>
+      </encoder>
+    </input>
+
+    <!-- a bruteforceable password >= 6 characters long -->
+    <!-- required by bluedit and others -->
+    <input into_datastore="password">
+      <generator type="random_sanitised_word">
+        <input into="wordlist">
+          <value>wordlist</value>
+        </input>
+        <input into="min_length">
+          <value>6</value>
+        </input>
+      </generator>
+    </input>
+    <input into_datastore="username">
+      <value>viper</value>
+    </input>
+
+    <!--Create the user-->
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts">
+        <generator type="account">
+          <input into="username">
+            <datastore>username</datastore>
+          </input>
+          <input into="password">
+            <datastore>password</datastore>
+          </input>
+          <input into="super_user">
+            <value>false</value>
+          </input>
+          <input into="leaked_filenames">
+            <value>flag</value>
+          </input>
+          <input into="strings_to_leak">
+            <generator module_path=".*/random_line">
+              <input into="linelist">
+                <value>secrets</value>
+              </input>
+            </generator>
+            <generator type="flag_generator" module_path=".*/flag_words"/>
+          </input>
+        </generator>
+      </input>
+    </utility>
+
+    <vulnerability privilege="user_rwx" access="remote" read_fact="strings_to_leak">
+      <!-- will have strings_to_leak -->
+      <input into="strings_to_leak">
+        <generator type="evil_file_generator"/>
+        <generator type="flag_generator" module_path=".*/flag_words"/>
+      </input>
+      <!-- inputs that don't exist are ignored -->
+      <input into="organisation">
+        <datastore>organisation</datastore>
+      </input>
+      <input into="known_username">
+        <datastore>username</datastore>
+      </input>
+      <input into="known_password">
+        <datastore>password</datastore>
+      </input>
+      <!-- as a special case any flags generated directly into a param that doesn't exist is not fed into the flags xml file -->
+      <input into="strings_to_pre_leak">
+        <datastore>username</datastore>
+        <generator type="flag_generator" module_path=".*/flag_words"/>
+      </input>
+      <input into="port" into_datastore="selected_ports">
+        <generator module_path=".*random_unregistered_port" />
+      </input>
+    </vulnerability>
+
+    <!-- 2nd vuln gives root, which sometimes might be a shortcut to the above flag -->
+    <!-- could make it an priv esc with - access="local" -->
+    <vulnerability privilege="root_rwx" access="remote|local" read_fact="strings_to_leak">
+      <!-- will have strings_to_leak -->
+      <input into="strings_to_leak">
+        <generator type="evil_file_generator"/>
+        <generator type="flag_generator" module_path=".*/flag_words"/>
+      </input>
+      <!-- inputs that don't exist are ignored -->
+      <input into="organisation">
+        <datastore>organisation</datastore>
+      </input>
+      <input into="known_username">
+        <datastore>username</datastore>
+      </input>
+      <input into="known_password">
+        <datastore>password</datastore>
+      </input>
+      <input into="strings_to_pre_leak">
+        <datastore>username</datastore>
+        <generator type="flag_generator" module_path=".*/flag_words"/>
+      </input>
+      <input into="port" into_datastore="selected_ports">
+        <generator module_path=".*random_unregistered_port" />
+      </input>
+    </vulnerability>
+
+    <!-- 3rd vuln reveals info/flag -->
+    <vulnerability privilege="user_rw|info_leak" access="remote|local" read_fact="strings_to_leak">
+      <!-- will have strings_to_leak -->
+      <input into="strings_to_leak">
+        <generator type="evil_file_generator"/>
+        <generator type="flag_generator" module_path=".*/flag_words"/>
+      </input>
+      <!-- inputs that don't exist are ignored -->
+      <input into="organisation">
+        <datastore>organisation</datastore>
+      </input>
+      <input into="known_username">
+        <datastore>username</datastore>
+      </input>
+      <input into="known_password">
+        <datastore>password</datastore>
+      </input>
+      <input into="strings_to_pre_leak">
+        <generator type="flag_generator" module_path=".*/flag_words"/>
+      </input>
+      <input into="port" into_datastore="selected_ports">
+        <generator module_path=".*random_unregistered_port" />
+      </input>
+    </vulnerability>
+
+    <vulnerability type="zip_file">
+      <input into="base64_file">
+        <generator type="zip_file_generator">
+          <input into="password">
+            <datastore>password</datastore>
+          </input>
+          <input into="strings_to_leak">
+            <generator type="evil_file_generator"/>
+            <generator type="flag_generator" module_path=".*/flag_words"/>
+            <value>
+              Congratulations you have cracked our protected zip file. Here is a flag for your troubles, plus something more.
+            </value>
+            <encoder type="^(ascii|alpha)_reversible$" difficulty="low">
+              <input into="strings_to_encode">
+                <generator type="flag_generator" module_path=".*/flag_words"/>
+              </input>
+            </encoder>
+          </input>
+        </generator>
+      </input>
+      <input into="leaked_filename">
+        <value>protected.zip</value>
+      </input>
+      <input into="storage_directory">
+        <value>/root/</value>
+      </input>
+    </vulnerability>
+
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="1">IP_addresses</datastore>
+      </input>
+    </network>
+  </system>
+
+</scenario>

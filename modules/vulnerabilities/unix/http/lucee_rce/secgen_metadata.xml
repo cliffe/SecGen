@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>Lucee Administrator imgProcess.cfm Arbitrary File Write</name>
+  <author>James Davis</author>
+  <module_license>MIT</module_license>
+  <description>
+    This module exploits an arbitrary file write in Lucee Administrator's
+    imgProcess.cfm file to execute commands as the Tomcat user.
+  </description>
+
+  <type>http</type>
+  <type>in_the_wild</type>
+  <!-- currently running as root but leaking to user home dir -->
+  <privilege>root_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>port</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+  <read_fact>unix_username</read_fact>
+
+  <default_input into="port">
+    <generator module_path=".*/random_unregistered_port" />
+  </default_input>
+
+  <!-- flags or other secrets exposed after exploitation -->
+  <default_input into="strings_to_leak">
+    <generator type="message_generator" />
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator" />
+  </default_input>
+
+  <default_input into="unix_username">
+    <generator type="username_generator" />
+  </default_input>
+
+  <!--optional
+  vulnerability details-->
+  <cve>CVE-2021-21307</cve>
+  <cvss_base_score>9.8</cvss_base_score>
+  <cvss_vector>AV:N/AC:L/Au:N/C:C/I:C/A:C</cvss_vector>
+  <reference>https://github.com/httpvoid/writeups/blob/main/Apple-RCE.md</reference>
+  <reference>
+    https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/linux/http/lucee_admin_imgprocess_file_write.rb</reference>
+  <software_name>Lucee Server</software_name>
+  <software_license>Apache/LGPL</software_license>
+  <msf_module>exploit/linux/http/lucee_admin_imgprocess_file_write</msf_module>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION</keyword>
+    <keyword>EXPLOITATION FRAMEWORKS</keyword>
+  </CyBOK>
+  <CyBOK KA="SS" topic="Categories of Vulnerabilities">
+    <keyword>CVEs and CWEs</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>server-side misconfiguration and vulnerable components</keyword>
+    <keyword>Arbitrary file write</keyword>
+  </CyBOK>
+
+</vulnerability>

@@ -1,0 +1,168 @@
+sudo apt-get update
+sudo apt-get install chromium-browser
+sudo apt-get remove chromium-browser
+sudo apt-get install gimp
+sudo apt-get remove gimp
+sudo apt-get install openssh-server
+sudo apt-get remove openssh-server
+sudo apt-get install python3
+sudo apt-get remove python3
+sudo apt-get install vlc
+sudo apt-get remove vlc
+sudo apt-get install apache2
+sudo apt-get remove apache2
+sudo apt-get install mysql-server
+sudo apt-get remove mysql-server
+sudo apt-get install php
+sudo apt-get remove php
+sudo apt-get install nodejs
+sudo apt-get remove nodejs
+sudo apt-get install npm
+sudo apt-get remove npm
+sudo apt-get install git
+sudo apt-get remove git
+sudo apt-get install vim
+sudo apt-get remove vim
+sudo apt-get install emacs
+sudo apt-get remove emacs
+sudo apt-get install curl
+sudo apt-get remove curl
+sudo apt-get install wget
+sudo apt-get remove wget
+sudo apt-get install tar
+sudo apt-get remove tar
+sudo apt-get install zip
+sudo apt-get remove zip
+sudo apt-get install unzip
+sudo apt-get remove unzip
+sudo apt-get install python
+sudo apt-get remove python
+sudo apt-get install python-pip
+sudo apt-get remove python-pip
+sudo apt-get install python3-pip
+sudo apt-get remove python3-pip
+sudo apt-get install virtualenv
+sudo apt-get remove virtualenv
+sudo apt-get install docker
+sudo apt-get remove docker
+sudo apt-get install postgresql
+sudo apt-get remove postgresql
+sudo apt-get install mongodb
+sudo apt-get remove mongodb
+sudo apt-get install redis-server
+sudo apt-get remove redis-server
+sudo apt-get install memcached
+sudo apt-get remove memcached
+sudo apt-get install gcc
+sudo apt-get remove gcc
+sudo apt-get install make
+sudo apt-get remove make
+sudo apt-get install nginx
+sudo apt-get remove nginx
+sudo systemctl restart apache2
+sudo systemctl stop nginx
+sudo systemctl start networking
+sudo systemctl restart mysql
+sudo systemctl stop postfix
+sudo systemctl start ssh
+sudo systemctl restart php7.4-fpm
+sudo systemctl stop cups
+sudo systemctl start cron
+sudo systemctl restart memcached
+sudo systemctl stop docker
+sudo systemctl start docker
+sudo systemctl restart redis-server
+sudo systemctl stop bluetooth
+sudo systemctl start bluetooth
+sudo systemctl restart postfix
+sudo systemctl stop apache2
+sudo systemctl start nginx
+sudo systemctl restart ssh
+sudo systemctl stop networking
+sudo systemctl start postgresql
+sudo systemctl restart mariadb
+sudo systemctl stop exim4
+sudo systemctl start exim4
+sudo systemctl restart ufw
+sudo systemctl stop ufw
+sudo systemctl start apache2
+sudo systemctl restart nginx
+sudo systemctl stop rpcbind
+sudo systemctl start rpcbind
+sudo systemctl restart squid
+sudo systemctl stop ssh
+sudo systemctl start networking.service
+sudo systemctl restart bind9
+sudo systemctl stop apache2.service
+sudo systemctl start php7.3-fpm.service
+sudo systemctl restart sshd
+sudo systemctl stop systemd-timesyncd
+sudo systemctl start systemd-timesyncd
+sudo systemctl restart named
+sudo systemctl restart rsyslog
+sudo systemctl stop rsyslog
+sudo systemctl start vsftpd
+sudo systemctl restart clamav-daemon
+sudo systemctl stop clamav-daemon
+sudo systemctl start postfix.service
+sudo systemctl restart postfix.service
+sudo systemctl stop nginx.service
+sudo ufw enable
+sudo ufw disable
+sudo chown -R user:user /tmp/asdf32
+sudo chmod -R 755 /tmp
+sudo systemctl status networking
+sudo apt-get upgrade
+sudo apt-get dist-upgrade
+sudo apt-get autoremove
+sudo apt-get clean
+sudo find . -type f -exec rm {} ;
+sudo tar -xvf archive.tar -C /extract/
+sudo tail -f /var/log/messages
+sudo chmod 700 /tmp/sdf435
+sudo passwd
+sudo mount /dev/sdb1 /mnt/usb
+sudo umount /mnt/usb
+sudo chattr +i /var/log/messages
+sudo crontab -e
+sudo dpkg -i d456.deb
+sudo dpkg --configure -a
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys keynumber
+sudo apt-get install build-essential
+sudo apt-get install python3-pip
+sudo systemctl reload networking
+sudo visudo
+sudo mount /dev/sdb1 /mnt/usb
+sudo mount -t ext4 /dev/sda1 /mnt/data
+sudo mount /dev/cdrom /mnt/cdrom
+sudo mount /dev/sdb2 /mnt/backup
+sudo mount -o loop /mnt/cdrom/image.iso /mnt/iso
+sudo mount /dev/sdc1 /mnt/external
+sudo mount -t vfat /dev/sda2 /mnt/usb_drive
+sudo mount -t ntfs-3g /dev/sdb1 /mnt/win_drive
+sudo mount -t iso9660 /dev/cdrom /mnt/cdrom
+sudo mount /dev/sdb1 /mnt/backup -o rw,user
+sudo mount -t tmpfs -o size=1G tmpfs /mnt/ramdisk
+sudo mount -t exfat /dev/sdc1 /mnt/external_drive
+sudo mount -t ext4 /dev/sda1 /mnt/ubuntu
+sudo mount -t ntfs /dev/sda1 /mnt/windows
+sudo mount -t btrfs /dev/sdb1 /mnt/btrfs
+sudo mount /dev/sdc1 /mnt/usb_drive
+sudo mount -t vfat /dev/sdc1 /mnt/flash_drive
+sudo mount -t ext2 /dev/sdb1 /mnt/data
+sudo mount -t udf /dev/sr0 /mnt/dvd
+sudo mount /dev/sdb1 /mnt/storage -o rw,uid=1000,gid=1000
+sudo mount -t ext4 /dev/sda3 /mnt/home
+sudo mount -t ntfs /dev/sdb1 /mnt/ntfs_drive -o ro,umask=0222
+sudo mount -t ext4 /dev/sdb2 /mnt/backup -o noatime
+sudo mount -t ext4 /dev/sda1 /mnt/root
+sudo mount -t vboxsf -o uid=1000,gid=1000 share_name /mnt/share
+sudo mount -t exfat-fuse /dev/sdb1 /mnt/exfat_drive
+sudo mount -t ext4 /dev/sda1 /mnt/linux
+sudo mount -t btrfs /dev/sda1 /mnt/btrfs_drive
+sudo mount -t udf /dev/sr0 /mnt/cdrom
+sudo mount
+sudo snap remove discord
+sudo snap set system refresh.retain=2
+sudo dhclient
+sudo -i

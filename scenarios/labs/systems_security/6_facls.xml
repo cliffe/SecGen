@@ -374,7 +374,7 @@ A Hackerbot lab. Work through the labsheet, then when prompted interact with Hac
     <service type="httpd"/>
 
     <utility module_path=".*/hackerbot">
-      <input into="hackerbot_configs">
+      <input into="hackerbot_configs" into_datastore="hackerbot_instructions">
         <generator module_path=".*/hb_facls">
           <input into="accounts">
             <datastore>user_accounts_desktop</datastore>

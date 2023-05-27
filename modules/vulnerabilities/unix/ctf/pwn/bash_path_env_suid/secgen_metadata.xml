@@ -11,7 +11,7 @@
 
   <type>system</type>
   <type>ctf_challenge</type>
-  <privilege>none</privilege>
+  <privilege>info_leak</privilege>
   <access>local</access>
   <platform>linux</platform>
 

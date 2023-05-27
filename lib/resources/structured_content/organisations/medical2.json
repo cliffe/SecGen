@@ -1,0 +1,49 @@
+{
+   "business_name":"Medicheck Solutions",
+   "business_motto":"Your health is our priority",
+   "business_address":"42 Elm Grove, London, SE13 7PT",
+   "domain":"medichecksolutions.co.uk",
+   "office_telephone":"020 123 4567",
+   "office_email":"info@medichecksolutions.co.uk",
+   "industry":"Medical Services",
+   "manager":{
+      "name":"Sarah Thompson",
+      "address":"32 High Street, London, SE1 1TD",
+      "phone_number":"020 123 4567 ext 100",
+      "email_address":"s.thompson@medichecksolutions.co.uk",
+      "username":"thompson_s",
+      "password":""
+   },
+   "employees":[
+      {
+         "name":"Andrew Green",
+         "address":"Office A, 42 Elm Grove, London, SE13 7PT",
+         "phone_number":"020 123 4567 ext 101",
+         "email_address":"a.green@medichecksolutions.co.uk",
+         "username":"green_a",
+         "password":""
+      },
+      {
+         "name":"Olivia Patel",
+         "address":"Office B, 42 Elm Grove, London, SE13 7PT",
+         "phone_number":"020 123 4567 ext 103",
+         "email_address":"o.patel@medichecksolutions.co.uk",
+         "username":"patel_o",
+         "password":""
+      },
+      {
+         "name":"Tom Edwards",
+         "address":"Office B, 42 Elm Grove, London, SE13 7PT",
+         "phone_number":"020 123 4567 ext 110",
+         "email_address":"t.edwards@medichecksolutions.co.uk",
+         "username":"edwards_t",
+         "password":""
+      }
+   ],
+   "product_name":"Health Assessment",
+   "intro_paragraph":[
+      "A health assessment is a comprehensive check-up designed to provide an in-depth analysis of your current health status and identify potential future health risks.",
+      "At Medicheck Solutions, we use our medical expertise to provide you with personalized recommendations to help you optimize your health and well-being.",
+      "Book your health assessment today and take the first step towards a healthier future."
+   ]
+}

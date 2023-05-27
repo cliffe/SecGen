@@ -1,3 +1,4 @@
+require 'nokogiri/class_resolver'
 require 'nokogiri'
 
 require_relative '../helpers/print.rb'

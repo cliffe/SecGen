@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 
 <service xmlns="http://www.github/cliffe/SecGen/service"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
-  <name>Apache HTTP Server - Stretch/Kali Compatible</name>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
+  <name>Apache HTTP Server - Stretch Compatible</name>
   <author>Z. Cliffe Schreuders</author>
   <author>Connor Wilson</author>
   <author>Puppet Labs</author>
@@ -13,13 +13,15 @@
   <type>httpd</type>
   <platform>linux</platform>
 
-  <!--optional details-->
+  <!--optional
+  details-->
   <reference>https://httpd.apache.org/</reference>
   <reference>https://forge.puppet.com/puppetlabs/apache</reference>
   <software_name>apache</software_name>
   <software_license>Apache v2</software_license>
 
-  <!--Cannot co-exist with other apache installations-->
+  <!--Cannot
+  co-exist with other apache installations-->
   <conflict>
     <software_name>apache</software_name>
   </conflict>
@@ -27,7 +29,7 @@
     <name>.*Wheezy.*</name>
   </conflict>
   <conflict>
-    <name>.*Kali.*</name>
+    <module_path>bases/.*kali.*</module_path>
   </conflict>
   <requires>
     <type>update</type>

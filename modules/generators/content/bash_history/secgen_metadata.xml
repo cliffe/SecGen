@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+
+  <name>Bash History Generator</name>
+  <author>Jack Biggs</author>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>MIT</module_license>
+  <description>Creates a bash history file in which a sudo password is leaked.</description>
+
+  <type>string_generator</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+
+  <read_fact>password</read_fact>
+
+  <output_type>generated_strings</output_type>
+
+  <CyBOK KA="F" topic="Operating System Analysis">
+    <keyword>data acquisition</keyword>
+  </CyBOK>
+  <CyBOK KA="F" topic="Application Forensics">
+    <keyword>Command history</keyword>
+  </CyBOK>
+
+</generator>

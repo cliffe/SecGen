@@ -1,0 +1,49 @@
+{
+   "business_name":"Green Energy Solutions",
+   "business_motto":"Powering your life, sustainably",
+   "business_address":"42 Main Street, Glasgow G1 1AA",
+   "domain":"greenenergysolutions.co.uk",
+   "office_telephone":"+44 141 123 4567",
+   "office_email":"info@greenenergysolutions.co.uk",
+   "industry":"Renewable Energy",
+   "manager":{
+      "name":"James Robertson",
+      "address":"42 Main Street, Glasgow G1 1AA",
+      "phone_number":"+44 141 123 4567 ext 100",
+      "email_address":"j.robertson@greenenergysolutions.co.uk",
+      "username":"robertson_j",
+      "password":""
+   },
+   "employees":[
+      {
+         "name":"Lucy Brown",
+         "address":"Office A, 42 Main Street, Glasgow G1 1AA",
+         "phone_number":"+44 141 123 4567 ext 101",
+         "email_address":"l.brown@greenenergysolutions.co.uk",
+         "username":"brown_l",
+         "password":""
+      },
+      {
+         "name":"David Campbell",
+         "address":"Office B, 42 Main Street, Glasgow G1 1AA",
+         "phone_number":"+44 141 123 4567 ext 103",
+         "email_address":"d.campbell@greenenergysolutions.co.uk",
+         "username":"campbell_d",
+         "password":""
+      },
+      {
+         "name":"Samantha Patel",
+         "address":"Office B, 42 Main Street, Glasgow G1 1AA",
+         "phone_number":"+44 141 123 4567 ext 110",
+         "email_address":"s.patel@greenenergysolutions.co.uk",
+         "username":"patel_s",
+         "password":""
+      }
+   ],
+   "product_name":"Solar Panel Installation",
+   "intro_paragraph":[
+      "At Green Energy Solutions, we're passionate about providing sustainable energy solutions for our customers.",
+      "Our solar panel installations are a cost-effective way to generate clean energy for your home or business, while reducing your carbon footprint and energy bills.",
+      "Contact us today to schedule a consultation and learn more about how we can help you harness the power of the sun to power your life."
+   ]
+}

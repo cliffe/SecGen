@@ -1,0 +1,1 @@
+require forensic_trash_deleted_files::init

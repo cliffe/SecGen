@@ -16,6 +16,11 @@ class SystemReader < XMLReader
     # Parse and validate the schema
     doc = parse_doc(scenario_file, SCENARIO_SCHEMA_FILE, 'scenario')
 
+    # for each CyBOK in the module
+    doc.xpath("/scenario/CyBOK").each do |cybok_doc|
+      $cybok_coverage.push(cybok_doc.clone)
+    end
+
     doc.xpath('/scenario/system').each_with_index do |system_node, system_index|
       module_selectors = []
 

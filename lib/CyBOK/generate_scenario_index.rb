@@ -3,6 +3,7 @@ require 'nori'
 require 'youtube_images'
 require 'dig-deep'
 require 'getoptlong'
+require 'nokogiri/class_resolver'
 
 # if you want to regenerate the indexes you need to install these additional gems:
 # gem 'youtube_images'
@@ -79,6 +80,7 @@ VIDEO_HASH = {}
 CyBOK_ACRONYMS = {
   "AAA" => "Authentication, Authorisation &amp; Accountability",
   "AB" => "Adversarial Behaviours",
+  "AC" => "Applied Cryptography",
   "C" => "Cryptography",
   "CPS" => "Cyber-Physical Systems Security",
   "DSS" => "Distributed Systems Security",

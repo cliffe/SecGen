@@ -1,0 +1,14 @@
+[Unit]
+Description=Apache Druid Nano Quickstart
+After=network.target
+
+[Service]
+Type=simple
+User=<%= @user %>
+WorkingDirectory=/usr/local/apache-druid/
+ExecStart=/usr/local/apache-druid/bin/start-nano-quickstart
+Restart=always
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target

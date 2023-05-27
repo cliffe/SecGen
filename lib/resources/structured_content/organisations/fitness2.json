@@ -1,0 +1,48 @@
+{
+  "business_name": "Leeds Fitness Hub",
+  "business_motto": "Your fitness journey starts here!",
+  "business_address": "15 Briggate, Leeds LS1 6EY",
+  "domain": "leedsfitnesshub.com",
+  "office_telephone": "0113 123 4567",
+  "office_email": "info@leedsfitnesshub.com",
+  "industry": "Health and Fitness",
+  "manager": {
+    "name": "Sarah Thompson",
+    "address": "12 Park Row, Leeds LS1 5HD",
+    "phone_number": "0113 123 4567 ext 100",
+    "email_address": "sarah@leedsfitnesshub.com",
+    "username": "sthompson",
+    "password": "abc123"
+  },
+  "employees": [
+    {
+      "name": "Tom Jackson",
+      "address": "15 Briggate, Leeds LS1 6EY",
+      "phone_number": "0113 123 4567 ext 101",
+      "email_address": "tom@leedsfitnesshub.com",
+      "username": "tjackson",
+      "password": "def456"
+    },
+    {
+      "name": "Emily Smith",
+      "address": "15 Briggate, Leeds LS1 6EY",
+      "phone_number": "0113 123 4567 ext 102",
+      "email_address": "emily@leedsfitnesshub.com",
+      "username": "esmith",
+      "password": "ghi789"
+    },
+    {
+      "name": "James Wilson",
+      "address": "15 Briggate, Leeds LS1 6EY",
+      "phone_number": "0113 123 4567 ext 103",
+      "email_address": "james@leedsfitnesshub.com",
+      "username": "jwilson",
+      "password": "jkl012"
+    }
+  ],
+  "product_name": "Personal Training",
+  "intro_paragraph": [
+    "Get in shape with our personalized fitness training at Leeds Fitness Hub!",
+    "Our experienced personal trainers will create a customized workout plan based on your fitness level and goals. We'll help you stay motivated and accountable, and provide ongoing support to help you reach your full potential."
+  ]
+}

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<filezilla xmlns:fz="https://filezilla-project.org" xmlns="https://filezilla-project.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" fz:product_flavour="standard" fz:product_version="1.7.0">
+	<!--Information about the FileZilla FTP servers to connect to.-->
+	<server>
+          <name><%= self.name  %></name>
+          <host><%= self.host %></host>
+          <port><%= self.port %></port>
+          <password><%= self.password %></password>
+              <fingerprint>39:82:b8:b9:de:11:50:7c:bf:ba:cd:88:90:9d:a0:56:f1:19:cf:11:23:61:aa:aa:6c:cf:a3:4f:7f:32:9b:9a</fingerprint>
+      </server>
+      <autoconnect_to_server></autoconnect_to_server>
+      <last_connected_server><%= self.name %></last_connected_server>
+      <!--Logging options-->
+      <logger>
+		<!--The name of the log file. If empty, the log goes to stderr.-->
+		<name></name>
+		<!--The maximum number of files to be used for the log rotation. Default is 0, meaning no rotation happens.-->
+		<max_amount_of_rotated_files>0</max_amount_of_rotated_files>
+		<!--The maximum size each log file can reach before being closed and a new one being opened. Only meaningful if max_amount_of_rotated_files > 0.-->
+		<max_file_size>9223372036854775807</max_file_size>
+		<!--Which types of logs must be enabled. Defaults to error|status|reply|command . See <libfilezilla/logger.hpp> for the values of the various types.-->
+		<enabled_types>4294967311</enabled_types>
+		<!--Criteria used to rotate files. Currently: size-based (0) or daily rotation (1).-->
+		<rotation_type>0</rotation_type>
+		<!--Include headers for each line of logging (date&time and possibly others). Set it to false if you have your own way of tagging log lines. Default is true.-->
+		<include_headers>true</include_headers>
+		<!--Append the date of the log file to its name when rotating, before any suffix the name might have.-->
+		<date_in_name>false</date_in_name>
+	</logger>
+	<!--The GUI's locale. By default, the one defined by the appropriate environment variables is used.-->
+	<locale></locale>
+	<!--True if the UI window has to be started in minimized mode, false otherwise.-->
+	<start_minimized>false</start_minimized>
+	<!--Tray icon mode: one of 0 (disabled), 1 (enabled), 2 (enabled, minimize to tray).-->
+	<tray_icon_mode>1</tray_icon_mode>
+	<!--True if the mount table editor has to warn about being cautious when setting up native paths.-->
+	<!--Working directory-->
+	<!--Directory where updates will be downloaded-->
+	<!--True if the updates must be automatically downloaded where <updates_dir> states. If <updates_dir> is empty, no download will happen.-->
+	<!--Position and sizes of the app windows. The geometry spec is as follows: [display_id:][width{xX}height][{+-}xoff{+-}yoff]. Display_id and xy offsets only apply to top windows.-->
+	<geometry name="MainFrame" maximized="false">960x540+3040+450</geometry>
+	<!--Properties of the columns of the named grid or listctl.-->
+	<columns name="SessionList">
+		<!--Minimum widths of the columns, separated by spaces or commas.-->
+		<min_widths></min_widths>
+		<!--Actual widths of the columns, separated by spaces or commas.-->
+		<widths></widths>
+	</columns>
+	<columns name="ServerLogger::List">
+		<!--Minimum widths of the columns, separated by spaces or commas.-->
+		<min_widths></min_widths>
+		<!--Actual widths of the columns, separated by spaces or commas.-->
+		<widths></widths>
+	</columns>
+	<!--Position of the sash in the named splitted window.-->
+	<sash name="ServerAdministrator">-2147483648</sash>
+</filezilla>
+

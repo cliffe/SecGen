@@ -1,0 +1,48 @@
+{
+  "business_name": "Cozy Coffee House",
+  "business_motto": "Where coffee and community come together",
+  "business_address": "321 Maple St, Smalltown, USA",
+  "domain": "cozycoffeehouse.com",
+  "office_telephone": "555-4321",
+  "office_email": "info@cozycoffeehouse.com",
+  "industry": "Food and Beverage",
+  "manager": {
+    "name": "Michael Lee",
+    "address": "123 Oak St, Smalltown, USA",
+    "phone_number": "555-5678",
+    "email_address": "michael@cozycoffeehouse.com",
+    "username": "mlee",
+    "password": ""
+  },
+  "employees": [
+    {
+      "name": "Emily Brown",
+      "address": "321 Maple St, Smalltown, USA",
+      "phone_number": "555-1111",
+      "email_address": "emily@cozycoffeehouse.com",
+      "username": "ebrown",
+      "password": ""
+    },
+    {
+      "name": "Jason Kim",
+      "address": "321 Maple St, Smalltown, USA",
+      "phone_number": "555-2222",
+      "email_address": "jason@cozycoffeehouse.com",
+      "username": "jkim",
+      "password": ""
+    },
+    {
+      "name": "Maria Rodriguez",
+      "address": "321 Maple St, Smalltown, USA",
+      "phone_number": "555-3333",
+      "email_address": "maria@cozycoffeehouse.com",
+      "username": "mrodriguez",
+      "password": ""
+    }
+  ],
+  "product_name": "Latte Art Class",
+  "intro_paragraph": [
+    "Join us for a fun and educational Latte Art Class at Cozy Coffee House!",
+    "Learn the art of creating beautiful designs on your coffee, and impress your friends with your newfound skills. Our experienced baristas will guide you through the process, and all supplies are provided."
+  ]
+}

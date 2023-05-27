@@ -10,6 +10,7 @@
         <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1"/>
         <xs:element name="author" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="lab_sheet_url" type="xs:string" minOccurs="0" maxOccurs="1"/>
         <xs:element name="type" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element name="difficulty" type="xs:string" minOccurs="0" maxOccurs="1"/>
         <xs:element name="CyBOK" type="CyBOKType" minOccurs="0" maxOccurs="unbounded" />

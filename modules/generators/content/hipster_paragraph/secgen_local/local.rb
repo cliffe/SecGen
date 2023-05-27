@@ -10,7 +10,7 @@ class HipsterParagraphGenerator < ParagraphGenerator
   end
 
   def encode_all
-    self.outputs << Faker::Hipster.paragraphs(self.paragraph_count[0].to_i).join
+    self.outputs << Faker::Hipster.paragraphs(number: self.paragraph_count[0].to_i).join
   end
 
 end

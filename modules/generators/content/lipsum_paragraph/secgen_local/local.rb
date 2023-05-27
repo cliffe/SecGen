@@ -10,7 +10,7 @@ class LipsumParagraphGenerator < ParagraphGenerator
   end
 
   def encode_all
-    self.outputs << Faker::Lorem.paragraphs(self.paragraph_count[0].to_i).join
+    self.outputs << Faker::Lorem.paragraphs(number: self.paragraph_count[0].to_i).join
   end
 
 end

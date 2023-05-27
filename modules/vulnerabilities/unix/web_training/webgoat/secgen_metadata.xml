@@ -13,7 +13,7 @@ This program is a demonstration of common server-side application flaws. The exe
   <type>web_training_platform</type>
   <type>webapp</type>
   <privilege>info_leak</privilege>
-  <access>remote</access>
+  <access>physical</access>
   <platform>linux</platform>
 
   <read_fact>port</read_fact>
@@ -36,7 +36,7 @@ This program is a demonstration of common server-side application flaws. The exe
   <requires>
     <module_path>.*/webwolf</module_path>
   </requires>
-  
+
   <!-- comprehensive web training framework -->
   <CyBOK KA="WAM" topic="Fundamental Concepts and Approaches">
     <keyword>web PKI and HTTPS</keyword>

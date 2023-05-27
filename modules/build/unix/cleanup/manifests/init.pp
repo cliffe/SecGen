@@ -24,6 +24,10 @@ class cleanup::init {
       ensure => present,
       password   => pw_hash($root_password, 'SHA-512', 'mysalt'),
     }
+    ::accounts::user { 'vagrant':
+      ensure => present,
+      password   => pw_hash($root_password, 'SHA-512', 'mysalt'),
+    }
   }
 
   # if kali_msf we have a default kali sudoer account by default, so change the kali user password too.

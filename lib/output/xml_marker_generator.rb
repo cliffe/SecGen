@@ -1,5 +1,5 @@
 require 'nokogiri'
-
+require 'irb'
 # Convert systems objects into xml
 class XmlMarkerGenerator
 
@@ -15,6 +15,7 @@ class XmlMarkerGenerator
   # outputs a XML marker file that can be used to mark flags and provide hints
   # @return [Object] xml string
   def output
+    @processed_hints = []
     ns = {
       'xmlns' => "http://www.github/cliffe/SecGen/marker",
       'xmlns:xsi' => "http://www.w3.org/2001/XMLSchema-instance",
@@ -37,10 +38,16 @@ class XmlMarkerGenerator
                 # flag has to be the only thing in the parameter string (not within some text)
                 if output_value.match(/\Aflag{.*\z/)
                   xml.challenge{
-                    xml.flag(output_value)
 
                     system.module_selections.each { |search_module|
                       if search_module.unique_id == selected_module.write_to_module_with_id
+                        # special case check for flag that's fed into a parameter that isn't defined within the receiving module
+                        if search_module.attributes["read_fact"].include? selected_module.write_output_variable
+                          xml.flag(output_value)
+                        else
+                          Print.warn "Ignoring flag generated but fed into a fact that the module doesn't read: #{selected_module.write_to_module_with_id}.#{selected_module.write_output_variable} #{output_value}"
+                          Print.warn "This likely isn't an issue, especially if fed into strings_to_pre_leak which doesn't always exist"
+                        end
                         module_hints(search_module, xml, system.module_selections)
                       end
                     }
@@ -67,6 +74,10 @@ class XmlMarkerGenerator
           module_hints(search_module_recursive, xml, all_module_selections)
         end
       }
+    end
+
+    if search_module.cybok_coverage&.size > 0
+      add_cybok(search_module, xml)
     end
 
     case search_module.module_type
@@ -130,10 +141,22 @@ class XmlMarkerGenerator
 end
 
 def add_hint(hint_text, hint_id, hint_type, xml)
-  xml.hint {
-    xml.hint_text(hint_text)
-    xml.hint_type(hint_type)
-    xml.hint_id(hint_id)
+  # due to the nested structure of components a specific hint may lead to
+  # multiple next steps -- but we just record each hint once to simplify things
+  # without this condition, the same hint will appear multiple times
+  unless @processed_hints.include? hint_id
+    @processed_hints << hint_id
+    xml.hint {
+      xml.hint_text(hint_text)
+      xml.hint_type(hint_type)
+    }
+  end
+end
+
+def add_cybok(search_module, xml)
+  xml.cybok_coverage {
+    # quick and dirty conversion of saved nodes back to tidy xml
+    xml << search_module.cybok_coverage.map { |c| "\n        " + c.to_xml.gsub(/\R/, "\n      ").gsub(/\t/, '  ') }.join("\n") + "\n      "
   }
 end
 

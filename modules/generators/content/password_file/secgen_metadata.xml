@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+
+  <name>Password List File Generator</name>
+  <author>Jack Biggs</author>
+  <module_license>MIT</module_license>
+  <description>Creates a file in which logins are contained for multiple  websites.</description>
+
+  <type>string_generator</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+  
+  <read_fact>passwords</read_fact>
+  <read_fact>usernames</read_fact>
+  <read_fact>benign</read_fact>
+  <read_fact>malicious</read_fact>
+
+  <output_type>generated_strings</output_type>
+</generator>

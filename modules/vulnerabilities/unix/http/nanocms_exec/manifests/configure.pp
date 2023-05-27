@@ -2,16 +2,17 @@
 #
 #
 class nanocms_exec::configure {
-  $leaked_filenames = ['flagtest'] ##$secgen_parameters['leaked_filenames']
-  $strings_to_leak = ['this is a list of strings that are secrets / flags','another secret'] ##$secgen_parameters['strings_to_leak']
-  $known_username = 'admin' ##$secgen_parameters['known_username'][0]
+  $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
+  $leaked_filenames = $secgen_parameters['leaked_filenames']
+  $strings_to_leak = $secgen_parameters['strings_to_leak']
+  $known_username = $secgen_parameters['known_username'][0]
   $known_password = 'demo' ##$secgen_parameters['known_password'][0]
-  $strings_to_pre_leak =  ['The username is admin', 'The password is demo'] ##$secgen_parameters['strings_to_pre_leak']
-  $web_pre_leak_filename = 'PRELEAK_NAME' ##$secgen_parameters['web_pre_leak_filename'][0]
+  $strings_to_pre_leak =  $secgen_parameters['strings_to_pre_leak']
+  $web_pre_leak_filename = $secgen_parameters['web_pre_leak_filename'][0]
 
   # differenitaion in website content generation
-  $raw_org = '{"business_name":"Artisan Bakery","business_motto":"The loaves are in the oven.","business_address":"1080 Headingley Lane, Headingley, Leeds, LS6 1BN","domain":"artisan-bakery.co.uk","office_telephone":"0113 222 1080","office_email":"orders@artisan-bakery.co.uk","industry":"Bakers","manager":{"name":"Maxie Durgan","address":"1080 Headingley Lane, Headingley, Leeds, LS6 1BN","phone_number":"07645 289149","email_address":"maxie@artisan-bakery.co.uk","username":"maxie","password":""},"employees":[{"name":"Matthew Riley","address":"1080 Headingley Lane, Headingley, Leeds, LS6 1BN","phone_number":"07876 518651","email_address":"matt@artisan-bakery.co.uk","username":"matt","password":""},{"name":"Emelie Lowe","address":"1080 Headingley Lane, Headingley, Leeds, LS6 1BN","phone_number":"07560 246931","email_address":"emelie@artisan-bakery.co.uk","username":"emelie","password":""},{"name":"Antonio Durgan","address":"1080 Headingley Lane, Headingley, Leeds, LS6 1BN","phone_number":"07943 250930","email_address":"antonio@artisan-bakery.co.uk","username":"antonio","password":""}],"product_name":"Baked goods","intro_paragraph":["Finest bakery in Headingley since 1900. Baked fresh daily. Bread loaves, teacakes, sweet and savoury treats. We are open from 9 am til 6 pm, every day except for bank holidays."]}'
-  ##$secgen_parameters['organisation'][0]
+  $raw_org = $secgen_parameters['organisation'][0]
+
   if $raw_org and $raw_org != '' {
     $organisation = parsejson($raw_org)
   }

@@ -47,6 +47,10 @@
     <generator type="filename_generator" />
   </default_input>
 
+  <default_input into="known_username">
+    <value>admin</value>
+  </default_input>
+
   <default_input into="password_hash">
     <encoder type="md5">
       <input into="strings_to_encode">

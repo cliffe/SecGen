@@ -2,11 +2,12 @@
 #
 #
 class nanocms_exec::configure {
+  Exec { path => ['/bin', '/usr/bin', '/usr/local/bin', '/sbin', '/usr/sbin'] }
   $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
   $leaked_filenames = $secgen_parameters['leaked_filenames']
   $strings_to_leak = $secgen_parameters['strings_to_leak']
-  $known_username = $secgen_parameters['known_username'][0]
-  $known_password = 'demo' ##$secgen_parameters['known_password'][0]
+  $username = $secgen_parameters['known_username']
+  $password_hash = $secgen_parameters['password_hash'][0]
   $strings_to_pre_leak =  $secgen_parameters['strings_to_pre_leak']
   $web_pre_leak_filename = $secgen_parameters['web_pre_leak_filename'][0]
 
@@ -28,6 +29,10 @@ class nanocms_exec::configure {
     $product_name = $organisation['product_name']
     $employees = $organisation['employees']
     $intro_paragraph = $organisation['intro_paragraph']
+  }
+
+  exec { 'replace-password':
+    command => "sed -i 's/fe01ce2a7fbac8fafaed7c982a04e229/${password_hash}/' /var/www/nanocms/data/pagesdata.txt",
   }
 
   if $strings_to_pre_leak.length != 0 {
@@ -57,8 +62,6 @@ class nanocms_exec::configure {
     ensure  => file,
     content => template('nanocms_exec//copyright notice.erb'),
   }
-
-  Exec { path => ['/bin', '/usr/bin', '/usr/local/bin', '/sbin', '/usr/sbin'] }
 
   ::secgen_functions::leak_files { 'nanocms-flag-leak':
     storage_directory => '/var/www/nanocms/data/pages',

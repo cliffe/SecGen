@@ -4,9 +4,6 @@
 class nanocms_exec::install {
   Exec { path => [ '/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/' ] }
 
-  # check php installed
-  ensure_packages(['php'], { ensure => 'installed'})
-
   $releasename = 'nanocms_exec'
   file { "/tmp/${releasename}.zip":
     ensure => file,

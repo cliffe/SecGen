@@ -2,11 +2,11 @@
 # Configures the apache resources
 #
 class nanocms_exec::apache {
-  Exec { path => ['/bin', '/usr/bin', '/usr/local/bin', '/sbin', '/usr/sbin'] }
   $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
   $port = $secgen_parameters['port'][0]
-
   $docroot = '/var/www/nanocms'
+
+  Exec { path => ['/bin', '/usr/bin', '/usr/local/bin', '/sbin', '/usr/sbin'] }
 
   file { '/etc/apache2/sites-enabled/000-default.conf':
     ensure => 'absent',

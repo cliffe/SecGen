@@ -9,7 +9,8 @@
   <description>
     NanoCMS does not sanitise the data of an authenticated user while creating
     webpages. pages are saved with .php extensions by default, allowing an
-    authenticated attacker access to the underlying system.
+    authenticated attacker access to the underlying system:
+    https://github.com/ishell/Exploits-Archives/blob/master/2009-exploits/0904-exploits/nanocms-multi.txt
   </description>
 
   <type>webapp</type>
@@ -25,7 +26,7 @@
   <read_fact>strings_to_leak</read_fact>
   <read_fact>leaked_filenames</read_fact>
   <read_fact>known_username</read_fact>
-  <read_fact>known_password</read_fact>
+  <read_fact>password_hash</read_fact>
   <read_fact>strings_to_pre_leak</read_fact>
   <read_fact>web_pre_leak_filename</read_fact>
 
@@ -37,6 +38,7 @@
     <generator type="realistic_organisation" />
   </default_input>
 
+  <!-- flags or other secrets exposed after exploitation -->
   <default_input into="strings_to_leak">
     <generator type="message_generator" />
   </default_input>
@@ -45,18 +47,21 @@
     <generator type="filename_generator" />
   </default_input>
 
-  <default_input into="known_username">
-    <value>admin</value>
+  <default_input into="password_hash">
+    <encoder type="md5">
+      <input into="strings_to_encode">
+        <value>password</value>
+      </input>
+    </encoder>
   </default_input>
 
-  <default_input into="known_password">
-    <generator type="weak_password_generator" />
-  </default_input>
-
+  <!-- pre-leaked, these details are leaked before the main vuln is exploited, for example hidden
+  content or hosted files -->
   <default_input into="strings_to_pre_leak">
     <generator type="message_generator" />
   </default_input>
 
+  <!-- ideally something found by dirbuster -->
   <default_input into="web_pre_leak_filename">
     <generator type="random_sanitised_word">
       <input into="wordlist">
@@ -67,10 +72,13 @@
 
   <reference>https://cxsecurity.com/issue/WLB-2022080027</reference>
   <reference>https://github.com/kalyan02/NanoCMS</reference>
-  <reference>
-    https://github.com/ishell/Exploits-Archives/blob/master/2009-exploits/0904-exploits/nanocms-multi.txt</reference>
   <software_name>Nano CMS</software_name>
   <software_license>GNU GPLv3</software_license>
+
+  <!-- can't live alongside other web sites, since it accepts any virtual host name -->
+  <conflict>
+    <type>webapp</type>
+  </conflict>
 
   <requires>
     <module_path>.*apache.*compatible.*</module_path>

@@ -18,7 +18,7 @@ class ImageGenerator < StringEncoder
 
     images = Magick::ImageList.new
     images.read(self.selected_image_path)
-    images.new_image(images.first.columns, images.first.rows) { self.background_color = 'white' } # Create new "layer" with white background and size of original image
+    images.new_image(images.first.columns, images.first.rows) { background_color = 'white' } # Create new "layer" with white background and size of original image
     image = images.reverse.flatten_images
 
     image.write(tmp_file_path)

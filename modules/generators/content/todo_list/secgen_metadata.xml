@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+
+  <name>To Do List File Generator</name>
+  <author>Jack Biggs</author>
+  <module_license>MIT</module_license>
+  <description>Creates a To Do file which includes a different categories of things to do</description>
+
+  <type>string_generator</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+
+  <!-- END: proxy_pass input -->
+  <output_type>generated_strings</output_type>
+</generator>

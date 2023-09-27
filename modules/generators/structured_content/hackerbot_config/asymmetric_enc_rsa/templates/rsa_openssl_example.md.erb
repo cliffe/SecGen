@@ -1,0 +1,30 @@
+# An example of RSA using OpenSSL
+
+Let's create a new message "msg.txt" as per the command below.
+
+`echo '"All paid jobs absorb and degrade the mind." - Aristotle' > msg.txt`[^4]
+
+Nice one from Aristotle, but no one will work then :)
+
+The below is just an example of using openssl to encrypt and decrypt a message, but of course private key should never be shared and/or exported in plaintext.
+
+```bash
+# *** Generate a 4096-byte RSA private key using openssl
+openssl genrsa -out bobs-private-key.private 4096
+# *** Check Bob's private key ***
+cat bobs-private-key.private
+# * it should start with -----BEGIN RSA PRIVATE KEY-----
+# *** Generate a public key from the private key ***
+openssl rsa -in bobs-private-key.private -pubout -out bobs-public-key.pub
+# *** Check Bob's public key ***
+cat bobs-public-key.pub
+# * it should start with -----BEGIN PUBLIC KEY-----
+# *** Encrypt msg.txt ***
+openssl pkeyutl -in msg.txt -encrypt -pubin -inkey bobs-public-key.pub > msg-rsa.enc
+# *** Decrypt msg-rsa.enc ***
+# *** Step 2 - Decrypt msg-rsa.enc
+openssl pkeyutl -in msg-rsa.enc -decrypt -inkey bobs-private-key.private | tee msg-decrypted.txt
+```
+
+[^4]: https://www.quoteambition.com/aristotle-quotes/
+

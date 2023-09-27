@@ -1,0 +1,95 @@
+# An example of RSA using Python3
+
+In this example we will go through the following steps:
+
+- Pick 2 prime numbers, *p* and *q*
+- Calculate *N*
+- Calculate *phi(N)*
+- Select exponent *e* (used for encryption)
+- Select *d* (used for decryption)
+
+From your Linux shell prompt open the python3 REPL to begin:
+`python3`
+
+### Pick 2 prime numbers p and q
+
+```
+>>> p = 7
+>>> q = 23
+```
+
+### Calculate N
+```
+>>> N = p * q
+```
+
+### Calculate phi(N)
+```
+>>> phiN = (p-1)*(q-1)
+>>> print(p, q, N, phiN)
+```
+
+So far we have calculated: *p* = 7, *q* = 23, *N* = 161 and *phiN* = 132
+
+### Find e (exponent / encryption key / public key)
+
+- *e* must be between 1 and 132 (1 and *phi(N)*)
+- Also, *e* must be a co-prime with *n* and *phi(N)*
+
+1. Check all of the numbers in the ring (1-132), once the above conditions are met, select *e*
+2. Let's keep it simple and choose 5 as e (as it satisfies both conditions)
+3. For this example, the public key (e, N) is (5, 161)
+
+### Find d (decryption key / private key)
+
+- *d* must satisfy this condition (*d*.*e*) mod phi(N) = 1
+- *d* will always be within the 1-132 ring of integers
+
+To find the decryption key, multiply each number of the ring (modulo 132) until you reach 1
+
+- Such that (d * 5) mod 132 = 1
+
+Let's select *d* as 53
+
+- Such that d = 53
+
+(53 * 5) % 132 = 1
+
+
+### Encryption
+
+RSA works using numbers, so let's find the integer representation of this message: "The Hobbit"
+
+Python's built in ord() function takes in a character as an argument and returns the integer that represents the character in [ASCII](https://www.rapidtables.com/code/text/ascii-table.html).
+
+e.g. ord('Z') will return 90.
+
+```
+>>> ord('T')
+>>> ord('h')
+>>> ord('e')
+>>> ord('')
+>>> ord('H')
+>>> ord('o')
+>>> ord('b')
+>>> ord('i')
+>>> ord('t')
+>>> ord('t')
+*** 84 104 101 32 72 111 98 105 116 116 ***
+(84 ** e) % N
+(104 ** e) % N
+(101 ** e) % N
+(32 ** e) % N
+(72 ** e) % N
+(111 ** e) % N
+(98 ** e) % N
+(105 ** e) % N
+(116 ** e) % N
+(116 ** e) % N
+*** Ciphertext: 7 41 54 100 151 34 140 119 93 93 ***
+*** To decrypt ***
+(7 ** d) % N
+(41 ** d) % N
+... etc ...
+... etc ...
+```

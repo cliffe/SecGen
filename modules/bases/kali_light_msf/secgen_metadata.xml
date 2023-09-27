@@ -17,7 +17,7 @@
   <url>https://app.vagrantup.com/secgen/boxes/kali_light_msf/versions/1.0/providers/virtualbox.box</url>
   <esxi_url></esxi_url>
   <ovirt_template>kali_linux_msf_20230615</ovirt_template>
-  <proxmox_template>kali-linux-msf-20230615</ovirt_template>
+  <proxmox_template>kali-linux-msf-20230615</proxmox_template>
 
 
   <reference>https://app.vagrantup.com/secgen</reference>

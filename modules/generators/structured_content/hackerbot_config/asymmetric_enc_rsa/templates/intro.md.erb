@@ -1,0 +1,108 @@
+# Public-key Cryptography - Asymmetric Key Encryption with RSA
+
+## Getting started
+### VMs in this lab
+
+==Start these VMs== (if you haven't already):
+- hackerbot_server (leave it running, you don't log into this)
+- desktop
+
+### Your login details for the "desktop" VM
+User: <%= $main_user %>
+Password: tiaspbiqe2r (**t**his **i**s **a** **s**ecure **p**assword **b**ut **i**s **q**uite **e**asy **2** **r**emember)
+
+You won't login to the hackerbot_server, but the VM needs to be running to complete the lab.
+
+### For marks in the module
+1. **You need to submit flags**. Note that the flags and the challenges in your VMs are different to other's in the class. Flags will be revealed to you as you complete challenges throughout the module. Flags look like this: ==flag{*somethingrandom*}==. Submit your flags in Hacktivity to register your progress in the lab.
+2. **You need to provide evidence of your flag solutions in your Log Book**. Make sure to include screenshots documenting the way you solved the challenges within your Log Book.
+3. **You need to document answers to Log Book questions**. The Log Book will be submitted later in the semester.
+
+## Meet Hackerbot!
+![small-right](images/skullandusb.svg)
+
+This exercise involves Hackerbot, a chatbot who will interact with you and your system. If you satisfy Hackerbot by completing the challenges she will reveal flags to you.
+
+**On the desktop VM:**
+
+==Open Pidgin and send some messages to Hackerbot:==
+
+- Try asking Hackerbot some questions
+- Send "help"
+- Send "list"
+- Send "hello"
+
+Work through the following exercises, completing the Hackerbot challenges as noted, evidencing your solutions within your Log Book.
+
+---
+
+# Purpose
+The purpose of this lab is to understand public key cryptography, specifically the RSA[^1] cipher.
+
+# RSA and PKI[^2] in a nutshell
+RSA is considered to be the most popular asymmetric cipher out there, which has been used for many years and still stands. RSA is also part of a bigger picture called Public Key Infrastructure or PKI in short.
+
+The problem with establishing a secure communication is the trust:
+- How can we confirm the identity of each party would like communicate securely (using cryptography)?
+- How can we validate the data being transferred?
+- How can we confirm this is x person/entity/website's public key?
+
+Let's go back to our example as per the video associated with this lab, Alice wants to send a message to Bob, she got Bob's public key, great.. Who can confirm Bob is really Bob?! It could be anyone else impersonate Bob (perhaps a Man In The Middle)..
+
+Here where it comes a Certification Authority or CA we assume this CA is a trusted, independent entity (usually a company) who will sign (and confirm the identity) the public key of any one wants to communicate securely. CA is part of PKI alongside hardware, software, management (and control), standards such as PKCS[^3].
+
+There is a reading selection related to PKI and managing trust in public key cryptosystems provided at the end of the labsheet (References \[1\] to \[5\]).
+
+[^1]: RSA named after the three creators (Ron **R**ivest, Adi **S**hamir and Leonard **A**dleman)
+[^2]: Public Key Infrastructure
+[^3]: Public Key Cryptography Standards (developed by RSA security LLC) - https://en.wikipedia.org/wiki/PKCS
+
+---
+
+## A Summary of RSA Cipher
+
+1. Choose two large prime numbers *p* and *q*
+
+2. Compute **N (the modulus):**
+
+    N = p . q
+
+
+3. Compute **phi(N):**
+
+    phi(N) = (p-1)(q-1)
+
+
+4. Choose the encryption (exponent) key (public key) **e** (**e** must satisfy two conditions):
+
+- a number in between 1 and phi(N)
+
+- a co-prime with N and phi(N)
+
+5. Choose the decryption key (private key) **d:**
+
+    (e . d) mod phi(N) = 1
+
+
+We can compute **d** by using **extended Euclidean algorithm** to get the inverse of **e**
+
+    d = (e^-1) mod phi(N)
+
+
+**Encryption/Decryption operations:**
+
+Encryption:
+
+    (M^e) mod N
+
+Decryption:
+
+    (C^d) mod N
+
+Where:
+- **M** is the message (clear/plain text)
+- **e** is the public key (the encryption key)
+- **N** is the modulus
+- **C** is the ciphertext, and
+- **d** is the private key (decryption key)
+

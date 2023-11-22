@@ -1,0 +1,43 @@
+# Malware Behaviour - Reverse Engineering and Analysis of the Coconut Malware Sample
+
+## Getting started
+### VMs in this lab
+
+==Start these VMs== (if you haven't already):
+- hackerbot_server: <%= $hackerbot_server_ip %> (leave it running, you don't log into this)
+- desktop: <%= $desktop_ip %>
+- victim_server: <%= $victim_server_ip %>
+
+### Your login details for the "desktop" VM
+User: <%= $main_user %>
+Password: tiaspbiqe2r (**t**his **i**s **a** **s**ecure **p**assword **b**ut **i**s **q**uite **e**asy **2** **r**emember)
+
+You won't login to the hackerbot_server, but the VM needs to be running to complete the lab.
+
+### For marks in the module
+1. **You need to submit flags**. Note that the flags and the challenges in your VMs are different to other's in the class. Flags will be revealed to you as you complete challenges throughout the module. Flags look like this: ==flag{*somethingrandom*}==. Submit your flags in Hacktivity to register your progress in the lab.
+2. **You need to document the work and your solutions in a Log Book**. This needs to include screenshots (including the flags) of how you solved each Hackerbot challenge and a writeup describing your solution to each challenge, and answering any "Log Book Questions". The Log Book will be submitted later in the semester.
+
+## Meet Hackerbot!
+![small-right](images/skullandusb.svg)
+
+This exercise involves Hackerbot, a chatbot who will interact with you and your system. If you satisfy Hackerbot by completing the challenges she will reveal flags to you.
+
+**On the desktop VM:**
+
+==Open Pidgin and send some messages to Hackerbot:==
+
+- Try asking Hackerbot some questions
+- Send "help"
+- Send "list"
+- Send "hello"
+
+Work through the following exercises, completing the Hackerbot challenges as noted.
+
+---
+
+# Purpose
+
+The victim_server has been infected with a malware sample. Your desktop analysis machine has a copy of the binary sample which is running on the victim_server at the path: /home/<%= $main_user %>/malware/coconut.
+
+This task involves analysing the coconut malware sample. Hackerbot will provide you with a series of practical challenges and quiz questions about the malware sample and reward you with flags for successful completion. Further flags can be found on the infected system (victim_server).

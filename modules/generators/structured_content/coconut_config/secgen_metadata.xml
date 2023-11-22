@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Coconut Config Generator</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Generates all parameters required by the coconut malware sample's configuration</description>
+
+  <type>coconut_config_generator</type>
+  <type>coconut_config</type>
+  <platform>linux</platform>
+
+  <read_fact>pack_binary</read_fact>
+  <read_fact>include_source</read_fact>
+  <read_fact>welcome_msg_code</read_fact>
+  <read_fact>bd_timeout</read_fact>
+  <read_fact>http_bd_port</read_fact>
+  <read_fact>icmp_bd_port</read_fact>
+  <read_fact>bind_bd_port</read_fact>
+  <read_fact>transport_port</read_fact>
+  <read_fact>bd_password</read_fact>
+
+  <default_input into="pack_binary">
+    <value>true</value>
+  </default_input>
+  <default_input into="include_source">
+    <value>false</value>
+  </default_input>
+  <default_input into="welcome_msg_code">
+    <generator type="random_hex">
+      <input into="line_length">
+        <value>6</value>
+      </input>
+      <input into="number_of_lines">
+        <value>1</value>
+      </input>
+    </generator>
+  </default_input>
+  <default_input into="bd_timeout">
+    <generator type="number">
+      <input into="minimum">
+        <value>60</value>
+      </input>
+      <input into="maximum">
+        <value>300</value>
+      </input>
+    </generator>
+  </default_input>
+  <default_input into="http_bd_port">
+    <generator type="number">
+      <input into="minimum">
+        <value>1025</value>
+      </input>
+      <input into="maximum">
+        <value>65535</value>
+      </input>
+    </generator>
+  </default_input>
+  <default_input into="icmp_bd_port">
+    <generator type="number">
+      <input into="minimum">
+        <value>1025</value>
+      </input>
+      <input into="maximum">
+        <value>65535</value>
+      </input>
+    </generator>
+  </default_input>
+  <default_input into="bind_bd_port">
+    <generator type="number">
+      <input into="minimum">
+        <value>1025</value>
+      </input>
+      <input into="maximum">
+        <value>65535</value>
+      </input>
+    </generator>
+  </default_input>
+  <default_input into="transport_port">
+    <generator type="number">
+      <input into="minimum">
+        <value>1025</value>
+      </input>
+      <input into="maximum">
+        <value>65535</value>
+      </input>
+    </generator>
+  </default_input>
+  <default_input into="bd_password">
+    <generator type="weak_password_generator"/>
+  </default_input>
+
+  <output_type>json</output_type>
+</generator>

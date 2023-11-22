@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Hackerbot config for the REMA coconut analysis lab</name>
+  <author>Thomas Shaw</author>
+  <author>Mo Hassan</author>
+  <module_license>GPLv3</module_license>
+  <description>Generates a config file for a Hackerbot for the REMA coconut analysis lab.</description>
+
+  <type>hackerbot_config</type>
+  <platform>linux</platform>
+
+  <read_fact>flags</read_fact>
+  <read_fact>root_password</read_fact>
+  <read_fact>desktop_ip</read_fact>
+  <read_fact>hackerbot_server_ip</read_fact>
+  <read_fact>victim_server_ip</read_fact>
+
+  <read_fact>coconut_config</read_fact>
+
+  <default_input into="accounts">
+    <generator type="account">
+      <input into="username">
+        <value>vagrant</value>
+      </input>
+    </generator>
+  </default_input>
+
+  <default_input into="flags">
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+  </default_input>
+
+  <default_input into="root_password">
+    <value>puppet</value>
+  </default_input>
+
+  <output_type>hackerbot</output_type>
+
+</generator>

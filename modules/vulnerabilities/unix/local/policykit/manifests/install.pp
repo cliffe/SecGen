@@ -15,6 +15,7 @@ class policykit::install {
   # $repo_url = "http://snapshot.debian.org/archive/debian/20190101T025954Z"
   # $package_version = '0.105-23'
 
+  /*
   file { "/etc/apt/sources.list.d/${repo_name}.list":
     ensure  => 'present',
     content => "deb [trusted=yes] ${repo_url} ${repo_suite} ${repo_components}",
@@ -31,6 +32,45 @@ class policykit::install {
 
   exec { 'remove repo':
     command => "/bin/rm /etc/apt/sources.list.d/${repo_name}.list",
+  }
+  */
+
+
+  file { '/tmp/libpolkit-gobject-1-0_0.105-18_amd64.deb':
+    ensure => file,
+    source => 'puppet:///modules/policykit/libpolkit-gobject-1-0_0.105-18_amd64.deb',
+  }
+  -> package { 'libpolkit-gobject':
+    ensure   => installed,
+    provider => dpkg,
+    source   => '/tmp/libpolkit-gobject-1-0_0.105-18_amd64.deb'
+  }
+  -> file { '/tmp/libpolkit-agent-1-0_0.105-18_amd64.deb':
+    ensure => file,
+    source => 'puppet:///modules/policykit/libpolkit-agent-1-0_0.105-18_amd64.deb',
+  }
+  -> package { 'libpolkit-agent':
+    ensure   => installed,
+    provider => dpkg,
+    source   => '/tmp/libpolkit-agent-1-0_0.105-18_amd64.deb'
+  }
+  -> file { '/tmp/libpolkit-backend-1-0_0.105-18_amd64.deb':
+    ensure => file,
+    source => 'puppet:///modules/policykit/libpolkit-backend-1-0_0.105-18_amd64.deb',
+  }
+  -> package { 'libpolkit-backend':
+    ensure   => installed,
+    provider => dpkg,
+    source   => '/tmp/libpolkit-backend-1-0_0.105-18_amd64.deb'
+  }
+  -> file { '/tmp/policykit-1_0.105-18_amd64.deb':
+    ensure => file,
+    source => 'puppet:///modules/policykit/policykit-1_0.105-18_amd64.deb',
+  }
+  -> package { 'policykit':
+    ensure   => installed,
+    provider => dpkg,
+    source   => '/tmp/policykit-1_0.105-18_amd64.deb'
   }
 
   # Leak a file containing a string/flag to /root/

@@ -1,16 +1,20 @@
 <?xml version="1.0"?>
 
 <vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
-               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
   <name>PolicyKit privilege escalation</name>
   <author>Z. Cliffe Schreuders</author>
+  <author>James Davis</author>
   <module_license>MIT</module_license>
   <description>
-    A local privilege escalation vulnerability was found on polkit's pkexec utility. The pkexec application is a setuid tool designed to allow unprivileged users to run commands as privileged users according predefined policies. The current version of pkexec doesn't handle the calling parameters count correctly and ends trying to execute environment variables as commands. An attacker can leverage this by crafting environment variables in such a way it'll induce pkexec to execute arbitrary code. When successfully executed the attack can cause a local privilege escalation given unprivileged users administrative rights on the target machine.
-
-    This module is in development.
-    Not yet tested exploitation. May also require libglib2 to be downgraded
+    A local privilege escalation vulnerability was found on polkit's pkexec utility. The pkexec
+    application is a setuid tool designed to allow unprivileged users to run commands as privileged
+    users according predefined policies. The current version of pkexec doesn't handle the calling
+    parameters count correctly and ends trying to execute environment variables as commands. An
+    attacker can leverage this by crafting environment variables in such a way it'll induce pkexec
+    to execute arbitrary code. When successfully executed the attack can cause a local privilege
+    escalation given unprivileged users administrative rights on the target machine.
   </description>
 
   <type>local_priv_escal</type>
@@ -19,21 +23,20 @@
   <platform>linux</platform>
   <difficulty>medium</difficulty>
 
-
   <read_fact>strings_to_leak</read_fact>
   <read_fact>leaked_filenames</read_fact>
 
   <default_input into="strings_to_leak">
-    <generator type="flag_generator"/>
+    <generator type="flag_generator" />
   </default_input>
 
   <default_input into="leaked_filenames">
-    <generator type="filename_generator"/>
+    <generator type="filename_generator" />
   </default_input>
 
-  <conflict>
+  <!--<conflict>
     <name>.*</name>
-  </conflict>
+  </conflict>-->
   <conflict>
     <name>.*Stretch.*</name>
   </conflict>

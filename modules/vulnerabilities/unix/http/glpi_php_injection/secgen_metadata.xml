@@ -11,6 +11,7 @@
     from GLPI versions 10.0.2 and below to execute a command.</description>
 
   <type>http</type>
+  <type>webapp</type>
   <type>bruteforceable</type>
   <type>in_the_wild</type>
   <!-- access to the www-data user -->

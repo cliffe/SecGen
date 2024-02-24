@@ -34,9 +34,14 @@
     <generator type="filename_generator" />
   </default_input>
 
-  <!--<conflict>
-    <name>.*</name>
-  </conflict>-->
+  <default_input into="unix_username">
+    <generator type="username_generator" />
+  </default_input>
+
+  <default_input into="used_password">
+    <value>tiaspbiqe2r</value>
+  </default_input>
+
   <conflict>
     <name>.*Stretch.*</name>
   </conflict>
@@ -46,6 +51,10 @@
   <conflict>
     <name>.*Windows.*</name>
   </conflict>
+
+  <requires>
+    <type>update</type>
+  </requires>
 
   <CyBOK KA="MAT" topic="Attacks and exploitation">
     <keyword>EXPLOITATION</keyword>

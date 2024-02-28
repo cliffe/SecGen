@@ -8,13 +8,16 @@
   <author>James Davis</author>
   <module_license>MIT</module_license>
   <description>
-    A local privilege escalation vulnerability was found on polkit's pkexec utility. The pkexec
-    application is a setuid tool designed to allow unprivileged users to run commands as privileged
-    users according predefined policies. The current version of pkexec doesn't handle the calling
-    parameters count correctly and ends trying to execute environment variables as commands. An
-    attacker can leverage this by crafting environment variables in such a way it'll induce pkexec
-    to execute arbitrary code. When successfully executed the attack can cause a local privilege
-    escalation given unprivileged users administrative rights on the target machine.
+    A vulnerability exists within the polkit system service that can be leveraged by a local,
+    unprivileged
+    attacker to perform privileged operations. In order to leverage the vulnerability, the attacker
+    invokes a
+    method over D-Bus and kills the client process. This will occasionally cause the operation to
+    complete without
+    being subjected to all of the necessary authentication.
+    The exploit module leverages this to add a new user with a sudo access and a known password. The
+    new account
+    is then leveraged to execute a payload with root privileges.
   </description>
 
   <type>local_priv_escal</type>
@@ -55,6 +58,17 @@
   <requires>
     <type>update</type>
   </requires>
+
+  <cve>CVE-2021-3560</cve>
+  <cvss_base_score>7</cvss_base_score>
+  <cvss_vector>AV:N/AC:L/Au:N/C:C/I:C/A:C</cvss_vector>
+  <reference>
+    https://nvd.nist.gov/vuln/detail/CVE-2021-3560</reference>
+  <reference>
+    https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/linux/local/polkit_dbus_auth_bypass.rb</reference>
+  <reference>https://github.blog/2021-06-10-privilege-escalation-polkit-root-on-linux-with-bug/</reference>
+  <software_name>Policykit</software_name>
+  <software_license>GPLv2</software_license>
 
   <CyBOK KA="MAT" topic="Attacks and exploitation">
     <keyword>EXPLOITATION</keyword>

@@ -1,0 +1,2 @@
+WinWait 'Registration'
+WinClose 'Registration'

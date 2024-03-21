@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>Windows EternalBlue</name>
+  <author>James Davis</author>
+  <module_license>MIT</module_license>
+  <description>
+    There is a buffer overflow memmove operation in Srv!SrvOs2FeaToNt. The size is calculated in
+    Srv!SrvOs2FeaListSizeToNt, with mathematical error where a DWORD is subtracted into a WORD. The
+    kernel pool is groomed so that overflow is well laid-out to overwrite an SMBv1 buffer.
+  </description>
+
+  <type>in_the_wild</type>
+  <privilege>root_rwx</privilege>
+  <access>remote</access>
+  <platform>windows</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>port</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+
+  <default_input into="port">
+    <value>445</value>
+  </default_input>
+
+  <!-- flags or other secrets exposed after exploitation -->
+  <default_input into="strings_to_leak">
+    <generator type="message_generator" />
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator" />
+  </default_input>
+
+  <!--optional
+  vulnerability details-->
+  <cve>CVE-2017-0143</cve>
+  <cvss_base_score>8.1</cvss_base_score>
+  <cvss_vector>CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H</cvss_vector>
+  <software_name>Windows SMB</software_name>
+  <reference>
+    https://github.com/rapid7/metasploit-framework/blob/master//modules/exploits/windows/smb/ms17_010_eternalblue.rb</reference>
+  <reference>https://risksense.com/wp-content/uploads/2018/05/White-Paper_Eternal-Blue.pdf</reference>
+
+  <conflict>
+    <module_path>bases/.*</module_path>
+    <platform>linux</platform>
+  </conflict>
+
+</vulnerability>

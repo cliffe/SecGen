@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
-               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
 
   <name>MoinMoin v1.9.5</name>
   <author>Thomas Shaw</author>
@@ -35,20 +35,21 @@
     <value>80</value>
   </default_input>
 
-  <!-- TODO: should strings_to_leak be hidden away on the server, so the exploit needs exploiting before getting to the files, at the moment browsing to the website reveals the files -->
+  <!-- TODO: should strings_to_leak be hidden away on the server, so the exploit needs exploiting
+  before getting to the files, at the moment browsing to the website reveals the files -->
   <default_input into="strings_to_leak">
-    <generator type="message_generator"/>
+    <generator type="message_generator" />
   </default_input>
   <default_input into="leaked_filenames">
-    <generator type="filename_generator"/>
+    <generator type="filename_generator" />
   </default_input>
 
   <default_input into="strings_to_pre_leak">
-    <generator type="message_generator"/>
+    <generator type="message_generator" />
   </default_input>
 
   <default_input into="images_to_leak">
-    <generator type="image_generator"/>
+    <generator type="image_generator" />
   </default_input>
 
   <default_input into="site_name">
@@ -59,7 +60,8 @@
     <value>Default Page Test</value>
   </default_input>
 
-  <!--optional vulnerability details-->
+  <!--optional
+  vulnerability details-->
   <cve>CVE-2012-6080</cve>
   <cve>CVE-2012-6081</cve>
 
@@ -71,7 +73,8 @@
   <software_name>moinmoin</software_name>
   <software_license>GPL</software_license>
 
-  <!--optional hints-->
+  <!--optional
+  hints-->
   <msf_module>exploit/unix/webapp/moinmoin_twikidraw</msf_module>
   <solution>
     Remote code execution possible in twikidraw and anywikidraw modules.
@@ -84,23 +87,23 @@
   </conflict>
 
   <requires>
-    <module_path>.*/apache.*</module_path>
+    <module_path>.*apache.*compatible.*</module_path>
   </requires>
 
   <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
     <keyword>server-side misconfiguration and vulnerable components</keyword>
     <keyword>Directory traversal</keyword>
   </CyBOK>
-	<CyBOK KA="MAT" topic="Attacks and exploitation">
-		<keyword>EXPLOITATION</keyword>
-		<keyword>EXPLOITATION FRAMEWORKS</keyword>
-	</CyBOK>
-	<CyBOK KA="SS" topic="Categories of Vulnerabilities">
-		<keyword>CVEs and CWEs</keyword>
-	</CyBOK>
-	<CyBOK KA="SOIM" topic="PENETRATION TESTING">
-		<keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
-		<keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
-	</CyBOK>
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION</keyword>
+    <keyword>EXPLOITATION FRAMEWORKS</keyword>
+  </CyBOK>
+  <CyBOK KA="SS" topic="Categories of Vulnerabilities">
+    <keyword>CVEs and CWEs</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
 
 </vulnerability>

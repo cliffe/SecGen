@@ -209,25 +209,30 @@ ssh -t <%= $compromised_server_ip %> 'sudo insmod /root/LiME/src/lime-$(uname -r
 sudo scp <%= $main_user %>@<%= $compromised_server_ip %>:/home/<%= $main_user %>/lime_dump evidence/kcore
 ```
 
+**On the compromised server:**
 
 Next, we can copy entire partitions to our other system, to preserve the exact state of stored data, and so that we can conduct offline analysis without modifying the filesystem.
 
 Start by identifying the device files for the partitions on the compromised system:
 
 ```bash
-ssh -t <%= $compromised_server_ip %> "df"
+df
 ```
 
 Note that on this system the root partition (mounted on "/"), is /dev/sda1.
 
 > Help: on some VMs, you may need to replace "sda1" with "hda1".
 
-Then **you could** (see the tip below) copy byte-for-byte the contents of the entire root ("/") partition over the network (where /dev/sda1 was identified from the previous command):
+Then **you could** (see the tip below) copy byte-for-byte the contents of the entire root ("/") partition over the network (where /dev/sda1 was identified from the previous command).
+There is not enough storage space on the desktop VM to make this work, so this command is limited by count=128 to limit the amount of data it copies. Removing this would attempt to copy the whole root partition and cause the desktop VM to break.
 
 ```bash
-ssh -t <%= $compromised_server_ip %> "/media/cdrom0/statbins/linux2.2_x86/dd if=/dev/sda1 conv=noerror,sync" | tee evidence/sda1.img
+sudo bash -c '/media/cdrom0/statbins/linux2.2_x86/dd if=/dev/sda1 bs=1M count=128 conv=noerror,sync | ssh <%= $main_user %>@<%= $desktop_ip %> > "dd of=evidence/sda1.img status=progress"'
 ```
 > Tip: Feel free to ==skip this step==. Running this will take some time, so if you do run this, you may wish to continue with the next steps while the copying runs.
+
+Note: status=progress is what gievs us the progress information as the command is running. Otherwise the terminal would be blank looking as if it had crashed.
+
 
 This command could be repeated for each partition including swap partitions. For now, let's accept that we have all we need.
 

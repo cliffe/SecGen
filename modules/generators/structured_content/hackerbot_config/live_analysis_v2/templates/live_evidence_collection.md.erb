@@ -322,7 +322,7 @@ It is now safe to run chkrootkit[^1]:
 **On your Desktop VM**, run:
 
 ```bash
-ssh -t <%= $compromised_server_ip %> "PATH=/media/cdrom0/statbins:$PATH sudo /media/cdrom0/statbins/chkrootkit-linux/chkrootkit" | tee evidence/chkrootkit_out
+ssh -t <%= $compromised_server_ip %> 'sudo bash -c "export PATH=/media/cdrom0/statbins/linux2.2_x86:$PATH; /media/cdrom0/statbins/chkrootkit-linux/chkrootkit"' | tee evidence/chkrootkit_out
 ```
 > Help: you may get a message in the terminal before you type the password. You should still type the password for the script to run. The script should not take long to run.
 

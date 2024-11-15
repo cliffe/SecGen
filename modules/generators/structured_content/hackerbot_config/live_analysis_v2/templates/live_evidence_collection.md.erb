@@ -131,9 +131,9 @@ Run the command:
 ssh <%= $compromised_server_ip %> "/media/cdrom0/statbins/linux2.2_x86/ls /proc" | tee evidence/proc_ls_static
 ```
 
-**On your Desktop VM**, find the newly created files and ==compare the list of pids (numbers representing processes) output from the previous commands==. This is the second column of output in the ps\_out, with the numbers in proc\_ls\_static.
+**On your Desktop VM**, find the newly created files and ==compare the list of pids (numbers representing processes) output from the previous commands==. This is the second column of output in the local\_ps\_output, with the numbers in proc\_ls\_static.
 
-Hint: you can do the comparison manually, or using commands such as "cut" (or [*awk*](http://lmgtfy.com/?q=use+awk+to+print+column)), "sort", and "diff". For example, `cat ps_out | awk '{ print $4 }'` will pipe the contents of the file ps\_out into the awk command, which will split on spaces, and only display the fourth field. Ensure this is displaying the list of pids, if not try selecting a different field. You could pipe this through to "sort". Then save that to a file (by appending " &gt; pids\_ps\_out"). Remember "man awk", "man sort", and "man diff" will tell you about how to use the commands (and Google may also come in handy).
+Hint: you can do the comparison manually, or using commands such as "cut" (or [*awk*](http://lmgtfy.com/?q=use+awk+to+print+column)), "sort", and "diff". For example, `cat local_ps_output | awk '{ print $2 }'` will pipe the contents of the file local\_ps\_output into the awk command, which will split on spaces, and only display the second field. Ensure this is displaying the list of pids, if not try selecting a different field. You could pipe this through to "sort". Then save that to a file (by appending " &gt; pids\_ps\_out"). Remember "man awk", "man sort", and "man diff" will tell you about how to use the commands (and Google may also come in handy).
 
 Are the same processes shown each time? Can you explain why the outputs from different tools are giving you a different picture of the system? If not, that is very suspicious, and likely indicates a break-in, and that we probably shouldn't trust the output of local commands.
 

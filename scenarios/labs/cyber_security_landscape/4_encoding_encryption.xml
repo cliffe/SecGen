@@ -237,7 +237,7 @@
         <value>true</value>
       </input>
       <input into="start_page">
-        <value>/opt/cyberchef/CyberChef.html</value>
+        <value>file:///opt/cyberchef/CyberChef.html</value>
       </input>
     </utility>
 

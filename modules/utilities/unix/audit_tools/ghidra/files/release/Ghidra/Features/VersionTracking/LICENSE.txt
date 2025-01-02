@@ -8,98 +8,38 @@ The 3rd party files in this module are as follows:
 
 Oxygen Icons - LGPL 3.0:
 
-	src/main/resources/images/flag.png
 	src/main/resources/images/edit-rename.png
-	src/main/resources/images/dialog-cancel.png
 	src/main/resources/images/go-down.png
-	src/main/resources/images/flag-red.png
 	src/main/resources/images/user-online.png
-	src/main/resources/images/flag-yellow.png
-	src/main/resources/images/flag-blue.png
-	src/main/resources/images/view-split-left-right.png
-	src/main/resources/images/edit-delete.png
 	src/main/resources/images/go-next.png
-	src/main/resources/images/games-solve.png
-	src/main/resources/images/flag-green.png
-	src/main/resources/images/user-busy.png
-	src/main/help/help/shared/warning.png
-	src/main/help/help/shared/note.png
-	src/main/help/help/shared/tip.png
-	src/main/help/help/shared/note-red.png
-	src/main/help/help/shared/note.yellow.png
-	src/main/help/help/topics/VersionTrackingPlugin/images/flag.png
-	src/main/help/help/topics/VersionTrackingPlugin/images/edit-rename.png
-	src/main/help/help/topics/VersionTrackingPlugin/images/dialog-cancel.png
-	src/main/help/help/topics/VersionTrackingPlugin/images/list-remove.png
-	src/main/help/help/topics/VersionTrackingPlugin/images/edit-delete.png
-	src/main/help/help/topics/VersionTrackingPlugin/images/view-filter.png
 
 Nuvola Icons - LGPL 2.1:
 
-	src/main/resources/images/ledred.png
-	src/main/resources/images/wizard.png
 	src/main/resources/images/cache.png
 	src/main/resources/images/undo-apply.png
-	src/main/resources/images/ledyellow.png
-	src/main/resources/images/kgpg.png
 	src/main/resources/images/ledorange.png
 	src/main/resources/images/ledpurple.png
-	src/main/resources/images/viewmag.png
-	src/main/resources/images/ledgreen.png
 	src/main/resources/images/ledblue.png
-	src/main/help/help/topics/VersionTrackingPlugin/images/cache.png
-	src/main/help/help/topics/VersionTrackingPlugin/images/undo-apply.png
-	src/main/help/help/topics/VersionTrackingPlugin/images/kgpg.png
 
 FAMFAMFAM Icons - CC 2.5:
 
-	src/main/resources/images/add.png
 	src/main/resources/images/tag_blue_delete.png
-	src/main/resources/images/warning.png
-	src/main/resources/images/page_white_c.png
 	src/main/resources/images/application_tile_horizontal.png
-	src/main/resources/images/lock.png
-	src/main/resources/images/zoom_in.png
 	src/main/resources/images/tag_blue_add.png
 	src/main/resources/images/asterisk_orange.png
-	src/main/resources/images/table_delete.png
-	src/main/resources/images/application_tile_vertical.png
 	src/main/resources/images/bullet_black.png
-	src/main/resources/images/tag_blue.png
 	src/main/resources/images/table_gear.png
-	src/main/resources/images/bullet_green.png
 	src/main/resources/images/bullet_error.png
-	src/main/resources/images/zoom_out.png
-	src/main/resources/images/table_go.png
 	src/main/resources/images/application_view_detail.png
 	src/main/resources/images/tag_blue_edit.png
-	src/main/resources/images/delete.png
 	src/main/resources/images/lightbulb_off.png
 	src/main/resources/images/accept.png
 	src/main/resources/images/lightbulb.png
-	src/main/help/help/topics/VersionTrackingPlugin/images/tag_blue_delete.png
-	src/main/help/help/topics/VersionTrackingPlugin/images/application_tile_horizontal.png
-	src/main/help/help/topics/VersionTrackingPlugin/images/asterisk_orange.png
-	src/main/help/help/topics/VersionTrackingPlugin/images/table_delete.png
-	src/main/help/help/topics/VersionTrackingPlugin/images/tag_blue.png
-	src/main/help/help/topics/VersionTrackingPlugin/images/table_gear.png
-	src/main/help/help/topics/VersionTrackingPlugin/images/table_go.png
-	src/main/help/help/topics/VersionTrackingPlugin/images/tag_blue_edit.png
-	src/main/help/help/topics/VersionTrackingPlugin/images/lightbulb.png
 
 Tango Icons - Public Domain:
 
 	src/main/resources/defaultTools/images/start-here.png
-	src/main/resources/images/face-monkey.png
-	src/main/resources/images/help-browser.png
-	src/main/resources/images/edit-redo.png
-	src/main/resources/images/face-devilish.png
-	src/main/resources/images/view-refresh.png
-	src/main/resources/images/media-playback-stop.png
-	src/main/resources/images/start-here.png
-	src/main/resources/images/list-add.png
 	src/main/resources/images/start-here_16.png
 	src/main/resources/images/filter_matched.png
-	src/main/help/help/topics/VersionTrackingPlugin/images/start-here_16.png
-	src/main/help/help/topics/VersionTrackingPlugin/images/filter_matched.png
+	src/main/help/help/topics/VersionTrackingPlugin/images/start-here.png
 

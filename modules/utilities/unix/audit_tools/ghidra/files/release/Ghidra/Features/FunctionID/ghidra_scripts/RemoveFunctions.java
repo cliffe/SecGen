@@ -19,6 +19,10 @@ import java.util.*;
 import generic.stl.Pair;
 import ghidra.app.script.GhidraScript;
 import ghidra.feature.fid.db.*;
+import ghidra.feature.fid.service.FidService;
+import ghidra.program.model.lang.*;
+import ghidra.program.util.DefaultLanguageService;
+import ghidra.util.exception.CancelledException;
 
 /**
  * Example script for bulk removal of functions from a FID database.  Hashes can be added to the list
@@ -28,6 +32,7 @@ import ghidra.feature.fid.db.*;
  */
 public class RemoveFunctions extends GhidraScript {
 	private LinkedList<Pair<Short, Long>> REMOVE_HASHES = new LinkedList<>();
+	private LinkedList<Pair<Short, Long>> REMOVE_SPECHASHES = new LinkedList<>();
 	private LinkedList<Pair<Short, Long>> FORCE_SPECIFIC = new LinkedList<>();
 	private LinkedList<Pair<Short, Long>> FORCE_RELATION = new LinkedList<>();
 	private LinkedList<Pair<Short, Long>> AUTO_PASS = new LinkedList<>();
@@ -50,7 +55,7 @@ public class RemoveFunctions extends GhidraScript {
 		FORCE_RELATION.add(fh(21, 0xd58e87fa78cc0557L));	// ?QueryInterface@CBaseBasicVideo@@UAGJABU_GUID@@PAPAX@Z
 		FORCE_RELATION.add(fh(13, 0x7198eafea73405ccL));	// ??_G?$CList@IAAI@@UAEPAXI@Z
 		FORCE_RELATION.add(fh(25, 0xf965f87e1a7a2d4dL));	// ?AtlComPtrAssign@ATL@@YGPAUIUnknown@@PAPAU2@PAU2@@Z
-		FORCE_RELATION.add(fh(12, 0x423483b370f203a9L));	// ??A?$CSimpleStringT@_W$0A@@ATL@@QBE_WH@Z
+		FORCE_RELATION.add(fh(12, 0xb41bfa7edba8564aL));	// ??A?$CSimpleStringT@_W$0A@@ATL@@QBE_WH@Z
 		FORCE_RELATION.add(fh(14, 0x1300b11d1740771L));		// ??0_Push_finalizer@_Micro_queue@details@Concurrency@@QAE@AAU123@I@Z
 		FORCE_RELATION.add(fh(13, 0x54044bc079343f1dL));	// ??0_Generic_error_category@std@@QAE@XZ
 		FORCE_RELATION.add(fh(11, 0x7fd89305977ee8c2L));	// ??0CMFCToolBarInfo@@QAE@XZ
@@ -117,7 +122,7 @@ public class RemoveFunctions extends GhidraScript {
 		FORCE_RELATION.add(fh(25, 0x15f39174075dff3eL));	// ??0?$CComPtr@UIMoniker@@@ATL@@QAE@PAUIMoniker@@@Z
 		FORCE_RELATION.add(fh(15, 0xed52233b5c5d179aL));	// ?GetTypeInfo@?$IAccessibleProxyImpl@VCAccessibleProxy@ATL@@@ATL@@UAGJIKPAPAUITypeInfo@@@Z
 		FORCE_RELATION.add(fh(16, 0x3d5d986932f74e2bL));	// ??4XQATItem@XQAT@CMFCRibbonInfo@@QAEAAV012@ABV012@@Z
-		FORCE_RELATION.add(fh(15, 0xb36aed13bafd4128L));	// ??A?$CSimpleArray@KV?$CSimpleArrayEqualHelper@K@ATL@@@ATL@@QAEAAKH@Z
+		FORCE_RELATION.add(fh(15, 0xfb393ddf3efa51ffL));	// ??A?$CSimpleArray@KV?$CSimpleArrayEqualHelper@K@ATL@@@ATL@@QAEAAKH@Z
 		FORCE_RELATION.add(fh(27, 0x38ba8218a1574c02L));	// ?SetClassID@CPropertySet@@QAEXU_GUID@@@Z
 		FORCE_RELATION.add(fh(10, 0xd2d3085f0326439dL));	// ?GetElements@CMFCRibbonBaseElement@@UAEXAAV?$CArray@PAVCMFCRibbonBaseElement@@PAV1@@@@Z
 		FORCE_RELATION.add(fh(18, 0x315abdf2c4531012L));	// ??0AFX_DDPDATA@@QAE@PAXHH0IPBD@Z
@@ -146,6 +151,7 @@ public class RemoveFunctions extends GhidraScript {
 		FORCE_RELATION.add(fh(15, 0x3cd4904368bf315cL)); 	// ??_G?$_MallocaArrayHolder@PAVContext@Concurrency@@@details@Concurrency@@UAEPAXI@Z
 		FORCE_RELATION.add(fh(4, 0xb8db1dacc3441a8fL));		// ??1_Timer@details@Concurrency@@MAE@XZ
 		FORCE_RELATION.add(fh(14, 0x7b2255d33cddad65L));	// ??_GThreadInternalContext@details@Concurrency@@UAEPAXI@Z
+		FORCE_RELATION.add(fh(15, 0xfe727990231ca423L));	// Generic constructor
 
 		REMOVE_HASHES.add(fh(4, 0x8f0554c0936e0e0dL));		// ?AddPaneToList@CPaneContainerManager@@QAEXPAVCDockablePane@@@Z
 		REMOVE_HASHES.add(fh(17, 0x6875ba2bfa94ae88L));		// ??1?$CComPtrBase@UIAccessibleProxy@@@ATL@@QAE@XZ
@@ -161,6 +167,7 @@ public class RemoveFunctions extends GhidraScript {
 		REMOVE_HASHES.add(fh(8, 0x3d7242fc6eb079a7L));		// ??1<lambda_61f7764e5b8087545c74b0c2f4f68b12>@@QAE@XZ
 		REMOVE_HASHES.add(fh(7, 0x690dec263cb912aaL));		// ?OnDrawTasksGroupAreaBorder@CMFCVisualManagerOfficeXP@@MAEXPAVCDC@@VCRect@@HH@Z
 		REMOVE_HASHES.add(fh(7, 0x6b745608ae7e77fbL));		// ??1?$CArray@...  destructors based on CArray
+		REMOVE_HASHES.add(fh(3, 0xfcc148b0692f6a69L));		// thunk
 
 		FORCE_SPECIFIC.add(fh(2, 0x5ef2f47ee7151243L));		// __SEH_epilog4_GS, __EH_epilog3_GS, and __EH_epilog3_catch_GS
 		FORCE_RELATION.add(fh(2, 0x5ef2f47ee7151243L));
@@ -170,9 +177,9 @@ public class RemoveFunctions extends GhidraScript {
 		FORCE_RELATION.add(fh(2, 0x96a4a6fd5694523bL));
 		AUTO_PASS.add(fh(2, 0x96a4a6fd5694523bL));
 
-		FORCE_SPECIFIC.add(fh(3, 0xf1feea7baf6e82d5L));		// ___crtExitProcess
-		FORCE_RELATION.add(fh(3, 0xf1feea7baf6e82d5L));
-		AUTO_PASS.add(fh(3, 0xf1feea7baf6e82d5L));
+		FORCE_SPECIFIC.add(fh(3, 0xa12a5c4ca7c9b91eL));		// ___crtExitProcess
+		FORCE_RELATION.add(fh(3, 0xa12a5c4ca7c9b91eL));
+		AUTO_PASS.add(fh(3, 0xa12a5c4ca7c9b91eL));
 
 		FORCE_SPECIFIC.add(fh(11, 0x78a6fb00a4960a21L));	// __EH_epilog3
 		AUTO_PASS.add(fh(11, 0x78a6fb00a4960a21L));
@@ -194,31 +201,31 @@ public class RemoveFunctions extends GhidraScript {
 		AUTO_PASS.add(fh(9, 0x157890c52d4d7519L));
 		FORCE_SPECIFIC.add(fh(8, 0xa11e5331b6086ac4L));		// _rand
 		AUTO_PASS.add(fh(8, 0xa11e5331b6086ac4L));
-		FORCE_SPECIFIC.add(fh(12, 0xfdbb6823ea5e6eaeL));	// _wcslen
-		AUTO_PASS.add(fh(12, 0xfdbb6823ea5e6eaeL));
+		FORCE_SPECIFIC.add(fh(12, 0x8db8f13f97589bc2L));	// _wcslen
+		AUTO_PASS.add(fh(12, 0x8db8f13f97589bc2L));
 		FORCE_SPECIFIC.add(fh(9, 0xe1e948c7479ce80L));		// ?Init@CComCriticalSection@ATL@@QAEJXZ
 		AUTO_PASS.add(fh(9, 0xe1e948c7479ce80L));
 
 		// Distinguishing _memcpy from _memmove
-		SPECIAL_PARENT.add(new Pair<String, Pair<Long, Long>>("_memcpy",
-			new Pair<Long, Long>(0x33d1cb7adc1726dbL, 0x81300cda8b24004bL)));
-		SPECIAL_PARENT.add(new Pair<String, Pair<Long, Long>>("_memcpy",
-			new Pair<Long, Long>(0x33d1cb7adc1726dbL, 0xe70c71e845db7694L)));
-		SPECIAL_PARENT.add(new Pair<String, Pair<Long, Long>>("_memcpy",
-			new Pair<Long, Long>(0xcf7c351b23b36e10L, 0xd835fe2e6794b2d0L)));
-		SPECIAL_PARENT.add(new Pair<String, Pair<Long, Long>>("_memcpy",
-			new Pair<Long, Long>(0xcf7c351b23b36e10L, 0x8176bdc9ca178984L)));
-		SPECIAL_PARENT.add(new Pair<String, Pair<Long, Long>>("_memcpy",
-			new Pair<Long, Long>(0xcf7c351b23b36e10L, 0xd0f8b76a912c6bdeL)));
+		SPECIAL_PARENT
+				.add(new Pair<>("_memcpy", new Pair<>(0xf0651853ecffcd13L, 0xcb909d559274fa07L)));
+		SPECIAL_PARENT
+				.add(new Pair<>("_memcpy", new Pair<>(0xf0651853ecffcd13L, 0xe70c71e845db7694L)));
+		SPECIAL_PARENT
+				.add(new Pair<>("_memcpy", new Pair<>(0xbba5179e27f82924L, 0xd835fe2e6794b2d0L)));
+		SPECIAL_PARENT
+				.add(new Pair<>("_memcpy", new Pair<>(0xbba5179e27f82924L, 0x36c7a2db4d83f940L)));
+		SPECIAL_PARENT
+				.add(new Pair<>("_memcpy", new Pair<>(0xbba5179e27f82924L, 0x29a308132dd5ffa6L)));
 
-		SPECIAL_PARENT.add(new Pair<String, Pair<Long, Long>>("_memmove",
-			new Pair<Long, Long>(0x33d1cb7adc1726dbL, 0xdbf9702ed06fc8faL)));
-		SPECIAL_PARENT.add(new Pair<String, Pair<Long, Long>>("_memmove",
-			new Pair<Long, Long>(0x33d1cb7adc1726dbL, 0xc75b9390823f17b8L)));
-		SPECIAL_PARENT.add(new Pair<String, Pair<Long, Long>>("_memmove",
-			new Pair<Long, Long>(0xcf7c351b23b36e10L, 0x0cc0176381fd7eebL)));
-		SPECIAL_PARENT.add(new Pair<String, Pair<Long, Long>>("_memmove",
-			new Pair<Long, Long>(0xcf7c351b23b36e10L, 0xb821796c54461d3dL)));
+		SPECIAL_PARENT
+				.add(new Pair<>("_memmove", new Pair<>(0xf0651853ecffcd13L, 0xdbf9702ed06fc8faL)));
+		SPECIAL_PARENT
+				.add(new Pair<>("_memmove", new Pair<>(0xf0651853ecffcd13L, 0xc75b9390823f17b8L)));
+		SPECIAL_PARENT
+				.add(new Pair<>("_memmove", new Pair<>(0xbba5179e27f82924L, 0x0cc0176381fd7eebL)));
+		SPECIAL_PARENT
+				.add(new Pair<>("_memmove", new Pair<>(0xbba5179e27f82924L, 0xb821796c54461d3dL)));
 		AUTO_FAIL_REGEX.add("^\\$L.*");
 	}
 
@@ -261,10 +268,57 @@ public class RemoveFunctions extends GhidraScript {
 		REMOVE_HASHES.add(fh(23, 0x1c009fbde7812ed5L));		// ??0failure@ios_base@std@@QEAA@AEBV012@@Z
 		REMOVE_HASHES.add(fh(10, 0x7e10fbe69b976818L));		// ??1CAudioMediaType@@MEAA@XZ
 		REMOVE_HASHES.add(fh(15, 0x79c797eb8032b47L));		// ??_G?$CList@IAEAI@@UEAAPEAXI@Z
+		REMOVE_HASHES.add(fh(6, 0x1198931964e874fbL));		// ??0XRibbonInfoParserRoot@CMFCRibbonInfo@@IEAA@XZ
+		REMOVE_HASHES.add(fh(6, 0x1524536d78c0da92L));		// ??1?$shared_ptr@V__ExceptionPtr@@@std@@QEAA@XZ
+		REMOVE_HASHES.add(fh(7, 0x020d6fdf4571e246L));		// max_size
+		REMOVE_HASHES.add(fh(13, 0x225ba93763be05b1L));		// operator==
+		REMOVE_HASHES.add(fh(13, 0x287ae8c33777713cL));		// ??1CStreamOnCString@@UEAA@XZ
+		REMOVE_HASHES.add(fh(9, 0x288020713ca1ea5bL));		// ??0?$move_iterator@V?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$shared_ptr@U?$_Task_impl@E@details@Concurrency@@@std@@@std@@@std@@@std@@@std@@QEAA@AEBV01@@Z
+		REMOVE_HASHES.add(fh(10, 0x2b3bd58383bd38e9L));		// ??1VirtualProcessorRoot@details@Concurrency@@UEAA@XZ
+		REMOVE_HASHES.add(fh(7, 0x30a80a215b0bb2c4L));		// Generic destructor
+		REMOVE_HASHES.add(fh(7, 0x53a0821862961cb4L));		// constructor
+		REMOVE_HASHES.add(fh(4, 0x556c824f94bb014fL));		// return value derefed from first parameter ptr
+		REMOVE_HASHES.add(fh(12, 0x6581a15f3efa819eL));		// copy two fields between pointer parameters
+		REMOVE_HASHES.add(fh(9, 0x65e3ed6682944d20L));		// ??1CTraceSnapshot@@QEAA@XZ
+		REMOVE_HASHES.add(fh(8, 0x6ce601a9094cc769L));		// destructor
+		REMOVE_HASHES.add(fh(7, 0x6e6e4f635fd59012L));		// destructor
+		REMOVE_HASHES.add(fh(8, 0xad4b1b8ef3775874L));		// pass derefed first param to subfunc
+		REMOVE_HASHES.add(fh(8, 0xba8d3a7590fcc497L));		// destructor
+		REMOVE_HASHES.add(fh(7, 0xc4312b6b7324334aL));		// destructor
+		REMOVE_HASHES.add(fh(11, 0xd6650c343cfb0baeL));		// constructor
+		REMOVE_HASHES.add(fh(13, 0xe6202628da545409L));		// ??0CXMLParserRoot@@QEAA@XZ
+		REMOVE_HASHES.add(fh(6, 0xebd9388fe0c5b3d5L));		// operator++
+		REMOVE_HASHES.add(fh(8, 0xebfa00c4b493da85L));		// constructor
+		REMOVE_HASHES.add(fh(11, 0xf5d1f9d9b010f936L));		// constructor
+		REMOVE_HASHES.add(fh(11, 0xf7f34c91b43fa7d3L));		// destructor
+		REMOVE_HASHES.add(fh(8, 0xfcffed6fce4974a8L));		// constructor
+		REMOVE_HASHES.add(fh(9, 0x1c82d67f2be6ec3cL));		// constructor
+		REMOVE_HASHES.add(fh(10, 0x7dd643f9a75d75c4L));		// constructor
+		REMOVE_HASHES.add(fh(5, 0x88b326842c8ac560L));		// constructor
+		REMOVE_HASHES.add(fh(6, 0xa03ab775e8816d83L));		// wrapper
+		REMOVE_HASHES.add(fh(15, 0xe964369cf92d003fL));		// constructor
+		REMOVE_HASHES.add(fh(10, 0xf36c24d70ec93888L));		// wrapper
+		REMOVE_HASHES.add(fh(7, 0x763a8202f3d3c655L));		// constructor
+		REMOVE_HASHES.add(fh(12, 0x108d55ea8a0d124cL));		// scalar_deleting_destructor
+		REMOVE_HASHES.add(fh(13, 0x73f55a446deac3b1L));		// scalar_deleting_destructor
+		REMOVE_HASHES.add(fh(14, 0x3266cd569ab4eeffL));		// comparator
+		REMOVE_HASHES.add(fh(34, 0x8069e1fe2475e7c0L));		// inlined copies followed by method call
+		REMOVE_HASHES.add(fh(8, 0xa5c0d8da585783d3L));		// constructor
+		REMOVE_HASHES.add(fh(14, 0xad597a6e08b319b6L));		// destructor
+		REMOVE_HASHES.add(fh(17, 0xa552112bff535b06L));		// destructor
+		REMOVE_HASHES.add(fh(13, 0xac7036a5a6a27973L));		// destructor
+		REMOVE_HASHES.add(fh(6, 0x561ffc1c6cdb8a09L));		// Mysize
+		REMOVE_HASHES.add(fh(8, 0x6838c16db21b0fcdL));		// ??1_AsyncTaskCollection@details@Concurrency@@UEAA@XZ
+		REMOVE_HASHES.add(fh(6, 0x69e6a6ae661a1d17L));		// Generic size()
+		REMOVE_HASHES.add(fh(4, 0xd4c0bfb00c09e33dL));		// Access field
+		REMOVE_HASHES.add(fh(4, 0xc0845430b88f5debL));		// Save registers
+		REMOVE_HASHES.add(fh(6, 0xef1dcb79b04b45a7L));		// 2 calls
+		REMOVE_HASHES.add(fh(10, 0xc75e5da59c8147a1L));		// vector destructor
+		REMOVE_HASHES.add(fh(15, 0x71183c69f857f80cL));		// copy constructor
 
 		FORCE_RELATION.add(fh(6, 0x508d431b82512d5bL));		// Generic wrapper, one obvious child
 		FORCE_RELATION.add(fh(19, 0x1e68c4d4d83e7585L));	// A little too generic stream thing, force parent
-		FORCE_RELATION.add(fh(26, 0xca6253ab6d6a32beL));	// Count decrement dispatcher, distinguish via parent
+		FORCE_RELATION.add(fh(26, 0x12449040c1a0d37eL));	// Count decrement dispatcher, distinguish via parent
 		FORCE_RELATION.add(fh(18, 0x9c1597a636ea13b3L));	// scalar_deleting_destructor with a child
 		FORCE_RELATION.add(fh(15, 0x85b697ef56707979L));	// Generic form with one child
 		FORCE_RELATION.add(fh(15, 0xe27b2550f3b616bcL));	// Generic form, force parent match
@@ -272,31 +326,184 @@ public class RemoveFunctions extends GhidraScript {
 		FORCE_RELATION.add(fh(21, 0x5eae3016f3cc4caaL));	// Common destructor form (only child is free)
 		FORCE_RELATION.add(fh(12, 0xe77f57508779c258L));	// Generic assign
 		FORCE_RELATION.add(fh(18, 0x61950fc199f518fL));		// Generic destructor with children
-		FORCE_RELATION.add(fh(25, 0x6a5c4f8adc931359L));	// scalar_deleting_destructor force parent
+		FORCE_RELATION.add(fh(25, 0xd08dc36210405cfdL));	// scalar_deleting_destructor force parent
 		FORCE_RELATION.add(fh(13, 0xf1e4167aedf569aL));		// Generic form, with many children
 		FORCE_RELATION.add(fh(20, 0x678b611a60783c98L));	// Generic form with children
+		FORCE_RELATION.add(fh(15, 0x51980975b49f9f73L));	// ??1SchedulingNode@details@Concurrency@@QEAA@XZ
+		FORCE_RELATION.add(fh(18, 0xcf323a39c909432bL));	// ?_Future_error_map@std@@YAPEBDH@Z
+		FORCE_RELATION.add(fh(14, 0x41110421841870bdL));	// iterator::operator=
+		FORCE_RELATION.add(fh(15, 0x4ff25b1581823b8dL));	// Uninitialized_move
+		FORCE_RELATION.add(fh(17, 0x98b776bf2b245c57L));	// pair constructor
+		FORCE_RELATION.add(fh(12, 0x5bd6de97fe12c3deL));	// ??0_WDI_RECEIVE_COALESCING_CAPABILITIES@@QEAA@XZ
+		FORCE_RELATION.add(fh(15, 0x08c46c0927acd159L));	// _Ucopy
+		FORCE_RELATION.add(fh(11, 0x809e950df92527a5L));	// Emplace
+		FORCE_RELATION.add(fh(17, 0xb33a994d051dd9a0L));	// ??_G_AsyncTaskCollection@details@Concurrency@@UEAAPEAXI@Z
+		FORCE_RELATION.add(fh(14, 0xee6fd3046cf7ee06L));	// ??0_WDI_CHECKSUM_OFFLOAD_CAPABILITIES_CONTAINER@@QEAA@XZ
+		FORCE_RELATION.add(fh(16, 0xfb2a575f03442e59L));	// ?Equals@Guid@Platform@@QEAA_NAEBU_GUID@@@Z
+		FORCE_RELATION.add(fh(17, 0x74a7b8ca8aa4062bL));	// Find_unchecked
+		FORCE_RELATION.add(fh(13, 0x64bd12c74e7fa730L));	// boolean check on field
+		FORCE_RELATION.add(fh(13, 0xe624a060e19a0c64L));	// copy
+		FORCE_RELATION.add(fh(35, 0x4423b59693bfd81L));		// Generic destructor
+		FORCE_RELATION.add(fh(19, 0x07ccaa127d5e1714L));	// operator=
+		FORCE_RELATION.add(fh(25, 0xa6ea183912b2677dL));	// Generic copy
+		FORCE_RELATION.add(fh(11, 0xb7e0a1d58b88d05cL));	// Generic constructor
+		FORCE_RELATION.add(fh(12, 0xceece41b9d9525cbL));	// Generic constructor
 
 		FORCE_SPECIFIC.add(fh(26, 0xf0f7f2439683bfeaL));	// Variants with specialized constants
 		FORCE_SPECIFIC.add(fh(17, 0xf468f6c40495d8caL));	// Dispatcher form with lots of specific constants
 		FORCE_SPECIFIC.add(fh(13, 0x8779436db6c1d90L));		// ??1?$basic_string@GU?$char_traits@G@std@@V?$allocator@G@2@V_STL70@@@std@@QEAA@XZ
 		FORCE_SPECIFIC.add(fh(75, 0x48156d182763009dL));	// _write confused with _read
-		FORCE_SPECIFIC.add(fh(51, 0x5c02a83d7b53cabbL));	// ??1CCommandLineInfo@@UEAA@XZ
+		FORCE_SPECIFIC.add(fh(51, 0x2d35582d216d91bbL));	// ??1CCommandLineInfo@@UEAA@XZ
+		FORCE_SPECIFIC.add(fh(15, 0x4389c3585fa0606aL));	// has_flag
+		FORCE_SPECIFIC.add(fh(15, 0xcc72f3219032eacfL));	// ?__acrt_stdio_parse_mode_D@@YA_NAEAU__acrt_stdio_stream_mode@@@Z
+		FORCE_SPECIFIC.add(fh(36, 0xa07803de9bbbebbbL));	// vector deleting destructor
+		FORCE_SPECIFIC.add(fh(20, 0x4af9f6ef9467bbcaL));	// ??_GFileLCRec@@QEAAPEAXI@Z
+		FORCE_SPECIFIC.add(fh(11, 0x17c3832d5e7abe3L));		// isnan, isinf
+
+		FORCE_SPECIFIC.add(fh(12, 0x1997c3c57f1359d6L));	// ?dtor$9@?0??AddMenuCommands@CMFCToolBarsCustomizeDialog@@QEAAXPEBVCMenu@@HPEB_W1@Z@4HA
+		FORCE_RELATION.add(fh(12, 0x1997c3c57f1359d6L));
+		FORCE_SPECIFIC.add(fh(11, 0x2c36a67a489920daL));	// ??1ContextBase@details@Concurrency@@UEAA@XZ
+		FORCE_RELATION.add(fh(11, 0x2c36a67a489920daL));
+		FORCE_SPECIFIC.add(fh(15, 0x69156cfc34e915e7L));	// ??0<lambda_6dd2c61d572e92a64c8eda4035773505>@@QEAA@AEBV0@@Z
+		FORCE_RELATION.add(fh(15, 0x69156cfc34e915e7L));
+		FORCE_SPECIFIC.add(fh(11, 0x781f34966e8ef7deL));	// FreeNode
+		FORCE_RELATION.add(fh(11, 0x781f34966e8ef7deL));
+		FORCE_SPECIFIC.add(fh(11, 0x86b8837a96bb2fadL));	// ??0NumaInformation@SchedulerBase@details@Concurrency@@QEAA@XZ
+		FORCE_RELATION.add(fh(11, 0x86b8837a96bb2fadL));
+		FORCE_SPECIFIC.add(fh(10, 0x87dd953d6c34861eL));	// get_allocator
+		FORCE_RELATION.add(fh(10, 0x87dd953d6c34861eL));
+		FORCE_SPECIFIC.add(fh(14, 0x8c77a958beb620dfL));	// ?HasRealizedChores@ScheduleGroupSegmentBase@details@Concurrency@@IEBA_NXZ
+		FORCE_RELATION.add(fh(14, 0x8c77a958beb620dfL));
+		FORCE_SPECIFIC.add(fh(10, 0x90181c81962ce711L));	// ??1CStreamOnCString@@QEAA@XZ
+		FORCE_RELATION.add(fh(10, 0x90181c81962ce711L));
+		FORCE_SPECIFIC.add(fh(17, 0x9248e909511b8ddaL));	// ??0FreeVirtualProcessorRoot@details@Concurrency@@QEAA@PEAVSchedulerProxy@12@PEAUSchedulerNode@12@I@Z
+		FORCE_RELATION.add(fh(17, 0x9248e909511b8ddaL));
+		FORCE_SPECIFIC.add(fh(15, 0x977e6c2c25e8f389L));	// ??1CMFCVisualManagerBitmapCache@@UEAA@XZ
+		FORCE_RELATION.add(fh(15, 0x977e6c2c25e8f389L));
+		FORCE_SPECIFIC.add(fh(17, 0xad2d41b71db78df0L));	// ??1COleDispatchException@@UEAA@XZ
+		FORCE_RELATION.add(fh(17, 0xad2d41b71db78df0L));
+		FORCE_SPECIFIC.add(fh(26, 0xb5b192b00955d1feL));	// ??1_Locinfo@std@@QEAA@XZ
+		FORCE_RELATION.add(fh(26, 0xb5b192b00955d1feL));
+		FORCE_SPECIFIC.add(fh(10, 0xd6a5fc3691b7f101L));	// DelRegTree
+		FORCE_RELATION.add(fh(10, 0xd6a5fc3691b7f101L));
+		FORCE_SPECIFIC.add(fh(13, 0xd75e6989aec2a5a9L));	// destructor form
+		FORCE_RELATION.add(fh(13, 0xd75e6989aec2a5a9L));
+		FORCE_SPECIFIC.add(fh(13, 0xdcfdfd3a9345b3a5L));	// constructor form
+		FORCE_RELATION.add(fh(13, 0xdcfdfd3a9345b3a5L));
+		FORCE_SPECIFIC.add(fh(14, 0xf323b038a8b540faL));	// ?GetPolicy@SchedulerBase@details@Concurrency@@UEBA?AVSchedulerPolicy@3@XZ
+		FORCE_RELATION.add(fh(14, 0xf323b038a8b540faL));
+		FORCE_SPECIFIC.add(fh(10, 0x6862321b024d5c83L));	// constructor
+		FORCE_RELATION.add(fh(10, 0x6862321b024d5c83L));
+		FORCE_SPECIFIC.add(fh(11, 0xa61ae8d54cfc35d6L));	// comparator, empty
+		FORCE_RELATION.add(fh(11, 0xa61ae8d54cfc35d6L));
+		FORCE_SPECIFIC.add(fh(12, 0x892067d7b5484452L));	// anonymous destructor
+		FORCE_RELATION.add(fh(12, 0x892067d7b5484452L));
+		FORCE_SPECIFIC.add(fh(12, 0x2155a28b83bb2704L));	// destructor
+		FORCE_RELATION.add(fh(12, 0x2155a28b83bb2704L));
+		FORCE_SPECIFIC.add(fh(14, 0x205bb2f03257b770L));	// destructor
+		FORCE_RELATION.add(fh(14, 0x205bb2f03257b770L));
+		FORCE_SPECIFIC.add(fh(12, 0xbdcafd32892d723L));		// ??1_Locimp@locale@std@@MEAA@XZ
+		FORCE_RELATION.add(fh(12, 0xbdcafd32892d723L));
+		FORCE_SPECIFIC.add(fh(12, 0xcd7e1f68717240f8L));	// destructor
+		FORCE_RELATION.add(fh(12, 0xcd7e1f68717240f8L));
 
 		FORCE_SPECIFIC.add(fh(10, 0x5c4a91ec77ecc3d2L));	// strnlen
 		AUTO_PASS.add(fh(10, 0x5c4a91ec77ecc3d2L));
-		FORCE_SPECIFIC.add(fh(11, 0x7069490c2c75ca8fL));	// ?AllocateHeap@?$CTempBuffer@D$0IA@VCCRTAllocator@ATL@@@ATL@@AEAAX_K@Z
-		AUTO_PASS.add(fh(11, 0x7069490c2c75ca8fL));
-		FORCE_SPECIFIC.add(fh(9, 0x9fdcae243f10941bL));		// ?AtlThrowImpl@ATL@@YAXJ@Z
-		AUTO_PASS.add(fh(9, 0x9fdcae243f10941bL));
+		FORCE_SPECIFIC.add(fh(11, 0xa508065e4b64b352L));	// ?AllocateHeap@?$CTempBuffer@D$0IA@VCCRTAllocator@ATL@@@ATL@@AEAAX_K@Z
+		AUTO_PASS.add(fh(11, 0xa508065e4b64b352L));
+		FORCE_SPECIFIC.add(fh(9, 0xe961767d5c594520L));		// ?AtlThrowImpl@ATL@@YAXJ@Z
+		AUTO_PASS.add(fh(9, 0xe961767d5c594520L));
 		FORCE_SPECIFIC.add(fh(10, 0xaba76591680821c6L));	// strnlen
 		AUTO_PASS.add(fh(10, 0xaba76591680821c6L));
 		FORCE_SPECIFIC.add(fh(10, 0x6244ea7ccad27b93L));	// wcsnlen
 		AUTO_PASS.add(fh(10, 0x6244ea7ccad27b93L));
+		FORCE_SPECIFIC.add(fh(9, 0x347bdce6848098d1L));		// strncnt
+		AUTO_PASS.add(fh(9, 0x347bdce6848098d1L));
+		FORCE_SPECIFIC.add(fh(10, 0x668ac85a3d5bf04bL));	// raise_securityfailure
+		AUTO_PASS.add(fh(10, 0x668ac85a3d5bf04bL));
+
+		// Must exhibit relation and constants, plus one specific set of constants are marked as auto-fail
+		FORCE_SPECIFIC.add(fh(11, 0xf8ff33ae3bb6b9e9L));		// constructor
+		FORCE_RELATION.add(fh(11, 0xf8ff33ae3bb6b9e9L));
+		REMOVE_SPECHASHES.add(fh(11, 0xc03985b32a1f76ceL));
+
+	}
+
+	private void findMissingHashes(FidQueryService fidDB) {
+		for (Pair<String, Pair<Long, Long>> pair : SPECIAL_PARENT) {
+			List<FunctionRecord> childFunctions = fidDB.findFunctionsByFullHash(pair.second.first);
+			if (childFunctions.isEmpty()) {
+				println("Missing SPECIAL_PARENT child: " + Long.toHexString(pair.second.first));
+			}
+			List<FunctionRecord> parentFunctions =
+				fidDB.findFunctionsByFullHash(pair.second.second);
+			if (parentFunctions.isEmpty()) {
+				println("Missing SPECIAL_PARENT parent: " + Long.toHexString(pair.second.second));
+			}
+		}
+		for (Pair<Short, Long> removeHash : REMOVE_HASHES) {
+			List<FunctionRecord> funcList = fidDB.findFunctionsByFullHash(removeHash.second);
+			if (funcList.isEmpty()) {
+				println("Missing REMOVE_HASHES: " + Long.toHexString(removeHash.second));
+			}
+		}
+		for (Pair<Short, Long> removeHash : FORCE_RELATION) {
+			List<FunctionRecord> funcList = fidDB.findFunctionsByFullHash(removeHash.second);
+			if (funcList.isEmpty()) {
+				println("Missing FORCE_RELATION: " + Long.toHexString(removeHash.second));
+			}
+		}
+		for (Pair<Short, Long> removeHash : FORCE_SPECIFIC) {
+			List<FunctionRecord> funcList = fidDB.findFunctionsByFullHash(removeHash.second);
+			if (funcList.isEmpty()) {
+				println("Missing FORCE_SPECIFIC: " + Long.toHexString(removeHash.second));
+			}
+		}
+		for (Pair<Short, Long> removeHash : AUTO_PASS) {
+			List<FunctionRecord> funcList = fidDB.findFunctionsByFullHash(removeHash.second);
+			if (funcList.isEmpty()) {
+				println("Missing AUTO_PASS: " + Long.toHexString(removeHash.second));
+			}
+		}
+		for (Pair<Short, Long> pair : REMOVE_SPECHASHES) {
+			List<FunctionRecord> listSpecHash =
+				fidDB.findFunctionsBySpecificHash(pair.second.longValue());
+			if (listSpecHash.isEmpty()) {
+				println("Missing REMOVE_SPECHASHES: " + Long.toHexString(pair.second));
+			}
+		}
 	}
 
 	private static Pair<Short, Long> fh(int codeUnits, long digest) {
 		Pair<Short, Long> result = new Pair<>((short) codeUnits, digest);
 		return result;
+	}
+
+	protected void runSearch() throws Exception {
+		LanguageService langService = DefaultLanguageService.getLanguageService();
+		FidService fidService = new FidService();
+
+		buildKnownHashes32();
+		LanguageID langId = new LanguageID("x86:LE:32:default");
+		Language language = langService.getLanguage(langId);
+		println("Searching for x86:LE:32 hashes ...");
+		FidQueryService fidQueryService = fidService.openFidQueryService(language, false);
+		findMissingHashes(fidQueryService);
+
+		REMOVE_HASHES.clear();
+		REMOVE_SPECHASHES.clear();
+		FORCE_SPECIFIC.clear();
+		FORCE_RELATION.clear();
+		AUTO_PASS.clear();
+		AUTO_FAIL_REGEX.clear();
+		SPECIAL_PARENT.clear();
+
+		buildKnownHashes64();
+		langId = new LanguageID("x86:LE:64:default");
+		language = langService.getLanguage(langId);
+		println("Searching for x86:LE:64 hashes ...");
+		fidQueryService = fidService.openFidQueryService(language, false);
+		findMissingHashes(fidQueryService);
 	}
 
 	@Override
@@ -314,8 +521,15 @@ public class RemoveFunctions extends GhidraScript {
 		}
 		String[] nameArray = new String[dbfiles.size()];
 		dbfiles.toArray(nameArray);
-		String askChoice = askChoice("RemoveFunctions script", "Choose FID database: ",
-			Arrays.asList(nameArray), nameArray[0]);
+		String askChoice = null;
+		try {
+			askChoice = askChoice("RemoveFunctions script", "Choose FID database: ",
+				Arrays.asList(nameArray), nameArray[0]);
+		}
+		catch (CancelledException ex) {
+			runSearch();
+			return;
+		}
 		FidFile fidFile = fidMap.get(askChoice);
 		FidDB modifiableFidDB = fidFile.getFidDB(true);
 		List<LibraryRecord> allLibraries = modifiableFidDB.getAllLibraries();
@@ -347,7 +561,7 @@ public class RemoveFunctions extends GhidraScript {
 			monitor.setMaximum(AUTO_FAIL_REGEX.size());
 			monitor.setProgress(0);
 			for (String regex : AUTO_FAIL_REGEX) {
-				monitor.checkCanceled();
+				monitor.checkCancelled();
 				monitor.incrementProgress(1);
 				List<FunctionRecord> recordList = modifiableFidDB.findFunctionsByNameRegex(regex);
 				for (FunctionRecord record : recordList) {
@@ -357,7 +571,7 @@ public class RemoveFunctions extends GhidraScript {
 			monitor.setMaximum(SPECIAL_PARENT.size());
 			monitor.setProgress(0);
 			for (Pair<String, Pair<Long, Long>> pair : SPECIAL_PARENT) {
-				monitor.checkCanceled();
+				monitor.checkCancelled();
 				monitor.incrementProgress(1);
 				List<FunctionRecord> childFunctions =
 					modifiableFidDB.findFunctionsByFullHash(pair.second.first);
@@ -378,31 +592,42 @@ public class RemoveFunctions extends GhidraScript {
 			monitor.setProgress(0);
 			for (Pair<Short, Long> pair : REMOVE_HASHES) {
 				modifiableFidDB.setAutoFailByFullHash(pair.second.longValue(), true);
-				monitor.checkCanceled();
+				monitor.checkCancelled();
 				monitor.incrementProgress(1);
 			}
 			monitor.setMaximum(FORCE_RELATION.size());
 			monitor.setProgress(0);
 			for (Pair<Short, Long> pair : FORCE_RELATION) {
 				modifiableFidDB.setForceRelationByFullHash(pair.second.longValue(), true);
-				monitor.checkCanceled();
+				monitor.checkCancelled();
 				monitor.incrementProgress(1);
 			}
 			monitor.setMaximum(FORCE_SPECIFIC.size());
 			monitor.setProgress(0);
 			for (Pair<Short, Long> pair : FORCE_SPECIFIC) {
 				modifiableFidDB.setForceSpecificByFullHash(pair.second.longValue(), true);
-				monitor.checkCanceled();
+				monitor.checkCancelled();
 				monitor.incrementProgress(1);
 			}
 			monitor.setMaximum(AUTO_PASS.size());
 			monitor.setProgress(0);
 			for (Pair<Short, Long> pair : AUTO_PASS) {
 				modifiableFidDB.setAutoPassByFullHash(pair.second.longValue(), true);
-				monitor.checkCanceled();
+				monitor.checkCancelled();
 				monitor.incrementProgress(1);
 			}
 
+			monitor.setMaximum(REMOVE_SPECHASHES.size());
+			monitor.setProgress(0);
+			for (Pair<Short, Long> pair : REMOVE_SPECHASHES) {
+				List<FunctionRecord> listSpecHash =
+					modifiableFidDB.findFunctionsBySpecificHash(pair.second.longValue());
+				for (FunctionRecord funcRec : listSpecHash) {
+					modifiableFidDB.setAutoFailOnFunction(funcRec, true);
+				}
+				monitor.checkCancelled();
+				monitor.incrementProgress(1);
+			}
 			modifiableFidDB.saveDatabase("", monitor);
 		}
 		finally {

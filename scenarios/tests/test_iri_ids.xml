@@ -1,0 +1,402 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>IDS lab</name>
+  <author>Z. Cliffe Schreuders</author>
+  <description>
+    # Introduction
+    Intrusion Detection and Prevention Systems (IDS/IPS) are crucial components of network security, helping organizations monitor and defend against malicious activities and unauthorized access. This lab focuses on network monitoring basics and hands-on experience with tools like Tcpdump, Wireshark, and Snort, all useful for detecting and responding to potential threats. Network monitoring is a foundational practice in cybersecurity, as it allows you to observe network traffic and identify any suspicious or unwanted behavior. In this lab, you will gain practical experience by monitoring live network traffic, setting up Snort to detect network attacks, and analyzing the captured data. By the end of this lab, you will have a better understanding of how IDS/IPS systems work and how to configure and use them effectively to enhance network security.
+
+    During this hands-on lab, you will learn how to set up network monitoring tools like Tcpdump and Wireshark to observe live network traffic. You will use these tools to detect specific strings in network packets and identify port scanning attempts on a web server. Additionally, you will configure Snort, a popular IDS, to monitor network traffic to detect network activities of interest. As part of your practical exercises, you will trigger Snort alerts by sending ICMP pings and monitor the alerts generated. Throughout the lab, you will also interact with Hackerbot, which will simulate network attacks, and you will need to use the tools you've learned to detect and respond to these simulated attacks. By completing these tasks, you will develop practical skills in network monitoring and intrusion detection.
+
+    This is a Hackerbot lab. The labsheet is available once you claim a set of VMs. Work through the labsheet, then when prompted interact with Hackerbot.
+  </description>
+
+  <type>ctf-lab</type>
+  <type>hackerbot-lab</type>
+  <type>lab-sheet</type>
+  <difficulty>intermediate</difficulty>
+
+  <CyBOK KA="SOIM" topic="Monitor: Data Sources">
+    <keyword>network traffic</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="Analyse: Analysis Methods">
+    <keyword>misuse detection</keyword>
+    <keyword>anomaly detection</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="Execute: Mitigation and Countermeasures">
+    <keyword>intrusion prevention systems</keyword>
+  </CyBOK>
+  <CyBOK KA="NS" topic="Network Defence Tools">
+    <keyword>packet filters</keyword>
+    <keyword>intrusion detection systems</keyword>
+  </CyBOK>
+  <CyBOK KA="MAT" topic="Malware Detection">
+    <keyword>attack detection</keyword>
+  </CyBOK>
+
+  <video>
+    <title>The Cloud</title>
+    <by>Z. Cliffe Schreuders</by>
+    <url>https://youtu.be/raR0HstMnjg</url>
+    <type>lecture-prerecorded</type>
+    <CyBOK KA="SOIM" topic="Execute: Mitigation and Countermeasures">
+      <keyword>DATA REDUNDANCY</keyword>
+      <keyword>REDUNDANCY IN NETWORK SERVICES</keyword>
+    </CyBOK>
+    <CyBOK KA="DSS" topic="CLOUD - COMPUTING - SERVICES">
+      <keyword>CLOUD COMPUTING - DEPLOYMENT MODELS</keyword>
+      <keyword>CLOUD COMPUTING - RESOURCE POOLING</keyword>
+      <keyword>CLOUD COMPUTING - SERVICE MODELS - IAAS</keyword>
+      <keyword>CLOUD COMPUTING - SERVICE MODELS - PAAS</keyword>
+      <keyword>CLOUD COMPUTING - SERVICE MODELS - SAAS</keyword>
+      <keyword>CLOUD COMPUTING - STORAGE</keyword>
+    </CyBOK>
+    <CyBOK KA="OSV" topic="CLOUD - COMPUTING - SERVICES">
+      <keyword>CLOUD COMPUTING - VIRTUALIZATION</keyword>
+    </CyBOK>
+    <CyBOK KA="POR" topic="Confidentiality">
+      <keyword>CLOUD COMPUTING - PRIVACY CONCERNS</keyword>
+    </CyBOK>
+  </video>
+  <video>
+    <title>Redundancy and RAID</title>
+    <by>Z. Cliffe Schreuders</by>
+    <url>https://youtu.be/3oDVTSFhl8Y</url>
+    <type>lecture-prerecorded</type>
+    <CyBOK KA="SOIM" topic="Execute: Mitigation and Countermeasures">
+      <keyword>DATA REDUNDANCY</keyword>
+    </CyBOK>
+  </video>
+  <video>
+    <title>Intrusion Detection and Prevention Systems (IDS IPS)</title>
+    <by>Z. Cliffe Schreuders</by>
+    <url>https://youtu.be/M6MisvbU32M</url>
+    <type>lecture-prerecorded</type>
+    <CyBOK KA="SOIM" topic="Monitor: Data Sources">
+      <keyword>network traffic</keyword>
+    </CyBOK>
+    <CyBOK KA="SOIM" topic="Analyse: Analysis Methods">
+      <keyword>misuse detection</keyword>
+      <keyword>anomaly detection</keyword>
+    </CyBOK>
+    <CyBOK KA="SOIM" topic="Execute: Mitigation and Countermeasures">
+      <keyword>intrusion prevention systems</keyword>
+    </CyBOK>
+    <CyBOK KA="NS" topic="Network Defence Tools">
+      <keyword>packet filters</keyword>
+      <keyword>intrusion detection systems</keyword>
+    </CyBOK>
+    <CyBOK KA="MAT" topic="Malware Detection">
+      <keyword>attack detection</keyword>
+    </CyBOK>
+  </video>
+
+  <system>
+    <system_name>desktop</system_name>
+    <base distro="Debian 12" type="desktop" name="KDE"/>
+
+    <input into_datastore="IP_addresses">
+      <value>172.16.0.2</value>
+      <value>172.16.0.3</value>
+      <value>172.16.0.4</value>
+      <value>172.16.0.5</value>
+    </input>
+
+    <input into_datastore="organisation">
+      <generator type="organisation"/>
+    </input>
+
+    <!--generate two accounts, YOU and someone else-->
+    <input into_datastore="accounts">
+      <generator type="account">
+        <input into="username">
+          <generator type="random_sanitised_word">
+            <input into="wordlist">
+              <value>mythical_creatures</value>
+            </input>
+          </generator>
+        </input>
+        <input into="password">
+          <value>tiaspbiqe2r</value>
+        </input>
+        <input into="super_user">
+          <value>true</value>
+        </input>
+        <input into="leaked_filenames">
+          <value></value>
+        </input>
+        <input into="strings_to_leak">
+          <value></value>
+        </input>
+      </generator>
+      <generator type="account">
+        <input into="username">
+          <generator type="random_sanitised_word">
+            <input into="wordlist">
+              <value>mythical_creatures</value>
+            </input>
+          </generator>
+        </input>
+        <input into="password">
+          <value>test</value>
+        </input>
+        <input into="super_user">
+          <value>false</value>
+        </input>
+        <input into="leaked_filenames">
+          <value></value>
+        </input>
+        <input into="strings_to_leak">
+          <value></value>
+        </input>
+      </generator>
+      <generator type="account">
+        <input into="username">
+          <generator type="random_sanitised_word">
+            <input into="wordlist">
+              <value>mythical_creatures</value>
+            </input>
+          </generator>
+        </input>
+        <input into="password">
+          <value>test</value>
+        </input>
+        <input into="super_user">
+          <value>false</value>
+        </input>
+        <input into="leaked_filenames">
+          <value></value>
+        </input>
+        <input into="strings_to_leak">
+          <value></value>
+        </input>
+      </generator>
+    </input>
+
+    <!-- an admin account used for hackerbot access to the desktop and also spoilers/administration of the challenge -->
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+
+    <!--Create the users-->
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts">
+        <datastore>accounts</datastore>
+      </input>
+    </utility>
+
+    <utility module_path=".*/kde_minimal">
+      <input into="autologin_user">
+        <datastore access="0" access_json="['username']">accounts</datastore>
+      </input>
+      <input into="accounts">
+        <datastore>accounts</datastore>
+      </input>
+      <input into="autostart_konsole">
+        <value>true</value>
+      </input>
+    </utility>
+    <utility module_path=".*/handy_cli_tools"/>
+    <utility module_path=".*/nmap"/>
+
+    <utility module_path=".*/iceweasel">
+      <input into="accounts">
+        <datastore>accounts</datastore>
+      </input>
+      <input into="autostart">
+        <value>true</value>
+      </input>
+      <input into="start_page">
+        <datastore access="3">IP_addresses</datastore>
+      </input>
+    </utility>
+
+    <utility module_path=".*/pidgin">
+      <input into="server_ip">
+        <datastore access="3">IP_addresses</datastore>
+      </input>
+      <input into="accounts">
+        <datastore access="0">accounts</datastore>
+      </input>
+    </utility>
+
+    <utility module_path=".*/handy_cli_tools"/>
+    <utility module_path=".*/wireshark"/>
+    <utility module_path=".*/nmap"/>
+
+    <utility module_path=".*/mirror_traffic_to_ids_iptables">
+      <input into="ids_IP_address">
+        <datastore access="1">IP_addresses</datastore>
+      </input>
+    </utility>
+
+    <vulnerability module_path=".*/ssh_root_login">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </vulnerability>
+
+    <network type="private_network" >
+      <input into="IP_address">
+        <datastore access="0">IP_addresses</datastore>
+      </input>
+    </network>
+
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+
+  <system>
+    <system_name>ids_monitor</system_name>
+    <base distro="Debian 10" type="desktop" name="KDE"/>
+
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts">
+        <datastore>accounts</datastore>
+      </input>
+    </utility>
+
+    <utility module_path=".*/kde_minimal">
+      <input into="autologin_user">
+        <datastore access="0" access_json="['username']">accounts</datastore>
+      </input>
+      <input into="accounts">
+        <datastore>accounts</datastore>
+      </input>
+      <input into="autostart_konsole">
+        <value>true</value>
+      </input>
+    </utility>
+    <utility module_path=".*/handy_cli_tools"/>
+    <utility module_path=".*/snort"/>
+    <utility module_path=".*/wireshark"/>
+    <utility module_path=".*/nmap"/>
+
+    <vulnerability module_path=".*/ssh_root_login">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </vulnerability>
+
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="1">IP_addresses</datastore>
+      </input>
+    </network>
+
+    <!-- an admin account only for spoilers/administration of the challenge -->
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+
+  <system>
+    <system_name>web_server</system_name>
+    <base distro="Debian 12" type="desktop" name="KDE"/>
+
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts">
+        <datastore>accounts</datastore>
+      </input>
+    </utility>
+
+    <vulnerability module_path=".*/distcc_exec"/>
+
+
+    <!--TODO: Fix the apache module -->
+    <service type="httpd" module_path=".*/apache.*"/>
+
+    <!--<service module_path="services/unix/http/parameterised_website">
+      <input into="organisation">
+        <datastore>organisation</datastore>
+      </input>
+    </service>-->
+
+    <utility module_path=".*/handy_cli_tools"/>
+    <utility module_path=".*/wireshark"/>
+    <utility module_path=".*/nmap"/>
+
+    <utility module_path=".*/mirror_traffic_to_ids_iptables">
+      <input into="ids_IP_address">
+        <datastore access="1">IP_addresses</datastore>
+      </input>
+    </utility>
+
+    <vulnerability module_path=".*/ssh_root_login">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </vulnerability>
+
+    <network type="private_network" >
+      <input into="IP_address">
+        <datastore access="2">IP_addresses</datastore>
+      </input>
+    </network>
+
+    <!-- an admin account only for spoilers/administration of the challenge -->
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+
+  <system>
+    <system_name>hackerbot_server</system_name>
+    <base distro="Kali" name="MSF"/>
+
+    <service type="ircd"/>
+
+    <utility module_path=".*/metasploit_framework"/>
+    <utility module_path=".*/handy_cli_tools"/>
+    <utility module_path=".*/nmap"/>
+
+    <service type="httpd" module_path=".*/apache.*"/>
+
+    <utility module_path=".*/hackerbot">
+      <input into="hackerbot_configs" into_datastore="hackerbot_instructions">
+        <generator module_path=".*/ids">
+          <input into="accounts">
+            <datastore>accounts</datastore>
+          </input>
+          <input into="root_password">
+            <datastore>spoiler_admin_pass</datastore>
+          </input>
+          <input into="ids_server_ip">
+            <datastore access="1">IP_addresses</datastore>
+          </input>
+          <input into="web_server_ip">
+            <datastore access="2">IP_addresses</datastore>
+          </input>
+          <input into="hackerbot_server_ip">
+            <datastore access="3">IP_addresses</datastore>
+          </input>
+        </generator>
+      </input>
+    </utility>
+
+    <network type="private_network" >
+      <input into="IP_address">
+        <datastore access="3">IP_addresses</datastore>
+      </input>
+    </network>
+
+    <!-- an admin account only for spoilers/administration of the challenge -->
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+
+</scenario>

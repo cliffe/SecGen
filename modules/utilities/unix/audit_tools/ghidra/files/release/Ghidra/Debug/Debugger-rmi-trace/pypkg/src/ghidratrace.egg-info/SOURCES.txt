@@ -1,0 +1,13 @@
+LICENSE
+README.md
+pyproject.toml
+src/ghidratrace/__init__.py
+src/ghidratrace/client.py
+src/ghidratrace/sch.py
+src/ghidratrace/trace_rmi_pb2.py
+src/ghidratrace/util.py
+src/ghidratrace.egg-info/PKG-INFO
+src/ghidratrace.egg-info/SOURCES.txt
+src/ghidratrace.egg-info/dependency_links.txt
+src/ghidratrace.egg-info/requires.txt
+src/ghidratrace.egg-info/top_level.txt

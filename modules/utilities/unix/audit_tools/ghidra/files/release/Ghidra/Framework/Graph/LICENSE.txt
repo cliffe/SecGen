@@ -9,16 +9,27 @@ The 3rd party files in this module are as follows:
 Oxygen Icons - LGPL 3.0:
 
 	src/main/resources/images/network-wireless-16.png
+	src/main/resources/images/project-open.png
 	src/main/resources/images/network-wireless.png
 
-BSD:
+BSD-3-JUNG:
 
+	src/main/java/ghidra/graph/viewer/event/mouse/JungPickingGraphMousePlugin.java
 	lib/jung-api-2.1.1.jar
 	lib/jung-visualization-2.1.1.jar
 	lib/jung-algorithms-2.1.1.jar
 	lib/jung-graph-impl-2.1.1.jar
 
+LGPL 2.1:
+
+	lib/jgrapht-core-1.5.1.jar
+	lib/jgrapht-io-1.5.1.jar
+
 FAMFAMFAM Icons - CC 2.5:
 
 	src/main/resources/images/color_swatch.png
+
+Tango Icons - Public Domain:
+
+	src/main/resources/images/view-fullscreen.png
 

@@ -91,7 +91,7 @@ define token instr32(32)
     l_rm_20_23 =        (20, 23)
     l_rn_24_27 =        (24, 27)
     l_opcode_28_31 =    (28, 31)
-    l_simm20_00_16 =    (0, 16) signed
+    l_imm20_00_15 =     (0, 15)
     l_simm20_20_23 =    (20, 23) signed
     l_imm3_20_22 =      (20, 22)
 ;
@@ -116,7 +116,7 @@ attach names [ rm_imm_08_11 rn_imm_08_11 ] [
 @if defined(FPU)
 
 define token finstr16(16)
-    fop_00_07 =         (0,  8)
+    fop_00_07 =         (0,  7)
     fop_00_03 =         (0,  3)
     fop_04_07 =         (4,  7)
     fop_12_15 =         (12, 15)
@@ -242,7 +242,7 @@ disppc2: @(disp,pc) is disp_00_07 & pc
 }
 
 # the following two instructions share the same opcodes but differ if rm == rn
-:mov.b  @rm_04_07+,rn_08_11  is opcode_12_15=0b0110 & rn_08_11 & rm_04_07 & opcode_00_03=0b0100 & (opcode_04_07=opcode_08_11)
+:mov.b  @rm_04_07+,rn_08_11  is opcode_12_15=0b0110 & rn_08_11 & rm_04_07 & opcode_00_03=0b0100 & opcode_04_07=opcode_08_11
 {
     rn_08_11 =  sext(*:1 rm_04_07);
 }
@@ -254,24 +254,24 @@ disppc2: @(disp,pc) is disp_00_07 & pc
 }
 
 # the following two instructions share the same opcodes but differ if rm == rn
-:mov.w  @rm_04_07+,rn_08_11  is opcode_12_15=0b0110 & rn_08_11 & rm_04_07 & opcode_00_03=0b0101 & (opcode_04_07=opcode_08_11)
+:mov.w  @rm_04_07+,rn_08_11  is opcode_12_15=0b0110 & rn_08_11 & rm_04_07 & opcode_00_03=0b0101 & opcode_04_07=opcode_08_11
 {
     rn_08_11 =  sext(*:2 rm_04_07);
 }
 
-:mov.w  @rm_04_07+,rn_08_11  is opcode_12_15=0b0110 & rn_08_11 & rm_04_07 & opcode_00_03=0b0101 & opcode_04_07 & opcode_08_11
+:mov.w  @rm_04_07+,rn_08_11  is opcode_12_15=0b0110 & rn_08_11 & rm_04_07 & opcode_00_03=0b0101
 {
     rn_08_11 =  sext(*:2 rm_04_07);
     rm_04_07 = rm_04_07 + 2;
 }
 
 # the following two instructions share the same opcodes but differ if rm == rn
-:mov.l  @rm_04_07+,rn_08_11  is opcode_12_15=0b0110 & rn_08_11 & rm_04_07 & opcode_00_03=0b0110 & (opcode_04_07=opcode_08_11)
+:mov.l  @rm_04_07+,rn_08_11  is opcode_12_15=0b0110 & rn_08_11 & rm_04_07 & opcode_00_03=0b0110 & opcode_04_07=opcode_08_11
 {
     rn_08_11 =  *:4 rm_04_07;
 }
 
-:mov.l  @rm_04_07+,rn_08_11  is opcode_12_15=0b0110 & rn_08_11 & rm_04_07 & opcode_00_03=0b0110 & opcode_04_07 & opcode_08_11
+:mov.l  @rm_04_07+,rn_08_11  is opcode_12_15=0b0110 & rn_08_11 & rm_04_07 & opcode_00_03=0b0110
 {
     rn_08_11 =  *:4 rm_04_07;
     rm_04_07 = rm_04_07 + 4;
@@ -280,13 +280,13 @@ disppc2: @(disp,pc) is disp_00_07 & pc
 :mov.b  rm_04_07,@-rn_08_11  is opcode_12_15=0b0010 & rn_08_11 & rm_04_07 & opcode_00_03=0b0100 
 {
     rn_08_11 = rn_08_11 -1;
-    *:1 rn_08_11 = rm_04_07;
+    *:1 rn_08_11 = rm_04_07:1;
 }
 
 :mov.w  rm_04_07,@-rn_08_11  is opcode_12_15=0b0010 & rn_08_11 & rm_04_07 & opcode_00_03=0b0101 
 {
     rn_08_11 = rn_08_11 -2;
-    *:2 rn_08_11 = rm_04_07;
+    *:2 rn_08_11 = rm_04_07:2;
 }
 
 :mov.l  rm_04_07,@-rn_08_11  is opcode_12_15=0b0010 & rn_08_11 & rm_04_07 & opcode_00_03=0b0110 
@@ -396,7 +396,7 @@ disppc2: @(disp,pc) is disp_00_07 & pc
 :mov.b r0, @rn_08_11+
     is r0 & opcode_12_15=0b0100 & rn_08_11 & opcode_00_07=0b10001011
 {
-    *:1 (rn_08_11) = r0;
+    *:1 (rn_08_11) = r0:1;
     rn_08_11 = rn_08_11 + 1;
 }
 
@@ -404,7 +404,7 @@ disppc2: @(disp,pc) is disp_00_07 & pc
 :mov.w r0, @rn_08_11+
     is r0 & opcode_12_15=0b0100 & rn_08_11 & opcode_00_07=0b10011011
 {
-    *:2 (rn_08_11) = r0;
+    *:2 (rn_08_11) = r0:2;
     rn_08_11 = rn_08_11 + 2;
 }
 
@@ -443,7 +443,7 @@ disppc2: @(disp,pc) is disp_00_07 & pc
 # MOV.B Rm, @(disp12, Rn)    0011nnnnmmmm0001 0000dddddddddddd      Rm -> (disp+Rn)
 :mov.b  l_rm_20_23, @(l_disp_00_11, l_rn_24_27)  is l_opcode_28_31=0b0011 & l_rn_24_27 & l_rm_20_23 & l_opcode_16_19=0b0001 & l_opcode_12_15=0b0000 & l_disp_00_11
 {
-   *:1 (l_rn_24_27 + l_disp_00_11) = l_rm_20_23;
+   *:1 (l_rn_24_27 + l_disp_00_11) = l_rm_20_23:1;
 }
 
 # MOV.W Rm, @(disp12, Rn)   0011nnnnmmmm0001 0001dddddddddddd       Rm → (disp×2+Rn)
@@ -451,7 +451,7 @@ disppc2: @(disp,pc) is disp_00_07 & pc
     is l_opcode_28_31=0b0011 & l_rn_24_27 & l_rm_20_23 & l_opcode_16_19=0b0001 & l_opcode_12_15=0b0001 & l_disp_00_11
     [ disp = 2*l_disp_00_11; ]
 {
-   *:2 (l_rn_24_27 + disp) = l_rm_20_23;
+   *:2 (l_rn_24_27 + disp) = l_rm_20_23:2;
 }
 
 # MOV.L Rm, @(disp12, Rn)   0011nnnnmmmm0001 0010dddddddddddd       Rm → (disp×4+Rn)
@@ -488,7 +488,7 @@ disppc2: @(disp,pc) is disp_00_07 & pc
 :movu.b @(l_disp_00_11, l_rm_20_23), l_rn_24_27
     is l_opcode_28_31=0b0011 & l_rn_24_27 & l_rm_20_23 & l_opcode_16_19=0b0001 & l_opcode_12_15=0b1000 & l_disp_00_11
 {
-    l_rm_20_23 = zext(*:1 (l_disp_00_11 + l_rm_20_23));
+    l_rn_24_27 = zext(*:1 (l_disp_00_11 + l_rm_20_23));
 }
 
 # MOVU.W @(disp12,Rm), Rn 0011nnnnmmmm0001 1001dddddddddddd (disp×2+Rm) → zero extension → Rn
@@ -496,29 +496,30 @@ disppc2: @(disp,pc) is disp_00_07 & pc
     is l_opcode_28_31=0b0011 & l_rn_24_27 & l_rm_20_23 & l_opcode_16_19=0b0001 & l_opcode_12_15=0b1001 & l_disp_00_11
     [ disp = l_disp_00_11 * 2; ]
 {
-    l_rm_20_23 = zext(*:2 (disp + l_rm_20_23));
+    l_rn_24_27 = zext(*:2 (disp + l_rm_20_23));
 }
 
-imm20: "#"value is l_simm20_20_23 & l_simm20_00_16
-    [ value = ((l_simm20_20_23 << 16) | l_simm20_00_16); ]
+simm20: "#"value is l_simm20_20_23 & l_imm20_00_15
+    [ value = ((l_simm20_20_23 << 16) | l_imm20_00_15); ]
     { export *[const]:4 value; }
 
-imm20s: "#"value is l_simm20_20_23 & l_simm20_00_16
-    [ value = ((l_simm20_20_23 << 16) | l_simm20_00_16) << 8; ]
+simm20s: "#"value is l_simm20_20_23 & l_imm20_00_15
+    [ value = ((l_simm20_20_23 << 16) | l_imm20_00_15) << 8; ]
     { export *[const]:4 value; }
+
 
 # MOVI20 #imm20, Rn           0000nnnniiii0000 iiiiiiiiiiiiiiii     imm → sign extension → Rn
-:movi20 imm20, l_rn_24_27
-    is l_opcode_28_31=0b0000 & l_rn_24_27 & l_opcode_16_19=0b0000 & imm20
+:movi20 simm20, l_rn_24_27
+    is l_opcode_28_31=0b0000 & l_rn_24_27 & l_opcode_16_19=0b0000 & simm20
 {
-    l_rn_24_27 = imm20;
+    l_rn_24_27 = simm20;
 }
 
 # MOVI20S #imm20, Rn          0000nnnniiii0001 iiiiiiiiiiiiiiii     imm<<8 → sign extension → Rn
-:movi20s imm20s, l_rn_24_27
-    is l_opcode_28_31=0b0000 & l_rn_24_27 & l_opcode_16_19=0b0001 & imm20s
+:movi20s simm20s, l_rn_24_27
+    is l_opcode_28_31=0b0000 & l_rn_24_27 & l_opcode_16_19=0b0001 & simm20s
 {
-    l_rn_24_27 = imm20s;
+    l_rn_24_27 = simm20s;
 }
 
 #
@@ -680,7 +681,7 @@ MovMLReg2_14:  rm_imm_08_11  is MovMLReg2_13load   & rm_imm_08_11 & rm_08_11=14 
 MovMLReg2_14load:  is MovMLReg2_13load  & rm_imm_08_11 { build MovMLReg2_13load; loadRegister(r14,r15); }
 
 MovMLReg2_15:	MovMLReg2_14  is MovMLReg2_14                                    { r0 = r0; }
-MovMLReg2_15:	rm_imm_08_11  is MovMLReg2_14load  & rm_imm_08_11 & rm_08_11=15  { build MovMLReg2_14load; storeRegister(pr,r15); }
+MovMLReg2_15:	rm_imm_08_11  is MovMLReg2_14load  & rm_imm_08_11 & rm_08_11=15  { build MovMLReg2_14load; loadRegister(pr,r15); }
 
 MovMLReg2: MovMLReg2_15  is MovMLReg2_15 {
 	build MovMLReg2_15;
@@ -753,46 +754,46 @@ MovMUReg1: MovMUReg1_15 is MovMUReg1_15 {
 
 MovMUReg2_0:	rm_imm_08_11     is rm_imm_08_11 & rm_08_11=0 {  loadRegister(r0,r15); }
 
-MovMUReg2_1:	MovMUReg2_0  	is MovMUReg2_0                         {  build MovMUReg2_0; loadRegister(pr,r15); }
+MovMUReg2_1:	MovMUReg2_0  	is MovMUReg2_0                         {  build MovMUReg2_0; loadRegister(r1,r15); }
 MovMUReg2_1:	rm_imm_08_11     is rm_imm_08_11 & rm_08_11=1 {  loadRegister(r1,r15); }
 
-MovMUReg2_2:	MovMUReg2_1  	is MovMUReg2_1                         {  build MovMUReg2_1; loadRegister(pr,r15); }
+MovMUReg2_2:	MovMUReg2_1  	is MovMUReg2_1                         {  build MovMUReg2_1; loadRegister(r2,r15); }
 MovMUReg2_2:	rm_imm_08_11     is rm_imm_08_11 & rm_08_11=2 {  loadRegister(r2,r15); }
 
-MovMUReg2_3:	MovMUReg2_2  	is MovMUReg2_2                         {  build MovMUReg2_2; loadRegister(pr,r15); }
+MovMUReg2_3:	MovMUReg2_2  	is MovMUReg2_2                         {  build MovMUReg2_2; loadRegister(r3,r15); }
 MovMUReg2_3:	rm_imm_08_11     is rm_imm_08_11 & rm_08_11=3 {  loadRegister(r3,r15); }
 
-MovMUReg2_4:	MovMUReg2_3  	is MovMUReg2_3                         {  build MovMUReg2_3; loadRegister(pr,r15); }
+MovMUReg2_4:	MovMUReg2_3  	is MovMUReg2_3                         {  build MovMUReg2_3; loadRegister(r4,r15); }
 MovMUReg2_4:	rm_imm_08_11     is rm_imm_08_11 & rm_08_11=4 {  loadRegister(r4,r15); }
 
-MovMUReg2_5:	MovMUReg2_4  	is MovMUReg2_4                         {  build MovMUReg2_4; loadRegister(pr,r15); }
+MovMUReg2_5:	MovMUReg2_4  	is MovMUReg2_4                         {  build MovMUReg2_4; loadRegister(r5,r15); }
 MovMUReg2_5:	rm_imm_08_11     is rm_imm_08_11 & rm_08_11=5 {  loadRegister(r5,r15); }
 
-MovMUReg2_6:	MovMUReg2_5  	is MovMUReg2_5                         {  build MovMUReg2_5; loadRegister(pr,r15); }
+MovMUReg2_6:	MovMUReg2_5  	is MovMUReg2_5                         {  build MovMUReg2_5; loadRegister(r6,r15); }
 MovMUReg2_6:	rm_imm_08_11     is rm_imm_08_11 & rm_08_11=6 {  loadRegister(r6,r15); }
 
-MovMUReg2_7:	MovMUReg2_6  	is MovMUReg2_6                         { build MovMUReg2_6; loadRegister(pr,r15); }
+MovMUReg2_7:	MovMUReg2_6  	is MovMUReg2_6                         { build MovMUReg2_6; loadRegister(r7,r15); }
 MovMUReg2_7:	rm_imm_08_11     is rm_imm_08_11 & rm_08_11=7 {  loadRegister(r7,r15); }
 
-MovMUReg2_8:	MovMUReg2_7  	is MovMUReg2_7                         {  build MovMUReg2_7; loadRegister(pr,r15); }
+MovMUReg2_8:	MovMUReg2_7  	is MovMUReg2_7                         {  build MovMUReg2_7; loadRegister(r8,r15); }
 MovMUReg2_8:	rm_imm_08_11     is rm_imm_08_11 & rm_08_11=8 {  loadRegister(r8,r15); }
 
-MovMUReg2_9:	MovMUReg2_8  	is MovMUReg2_8                         {  build MovMUReg2_8; loadRegister(pr,r15); }
+MovMUReg2_9:	MovMUReg2_8  	is MovMUReg2_8                         {  build MovMUReg2_8; loadRegister(r9,r15); }
 MovMUReg2_9:	rm_imm_08_11     is rm_imm_08_11 & rm_08_11=9 {  loadRegister(r9,r15); }
 
-MovMUReg2_10:	MovMUReg2_9  	is MovMUReg2_9                         {  build MovMUReg2_9; loadRegister(pr,r15); }
+MovMUReg2_10:	MovMUReg2_9  	is MovMUReg2_9                         {  build MovMUReg2_9; loadRegister(r10,r15); }
 MovMUReg2_10:	rm_imm_08_11     is rm_imm_08_11 & rm_08_11=10 {  loadRegister(r10,r15); }
 
-MovMUReg2_11:	MovMUReg2_10  	is MovMUReg2_10                         {  build MovMUReg2_10; loadRegister(pr,r15); }
+MovMUReg2_11:	MovMUReg2_10  	is MovMUReg2_10                         {  build MovMUReg2_10; loadRegister(r11,r15); }
 MovMUReg2_11:	rm_imm_08_11     is rm_imm_08_11 & rm_08_11=11 {  loadRegister(r11,r15); }
 
-MovMUReg2_12:	MovMUReg2_11  	is MovMUReg2_11                         {  build MovMUReg2_11; loadRegister(pr,r15); }
+MovMUReg2_12:	MovMUReg2_11  	is MovMUReg2_11                         {  build MovMUReg2_11; loadRegister(r12,r15); }
 MovMUReg2_12:	rm_imm_08_11     is rm_imm_08_11 & rm_08_11=12 {  loadRegister(r12,r15); }
 
-MovMUReg2_13:	MovMUReg2_12	is MovMUReg2_12                            {  build MovMUReg2_12; loadRegister(pr,r15); }
+MovMUReg2_13:	MovMUReg2_12	is MovMUReg2_12                            {  build MovMUReg2_12; loadRegister(r13,r15); }
 MovMUReg2_13:	rm_imm_08_11     is rm_imm_08_11 & rm_08_11=13 {  loadRegister(r13,r15); }
 
-MovMUReg2_14:	MovMUReg2_13	is MovMUReg2_13                            {  build MovMUReg2_13; loadRegister(pr,r15); }
+MovMUReg2_14:	MovMUReg2_13	is MovMUReg2_13                            {  build MovMUReg2_13; loadRegister(r14,r15); }
 MovMUReg2_14:	rm_imm_08_11     is rm_imm_08_11 & rm_08_11=14 {  loadRegister(r14,r15); }
 
 MovMUReg2_15:	MovMUReg2_14	is MovMUReg2_14                             {  build MovMUReg2_14; loadRegister(pr,r15); }
@@ -875,7 +876,7 @@ MovMUReg2: MovMUReg2_15 is MovMUReg2_15 {
     local temp1;
     
     temp1 = rn_08_11 + rm_04_07;
-    temp0 = temp1;
+    temp0 = rn_08_11;
 
     rn_08_11 = temp1 + zext($(T_FLAG));    
     
@@ -943,20 +944,12 @@ MovMUReg2: MovMUReg2_15 is MovMUReg2_15 {
 
 :cmp"/str"  rm_04_07,rn_08_11  is opcode_12_15=0b0010 & rn_08_11 & rm_04_07 & opcode_00_03=0b1100 
 {
-    local temp:4;
-    local HH:4;
-    local HL:4;
-    local LH:4;
-    local LL:4;
+    local tmp0:1 = (rm_04_07[0,8] == rn_08_11[0,8]);
+    local tmp1:1 = (rm_04_07[8,8] == rn_08_11[8,8]);
+    local tmp2:1 = (rm_04_07[16,8] == rn_08_11[16,8]);
+    local tmp3:1 = (rm_04_07[24,8] == rn_08_11[24,8]);
     
-    temp = rn_08_11 ^ rm_04_07;
-    
-    HH = (temp & 0xFF000000) >> 24;
-    HL = (temp & 0x00FF0000) >> 16;
-    LH = (temp & 0x0000FF00) >> 8;
-    LL = (temp & 0x000000FF);
-
-    $(T_FLAG) = (HH != 0) && (HL != 0) && (LH != 0) && (LL != 0);
+    $(T_FLAG) = tmp0 || tmp1 || tmp2 || tmp3;
 }
 
 @if SH_VERSION == "2A"
@@ -1001,8 +994,8 @@ MovMUReg2: MovMUReg2_15 is MovMUReg2_15 {
 
 :div0s  rm_04_07,rn_08_11  is opcode_12_15=0b0010 & rn_08_11 & rm_04_07 & opcode_00_03=0b0111 
 {
-    $(Q_FLAG) = !((rn_08_11 & 0x80000000) == 0);
-    $(M_FLAG) = !((rm_04_07 & 0x80000000) == 0);
+    $(Q_FLAG) = rn_08_11 s< 0;
+    $(M_FLAG) = rm_04_07 s< 0;
     
     $(T_FLAG) = !($(M_FLAG) == $(Q_FLAG));
 }
@@ -1020,74 +1013,25 @@ MovMUReg2: MovMUReg2_15 is MovMUReg2_15 {
     local tmp1:1;
     local tmp2:4;
     local old_q:1;
+    local old_q_eq_m:1;
+    local m_eq_q:1;
     
     old_q = $(Q_FLAG);
     $(Q_FLAG) = (0x80000000 & rn_08_11) != 0;
     tmp2 = rm_04_07;
     rn_08_11 = rn_08_11 << 1;
     rn_08_11 = rn_08_11 | zext($(T_FLAG));
+    old_q_eq_m = old_q == $(M_FLAG);
+    m_eq_q = $(M_FLAG) == $(Q_FLAG);
     
-    # FIXME: cleaner way to do this??
     tmp0 = rn_08_11;
+    # rn_08_11 = old_q_eq_m ? rn_08_11 - tmp2 : rn_08_11 + tmp2;
+    rn_08_11 = (zext(old_q_eq_m) * (rn_08_11 - tmp2)) + (zext(!old_q_eq_m) * (rn_08_11 + tmp2));
+    # tmp1 = old_q_eq_m ? rn_08_11 > tmp0 : rn_08_11 < tmp0;
+    tmp1 = (old_q_eq_m * (rn_08_11 > tmp0)) + (!old_q_eq_m * (rn_08_11 < tmp0));
+    # $(Q_FLAG) = m_eq_q ? tmp1 : tmp1 == 0;
+    $(Q_FLAG) = (m_eq_q * tmp1) + (!m_eq_q & (tmp1 == 0));
     
-    if(old_q == 0 && $(M_FLAG) == 0 && $(Q_FLAG) == 0) goto <OQ0_M0_Q0>;
-    if(old_q == 0 && $(M_FLAG) == 0 && $(Q_FLAG) == 1) goto <OQ0_M0_Q1>;
-    if(old_q == 0 && $(M_FLAG) == 1 && $(Q_FLAG) == 0) goto <OQ0_M1_Q0>;
-    if(old_q == 0 && $(M_FLAG) == 1 && $(Q_FLAG) == 1) goto <OQ0_M1_Q1>;
-    if(old_q == 1 && $(M_FLAG) == 0 && $(Q_FLAG) == 0) goto <OQ1_M0_Q0>;
-    if(old_q == 1 && $(M_FLAG) == 0 && $(Q_FLAG) == 1) goto <OQ1_M0_Q1>;
-    if(old_q == 1 && $(M_FLAG) == 1 && $(Q_FLAG) == 0) goto <OQ1_M1_Q0>;
-    if(old_q == 1 && $(M_FLAG) == 1 && $(Q_FLAG) == 1) goto <OQ1_M1_Q1>;
-    
-    <OQ0_M0_Q0>
-    rn_08_11 = rn_08_11 - tmp2;
-    tmp1 = rn_08_11 > tmp0;
-    $(Q_FLAG) = tmp1;
-    goto <SET_FLAG>;
-    
-    <OQ0_M0_Q1>
-    rn_08_11 = rn_08_11 - tmp2;
-    tmp1 = rn_08_11 > tmp0;
-    $(Q_FLAG) = tmp1 == 0;
-    goto <SET_FLAG>;
-    
-    <OQ0_M1_Q0>
-    rn_08_11 = rn_08_11 + tmp2;
-    tmp1 = rn_08_11 < tmp0;
-    $(Q_FLAG) = tmp1 == 0;
-    goto <SET_FLAG>;
-    
-    <OQ0_M1_Q1>
-    rn_08_11 = rn_08_11 + tmp2;
-    tmp1 = rn_08_11 < tmp0;
-    $(Q_FLAG) = tmp1;
-    goto <SET_FLAG>;
-    
-    <OQ1_M0_Q0>
-    rn_08_11 = rn_08_11 + tmp2;
-    tmp1 = rn_08_11 < tmp0;
-    $(Q_FLAG) = tmp1;
-    goto <SET_FLAG>;
-    
-    <OQ1_M0_Q1>
-    rn_08_11 = rn_08_11 + tmp2;
-    tmp1 = rn_08_11 < tmp0;
-    $(Q_FLAG) = tmp1;
-    goto <SET_FLAG>;
-    
-    <OQ1_M1_Q0>
-    rn_08_11 = rn_08_11 - tmp2;
-    tmp1 = rn_08_11 > tmp0;
-    $(Q_FLAG) = tmp1 == 0;
-    goto <SET_FLAG>;
-    
-    <OQ1_M1_Q1>
-    rn_08_11 = rn_08_11 - tmp2;
-    tmp1 = rn_08_11 > tmp0;
-    $(Q_FLAG) = tmp1;
-    goto <SET_FLAG>;
-    
-    <SET_FLAG>
     $(T_FLAG) = $(Q_FLAG) == $(M_FLAG);
 }
 
@@ -1147,12 +1091,14 @@ MovMUReg2: MovMUReg2_15 is MovMUReg2_15 {
 
 :extu.b rm_04_07,rn_08_11  is opcode_12_15=0b0110 & rn_08_11 & rm_04_07 & opcode_00_03=0b1100 
 {
-    rn_08_11 = rm_04_07 & 0x000000FF;
+    local temp:1 = rm_04_07:1;
+    rn_08_11 = zext(temp);
 }
 
 :extu.w rm_04_07,rn_08_11  is opcode_12_15=0b0110 & rn_08_11 & rm_04_07 & opcode_00_03=0b1101 
 {
-    rn_08_11 = rm_04_07 & 0x0000FFFF;
+    local temp:2 = rm_04_07:2;
+    rn_08_11 = zext(temp);
 }
 
 @if (SH_VERSION == "2") || (SH_VERSION == "2A")
@@ -1353,28 +1299,24 @@ MovMUReg2: MovMUReg2_15 is MovMUReg2_15 {
 
 :muls.w rm_04_07,rn_08_11  is opcode_12_15=0b0010 & rn_08_11 & rm_04_07 & opcode_00_03=0b1111 
 {
-    macl = sext(rn_08_11:2 & 0xFFFF) * sext(rm_04_07:2 & 0xFFFF);
+    macl = sext(rn_08_11:2) * sext(rm_04_07:2);
 }
 
 :mulu.w rm_04_07,rn_08_11  is opcode_12_15=0b0010 & rn_08_11 & rm_04_07 & opcode_00_03=0b1110 
 {
-    macl = (rn_08_11 & 0xFFFF) * (rm_04_07 & 0xFFFF);
+    macl = zext(rn_08_11:2) * zext(rm_04_07:2);
 }
 
 :neg    rm_04_07,rn_08_11  is opcode_12_15=0b0110 & rn_08_11 & rm_04_07 & opcode_00_03=0b1011 
 {
-    rn_08_11 = 0 - rm_04_07;
+    rn_08_11 = -rm_04_07;
 }
 
 :negc   rm_04_07,rn_08_11  is opcode_12_15=0b0110 & rn_08_11 & rm_04_07 & opcode_00_03=0b1010 
 {
-    local temp;
-    
-    temp = 0 - rm_04_07;
+    local temp:4 = -rm_04_07;
     rn_08_11 = temp - zext($(T_FLAG));
     
-    # FIXME: should temp be signed or unsigned??
-    # Documentation says if(0 < temp) not 0 != temp
     $(T_FLAG) = (0 != temp) || (temp < rn_08_11);
 }
 
@@ -1543,7 +1485,7 @@ MovMUReg2: MovMUReg2_15 is MovMUReg2_15 {
 {
     $(T_FLAG) = ((rn_08_11 & 0x1) != 0);
     
-    rn_08_11 = (rn_08_11 >> 1) | sext($(T_FLAG));
+    rn_08_11 = (rn_08_11 >> 1) | (rn_08_11 << 31);
 }
 
 @if SH_VERSION == "2A"
@@ -1652,8 +1594,9 @@ MovMUReg2: MovMUReg2_15 is MovMUReg2_15 {
 @if (SH_VERSION == "2") || (SH_VERSION == "2A")
 :bf"/s" target00_07  is opcode_08_15=0b10001111 & target00_07  
 {
+    local cond = $(T_FLAG);
     delayslot(1);
-    if ($(T_FLAG)==0) goto target00_07;
+    if (cond==0) goto target00_07;
 }
 @endif
 
@@ -1665,8 +1608,9 @@ MovMUReg2: MovMUReg2_15 is MovMUReg2_15 {
 @if (SH_VERSION == "2") || (SH_VERSION == "2A")
 :bt"/s" target00_07  is opcode_08_15=0b10001101 & target00_07
 {
+    local cond = $(T_FLAG);
     delayslot(1);
-    if ($(T_FLAG)==1) goto target00_07;
+    if (cond==1) goto target00_07;
 }
 @endif
 
@@ -1679,47 +1623,61 @@ MovMUReg2: MovMUReg2_15 is MovMUReg2_15 {
 @if (SH_VERSION == "2") || (SH_VERSION == "2A")
 :braf rm_08_11  is opcode_12_15=0b0000 & rm_08_11 & opcode_00_07=0b00100011 
 {
-    local temp:4 = inst_start + 4 + rm_08_11;
+    local dest:4 = inst_start + 4 + rm_08_11;
     delayslot(1);
-    goto [temp];
+    goto [dest];
 }
 @endif
 
 :bsr    target00_11  is opcode_12_15=0b1011 & target00_11  
 {
-    pr = inst_next;
+    local _pr:4 = inst_start + 4;
+
     delayslot(1);
+
+    pr = _pr;
     call target00_11;
 }
 
 @if (SH_VERSION == "2") || (SH_VERSION == "2A")
 :bsrf   rm_08_11  is opcode_12_15=0b0000 & rm_08_11 & opcode_00_07=0b00000011 
 {
-    pr = inst_next;
-    local dest = rm_08_11 + inst_next;
+    local _pr = inst_start + 4;
+    local dest = rm_08_11 + inst_start + 4;
 
     delayslot(1);
+
+    pr = _pr;
     call [dest];
 }
 @endif
 
 :jmp    @rm_08_11  is opcode_12_15=0b0100 & rm_08_11 & opcode_00_07=0b00101011 
 {
+    local _pc:4 = rm_08_11;
     delayslot(1);
-    goto [rm_08_11];
+    pc = _pc;
+    goto [pc];
 }
 
 :jsr    @rm_08_11  is opcode_12_15=0b0100 & rm_08_11 & opcode_00_07=0b00001011 
 {
-    pr = inst_next;
+    local _pr:4 = inst_start + 4;
+    local _pc:4 = rm_08_11;
+
     delayslot(1);
-    call [rm_08_11];
+
+    pr = _pr;
+    pc = _pc;
+    call [_pc];
 }
 
 :rts  is opcode_00_15=0b0000000000001011 
 {
+    local _pc = pr;
     delayslot(1);
-    return [pr];
+    pc = _pc;
+    return [pc];
 }
 
 @if SH_VERSION == "2A"
@@ -1908,7 +1866,7 @@ MovMUReg2: MovMUReg2_15 is MovMUReg2_15 {
     pc = _pc;
     sr = _sr;
     
-    goto [pc];
+    return [pc];
 }
 
 :sett  is opcode_00_15=0b0000000000011000 
@@ -2011,14 +1969,15 @@ define pcodeop Sleep_Standby;
 
 :trapa  imm_00_07  is opcode_08_15=0b11000011 & imm_00_07
 {
-    r15 = r15 -4;
+    r15 = r15 - 4;
     *r15 = sr;
 
-    r15 = r15- 4;
-    *r15 = pc + 2;
+    r15 = r15 - 4;
+    dest:4 = inst_next;
+    *r15 = dest;
 
-    pc = *(vbr + (imm_00_07 * 4));
-    goto [pc];
+    dest = *(vbr + (imm_00_07 * 4));
+    call [dest];
 }
 
 @if defined(FPU)
@@ -2227,7 +2186,7 @@ define pcodeop Sleep_Standby;
 # FSUB FRm, FRn               1111nnnnmmmm0001 FRn - FRm → FRn
 :fsub ffrm_04_07, ffrn_08_11        is fop_12_15=0b1111 & ffrn_08_11 & ffrm_04_07 & fop_00_03=0b0001
 {
-    ffrn_08_11 = ffrn_08_11 - ffrm_04_07;
+    ffrn_08_11 = ffrn_08_11 f- ffrm_04_07;
 }
 
 # TODO: FSUB DRm, DRn               1111nnn0mmm00001 DRn - DRm → DRn
@@ -2364,7 +2323,7 @@ define pcodeop Sleep_Standby;
 :bld "#"imm3_00_02, rn_04_07
     is opcode_08_15=0b10000111 & rn_04_07 & opcode_03_03=0b1 & imm3_00_02
 {
-    local b = *:1 (rn_04_07);
+    local b = rn_04_07;
     $(T_FLAG) = ((b & (1 << imm3_00_02)) != 0);
 }
 

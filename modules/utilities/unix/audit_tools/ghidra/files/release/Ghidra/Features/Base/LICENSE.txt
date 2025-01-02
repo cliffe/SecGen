@@ -15,12 +15,9 @@ Oxygen Icons - LGPL 3.0:
 	src/main/resources/defaultTools/images/ClearData.png
 	src/main/resources/defaultTools/images/bookmarks.png
 	src/main/resources/images/applications-engineering.png
-	src/main/resources/images/okteta.png
 	src/main/resources/images/oxygen/16x16/text-x-c++src.png
-	src/main/resources/images/oxygen/16x16/text-xml.png
 	src/main/resources/images/oxygen/16x16/application-x-java-archive.png
 	src/main/resources/images/oxygen/16x16/games-config-background.png
-	src/main/resources/images/oxygen/16x16/text-x-csrc.png
 	src/main/resources/images/oxygen/16x16/insert-table.png
 	src/main/resources/images/oxygen/16x16/text-x-csharp.png
 	src/main/resources/images/oxygen/16x16/text-x-bibtex.png
@@ -32,46 +29,19 @@ Oxygen Icons - LGPL 3.0:
 	src/main/resources/images/oxygen/16x16/application-x-bzip.png
 	src/main/resources/images/oxygen/16x16/bookmarks.png
 	src/main/resources/images/oxygen/16x16/insert-text.png
-	src/main/resources/images/oxygen/48x48/multimedia-player-apple-ipod.png
-	src/main/resources/images/dialog-warning.png
+	src/main/resources/images/text-xml.png
 	src/main/resources/images/help-hint.png
-	src/main/resources/images/applications-development16.png
+	src/main/resources/images/text-x-csrc.png
+	src/main/resources/images/media-playback-stop.png
+	src/main/resources/images/flag-yellow.png
 	src/main/resources/images/applications-development.png
-	src/main/resources/images/list-remove.png
 	src/main/resources/images/view-sort-ascending.png
-	src/main/resources/images/plasma.png
 	src/main/resources/images/applications-internet.png
-	src/main/resources/images/phone.png
-	src/main/resources/images/tools-report-bug.png
 	src/main/resources/images/akregator.png
 	src/main/resources/images/edit-bomb.png
+	src/main/resources/images/flag-green.png
 	src/main/resources/images/view-sort-descending.png
 	src/main/resources/images/media-flash.png
-	src/main/resources/images/view-filter.png
-	src/main/help/help/shared/warning.png
-	src/main/help/help/shared/note.png
-	src/main/help/help/shared/tip.png
-	src/main/help/help/shared/note-red.png
-	src/main/help/help/shared/helpWarning.png
-	src/main/help/help/shared/note.yellow.png
-	src/main/help/help/topics/Navigation/images/edit-delete.png
-	src/main/help/help/topics/RegisterPlugin/images/edit-delete.png
-	src/main/help/help/topics/RegisterPlugin/images/view-filter.png
-	src/main/help/help/topics/DataTypePreviewPlugin/images/edit-delete.png
-	src/main/help/help/topics/CParserPlugin/images/edit-delete.png
-	src/main/help/help/topics/Search/images/dialog-warning.png
-	src/main/help/help/topics/Search/images/view-filter.png
-	src/main/help/help/topics/SymbolTablePlugin/images/edit-delete.png
-	src/main/help/help/topics/SymbolTablePlugin/images/view-filter.png
-	src/main/help/help/topics/FunctionComparison/images/view-sort-ascending.png
-	src/main/help/help/topics/FunctionComparison/images/view-sort-descending.png
-	src/main/help/help/topics/ValidateProgram/images/dialog-warning.png
-	src/main/help/help/topics/ValidateProgram/images/edit-delete.png
-	src/main/help/help/topics/StackEditor/images/edit-delete.png
-	src/main/help/help/topics/ImporterPlugin/images/edit-delete.png
-	src/main/help/help/topics/DataTypeEditors/images/edit-delete.png
-	src/main/help/help/topics/ReferencesPlugin/images/edit-delete.png
-	src/main/help/help/topics/MemoryMapPlugin/images/edit-delete.png
 
 Nuvola Icons - LGPL 2.1:
 
@@ -87,76 +57,66 @@ Nuvola Icons - LGPL 2.1:
 	src/main/resources/defaultTools/images/homepage.png
 	src/main/resources/defaultTools/images/edittrash.png
 	src/main/resources/images/ledred.png
-	src/main/resources/images/link.png
 	src/main/resources/images/package.png
 	src/main/resources/images/nuvola/16x16/usb.png
 	src/main/resources/images/nuvola/16x16/cdimage.png
-	src/main/resources/images/nuvola/16x16/ledgreen.png
 	src/main/resources/images/2leftarrow.png
 	src/main/resources/images/wizard.png
 	src/main/resources/images/kmessedwords.png
-	src/main/resources/images/ledyellow.png
 	src/main/resources/images/2rightarrow.png
 	src/main/resources/images/package_development.png
-	src/main/resources/images/viewmagfit.png
-	src/main/resources/images/viewmag.png
-	src/main/resources/images/browser.png
 	src/main/resources/images/ledgreen.png
 	src/main/resources/images/katomic.png
 	src/main/resources/images/reload.png
-	src/main/help/help/topics/Search/images/reload.png
-	src/main/help/help/topics/FunctionTagPlugin/images/2leftarrow.png
-	src/main/help/help/topics/FunctionTagPlugin/images/2rightarrow.png
 	src/main/help/help/topics/DataTypeManagerPlugin/images/lockoverlay.png
-	src/main/help/help/topics/DataTypeManagerPlugin/images/package_development.png
-	src/main/help/help/topics/GhidraScriptMgrPlugin/images/core.png
+
+Apache License 2.0:
+
+	lib/biz.aQute.bndlib-7.0.0.jar
+	lib/biz.aQute.bnd.util-7.0.0.jar
+	lib/phidias-0.3.7.jar
+	lib/org.osgi.util.promise-1.3.0.jar
+	lib/org.apache.felix.framework-7.0.5.jar
+
+MIT:
+
+	lib/slf4j-api-1.7.25.jar
+	lib/slf4j-nop-1.7.25.jar
 
 FAMFAMFAM Icons - CC 2.5:
 
 	ghidra_scripts/world.png
-	src/main/resources/images/warning.png
+	src/main/resources/images/bullet_star.png
 	src/main/resources/images/package_green.png
 	src/main/resources/images/sitemap_color.png
+	src/main/resources/images/page_white_c.png
+	src/main/resources/images/function_graph.png
 	src/main/resources/images/script_add.png
 	src/main/resources/images/arrow_up.png
 	src/main/resources/images/arrow_rotate_clockwise.png
 	src/main/resources/images/table_row_delete.png
 	src/main/resources/images/tag_yellow.png
-	src/main/resources/images/zoom.png
 	src/main/resources/images/key.png
-	src/main/resources/images/lock.png
-	src/main/resources/images/zoom_in.png
 	src/main/resources/images/table_delete.png
 	src/main/resources/images/house.png
-	src/main/resources/images/font.png
+	src/main/resources/images/tag_blue.png
 	src/main/resources/images/bullet_green.png
-	src/main/resources/images/zoom_out.png
 	src/main/resources/images/application_double.png
 	src/main/resources/images/text_list_bullets.png
 	src/main/resources/images/table_go.png
-	src/main/resources/images/magnifier.png
-	src/main/resources/images/textfield.png
-	src/main/resources/images/pencil.png
-	src/main/resources/images/page_white_copy.png
-	src/main/resources/images/text_lowercase.png
 	src/main/resources/images/stopNode.png
-	src/main/resources/images/famfamfam_silk_icons_v013/ipod.png
 	src/main/resources/images/famfamfam_silk_icons_v013/rss.png
 	src/main/resources/images/famfamfam_silk_icons_v013/bullet_purple.png
 	src/main/resources/images/famfamfam_silk_icons_v013/controller.png
 	src/main/resources/images/famfamfam_silk_icons_v013/arrow_inout.png
 	src/main/resources/images/famfamfam_silk_icons_v013/server.png
 	src/main/resources/images/famfamfam_silk_icons_v013/compress.png
-	src/main/resources/images/famfamfam_silk_icons_v013/package.png
 	src/main/resources/images/famfamfam_silk_icons_v013/application_cascade.png
 	src/main/resources/images/famfamfam_silk_icons_v013/database.png
 	src/main/resources/images/famfamfam_silk_icons_v013/application_get.png
-	src/main/resources/images/famfamfam_silk_icons_v013/application_key.png
 	src/main/resources/images/famfamfam_silk_icons_v013/arrow_in.png
 	src/main/resources/images/famfamfam_silk_icons_v013/bullet_orange.png
-	src/main/resources/images/famfamfam_silk_icons_v013/information.png
 	src/main/resources/images/famfamfam_silk_icons_v013/photo.png
-	src/main/resources/images/famfamfam_silk_icons_v013/bullet_green.png
 	src/main/resources/images/famfamfam_silk_icons_v013/bullet_blue.png
 	src/main/resources/images/famfamfam_silk_icons_v013/bullet_pink.png
 	src/main/resources/images/famfamfam_silk_icons_v013/bullet_red.png
@@ -166,58 +126,14 @@ FAMFAMFAM Icons - CC 2.5:
 	src/main/resources/images/famfamfam_silk_icons_v013/door.png
 	src/main/resources/images/famfamfam_silk_icons_v013/xhtml.png
 	src/main/resources/images/famfamfam_silk_icons_v013/folder_table.png
-	src/main/resources/images/famfamfam_silk_icons_v013/drive.png
 	src/main/resources/images/famfamfam_silk_icons_v013/folder_brick.png
 	src/main/resources/images/famfamfam_silk_icons_v013/phone.png
 	src/main/resources/images/famfamfam_silk_icons_v013/css.png
 	src/main/resources/images/famfamfam_silk_icons_v013/page_white_cup.png
-	src/main/resources/images/famfamfam_silk_icons_v013/page_white.png
 	src/main/resources/images/famfamfam_silk_icons_v013/images.png
 	src/main/resources/images/page_white.png
-	src/main/resources/images/table.png
 	src/main/resources/images/arrow_down.png
 	src/main/resources/images/layout_add.png
-	src/main/help/help/topics/FrontEndPlugin/images/user.png
-	src/main/help/help/topics/FrontEndPlugin/images/monitor.png
-	src/main/help/help/topics/Trees/images/page_code.png
-	src/main/help/help/topics/Trees/images/page_go.png
-	src/main/help/help/topics/Trees/images/page_green.png
-	src/main/help/help/topics/Trees/images/page_excel.png
-	src/main/help/help/topics/ConsolePlugin/images/lock.png
-	src/main/help/help/topics/FunctionWindowPlugin/images/page_white_c.png
-	src/main/help/help/topics/CallTreePlugin/images/arrow_rotate_clockwise.png
-	src/main/help/help/topics/CallTreePlugin/images/package.png
-	src/main/help/help/topics/CallTreePlugin/images/stopNode.png
-	src/main/help/help/topics/Navigation/images/warning.png
-	src/main/help/help/topics/Navigation/images/information.png
-	src/main/help/help/topics/CParserPlugin/images/disk_save_as.png
-	src/main/help/help/topics/Search/images/table_delete.png
-	src/main/help/help/topics/Search/images/font.png
-	src/main/help/help/topics/Search/images/magnifier.png
-	src/main/help/help/topics/Search/images/page_white_copy.png
-	src/main/help/help/topics/LocationReferencesPlugin/images/tag_yellow.png
-	src/main/help/help/topics/SymbolTablePlugin/images/table_go.png
-	src/main/help/help/topics/SymbolTablePlugin/images/table.png
-	src/main/help/help/topics/FunctionComparison/images/page_white_c.png
-	src/main/help/help/topics/FunctionComparison/images/table_relationship.png
-	src/main/help/help/topics/FunctionComparison/images/text_list_bullets.png
-	src/main/help/help/topics/ProgramManagerPlugin/images/disk.png
-	src/main/help/help/topics/DataTypeEditors/images/disk.png
-	src/main/help/help/topics/ProgramTreePlugin/images/layout_add.png
-	src/main/help/help/topics/GhidraScriptMgrPlugin/images/table_row_delete.png
-	src/main/help/help/topics/GhidraScriptMgrPlugin/images/key.png
-	src/main/help/help/topics/GhidraScriptMgrPlugin/images/textfield_rename.png
-	src/main/help/help/topics/GhidraScriptMgrPlugin/images/disk_save_as.png
-	src/main/help/help/topics/GhidraScriptMgrPlugin/images/text_list_bullets.png
-	src/main/help/help/topics/GhidraScriptMgrPlugin/images/text_lowercase.png
-	src/main/help/help/topics/GhidraScriptMgrPlugin/images/disk.png
-	src/main/help/help/topics/Tool/images/warning.png
-	src/main/help/help/topics/Tool/images/disk_save_as.png
-	src/main/help/help/topics/Tool/images/disk.png
-	src/main/help/help/topics/SymbolTreePlugin/images/sitemap_color.png
-	src/main/help/help/topics/MemoryMapPlugin/images/house.png
-	src/main/help/help/topics/ClipboardPlugin/images/page_white_copy.png
-	src/main/help/help/topics/ClipboardPlugin/images/page_paste.png
 
 Modified Nuvola Icons - LGPL 2.1:
 
@@ -242,31 +158,17 @@ Modified Nuvola Icons - LGPL 2.1:
 	src/main/resources/images/openFolderFunctions.png
 	src/main/resources/images/closedFolderInvalid.png
 	src/main/resources/images/disabledOpenFolder.png
-	src/main/resources/images/closedFolder.png
 	src/main/resources/images/openFolderLabels.png
 	src/main/resources/images/openFolderInView.png
-	src/main/help/help/topics/ProgramTreePlugin/images/closedFolderInView.png
-	src/main/help/help/topics/ProgramTreePlugin/images/closedDescendantsInView.png
-	src/main/help/help/topics/ProgramTreePlugin/images/openFolderInView.png
-	src/main/help/help/topics/DataTypeManagerPlugin/images/dataTypes.png
-	src/main/help/help/topics/DataTypeManagerPlugin/images/closedFolderInvalid.png
-	src/main/help/help/topics/DataTypeManagerPlugin/images/closedFolder.png
-	src/main/help/help/topics/FunctionPlugin/images/dataTypes.png
-	src/main/help/help/topics/SymbolTreePlugin/images/openFolderGroup.png
 
 Tango Icons - Public Domain:
 
-	src/main/resources/defaultTools/images/face-monkey.png
 	src/main/resources/defaultTools/images/network-receive.png
 	src/main/resources/defaultTools/images/internet-web-browser.png
 	src/main/resources/defaultTools/images/video-x-generic.png
 	src/main/resources/defaultTools/images/applications-multimedia.png
-	src/main/resources/images/go-home.png
-	src/main/resources/images/help-browser.png
 	src/main/resources/images/go-down.tango.16.png
 	src/main/resources/images/format-text-bold.png
-	src/main/resources/images/document-properties.png
-	src/main/resources/images/edit-clear.png
 	src/main/resources/images/emblem-favorite.png
 	src/main/resources/images/dialog-warning_red.png
 	src/main/resources/images/go-up.tango.16.png
@@ -274,19 +176,6 @@ Tango Icons - Public Domain:
 	src/main/resources/images/applications-system.png
 	src/main/resources/images/camera-photo.png
 	src/main/resources/images/preferences-system.png
-	src/main/resources/images/accessories-text-editor.png
-	src/main/help/help/topics/Snapshots/images/camera-photo.png
-	src/main/help/help/topics/ClearPlugin/images/document-properties.png
-	src/main/help/help/topics/CallTreePlugin/images/go-home.png
-	src/main/help/help/topics/Navigation/images/applications-system.png
-	src/main/help/help/topics/Search/images/go-home.png
-	src/main/help/help/topics/Search/images/edit-clear.png
-	src/main/help/help/topics/Search/images/dialog-warning_red.png
-	src/main/help/help/topics/LocationReferencesPlugin/images/go-home.png
-	src/main/help/help/topics/ProgramTreePlugin/images/preferences-system-windows.png
-	src/main/help/help/topics/DataTypeManagerPlugin/images/emblem-favorite.png
-	src/main/help/help/topics/GhidraScriptMgrPlugin/images/accessories-text-editor.png
-	src/main/help/help/topics/ReferencesPlugin/images/go-home.png
 
 Copyright Distribution Permitted:
 

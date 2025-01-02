@@ -1,3 +1,6 @@
+<% $first_account = JSON.parse(self.accounts.first)
+
+	$main_user = $first_account['username'].to_s %>
 ## File encryption using AES and python3
 
 We will encrypt /etc/hosts file using python3 and the Cryptodome module. Feel free to use any other file.
@@ -43,7 +46,7 @@ You can inspect the contents of the ciphertext
 
 To write data to a file, open the file in *w*rite *b*inary mode
 ```python3
->>> with open("/etc/hosts.enc", "wb") as f:
+>>> with open("/home/<%= $main_user %>/hosts.enc", "wb") as f:
 ...   f.write(c)
 ...
 >>>

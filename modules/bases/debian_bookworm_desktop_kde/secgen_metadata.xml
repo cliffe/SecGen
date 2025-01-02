@@ -18,7 +18,7 @@
   <url>https://app.vagrantup.com/secgen/boxes/bookworm-base/versions/1.0.1/providers/virtualbox/amd64/download/vagrant.box</url>
   <esxi_url>https://app.vagrantup.com/redwiz666/boxes/debian_stretch_desktop_kde/versions/1.0.0/providers/vmware.box</esxi_url>
   <ovirt_template>buster_desktop_kde_20230615</ovirt_template>
-  <proxmox_template>bookworm-desktop-kde-20240726</proxmox_template>
+  <proxmox_template>bookworm-desktop-kde-20241114</proxmox_template>
 
   <reference>https://atlas.hashicorp.com/puppetlabs</reference>
   <software_license>various</software_license>

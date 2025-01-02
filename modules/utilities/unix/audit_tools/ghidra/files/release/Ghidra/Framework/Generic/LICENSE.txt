@@ -6,33 +6,21 @@ in the licenses directory in the installation root directory.
 The 3rd party files in this module are as follows:
 
 
-Oxygen Icons - LGPL 3.0:
-
-	src/main/resources/images/flag.png
-	src/main/resources/images/dialog-cancel.png
-	src/main/resources/images/emblem-important.png
-
-Nuvola Icons - LGPL 2.1:
-
-	src/main/resources/images/core24.png
-	src/main/resources/images/kgpg.png
-	src/main/resources/images/error.png
-	src/main/resources/images/core.png
-
 Apache License 2.0:
 
-	lib/cglib-nodep-2.2.jar
-	lib/guava-19.0.jar
+	src/main/java/generic/test/rule/RepeatedTestRule.java
+	src/main/java/generic/test/rule/RepeatedStatement.java
+	src/main/java/generic/test/rule/Repeated.java
+	lib/gson-2.9.0.jar
+	lib/log4j-api-2.17.1.jar
 	lib/commons-collections4-4.1.jar
-	lib/commons-lang3-3.9.jar
-	lib/commons-io-2.6.jar
-	lib/log4j-api-2.8.2.jar
-	lib/log4j-core-2.8.2.jar
-
-Crystal Clear Icons - LGPL 2.1:
-
-	src/main/resources/images/reload3.png
-	src/main/resources/images/exec.png
+	lib/failureaccess-1.0.1.jar
+	lib/commons-text-1.10.0.jar
+	lib/guava-32.1.3-jre.jar
+	lib/log4j-core-2.17.1.jar
+	lib/commons-io-2.11.0.jar
+	lib/commons-lang3-3.12.0.jar
+	lib/commons-compress-1.21.jar
 
 MIT:
 
@@ -41,26 +29,13 @@ MIT:
 	src/main/java/generic/json/JSONError.java
 	src/main/java/generic/json/JSONParser.java
 
-FAMFAMFAM Icons - CC 2.5:
-
-	src/main/resources/images/text_align_justify.png
-
-Modified Nuvola Icons - LGPL 2.1:
-
-	src/main/resources/images/openSmallFolder.png
-	src/main/resources/images/openFolder.png
-
-Tango Icons - Public Domain:
-
-	src/main/resources/images/internet-web-browser16.png
-	src/main/resources/images/applications-multimedia16.png
-	src/main/resources/images/software-update-urgent.png
-	src/main/resources/images/network-receive16.png
-	src/main/resources/images/face-monkey16.png
-	src/main/resources/images/video-x-generic16.png
-	src/main/resources/images/process-stop.png
-
 JDOM License:
 
 	lib/jdom-legacy-1.1.3.jar
+
+Bouncy Castle License:
+
+	lib/bcprov-jdk15on-1.69.jar
+	lib/bcpkix-jdk15on-1.69.jar
+	lib/bcutil-jdk15on-1.69.jar
 

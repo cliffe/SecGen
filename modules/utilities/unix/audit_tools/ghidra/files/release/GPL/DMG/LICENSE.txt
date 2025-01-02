@@ -10,25 +10,24 @@ The 3rd party files in this module are as follows:
 
 GPL 3:
 
-	data/lib/catacombae_hfsx_dmglib.jar
-	data/lib/catacombae_iharder-base64.jar
 	data/lib/hfsexplorer-0_21-src.zip
-	data/lib/catacombae_hfsx.jar
-	data/os/win64/llio_i386.dll
-	data/os/win64/llio_ia64.dll
-	data/os/win64/llio_amd64.dll
-	data/os/win32/llio_i386.dll
-	data/os/win32/llio_ia64.dll
-	data/os/win32/llio_amd64.dll
+	data/lib/hfsx_dmglib.jar
+	data/lib/hfsx.jar
+	data/lib/iharder-base64.jar
+	data/os/win_x86_32/llio_i386.dll
+	data/os/win_x86_32/llio_ia64.dll
+	data/os/win_x86_32/llio_amd64.dll
+	data/os/win_x86_64/llio_i386.dll
+	data/os/win_x86_64/llio_ia64.dll
+	data/os/win_x86_64/llio_amd64.dll
 	data/lib/dmg.jar
 
 LGPL 2.1:
 
-	data/lib/catacombae_csframework.jar
+	data/lib/csframework.jar
 
 Public Domain:
 
-	settings.gradle
 	data/server_memory.cfg
 	src/dmg/java/mobiledevices/dmg/reader/DmgInfoGenerator.java
 	src/dmg/java/mobiledevices/dmg/reader/DmgFileReader.java

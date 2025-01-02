@@ -28,8 +28,8 @@
   </requires>
 
   <!-- Note: unless explicitly included in the scenario this won't populate the elasticsearch + logstash IP/port correctly.-->
-  <requires>
+  <!-- <requires>
     <name>Filebeat</name>
-  </requires>
+  </requires> -->
 
 </utility>

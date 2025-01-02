@@ -1,6 +1,5 @@
 /* ###
  * IP: GHIDRA
- * REVIEWED: YES
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +17,8 @@
 // NOTE: Script will only process unversioned and checked-out files.
 //@category Examples
 
+import java.io.IOException;
+
 import ghidra.app.script.GhidraScript;
 import ghidra.app.script.GhidraState;
 import ghidra.framework.model.*;
@@ -25,8 +26,6 @@ import ghidra.program.database.ProgramContentHandler;
 import ghidra.program.model.listing.Program;
 import ghidra.util.exception.CancelledException;
 import ghidra.util.exception.VersionException;
-
-import java.io.IOException;
 
 public class CallAnotherScriptForAllPrograms extends GhidraScript {
 
@@ -60,6 +59,10 @@ public class CallAnotherScriptForAllPrograms extends GhidraScript {
 	}
 
 	private void processDomainFile(DomainFile domainFile) throws CancelledException, IOException {
+		// Do not follow folder-links or consider program links.  Using content type
+		// to filter is best way to control this.  If program links should be considered
+		// "Program.class.isAssignableFrom(domainFile.getDomainObjectClass())"
+		// should be used.
 		if (!ProgramContentHandler.PROGRAM_CONTENT_TYPE.equals(domainFile.getContentType())) {
 			return; // skip non-Program files
 		}
@@ -97,7 +100,7 @@ public class CallAnotherScriptForAllPrograms extends GhidraScript {
 			runScript(SUBSCRIPT_NAME, newState);
 		}
 		catch (Exception e) {
-			printerr("ERROR! Exception occured while processing file: " +
+			printerr("ERROR! Exception occurred while processing file: " +
 				program.getDomainFile().getPathname());
 			printerr("       " + e.getMessage());
 			e.printStackTrace();

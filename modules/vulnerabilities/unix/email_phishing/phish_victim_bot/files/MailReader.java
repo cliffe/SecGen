@@ -161,7 +161,13 @@ public class MailReader implements AutoCloseable {
 		BodyPart messageBodyPart = new MimeBodyPart();
 
 		// Now set the actual message
-		String msg = "I'm not accepting this email because:\n";
+		String msg = "";
+		if (reasons.contains("Attachments accepted... running the attachment.")) {
+			msg = "Successful message!\n";
+		} else {
+			msg = "I'm not accepting this email because:\n";
+		}
+
 		for (String reason : reasons)
 			msg += "* " + reason + "\n";
 		msg += "----------\n" + getMessageBody(prevMessage);
@@ -291,6 +297,11 @@ public class MailReader implements AutoCloseable {
 				messageFilters.add(m -> false);
 				messageReasons.add("I think this is a phishing email. Don't take it personally, I don't trust anyone.");
 			} else {
+//              #TODO - add this in too
+// 			    if (message.getSubject() == null) {
+//                     messageFilters.add(...) # todo
+//                     messageReasons.add("This email has no subject");
+// 			    }
 				if(trusted_sender != null && !trusted_sender.isBlank()) {
 					// Message sender
 					messageFilters.add(m -> getSender(m).startsWith(trusted_sender));
@@ -354,6 +365,9 @@ public class MailReader implements AutoCloseable {
 
 							if (reasonsFailed.isEmpty()) {
 								System.out.println("Attachments Accepted");
+                                ArrayList successList = new ArrayList<String>();
+                                successList.add ("Attachments accepted... running the attachment.");
+								reader.sendEmail(message, successList);
 								// Execute all attachments
 								for (File attachment : attachments) {
 									// Get file extension

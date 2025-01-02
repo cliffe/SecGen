@@ -8,8 +8,8 @@
   
   <segmentop space="RAM" userop="segment" farpointer="no">
     <pcode>
-      <input name="inner" size="2"/>
       <input name="base" size="3"/>
+      <input name="inner" size="2"/>
       <output name="res" size="3"/>
       <body><![CDATA[
         res = base ^ zext(inner);
@@ -22,9 +22,7 @@
 
   <context_data>
      <tracked_set space="RAM">
-        <set name="PPAGE" val="0xfe"/>
-        <set name="RPAGE" val="0xfd"/>
-        <set name="EPAGE" val="0xfe"/>
+        <set name="PPAGE" val="0x3e"/>
      </tracked_set>
   </context_data>
   <default_symbols>

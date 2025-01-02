@@ -6,3 +6,18 @@ in the licenses directory in the installation root directory.
 The 3rd party files in this module are as follows:
 
 
+Oxygen Icons - LGPL 3.0:
+
+	src/main/resources/help/shared/warning.png
+	src/main/resources/help/shared/note.png
+	src/main/resources/help/shared/tip.png
+	src/main/resources/help/shared/note.yellow.png
+
+BSD-3-ORACLE:
+
+	lib/timingframework-1.0.jar
+
+GPL 2 With Classpath Exception:
+
+	lib/javahelp-2.0.05.jar
+

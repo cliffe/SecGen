@@ -8,42 +8,31 @@ The 3rd party files in this module are as follows:
 
 Oxygen Icons - LGPL 3.0:
 
-	src/main/resources/images/dialog-cancel.png
+	src/main/resources/images/applications-development-web.png
+	src/main/resources/images/plasma.png
 	src/main/resources/images/applications-science.png
 	src/main/resources/images/user-busy.png
 
-Apache License 2.0:
-
-	lib/commons-compress-1.18.jar
-
 Crystal Clear Icons - LGPL 2.1:
 
+	src/main/resources/images/link.png
 	src/main/resources/images/view_detailed.png
 
 FAMFAMFAM Icons - CC 2.5:
 
-	src/main/resources/images/warning.png
-	src/main/resources/images/cut_red.png
+	src/main/resources/images/lock.png
 	src/main/resources/images/user.png
 	src/main/resources/images/monitor.png
-	src/main/resources/images/disk_save_as.png
 	src/main/resources/images/wand.png
-	src/main/resources/images/folder_add.png
-	src/main/resources/images/bug.png
 	src/main/resources/images/page_delete.png
-	src/main/resources/images/page_paste.png
-	src/main/resources/images/disk.png
-	src/main/resources/images/page_copy.png
 	src/main/resources/images/page_add.png
 	src/main/resources/images/page_edit.png
 
-Modified Nuvola Icons - LGPL 2.1:
+Public Domain:
 
-	src/main/resources/images/closedSmallFolder.png
+	lib/xz-1.9.jar
 
 Tango Icons - Public Domain:
 
-	src/main/resources/images/edit-cut.png
 	src/main/resources/images/view-refresh.png
-	src/main/resources/images/face-glasses.png
 

@@ -1,0 +1,1910 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  <title>Migrating from JSW</title>
+</head>
+
+
+<body>
+
+
+
+
+
+
+
+
+<h2 style="text-align: center;">Migrating from JSW to YAJSW</h2>
+
+
+
+
+
+
+<ol id="mozToc">
+
+
+
+
+<!--mozToc h3 3 h4 4 h5 5 h6 6--><li><a href="#mozTocId990006">Differences between JSW and YAJSW</a>
+    
+    
+    
+    
+    <ol>
+
+
+
+
+      <li>
+        
+        
+        
+        
+        <ol>
+
+
+
+
+          <li>
+            
+            
+            
+            
+            <ol>
+
+
+
+
+              <li><a href="#mozTocId869910">Visible Console</a></li>
+
+
+
+
+              <li><a href="#mozTocId900755">Simple Configuration</a></li>
+
+
+
+
+              <li><a href="#mozTocId396217">Integration Methods</a></li>
+
+
+
+
+              <li><a href="#mozTocId914512">Wrapper/Application coupling</a></li>
+
+
+
+
+              <li><a href="#mozTocId779789">Application termination</a></li>
+
+
+
+
+              <li><a href="#mozTocId710833">Additional functions</a></li>
+
+
+
+
+              <li><a href="#mozTocId828592">One
+wrapper multiple applications</a></li>
+
+
+
+
+              <li><a href="#mozTocId107920">Posix daemons</a></li>
+
+
+
+
+              <li><a href="#mozTocId283926">Application main class</a></li>
+
+
+
+
+              <li><a href="#mozTocId643823">Logging</a></li>
+
+
+
+
+              <li><a href="#mozTocId575549">Space in paths</a></li>
+
+
+
+
+              <li><a href="#mozTocId371344">Wrapper memory requirements</a></li>
+
+
+
+
+            
+            
+            
+            
+            </ol>
+
+
+
+
+          </li>
+
+
+
+
+          <li><a href="#mozTocId140083">Launching the application</a>
+            
+            
+            
+            
+            <ol>
+
+
+
+
+              <li><a href="#mozTocId815376">Command line interface</a></li>
+
+
+
+
+            
+            
+            
+            
+            </ol>
+
+
+
+
+          </li>
+
+
+
+
+          <li><a href="#mozTocId228806">Migrating from JSW integration method 1</a></li>
+
+
+
+
+          <li><a href="#mozTocId86943">Migrating from JSW integration method 2</a></li>
+
+
+
+
+          <li><a href="#mozTocId500186">Migrating from JSW integration method 3</a></li>
+
+
+
+
+          <li><a href="#mozTocId392215">Migrating from JSW integration method 4</a></li>
+
+
+
+
+          <li><a href="#mozTocId564366">
+
+
+
+            </a></li>
+
+
+
+
+        
+        
+        
+        
+        </ol>
+
+
+
+
+      </li>
+
+
+
+
+    
+    
+    
+    
+    </ol>
+
+
+
+
+  </li>
+
+
+
+
+</ol>
+
+
+
+
+
+
+
+
+<h3><a class="mozTocH3" name="mozTocId990006"></a>Differences between JSW and YAJSW</h3>
+
+
+
+
+
+
+
+
+Before starting the migration you should consider the main differences
+between JSW and YAJSW
+<h4><a class="mozTocH4" name="mozTocId869910"></a>Visible Console</h4>
+
+
+
+
+
+
+
+
+In JSW, as YAJSW we have 2 processes, the wrapped application and the
+controller or wrapper process. With JSW only the wrapper process has a
+console. With YAJSW you may have a visible console for both the wrapper
+and the application. This has the advantage, that you may type in data
+directly into the application console. You may also start the wrapper
+with javaw. This has the advantage, that the wrapper console is
+invisible and the application can be automatically restarted if the
+console of the application is accidentally closed.<br>
+
+
+
+
+
+
+
+
+<h4><a class="mozTocH4" name="mozTocId900755"></a>Simple Configuration</h4>
+
+
+
+
+
+
+
+
+With JSW you have to include in the configuration the jar and the
+native libraries of the wrapper. With YAJSW this part of the
+configuration is transparent. The wrapper will take care of this. In
+the configuration you just have to include the configuration of your
+application. You do not have to deal with the wrapper.<br>
+
+
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+
+
+YAJSW also supports wild cards for classpath.<br>
+
+
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+
+
+YAJSW allows for configuration within a groovy script. Within groovy
+the configuration becomes dynamic and platform independent. <br>
+
+
+
+<br>
+
+
+
+<h4>Environment Variables</h4>
+
+
+
+JSW supports references to environment variables with the windows notation<span style="font-style: italic;">&nbsp;<span style="font-weight: bold;">%JAVA_HOME%</span></span>. <br>
+
+
+
+YAJSW supports references to environment variables with the groovy notation <span style="font-style: italic; font-weight: bold;">${JAVA_HOME}</span>.<br>
+
+<br>
+
+NOTE: In general YAJSW variables are case sensitive, except for windows
+environment variables, where all variables are converted to lower case.
+For example to access the&nbsp;<span style="font-weight: bold; font-style: italic;">Path</span> variable use <span style="font-weight: bold; font-style: italic;">${path}</span>.<br>
+
+
+
+<br>
+
+
+
+JSW enables the definition of environment variables within the configuration file using <span style="font-weight: bold; font-style: italic;">set.EXTERN=123</span> and <span style="font-weight: bold; font-style: italic;">set.default.</span><br>
+
+
+
+YAJSW support the definition of variables as in a groovy script: <span style="font-style: italic; font-weight: bold;">EXTERN=123</span><br>
+
+
+
+YAJSW does not support set.default.<br>
+
+
+
+<br>
+
+
+
+JSW supports predefined default environment variables such as WRAPPER_ARCH<br>
+
+
+
+In YAJSW these can be accessed by accessing the <a href="http://www.mindspring.com/%7Emgrand/java-system-properties.htm">java system properties</a>. Thus for example <span style="font-style: italic; font-weight: bold;">%WRAPPER_ARCH% </span>should be replaced by <span style="font-weight: bold; font-style: italic;">${os.arch}</span><br>
+
+
+
+<br>
+
+
+
+JSW supports predefined variable definitions which can be used for event variable definitions such as WRAPPER_NAME<br>
+
+
+
+In YAJSW all configuration properties can be accessed for the
+definition of all configuration properties by dereferencing. Thus
+%WRAPPER_NAME% should be replaced by ${wrapper.name}<br>
+
+
+
+YAJSW currently does not support WRAPPER_EVENT_ variables. Some of
+these variables are accessible within scripts by accessing the <span style="font-style: italic;">process</span> variable<br>
+
+
+<br>
+
+
+JSW also uses <span style="font-style: italic; font-weight: bold;">set.VAR=VALUE</span> to set the environment variables for the application process.<br>
+
+
+with YAJSW process environment variable are set with the <span style="font-weight: bold; font-style: italic;">wrapper.app.env.&lt;var&gt;</span> configuration properties.<br>
+
+
+Example: <br>
+
+
+<span style="font-weight: bold; font-style: italic;">set.PATH = c:/temp</span> should be changed to <span style="font-weight: bold; font-style: italic;">wrapper.app.env.path = c:\\temp</span><br>
+
+
+<br>
+
+
+
+
+
+
+
+
+<h4><a class="mozTocH4" name="mozTocId396217"></a>Integration Methods</h4>
+
+
+
+
+
+
+
+
+JSW comes with 4 integration methods, one of which requires
+programming. YAJSW has just one integration method. The other
+integration methods are handeld by configuration.<br>
+
+
+
+
+
+
+
+
+<h4><a class="mozTocH4" name="mozTocId914512"></a>Wrapper/Application coupling</h4>
+
+
+
+
+
+
+
+
+With JSW stopping the wrapper will cause the application to stop. There
+are however cases where the application should continue to run even
+when the wrapper is stopped and vice versa. With YAJSW you may
+configure how the applications are coupled.<br>
+
+
+
+
+
+
+
+
+<h4><a class="mozTocH4" name="mozTocId779789"></a>Application termination</h4>
+
+
+
+
+
+
+
+
+There exist applications which should continue to run even if the main
+method of the application terminates or if the main method throws an
+exception. With YAJSW you can configure if the application should
+continue to run (this is the case when the application has none-daemon
+threads) or should be terminated. You may also define the exit code.<br>
+
+
+
+
+
+
+
+
+<h4><a class="mozTocH4" name="mozTocId710833"></a>Additional functions</h4>
+
+
+
+
+
+
+
+
+JSW offers additional functions such as command file, anchor file,
+email etc. For new functions or if functional changes are
+needed,&nbsp; the JSW has to be extended. In YAJSW these functions
+have been implemented with groovy scripts. YAJSW comes with sample
+scripts for sending mails,&nbsp; anchor file,&nbsp; command
+file and sending snmp traps. You can easily adapt these scripts to your
+requirements and you may add new scripts without having to build the
+YAJSW code.<span style="font-weight: bold;"><br>
+
+
+
+
+
+
+
+
+</span>
+<h4><a class="mozTocH4" name="mozTocId828592"></a><span style="font-weight: bold;"></span>One
+wrapper multiple applications</h4>
+
+
+
+
+
+
+
+
+With JSW we are bound to one wrapper per application. With YAJSW the
+wrapper can be integrated within a java application or a groovy script.
+We may thus have a groovy script or java application which runs and
+monitors multiple applications. The wrapper exe may also be invoked with multiple configuration files.<br>
+
+
+
+
+
+
+
+
+<h4><a class="mozTocH4" name="mozTocId107920"></a>Posix daemons</h4>
+
+
+
+
+
+
+
+
+JSW comes with scripts for running applications as daemons. This
+requires different scripts for different platforms. YAJSW offers the
+same functions for all platforms. Windows service configuration
+properties are also used for other platforms. The differences are
+handeld by configuration properties.<br>
+
+
+
+
+
+
+
+
+<h4><a class="mozTocH4" name="mozTocId283926"></a>Application main class</h4>
+
+
+
+
+
+
+
+
+Configuration of the main class to be executed depends in JSW on the
+integration method. With YAJSW the java main class is defined in the
+configuration. For compatiblity if none is found in the configuration
+YAJSW assumes that the java main class is the first argument.<br>
+
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+
+<h4><a class="mozTocH4" name="mozTocId643823"></a>Logging</h4>
+
+
+
+
+
+
+
+JSW grabs the application output on the OS level. For this reason The
+application will hang if the wrapper is stopped because the output
+stream is not consumed. For java applications YAJSW grabs the output on
+the java level and writes it to a memory mapped file which is used as a
+circular buffer. We thus make sure, that the application does not hang
+even if the wrapper is not consuming the output. This however has the
+disadvantage, that errors reported by the java launcher are not logged
+by the wrapper.<br>
+
+
+
+
+<br>
+
+
+
+
+<h4><a class="mozTocH4" name="mozTocId575549"></a>Space in paths</h4>
+
+
+
+
+YAJSW allows for spaces in paths and for quotes in java options or
+arguments. For this reason YAJSW requires for JVM options and for
+arguments to be either quoted or to be in separate properties.<br>
+
+
+
+
+Where as JSW would allow <br>
+
+
+
+
+<br>
+
+
+
+
+<span style="font-style: italic;">wrapper.java.additional.1 = -Xms512m -Xmx512m -XX:MaxPermSize=256m</span><br>
+
+
+
+
+<br>
+
+
+
+
+YAJSW requires:<br>
+
+
+
+
+<br>
+
+
+
+
+<span style="font-style: italic;">wrapper.java.additional.1a = &nbsp;-Xms512m</span><br style="font-style: italic;">
+
+
+
+
+<span style="font-style: italic;">wrapper.java.additional.1b = &nbsp;-Xmx512m</span><br style="font-style: italic;">
+
+
+
+
+<span style="font-style: italic;">wrapper.java.additional.1c = &nbsp;-XX:MaxPermSize=256m</span>
+<h4><a class="mozTocH4" name="mozTocId371344"></a>Wrapper memory requirements</h4>
+
+
+
+
+
+
+
+
+The flexibility of YAJSW comes at a price. Using java for the wrapper
+process has many advantages. However we pay the java price of higher
+memory footprint. Whereas the&nbsp; JSW wrapper requires only a few
+k of memory, the minimal virtual memory requirement of YAJSW
+is&nbsp; 90 MB and 40 MB physical memory. The value varies
+depending on the OS and the functions.<br>
+
+
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+
+
+<h3><a class="mozTocH3" name="mozTocId140083"></a>Launching the application</h3>
+
+
+
+
+
+
+
+
+YAJSW comes with sample scripts. Within the setenv.bat / setenv.sh you
+may set java for the wrapper process, the jvm options for the wrapper
+and the default configuration file. You may however easily adapt these
+scripts to your requirements.<br>
+
+
+
+
+
+
+
+
+Note that YAJSW requires java 1.5 or higher.<br>
+
+
+
+
+
+
+
+
+<h4><a class="mozTocH4" name="mozTocId815376"></a>Command line interface</h4>
+
+
+
+
+
+
+
+
+NOTE: <br>
+
+
+
+
+
+
+
+
+YAJSW assumes that the directory structure is maintained. That is, the
+location of the wrapper.jar is assumed to be the home directory of
+YAJSW. The relative location and structure of the lib folder must be
+maintained.<br>
+
+
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+
+
+Go to the YAJSW home directory and call<br>
+
+
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+
+
+<div style="margin-left: 40px;"><span style="font-style: italic;">java -jar wrapper.jar</span><br>
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+
+
+This will display the usage information. <br>
+
+
+
+
+
+
+
+
+The main commands are:<br>
+
+
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+
+
+<div style="margin-left: 40px;">run as console: <br>
+
+
+
+
+
+
+
+
+<div style="margin-left: 40px;"><span style="font-style: italic;">java -jar wrapper.jar <span style="font-weight: bold;">-c</span>
+&lt;configuration file&gt;</span><span style="font-style: italic;">
+&lt;configuration file&gt; ...</span>
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+
+
+install a service or daemon:<br>
+
+
+
+
+
+
+
+
+<div style="margin-left: 40px;"><span style="font-style: italic;">java -jar wrapper.jar <span style="font-weight: bold;">-i</span>
+&lt;configuration file&gt;</span><span style="font-style: italic;"></span><span style="font-style: italic;">
+&lt;configuration file&gt; ...</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+
+
+uninstall a service or daemon<br>
+
+
+
+
+
+
+
+
+<div style="margin-left: 40px; font-style: italic;">java
+-jar wrapper.jar <span style="font-weight: bold;">-u</span> &lt;configuration file&gt;</div>
+
+
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+
+
+start a service or daemon<br>
+
+
+
+
+
+
+
+
+<div style="margin-left: 40px; font-style: italic;">java
+-jar wrapper.jar <span style="font-weight: bold;">-t</span> &lt;configuration file&gt;</div>
+
+
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+
+
+stop a service or daemon<br>
+
+
+
+
+
+
+
+
+<div style="margin-left: 40px; font-style: italic;">java
+-jar wrapper.jar <span style="font-weight: bold;">-p</span> &lt;configuration file&gt;</div>
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+
+
+<h3><a class="mozTocH3" name="mozTocId228806"></a>Migrating from JSW integration method 1</h3>
+
+
+
+
+
+
+
+
+<ul>
+
+
+
+
+
+
+
+
+  <li>Copy your existing configuration file to &lt;YAJSW&gt;/conf/.&nbsp;We will refer to this file as &lt;conf&gt;</li>
+
+
+
+
+
+
+
+
+  <li>Edit the configuration file:</li>
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  <ul>
+
+
+
+
+
+
+
+
+    <li>remove <span style="font-style: italic;">wrapper.java.classpath.1=&lt;path&gt;/wrapper.jar</span></li>
+
+
+
+
+
+
+
+    <li>remove<span style="font-style: italic;"> wrapper.java.classpath.2=&lt;jdk path&gt;\lib\tools.jar</span></li>
+
+
+
+
+
+
+
+    <li>remove<span style="font-style: italic;"> wrapper.java.library.path.1=&lt;path to wrapper native lib&gt;</span><br>
+
+
+
+
+
+
+
+    </li>
+
+
+
+
+
+
+
+
+    <li>replace&nbsp;<span style="font-family: monospace;"></span><span style="font-style: italic;">wrapper.app.parameter.1=&lt;application
+main class&gt;</span> with <span style="font-style: italic;">wrapper.java.app.mainclass=&lt;application
+main class&gt;</span></li>
+
+
+
+
+
+
+
+
+    <li>remove <span style="font-style: italic;">wrapper.java.mainclass=org.tanukisoftware.wrapper.WrapperSimpleApp</span></li>
+
+
+
+
+
+
+
+
+    <li>replace all "\" with either "\\" or "/"</li>
+
+
+
+
+
+
+
+    <li>replace all "," with "\,"</li>
+
+
+
+
+    <li>eventually split java options to separate properties</li>
+
+
+
+
+
+
+
+    <li>eventually set <span style="font-style: italic;">wrapper.working.dir = &lt;working dir of application&gt;</span></li>
+
+
+
+    <li>eventually replace environment variables by the YAJSW notation<span style="font-style: italic;"><br>
+
+
+
+      </span></li>
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  </ul>
+
+
+
+
+
+
+
+
+  <li>Go to &lt;YAJSW&gt; folder and run the application as console by calling:</li>
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  <ul>
+
+
+
+
+
+
+
+    <li><span style="font-style: italic;">java -jar wrapper.jar -c
+conf/&lt;conf&gt;</span></li>
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  </ul>
+
+
+
+
+
+
+
+
+</ul>
+
+
+
+
+
+
+
+<h3><a class="mozTocH3" name="mozTocId86943"></a>Migrating from JSW integration method 2</h3>
+
+
+
+
+
+
+
+<ul>
+
+
+
+
+
+
+
+  <li>Copy your existing configuration file to YAJSW/conf/. We will refer to this file as &lt;conf&gt;</li>
+
+
+
+
+
+
+
+  <li>Edit the configuration file:</li>
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  <ul>
+
+
+
+
+
+
+
+    <li>remove <span style="font-style: italic;">wrapper.java.classpath.1=&lt;path&gt;/wrapper.jar</span></li>
+
+
+
+
+
+
+
+    <li>remove<span style="font-style: italic;"> wrapper.java.classpath.2=&lt;jdk path&gt;\lib\tools.jar</span></li>
+
+
+
+
+
+
+
+    <li>remove<span style="font-style: italic;"> wrapper.java.library.path.1=&lt;path to wrapper native lib&gt;</span><br>
+
+
+
+
+
+
+
+    </li>
+
+
+
+
+
+
+
+    <li>replace&nbsp;<span style="font-family: monospace;"></span><span style="font-style: italic;">wrapper.app.parameter.&lt;n&gt;=&lt;application
+main class&gt;</span> with <span style="font-style: italic;">wrapper.java.app.mainclass=&lt;application
+main class&gt;</span></li>
+
+
+
+
+
+
+
+    <li>remove&nbsp;<span style="font-style: italic;">wrapper.java.mainclass=org.tanukisoftware.wrapper.WrapperStartStopApp</span></li>
+
+
+
+
+
+
+
+    <li>remove<span style="font-style: italic;"> wrapper.app.parameter.2=&lt;arg count&gt;</span></li>
+
+
+
+
+
+
+
+    <li>remove all properties for the stop application these will be defined in another configuration file:</li>
+
+
+
+
+
+
+
+    
+    
+    
+    
+    
+    
+    
+    <ul>
+
+
+
+
+
+
+
+      <li>remove<span style="font-style: italic;"> wrapper.app.parameter.&lt;n&gt;=&lt;stop application main class&gt;</span></li>
+
+
+
+
+
+
+
+      <li>remove <span style="font-style: italic;">wrapper.app.parameter.&lt;n&gt;=&lt;boolean&gt;</span></li>
+
+
+
+
+
+
+
+      <li>remove <span style="font-style: italic;">wrapper.app.parameter.&lt;n&gt;=&lt;stop application arg count&gt;</span><span style="font-family: monospace;"></span></li>
+
+
+
+
+
+
+
+      <li><span style="font-family: monospace;"></span>remove <span style="font-style: italic;">wrapper.app.parameter.&lt;n&gt;=&lt;stop application argument&gt;</span><br>
+
+
+
+
+
+
+
+      </li>
+
+
+
+
+
+
+
+    
+    
+    
+    
+    
+    
+    
+    </ul>
+
+
+
+
+
+
+
+    <li>replace all "\" with either "\\" or "/"</li>
+
+
+
+
+
+
+
+    <li>replace all "," with "\,"</li>
+
+
+
+
+
+
+
+    <li>add <span style="font-style: italic;">wrapper.stop.conf=stop_&lt;conf&gt;</span></li>
+
+
+
+
+    <li>eventually split java options to separate properties</li>
+
+
+
+
+
+
+
+    <li>eventually set <span style="font-style: italic;">wrapper.working.dir = &lt;working dir of application&gt;</span></li>
+
+
+
+    <li>eventually replace environment variables by the YAJSW notation<span style="font-style: italic;"><br>
+
+
+
+      </span></li>
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  </ul>
+
+
+
+
+
+
+
+  <li>Create a new file <span style="font-style: italic;">stop_&lt;conf&gt; </span>with the following content:</li>
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  <ul style="font-style: italic;">
+
+
+
+
+
+
+
+    <li>wrapper.app.parameter.1=&lt;stop application argument&gt;</li>
+
+
+
+
+
+
+
+    <li> wrapper.stopper = true</li>
+
+
+
+
+
+
+
+    <li>&nbsp; include = &lt;conf&gt; </li>
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  </ul>
+
+
+
+
+
+
+
+  <li>Go to YAJSW folder and run the application as console by calling:</li>
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  <ul>
+
+
+
+
+
+
+
+    <li><span style="font-style: italic;">java -jar wrapper.jar -c
+conf/</span>&lt;conf&gt;</li>
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  </ul>
+
+
+
+
+
+
+
+  <li>Try stopping the application by calling</li>
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  <ul>
+
+
+
+
+
+
+
+    <li><span style="font-style: italic;">java -jar wrapper.jar -c
+conf/</span>stop_&lt;conf&gt;</li>
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  </ul>
+
+
+
+
+
+
+
+</ul>
+
+
+
+
+
+
+
+<h3><a class="mozTocH3" name="mozTocId500186"></a>Migrating from JSW integration method 3</h3>
+
+
+
+
+
+
+
+Not Yet Implemented<br>
+
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+
+<h3><a class="mozTocH3" name="mozTocId392215"></a>Migrating from JSW integration method 4</h3>
+
+
+
+
+
+
+
+<ul>
+
+
+
+
+
+
+
+  <li>Copy your existing configuration file to &lt;YAJSW&gt;/conf/.&nbsp;We will refer to this file as &lt;conf&gt;</li>
+
+
+
+
+
+
+
+  <li>Edit the configuration file:</li>
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  <ul>
+
+
+
+
+
+
+
+    <li>remove <span style="font-style: italic;">wrapper.java.classpath.1=&lt;path&gt;/wrapper.jar</span></li>
+
+
+
+
+
+
+
+    <li>remove<span style="font-style: italic;"> wrapper.java.classpath.2=&lt;jdk path&gt;\lib\tools.jar</span></li>
+
+
+
+
+
+
+
+    <li>remove<span style="font-style: italic;"> wrapper.java.library.path.1=&lt;path to wrapper native lib&gt;</span><br>
+
+
+
+
+
+
+
+    </li>
+
+
+
+
+
+
+
+    <li>remove<span style="font-family: monospace;"> </span><span style="font-style: italic;">wrapper.java.mainclass=org.tanukisoftware.wrapper.WrapperJarApp</span></li>
+
+
+
+
+
+
+
+    <li>replace <span style="font-family: monospace;"></span><span style="font-style: italic;">wrapper.app.parameter.1=&lt;jar file&gt;</span> with <span style="font-style: italic;">wrapper.java.app.jar=&lt;jar file&gt;</span></li>
+
+
+
+
+
+
+
+    <li>remove <span style="font-style: italic;">wrapper.java.mainclass=org.tanukisoftware.wrapper.WrapperSimpleApp</span></li>
+
+
+
+
+
+
+
+    <li>replace all "\" with either "\\" or "/"</li>
+
+
+
+
+
+
+
+    <li>replace all "," with "\,"</li>
+
+
+
+
+    <li>eventually split java options to separate properties</li>
+
+
+
+
+
+
+
+    <li>eventually set <span style="font-style: italic;">wrapper.working.dir = &lt;working dir of application&gt;</span></li>
+
+
+
+    <li>eventually replace environment variables by the YAJSW notation<span style="font-style: italic;"><br>
+
+
+
+      </span></li>
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  </ul>
+
+
+
+
+
+
+
+  <li>Go to &lt;YAJSW&gt; folder and run the application as console by calling:</li>
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  <ul>
+
+
+
+
+
+
+
+    <li><span style="font-style: italic;">java -jar wrapper.jar -c
+conf/&lt;conf&gt;</span></li>
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  </ul>
+
+
+
+
+
+
+
+</ul>
+
+
+
+
+
+
+
+<h3><a class="mozTocH3" name="mozTocId564366"></a></h3>
+
+
+
+
+
+
+
+<span style="font-style: italic;"></span>
+</body>
+</html>

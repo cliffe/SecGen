@@ -19,7 +19,7 @@
 		<entry size="1" alignment="1" />
 		<entry size="2" alignment="2" />
 		<entry size="4" alignment="4" />
-		<entry size="8" alignment="4" />
+		<entry size="8" alignment="8" />
 	</size_alignment_map>
 	<bitfield_packing>
      	<use_MS_convention value="true"/>
@@ -28,6 +28,7 @@
   
   <global>
     <range space="ram"/>
+    <register name="MXCSR"/>
   </global>
   <stackpointer register="ESP" space="ram"/>
   <returnaddress>
@@ -59,6 +60,7 @@
         <register name="EDI"/>
         <register name="EBX"/>
         <register name="DF"/>
+        <register name="FS_OFFSET"/>
       </unaffected>
       <killedbycall>
         <register name="ECX"/>
@@ -96,6 +98,7 @@
       <register name="EDI"/>
       <register name="EBX"/>
       <register name="DF"/>
+      <register name="FS_OFFSET"/>
     </unaffected>
     <killedbycall>
       <register name="ECX"/>
@@ -138,6 +141,7 @@
       <register name="EDI"/>
       <register name="EBX"/>
       <register name="DF"/>
+      <register name="FS_OFFSET"/>
     </unaffected>
     <killedbycall>
       <register name="ECX"/>
@@ -177,6 +181,7 @@
       <register name="EDI"/>
       <register name="EBX"/>
       <register name="DF"/>
+      <register name="FS_OFFSET"/>
     </unaffected>
     <killedbycall>
       <register name="ECX"/>
@@ -373,4 +378,12 @@
   </pcode>
 </callfixup>
 
+<callfixup name="__RTC_CheckEsp">
+  <target name="__RTC_CheckEsp"/>
+  <pcode>
+   <body><![CDATA[
+      temp:4 = 0;
+   ]]></body>
+  </pcode>
+</callfixup>
 </compiler_spec>

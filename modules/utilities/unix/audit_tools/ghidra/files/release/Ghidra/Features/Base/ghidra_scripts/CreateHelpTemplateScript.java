@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 //Creates a template help file by reading all of the actions from a selected plugin.
-//@category HELP
 
 import java.io.*;
 import java.util.*;
@@ -67,7 +66,7 @@ public class CreateHelpTemplateScript extends GhidraScript {
 			printWriter.println("<head>");
 			printWriter.println("\t" + "<title>" + plugin.getName() + "</title>");
 			printWriter.println("\t" +
-				"<link rel=\"stylesheet\" type=\"text/css\" href=\"../../shared/Frontpage.css\">");
+				"<link rel=\"stylesheet\" type=\"text/css\" href=\"help/shared/DefaultStyle.css\">");
 			printWriter.println("</head>");
 			printWriter.println("");
 			printWriter.println("<body>");
@@ -84,7 +83,7 @@ public class CreateHelpTemplateScript extends GhidraScript {
 			printWriter.println("<blockquote>");
 			List<DockingActionIf> actions = getActions(tool, plugin);
 			for (DockingActionIf action : actions) {
-				monitor.checkCanceled();
+				monitor.checkCancelled();
 				printWriter.println("\t" + "<h3><A name=\"" + action.getName().replace(' ', '_') +
 					"\"></A>" + action.getName() + "</h3>");
 				printWriter.println("\t\t" + "<blockquote>");
@@ -102,7 +101,8 @@ public class CreateHelpTemplateScript extends GhidraScript {
 	}
 
 	private List<DockingActionIf> getActions(PluginTool tool, Plugin plugin) {
-		Set<DockingActionIf> actions = KeyBindingUtils.getKeyBindingActionsForOwner(tool, plugin.getName());
+		Set<DockingActionIf> actions =
+			KeyBindingUtils.getKeyBindingActionsForOwner(tool, plugin.getName());
 		List<DockingActionIf> list = new ArrayList<>(actions);
 		Comparator<DockingActionIf> comparator = (action1, action2) -> {
 			try {

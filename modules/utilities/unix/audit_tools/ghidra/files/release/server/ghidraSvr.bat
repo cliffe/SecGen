@@ -5,13 +5,29 @@ rem Ghidra Server Script (see svrREADME.html for usage details)
 rem   Usage: ghidraSvr [ console | status | install | uninstall | start | stop | restart ]
 rem ---------------------------------------------------------------------------------------
 
-rem  The Java 11 (or later) runtime installation must either be on the system path or identified
+rem  The Java 17 (or later) runtime installation must either be on the system path or identified
 rem  by setting the JAVA_HOME environment variable.  If not using a formally installed Java 
 rem  runtime which has been configured into the system PATH ahead of other Java installations
 rem  it may be necessary to explicitly specify the path to the installation by setting JAVA_HOME
 rem  below:
 
-rem set JAVA_HOME=
+rem set "JAVA_HOME="
+
+:: Sets SERVER_DIR to the directory that contains this file (ghidraSvr.bat).
+:: SERVER_DIR will not contain a trailing slash.
+::
+:: '% ~' dereferences the value in param 0
+:: 'd' - drive
+:: 'p' - path (without filename)
+:: '~0,-1' - removes trailing \
+set "SERVER_DIR=%~dp0"
+set "SERVER_DIR=%SERVER_DIR:~0,-1%"
+
+rem Ensure Ghidra path doesn't contain illegal characters
+if not "%SERVER_DIR:!=%"=="%SERVER_DIR%" (
+	echo Ghidra path cannot contain a "!" character.
+	exit /B 1
+)
 
 setlocal enabledelayedexpansion
 
@@ -48,42 +64,46 @@ if "%IS_ADMIN%"=="NO" (
 	if "%OPTION%"=="restart" goto adminFail
 )
 
-rem Find the script directory
-rem %~dsp0 is location of current script under NT
-set _REALPATH=%~dp0
+set "APP_NAME=ghidraSvr"
+set "APP_LONG_NAME=Ghidra Server"
+set "MODULE_DIR=Ghidra\Features\GhidraServer"
+set "WRAPPER_NAME_PREFIX=yajsw"
+set "WRAPPER_TMPDIR=%TEMP%"
 
-set APP_NAME=ghidraSvr
-set APP_LONG_NAME=Ghidra Server
-
-set MODULE_DIR=Ghidra\Features\GhidraServer
-
-set WRAPPER_NAME_PREFIX=yajsw
-
-if exist "%_REALPATH%..\Ghidra\" goto normal
+if exist "%SERVER_DIR%\..\Ghidra\" goto normal
 
 rem NOTE: If adjusting JAVA command assignment - do not attempt to add parameters (e.g., -d64, -version:1.7, etc.)
 
-rem Development Environment
-set GHIDRA_HOME=%_REALPATH%..\..\..\..
-set WRAPPER_CONF=%_REALPATH%..\..\Common\server\server.conf
-set DATA_DIR=%GHIDRA_HOME%\%MODULE_DIR%\build\data
-set CLASSPATH_FRAG=%GHIDRA_HOME%\%MODULE_DIR%\build\dev-meta\classpath.frag
-set LS_CPATH=%GHIDRA_HOME%\GhidraBuild\LaunchSupport\bin\main
+rem NOTE: Variables that get accessed in server.conf must be lowercase
+
+rem Development Environment (Eclipse classes or "gradle jar")
+set "GHIDRA_HOME=%SERVER_DIR%\..\..\..\.."
+set "WRAPPER_CONF=%SERVER_DIR%\..\..\Common\server\server.conf"
+set "DATA_DIR=%GHIDRA_HOME%\%MODULE_DIR%\build\data"
+set "CLASSPATH_FRAG=%GHIDRA_HOME%\%MODULE_DIR%\build\dev-meta\classpath.frag"
+set "LS_CPATH=%GHIDRA_HOME%\GhidraBuild\LaunchSupport\bin\main"
+if not exist "%LS_CPATH%" (
+	set "LS_CPATH=%GHIDRA_HOME%\GhidraBuild\LaunchSupport\build\libs\LaunchSupport.jar"
+)
+if not exist "%LS_CPATH%" (
+	set ERROR=ERROR: Cannot launch from repo because Ghidra has not been compiled with Eclipse or Gradle.
+	goto reportError
+)
 
 goto lab1
 
 :normal
-set GHIDRA_HOME=%_REALPATH%..
-set WRAPPER_CONF=%_REALPATH%server.conf
-set DATA_DIR=%GHIDRA_HOME%\%MODULE_DIR%\data
-set CLASSPATH_FRAG=%GHIDRA_HOME%\%MODULE_DIR%\data\classpath.frag
-set LS_CPATH=%GHIDRA_HOME%\support\LaunchSupport.jar
+set "GHIDRA_HOME=%SERVER_DIR%\.."
+set "WRAPPER_CONF=%SERVER_DIR%\server.conf"
+set "DATA_DIR=%GHIDRA_HOME%\%MODULE_DIR%\data"
+set "CLASSPATH_FRAG=%GHIDRA_HOME%\%MODULE_DIR%\data\classpath.frag"
+set "LS_CPATH=%GHIDRA_HOME%\support\LaunchSupport.jar"
 
 :lab1
 
 rem set WRAPPER_HOME to unpacked yajsw location (crazy FOR syntax to set variable from command output)
 for /F "usebackq delims=" %%p in (`dir "%DATA_DIR%" /ad /b ^| findstr "^%WRAPPER_NAME_PREFIX%"`) do set WRAPPER_DIRNAME=%%p
-set WRAPPER_HOME=%DATA_DIR%\%WRAPPER_DIRNAME%
+set "WRAPPER_HOME=%DATA_DIR%\%WRAPPER_DIRNAME%"
 
 if not exist "%WRAPPER_HOME%\" (
 	echo.
@@ -97,17 +117,16 @@ echo Using service wrapper: %WRAPPER_DIRNAME%
 rem Find java.exe
 if defined JAVA_HOME goto findJavaFromJavaHome
 
-set JAVA=java.exe
-%JAVA% -version >NUL 2>&1
+set java=java.exe
+%java% -version >NUL 2>&1
 if "%ERRORLEVEL%" == "0" goto lab2
 set ERROR=ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.
 goto reportError
 
 :findJavaFromJavaHome
-set JAVA_HOME=%JAVA_HOME:"=%
-set JAVA=%JAVA_HOME%\bin\java.exe
+set "java=%JAVA_HOME%\bin\java.exe"
 
-if exist "%JAVA%" goto lab2
+if exist "%java%" goto lab2
 set ERROR=ERROR: JAVA_HOME is set to an invalid directory: %JAVA_HOME%
 goto reportError
 
@@ -115,48 +134,43 @@ goto reportError
 
 :: Get the java that will be used to launch GhidraServer
 set JAVA_HOME=
-for /f "delims=*" %%i in ('call "%JAVA%" -cp "%LS_CPATH%" LaunchSupport "%GHIDRA_HOME%" -java_home') do set JAVA_HOME=%%i
+for /f "delims=*" %%i in ('call "%java%" -cp "%LS_CPATH%" LaunchSupport "%GHIDRA_HOME%" -java_home') do set JAVA_HOME=%%i
 if "%JAVA_HOME%" == "" (
 	set ERROR=Failed to find a supported Java runtime.  Please refer to the Ghidra Installation Guide's Troubleshooting section.
 	goto reportError
 )
 
 rem reestablish JAVA path based upon final JAVA_HOME
-set JAVA=%JAVA_HOME%\bin\java.exe
+set "java=%JAVA_HOME%\bin\java.exe"
 
-set OS_NAME=win32
-"%JAVA%" -version 2>&1 | findstr /I " 64-Bit " >NUL
-if errorlevel 0 (
-	set OS_NAME=win64
-)
+set VMARGS=-Djava.io.tmpdir="%WRAPPER_TMPDIR%"
+set VMARGS=%VMARGS% -Djna_tmpdir="%WRAPPER_TMPDIR%"
 
-set OS_DIR=%GHIDRA_HOME%\%MODULE_DIR%\os\%OS_NAME%
-
-:: set DEBUG=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=*:18888
+:: set DEBUG=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:18888
 
 if "%OPTION%"=="console" (
-	start "%APP_LONG_NAME%" "%JAVA%" %DEBUG% -jar "%WRAPPER_HOME%/wrapper.jar" -c "%WRAPPER_CONF%"
+	start "%APP_LONG_NAME%" "%java%" %VMARGS% %DEBUG% -jar "%WRAPPER_HOME%/wrapper.jar" -c "%WRAPPER_CONF%"
 	echo Use Ctrl-C in Ghidra Console to terminate...
 	
 ) else if "%OPTION%"=="status" (
-	"%JAVA%" -jar "%WRAPPER_HOME%/wrapper.jar" -q "%WRAPPER_CONF%"
+	"%java%" %VMARGS% -jar "%WRAPPER_HOME%/wrapper.jar" -q "%WRAPPER_CONF%"
 
 ) else if "%OPTION%"=="start" (
-	"%JAVA%" %DEBUG% -jar "%WRAPPER_HOME%/wrapper.jar" -t "%WRAPPER_CONF%"
+	"%java%" %VMARGS% %DEBUG% -jar "%WRAPPER_HOME%/wrapper.jar" -t "%WRAPPER_CONF%"
 
 ) else if "%OPTION%"=="stop" (
-	"%JAVA%" -jar "%WRAPPER_HOME%/wrapper.jar" -p "%WRAPPER_CONF%"
+	"%java%" %VMARGS% -jar "%WRAPPER_HOME%/wrapper.jar" -p "%WRAPPER_CONF%"
 
 ) else if "%OPTION%"=="restart" (
-	"%JAVA%" -jar "%WRAPPER_HOME%/wrapper.jar" -p "%WRAPPER_CONF%"
-	"%JAVA%" -jar "%WRAPPER_HOME%/wrapper.jar" -t "%WRAPPER_CONF%"
+	"%java%" %VMARGS% -jar "%WRAPPER_HOME%/wrapper.jar" -p "%WRAPPER_CONF%"
+	"%java%" %VMARGS% -jar "%WRAPPER_HOME%/wrapper.jar" -t "%WRAPPER_CONF%"
 
 ) else if "%OPTION%"=="install" (
-	"%JAVA%" -jar "%WRAPPER_HOME%/wrapper.jar" -i "%WRAPPER_CONF%"
-	"%JAVA%" -jar "%WRAPPER_HOME%/wrapper.jar" -t "%WRAPPER_CONF%"
+	"%java%" %VMARGS% -jar "%WRAPPER_HOME%/wrapper.jar" -i "%WRAPPER_CONF%"
+	"%java%" %VMARGS% -jar "%WRAPPER_HOME%/wrapper.jar" -t "%WRAPPER_CONF%"
 	
 ) else if "%OPTION%"=="uninstall" (
-	"%JAVA%" -jar "%WRAPPER_HOME%/wrapper.jar" -r "%WRAPPER_CONF%"
+	"%java%" %VMARGS% -jar "%WRAPPER_HOME%/wrapper.jar" -r "%WRAPPER_CONF%"
 
 ) else (
 	goto usage

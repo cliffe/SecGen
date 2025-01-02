@@ -23,13 +23,13 @@
 //
 // Any existing Ghidra symbol table entries that collide with VxWorks symbol
 // table entries are deleted.  Mangled C++ symbol names are demangled.
-// 
+//
 // The VxWorks symbol table is an array [0..n-1] of (struct SYMBOL) entries.
 // The table may be immediately followed or preceeded by an (int) vxSymTblLen
 // value.
 //
 // Prerequisites:
-//	
+//
 //		- Program memory block(s) is(are) aligned with actual load addresses
 //		  (run something like MemAlignARM_LE.java)
 //
@@ -41,6 +41,8 @@
 //
 // @category VxWorks
 
+import java.util.List;
+
 import ghidra.app.cmd.disassemble.DisassembleCommand;
 import ghidra.app.cmd.label.DemanglerCmd;
 import ghidra.app.plugin.core.analysis.AutoAnalysisManager;
@@ -50,13 +52,7 @@ import ghidra.app.util.demangler.DemangledException;
 import ghidra.app.util.demangler.gnu.GnuDemangler;
 import ghidra.program.model.address.Address;
 import ghidra.program.model.address.AddressSet;
-import ghidra.program.model.data.ArrayDataType;
-import ghidra.program.model.data.DataType;
-import ghidra.program.model.data.DataTypeComponent;
-import ghidra.program.model.data.DataTypeConflictHandler;
-import ghidra.program.model.data.DataTypeManager;
-import ghidra.program.model.data.PointerDataType;
-import ghidra.program.model.data.StructureDataType;
+import ghidra.program.model.data.*;
 import ghidra.program.model.listing.Data;
 import ghidra.program.model.listing.Instruction;
 import ghidra.program.model.mem.MemoryBlock;
@@ -143,8 +139,9 @@ public class VxWorksSymTab_Finder extends GhidraScript {
 		// Add SYMBOL data type to Program DataTypeManager
 		// (if data type already exists, replace it)
 		public void createGhidraType() {
-			currentProgram.getDataTypeManager().addDataType(dt,
-				DataTypeConflictHandler.REPLACE_HANDLER);
+			currentProgram.getDataTypeManager()
+					.addDataType(dt,
+						DataTypeConflictHandler.REPLACE_HANDLER);
 		}
 	}
 
@@ -243,7 +240,7 @@ public class VxWorksSymTab_Finder extends GhidraScript {
 
 			case 3:
 
-				// Version 5.5
+				// Version 5.5, possibly 5.3 as well
 				//
 				// Total length: 0x10 bytes
 				//    0x00    uint symHashNode	// NULL
@@ -259,7 +256,20 @@ public class VxWorksSymTab_Finder extends GhidraScript {
 				dt.replaceAtOffset(0x0c, ushortType, 2, "symGroup", "");
 				dt.replaceAtOffset(0x0e, byteType, 1, "symType", "");
 				break;
-
+			case 4:
+				// version 5.0
+				// sizeof = 0x0e bytes
+				//    0x00    uint symHashNode	// NULL
+				//    0x04    char *symNameOff
+				//    0x08    void *symLocOff
+				//    0x0c    uchar symType
+				//    0x0d    uchar undef
+				dt = new StructureDataType("SYMBOL", 0x0e);
+				dt.replaceAtOffset(0, uintType, 4, "symHashNode", "");
+				dt.replaceAtOffset(4, charPtrType, 4, "symNameOff", "");
+				dt.replaceAtOffset(8, voidPtrType, 4, "symLocOff", "");
+				dt.replaceAtOffset(0x0c, byteType, 1, "symType", "");
+				break;
 			default:
 
 				return null;
@@ -351,8 +361,7 @@ public class VxWorksSymTab_Finder extends GhidraScript {
 			}
 		}
 
-		if (_byte == 0x00)
-		 {
+		if (_byte == 0x00) {
 			return true;  // Scan stopped at null.
 		}
 		return false; // Scan stopped at invalid char.
@@ -599,7 +608,7 @@ public class VxWorksSymTab_Finder extends GhidraScript {
 	 * @param symTbl
 	 * @param vxSymbol
 	 * @param tableLen
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private void markSymbolTableLen(Address symTbl, VxSymbol vxSymbol, int symTblLen)
 			throws Exception {
@@ -657,8 +666,11 @@ public class VxWorksSymTab_Finder extends GhidraScript {
 
 		if (demangled != null) {
 			new DemanglerCmd(addr, mangled).applyTo(currentProgram, monitor);
-			currentProgram.getSymbolTable().removeSymbolSpecial(
-				getSymbol(mangled, currentProgram.getGlobalNamespace()));
+			List<Symbol> symbols =
+				getSymbols(mangled, currentProgram.getGlobalNamespace());
+			if (!symbols.isEmpty()) {
+				currentProgram.getSymbolTable().removeSymbolSpecial(symbols.get(0));
+			}
 		}
 
 		return;
@@ -740,7 +752,7 @@ public class VxWorksSymTab_Finder extends GhidraScript {
 			return;
 		}
 
-		// Process VxWorks symbol table entries 
+		// Process VxWorks symbol table entries
 		println("Processing symbol table entries.");
 		Address symEntry = symTbl;
 		for (int i = 0; (i < symTblLen) && !monitor.isCancelled(); i++, symEntry =
@@ -772,7 +784,7 @@ public class VxWorksSymTab_Finder extends GhidraScript {
 			// Demangle symName
 			String symDemangledName = null;
 			try {
-				symDemangledName = demangler.demangle(symName, true).getSignature(false);
+				symDemangledName = demangler.demangle(symName).getSignature(false);
 			}
 			catch (DemangledException e) {		// report demangling error
 				if (!e.isInvalidMangledName()) {

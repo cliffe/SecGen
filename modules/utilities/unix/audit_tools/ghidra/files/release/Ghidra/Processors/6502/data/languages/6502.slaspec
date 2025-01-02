@@ -31,6 +31,7 @@ define token data (16)
 ;
 
 macro popSR() {
+	SP = SP + 1;
 	local ccr = *:1 SP;
 	N = ccr[7,1];
 	V = ccr[6,1];
@@ -70,7 +71,7 @@ macro subtraction_flags1(register, operand, result) {
 
 
 ################################################################
-# Psuedo Instructions
+# Pseudo Instructions
 ################################################################
 
 define pcodeop readIRQ;
@@ -117,7 +118,7 @@ OP2LD: imm16,Y  is bbb=7 & Y; imm16		{ tmp:2 = imm16 + zext(Y); export *:1 tmp; 
 
 ADDR8:  imm8    is imm8		{ export *:1 imm8; }
 ADDR16: imm16   is imm16   	{ export *:1 imm16; }
-ADDRI:  imm16   is imm16    { tmp:2 = imm16; export *:2 tmp; }
+ADDRI:  (imm16)   is imm16    { tmp:2 = imm16; export *:2 tmp; }
 
 
 # Instructions
@@ -168,8 +169,10 @@ ADDRI:  imm16   is imm16    { tmp:2 = imm16; export *:2 tmp; }
 
 :BIT OP2     is (op=0x24 | op=0x2C) ... & OP2
 {
+	N = (OP2 & 0x80) == 0x80;
+	V = (OP2 & 0x40) == 0x40;
 	local value = A & OP2;
-	resultFlags(value);
+	Z = (value == 0);
 }
 
 :BMI  REL			is op=0x30; REL
@@ -189,7 +192,13 @@ ADDRI:  imm16   is imm16    { tmp:2 = imm16; export *:2 tmp; }
 
 :BRK   is op=0x00
 {
-	goto inst_start;
+	*:2 (SP - 1) = inst_next;
+	SP = SP - 2;
+	B = 1;
+	pushSR();
+	I = 1;
+	local target:2 = 0xFFFE;
+	goto [*:2 target];
 }
 
 :BVC  REL			is op=0x50; REL
@@ -227,7 +236,7 @@ ADDRI:  imm16   is imm16    { tmp:2 = imm16; export *:2 tmp; }
 	local op1 = OP1;
 	local tmp = A - op1;
 	resultFlags(tmp);
-	C = (A < op1);
+	C = (A >= op1);
 }
 
 :CPX OP2     is (op=0xE0 | op=0xE4 | op=0xEC) ... & OP2
@@ -235,7 +244,7 @@ ADDRI:  imm16   is imm16    { tmp:2 = imm16; export *:2 tmp; }
 	local op1 = OP2;
 	local tmp = X - op1;
 	resultFlags(tmp);
-	C = (A < op1);
+	C = (X >= op1);
 }
 
 :CPY OP2     is (op=0xC0 | op=0xC4 | op=0xCC) ... & OP2
@@ -243,7 +252,7 @@ ADDRI:  imm16   is imm16    { tmp:2 = imm16; export *:2 tmp; }
 	local op1 = OP2;
 	local tmp = Y - op1;
 	resultFlags(tmp);
-	C = (A < op1);
+	C = (Y >= op1);
 }
 
 :DEC OP2     is (op=0xC6 | op=0xCE | op=0xD6 | op=0xDE) ... & OP2
@@ -367,6 +376,7 @@ ADDRI:  imm16   is imm16    { tmp:2 = imm16; export *:2 tmp; }
 {
 	SP = SP + 1;
 	A = *:1 (SP);
+	resultFlags(A);
 }
 
 :ROL OP2     is (op=0x26 | op=0x2A | op=0x2E | op=0x36 | op=0x3E) ... & OP2
@@ -390,10 +400,10 @@ ADDRI:  imm16   is imm16    { tmp:2 = imm16; export *:2 tmp; }
 	OP2 = tmp;
 	resultFlags(tmp);	
 }
+
 :RTI      is op=0x40
 {
 	popSR();
-	SP = SP+1;
 	
     SP = SP+1;
 	tmp:2 = *:2 SP;
@@ -414,7 +424,7 @@ ADDRI:  imm16   is imm16    { tmp:2 = imm16; export *:2 tmp; }
 :SBC OP1     is (cc=1 & aaa=7) ... & OP1
 {
 	local op1 = OP1;
-	local result = A - op1 - C;
+	local result = A - op1 - !C;
 	
 	subtraction_flags1(A, op1, result);
 	A = result;	
@@ -442,39 +452,40 @@ ADDRI:  imm16   is imm16    { tmp:2 = imm16; export *:2 tmp; }
 :STA OP1     is (cc=1 & aaa=4) ... & OP1
 {
 	OP1 = A;
-	resultFlags(A);
 }
 
 :STX OP2ST     is (op=0x86 | op=0x8E | op=0x96) ... & OP2ST
 {
 	OP2ST = X;
-	resultFlags(X);
 }
 
 :STY OP2     is (op=0x84 | op=0x8C | op=0x94) ... & OP2
 {
 	OP2 = Y;
-	resultFlags(Y);
 }
 
 :TAX     is op=0xAA
 {
 	X = A;
+	resultFlags(X);
 }
 
 :TAY     is op=0xA8
 {
 	Y = A;
+	resultFlags(Y);
 }
 
 :TSX     is op=0xBA
 {
 	X = S;
+    resultFlags(X);	
 }
 
 :TXA     is op=0x8A
 {
 	A = X;
+	resultFlags(A);
 }
 
 :TXS     is op=0x9A
@@ -485,4 +496,5 @@ ADDRI:  imm16   is imm16    { tmp:2 = imm16; export *:2 tmp; }
 :TYA     is op=0x98
 {
 	A = Y;
+	resultFlags(A);
 }

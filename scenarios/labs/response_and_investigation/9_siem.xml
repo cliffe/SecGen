@@ -77,7 +77,7 @@
 
   <system>
     <system_name>siem_management</system_name>
-    <base platform="linux" distro="Buster"/>
+    <base distro="Debian 10" type="desktop" name="KDE"/>
 
     <input into_datastore="IP_addresses">
       <!-- 0 siem_management -->

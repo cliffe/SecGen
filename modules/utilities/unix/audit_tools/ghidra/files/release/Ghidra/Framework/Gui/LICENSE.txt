@@ -1,0 +1,58 @@
+Ghidra software is released under the Apache 2.0 license. In addition, 
+there are numerous 3rd party components that each have their 
+own license. The license file for each of these licenses can be found
+in the licenses directory in the installation root directory.
+
+The 3rd party files in this module are as follows:
+
+
+Oxygen Icons - LGPL 3.0:
+
+	src/main/resources/images/warning.png
+	src/main/resources/images/flag.png
+	src/main/resources/images/dialog-cancel.png
+	src/main/resources/images/list-remove.png
+	src/main/resources/images/edit-delete.png
+	src/main/resources/images/emblem-important.png
+
+Nuvola Icons - LGPL 2.1:
+
+	src/main/resources/images/core24.png
+	src/main/resources/images/kgpg.png
+	src/main/resources/images/error.png
+	src/main/resources/images/viewmagfit.png
+	src/main/resources/images/core.png
+
+Apache License 2.0:
+
+	lib/flatlaf-3.2.1.jar
+
+Crystal Clear Icons - LGPL 2.1:
+
+	src/main/resources/images/reload3.png
+	src/main/resources/images/exec.png
+
+FAMFAMFAM Icons - CC 2.5:
+
+	src/main/resources/images/text_align_justify.png
+	src/main/resources/images/information.png
+	src/main/resources/images/disk_save_as.png
+	src/main/resources/images/page_white_copy.png
+	src/main/resources/images/page_paste.png
+	src/main/resources/images/disk.png
+
+Modified Nuvola Icons - LGPL 2.1:
+
+	src/main/resources/images/openSmallFolder.png
+	src/main/resources/images/closedSmallFolder.png
+	src/main/resources/images/openFolder.png
+
+Tango Icons - Public Domain:
+
+	src/main/resources/images/go-home.png
+	src/main/resources/images/edit-cut.png
+	src/main/resources/images/help-browser.png
+	src/main/resources/images/software-update-urgent.png
+	src/main/resources/images/video-x-generic16.png
+	src/main/resources/images/process-stop.png
+

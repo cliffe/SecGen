@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>application loading</title>
+
+
+</head>
+<body>
+<h3 style="text-align: center;">Application Loading</h3>
+<div style="text-align: center;"><img style="width: 940px; height: 660px;" alt="application loading" src="classLoading.JPG"><br>
+<div style="text-align: left;"><br>
+WrappedJavaProcess first starts a Controller which is waiting for the
+application to connect to it's server port.<br>
+Then the application java process is started using jna.<br>
+<br>
+The
+java process executes WrapperMain.main() within the application's class
+loader. This main method first creates the WrapperManagerProxy, which
+loads the WrapperManagerImpl singleton within a separate class loader.
+We can thus ensure that the application will not be "influenced" by any
+classes loaded within the WrapperMangerImpl.<br>
+<br>
+Once initialiazed
+the WrapperManagerImpl pipes the java input output and error streams to
+temporary circular buffer files and then&nbsp;connects to the
+Controller server port, thus indicating to the wrapper that the child
+process has successfully been spawned. The temprorary files are
+read/written by the WrappedJavaProcess class. We can thus read and
+write to the application streams from within the wrapper process.<br>
+<br>
+Then the main() method of the application is called.<br>
+<br>
+The
+application can access the WrapperManager for example to request a
+shutdown of the process by calling WrapperMain.WRAPPER_MANAGER.stop().<br>
+<br>
+</div>
+</div>
+<br>
+</body></html>

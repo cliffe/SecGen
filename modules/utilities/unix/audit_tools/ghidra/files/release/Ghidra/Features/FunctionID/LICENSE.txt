@@ -6,7 +6,3 @@ in the licenses directory in the installation root directory.
 The 3rd party files in this module are as follows:
 
 
-Nuvola Icons - LGPL 2.1:
-
-	src/main/resources/images/vcard.png
-

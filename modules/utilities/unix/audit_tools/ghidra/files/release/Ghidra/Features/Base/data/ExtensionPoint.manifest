@@ -1,5 +1,4 @@
 Analyzer
-DataType
 Demangler
 Exporter
 FieldFactory
@@ -11,6 +10,7 @@ ScriptProvider
 Recognizer
 BinaryAnalysisCommand
 CoffRelocationHandler
+MachoRelocationHandler
 ElfRelocationHandler
 ElfExtension
 RelocationFixupHandler
@@ -19,3 +19,5 @@ InstructionSkipper
 DataTypeReferenceFinder
 ChecksumAlgorithm
 OverviewColorService
+DWARFFunctionFixup
+ElfInfoProducer

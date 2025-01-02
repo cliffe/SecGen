@@ -42,6 +42,7 @@ define token micinstr (16)
   mic_rs32_0a=(0,4)
   mic_rs32_0b=(0,4)
   mic_rs32_0lo=(0,4)
+  mic_rs32_hw=(0,4)
   mic_rs32_5=(5,9)
 
   mic_rt32_0=(0,4)
@@ -187,6 +188,17 @@ define token micinstrb (16)
 attach variables [ mic_rd7 mic_rd1 mic_rt4 mic_rs1 mic_rs7 mic_rs0 mic_rs4 mic_rt3 mic_rt7 mic_base4 ]
                  [ s0 s1 v0 v1 a0 a1 a2 a3 ];
 
+attach variables [ mic_rs32_hw ] [
+	HW_CPUNUM	HW_SYNCI_STEP	HW_CC		HW_CCRe
+	HW_PerfCtr	HW_XNP			HW_RES6		HW_RES7
+	HW_RES8		HW_RES9			HW_RES10	HW_RES11
+	HW_RES12	HW_RES13		HW_RES14	HW_RES15
+	HW_RES16	HW_RES17		HW_RES18	HW_RES19
+	HW_RES20	HW_RES21		HW_RES22	HW_RES23
+	HW_RES24	HW_RES25		HW_RES26	HW_RES27
+	HW_RES28	HW_ULR			HW_RESIM30	HW_RESIM31
+];
+
 @ifdef MIPS64
 attach variables [ mic_rd7lo mic_rd1lo mic_rt4lo mic_rs1lo mic_rs7lo mic_rs0lo mic_rs4lo mic_rt3lo mic_rt7lo ]
 				 [ s0_lo s1_lo v0_lo v1_lo a0_lo a1_lo a2_lo a3_lo ];
@@ -257,39 +269,55 @@ attach names [ ext_t4_name][
 ];
 
 RD5L: mic_rd32_5	is mic_rd32_5 & mic_rd32_5lo	{ export mic_rd32_5lo; }
+RD5L: mic_rd32_5	is mic_rd32_5 & mic_rd32_5lo=0	{ tmp:4 = 0; export tmp; }
 
 RD7R1: mic_rd7		is mic_rd7 & REL6=0				{ export mic_rd7; }
 RD7R1: mic_rd1		is mic_rd1 & REL6=1				{ export mic_rd1; }
 
 RSEXTL: ext_32_rs1	is ext_32_rs1 & ext_32_rs1lo	{ export ext_32_rs1lo; }
-RS0L: mic_rs32_0	is mic_rs32_0 & mic_rs32_0lo	{ export mic_rs32_0lo; }
-RS4L: mic_rs4		is mic_rs4 & mic_rs4lo 			{ export mic_rs4lo; }
+RSEXTL: ext_32_rs1	is ext_32_rs1 & ext_32_rs1lo=0	{ tmp:4 = 0; export tmp; }
 
-RS0R4: mic_rs0		is mic_rs0 & REL6=0 			{ export mic_rs0; }
-RS0R4: mic_rs4		is mic_rs4 & REL6=1 			{ export mic_rs4; }
-RS0R5: mic_rs32_0	is mic_rs32_0 & REL6=0			{ export mic_rs32_0; } 
-RS0R5: mic_rs32_5	is mic_rs32_5 & REL6=1			{ export mic_rs32_5; } 
+RS0L: mic_rs32_0	is mic_rs32_0 & mic_rs32_0lo	{ export mic_rs32_0lo; }
+RS0L: mic_rs32_0	is mic_rs32_0 & mic_rs32_0lo=0	{ tmp:4 = 0; export tmp; }
+RS4L: mic_rs4		is mic_rs4 & mic_rs4lo			{ export mic_rs4lo; }
+
+RS0R4: mic_rs0		is mic_rs0 & REL6=0				{ export mic_rs0; }
+RS0R4: mic_rs4		is mic_rs4 & REL6=1				{ export mic_rs4; }
+RS0R5: mic_rs32_0	is mic_rs32_0 & REL6=0			{ export mic_rs32_0; }
+RS0R5: mic_rs32_0	is mic_rs32_0 & mic_rs32_0=0 & REL6=0		{ tmp:$(REGSIZE) = 0; export tmp; }
+RS0R5: mic_rs32_5	is mic_rs32_5 & REL6=1			{ export mic_rs32_5; }
+RS0R5: mic_rs32_5	is mic_rs32_5 & mic_rs32_5=0 & REL6=1		{ tmp:$(REGSIZE) = 0; export tmp; }
 
 RS1R7L: mic_rs1		is mic_rs1 & mic_rs1lo & REL6=0 { export mic_rs1lo; }
 RS1R7L: mic_rs7		is mic_rs7 & mic_rs7lo & REL6=1 { export mic_rs7lo; }
 
 RT4L: mic_rt4		is mic_rt4 & mic_rt4lo 			{ export mic_rt4lo; }
 RT5L: mic_rt32_5	is mic_rt32_5 & mic_rt32_5lo	{ export mic_rt32_5lo; }
+RT5L: mic_rt32_5	is mic_rt32_5 & mic_rt32_5lo=0	{ tmp:4 = 0; export tmp; }
+
 
 RT3R7: mic_rt3		is mic_rt3 & REL6=0				{ export mic_rt3; }
 RT3R7: mic_rt7		is mic_rt7 & REL6=1				{ export mic_rt7; }
 
 RST7R5: mic_rs7		is mic_rs7 & REL6=0 			{ export mic_rs7; }
 RST7R5: mic_rt32_5	is mic_rt32_5 & REL6=1 			{ export mic_rt32_5; }
+RST7R5: mic_rt32_5	is mic_rt32_5 & mic_rt32_5=0 & REL6=1 		{ tmp:$(REGSIZE) = 0; export tmp; }
 
-RT5RD5: ext_32_rd	is ext_32_rd & REL6=0			{ export ext_32_rd; } 
+
+RT5RD5: ext_32_rd	is ext_32_rd & REL6=0			{ export ext_32_rd; }
+RT5RD5: ext_32_rd	is ext_32_rd & ext_32_rd=0 & REL6=0			{ tmp:$(REGSIZE) = 0; export tmp; }
 RT5RD5: micb_rd32	is micb_rd32 & REL6=1			{ export micb_rd32; }
+RT5RD5: micb_rd32	is micb_rd32 & micb_rd32=0 & REL6=1		{ tmp:$(REGSIZE) = 0; export tmp; }
 
 RS0RT5: mic_rs32_0	is mic_rs32_0 & REL6=0			{ export mic_rs32_0; }
+RS0RT5: mic_rs32_0	is mic_rs32_0 & mic_rs32_0=0 & REL6=0		{ tmp:$(REGSIZE) = 0; export tmp; }
 RS0RT5: mic_rt32_5	is mic_rt32_5 & REL6=1			{ export mic_rt32_5; }
+RS0RT5: mic_rt32_5	is mic_rt32_5 & mic_rt32_5=0 & REL6=1		{ tmp:$(REGSIZE) = 0; export tmp; }
 
 ENCRS: mic_encrs	is mic_encrs & REL6=0			{ export mic_encrs; }
+ENCRS: mic_encrs	is mic_encrs & mic_encrs=0 & REL6=0		{ tmp:$(REGSIZE) = 0; export tmp; }
 ENCRS: ext_16_rs	is ext_16_rs & REL6=1			{ export ext_16_rs; }
+ENCRS: ext_16_rs	is ext_16_rs & ext_16_rs=0 & REL6=1		{ tmp:$(REGSIZE) = 0; export tmp; }
 
 Abs26_mic1: reloc            	is ext_32_code & micb_imm16 [ reloc=((inst_start+4) $and 0xfffffffff8000000)+2*(micb_imm16 | (ext_32_code << 16)); ]   { export *:$(ADDRSIZE) reloc; }                 
 Abs26_mic2: reloc            	is ext_32_code & micb_imm16 [ reloc=((inst_start+4) $and 0xfffffffff0000000)+4*(micb_imm16 | (ext_32_code << 16)); ]   { export *:$(ADDRSIZE) reloc; } 
@@ -669,11 +697,11 @@ STORE_TOP16: STORE_SREG^ra,EXT_CODE4E(sp) is mic_listr6 & REL6=1 & STORE_SREG & 
 }
 
 :clo mic_rt32_5, RS0L						is ISA_MODE=1 & RELP=0 & mic_op=0b000000 & mic_rt32_5 & RS0L ; micb_poolax=0b111100 & micb_axf=0b0100101100   {
-    mic_rt32_5 = countLeadingOnes( RS0L );
+    mic_rt32_5 = lzcount( ~RS0L );
 }
 
 :clz mic_rt32_5, RS0L						is ISA_MODE=1 & RELP=0 & mic_op=0b000000 & mic_rt32_5 & RS0L ; micb_poolax=0b111100 & micb_axf=0b0101101100 {
-    mic_rt32_5 = countLeadingZeros( RS0L );
+    mic_rt32_5 = lzcount( RS0L );
 }
 
 :cop2 EXT_MU23								is ISA_MODE=1 & RELP=0 & mic_op=0b000000 & mic_code ; micb_cop=0b010 & EXT_MU23 [ ext_32_code=mic_code; ] {
@@ -1648,11 +1676,11 @@ STORE_TOP16: STORE_SREG^ra,EXT_CODE4E(sp) is mic_listr6 & REL6=1 & STORE_SREG & 
 }
 
 :dclo mic_rt32_5, mic_rs32_0				is ISA_MODE=1 & RELP=0 & mic_op=0b010110 & mic_rt32_5 & mic_rs32_0 ; micb_poolax=0b111100 & micb_axf=0b0100101100 {
-    mic_rt32_5 = countLeadingOnes( mic_rs32_0 );
+    mic_rt32_5 = lzcount( ~mic_rs32_0 );
 }
 
 :dclz mic_rt32_5, mic_rs32_0				is ISA_MODE=1 & RELP=0 & mic_op=0b010110 & mic_rt32_5 & mic_rs32_0 ; micb_poolax=0b111100 & micb_axf=0b0101101100   {
-    mic_rt32_5 = countLeadingZeros( mic_rs32_0 );
+    mic_rt32_5 = lzcount( mic_rs32_0 );
 }
 
 :dext mic_rt32_5, mic_rs32_0, micb_pos, SIZEP 	is ISA_MODE=1 & RELP=0 & mic_op=0b010110 & REL6=1 & mic_rt32_5 & mic_rs32_0 ; micb_poolax=0b101100 & micb_pos & SIZEP {
@@ -2769,8 +2797,8 @@ STORE_TOP16: STORE_SREG^ra,EXT_CODE4E(sp) is mic_listr6 & REL6=1 & STORE_SREG & 
     micb_fdD = mipsFloatPS(mic_fsD, mic_ftD_5);
 }
 
-:rdhwr mic_rt32_5, mic_rs32_0   		is ISA_MODE=1 & RELP=0 & mic_op=0b000000 & REL6=0 & mic_rt32_5 & mic_rs32_0 ; micb_poolax=0b111100 & micb_axf=0b0110101100 {
-	mic_rt32_5 = getHWRegister(mic_rs32_0);
+:rdhwr mic_rt32_5, mic_rs32_hw   		is ISA_MODE=1 & RELP=0 & mic_op=0b000000 & REL6=0 & mic_rt32_5 & mic_rs32_hw ; micb_poolax=0b111100 & micb_axf=0b0110101100 {
+	mic_rt32_5 = getHWRegister(mic_rs32_hw);
 }
 
 :sub.PS micb_fd, mic_fs, mic_ft_5			is ISA_MODE=1 & RELP=0 & mic_op=0b010101 & mic_ft_5 & mic_fs & mic_fsD & mic_ftD_5; micb_fd & micb_fdD & micb_bit10=0 & micb_fmt8=2 & micb_fxf3=0b01110000 {
@@ -3663,8 +3691,13 @@ STORE_TOP16: STORE_SREG^ra,EXT_CODE4E(sp) is mic_listr6 & REL6=1 & STORE_SREG & 
 	micb_rd32 = sext(tmp);
 }
 
-:rdhwr mic_rt32_5, mic_rs32_0, micb_sel	is ISA_MODE=1 & RELP=0 & mic_op=0b000000 & REL6=1 & mic_rt32_5 & mic_rs32_0 ; micb_sel & micb_z14=0 & micb_bit10=0 & micb_axf2=0b0111000000 {
-	mic_rt32_5 = getHWRegister(mic_rs32_0, micb_sel:1);
+#sel only valid for PerfCtr
+:rdhwr mic_rt32_5, mic_rs32_hw, micb_sel	is ISA_MODE=1 & RELP=0 & mic_op=0b000000 & REL6=1 & mic_rt32_5 & mic_rs32_hw & mic_rs32_0=4; micb_sel & micb_z14=0 & micb_bit10=0 & micb_axf2=0b0111000000 {
+	mic_rt32_5 = getHWRegister(mic_rs32_hw, micb_sel:1);
+}
+
+:rdhwr mic_rt32_5, mic_rs32_hw	is ISA_MODE=1 & RELP=0 & mic_op=0b000000 & REL6=1 & mic_rt32_5 & mic_rs32_hw & mic_rs32_0!=4; micb_sel=0 & micb_z14=0 & micb_bit10=0 & micb_axf2=0b0111000000 {
+	mic_rt32_5 = getHWRegister(mic_rs32_hw);
 }
 
 :rint.S mic_fd, mic_fs_5				is ISA_MODE=1 & RELP=0 & mic_op=0b010101 & REL6=1 & mic_fs_5 & mic_fd ; micb_fd=0 & micb_fmt9=0 & micb_fxf5=0b000100000 {

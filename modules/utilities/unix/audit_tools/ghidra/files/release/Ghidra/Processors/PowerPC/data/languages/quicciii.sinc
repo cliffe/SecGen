@@ -8,12 +8,9 @@ define pcodeop debuggerNotifyHalt;
 define pcodeop instructionCacheBlockClearLock;
 define pcodeop queryInstructionCacheBlockLock;
 define pcodeop prefetchInstructionCacheBlockLockSetX;
-define pcodeop memoryBarrier;
 define pcodeop moveFromAPIDIndirect;
 define pcodeop moveFromPerformanceMonitorRegister;
 define pcodeop moveToPerformanceMonitorRegister;
-define pcodeop returnFromDebugInterrupt;
-define pcodeop returnFromMachineCheckInterrupt;
 define pcodeop invalidateTLB;
 
 #dcblc 0,0,r0		#FIXME
@@ -65,19 +62,12 @@ define pcodeop invalidateTLB;
 
 :isel^CC_X_OPm D,RA_OR_ZERO,B,CC_X_OP  is OP=31 & D & RA_OR_ZERO & B & CC_X_OP & CC_X_OPm & XOP_1_5=15
 {
-		D = B;
-		if (!CC_X_OP) goto inst_next;
-		D = RA_OR_ZERO;
+	local tmp:$(REGISTER_SIZE) = RA_OR_ZERO;
+	D = B;
+	if (!CC_X_OP) goto inst_next;
+	D = tmp;
 #        D = (zext(CC_X_OP) * RA_OR_ZERO) + (zext(!CC_X_OP) * B);
 }
-
-@ifndef IS_ISA
-#mbar 0         #FIXME
-:mbar MO        is OP=31 & MO & XOP_1_10=854
-{ 
-	memoryBarrier(MO:1);
-}
-@endif
 
 #mfapidi r0,r1  #FIXME
 :mfapidi D,A    is $(NOTVLE) & OP=31 & D & A & XOP_1_10=275
@@ -102,15 +92,17 @@ pmrn: pmr       is BITS_16_20 & BITS_11_15 [ pmr = BITS_11_15 << 5 | BITS_16_20;
 #rfdi           #FIXME
 :rfdi           is $(NOTVLE) & OP=19 & XOP_1_10=39
 { 
-	returnFromDebugInterrupt();
-	return[SRR0]; 
+	MSR = returnFromDebugInterrupt(MSR, spr23f); #DSRR1
+	local ra = spr23e; #DSRR0
+	return[ra];
 }
 
 #rfmci          #FIXME
 :rfmci          is $(NOTVLE) & OP=19 & XOP_0_10=76
 { 
-	returnFromMachineCheckInterrupt();
-	return[SRR0]; 
+	MSR = returnFromMachineCheckInterrupt(MSR, spr23b); #MCSRR1
+	local ra = spr23a; #MCSRR0
+	return[ra];
 }
 
 

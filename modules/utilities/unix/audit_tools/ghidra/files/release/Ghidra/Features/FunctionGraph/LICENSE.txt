@@ -6,41 +6,15 @@ in the licenses directory in the installation root directory.
 The 3rd party files in this module are as follows:
 
 
-Oxygen Icons - LGPL 3.0:
-
-	src/main/help/help/shared/warning.png
-	src/main/help/help/shared/note.png
-	src/main/help/help/shared/tip.png
-	src/main/help/help/shared/note-red.png
-	src/main/help/help/shared/note.yellow.png
-	src/main/help/help/topics/FunctionGraphPlugin/images/network-wireless.png
-	src/main/help/help/topics/FunctionGraphPlugin/images/get-hot-new-stuff.png
-
 FAMFAMFAM Icons - CC 2.5:
 
 	src/main/resources/images/palette.png
-	src/main/resources/images/function_graph.png
 	src/main/resources/images/shape_square_add.png
 	src/main/resources/images/graph_view.png
-	src/main/resources/images/house.png
 	src/main/resources/images/shape_ungroup.png
 	src/main/resources/images/id.png
 	src/main/resources/images/shape_handles.png
 	src/main/resources/images/brick_link.png
 	src/main/resources/images/paintbrush.png
-	src/main/resources/images/listing_format.png
 	src/main/resources/images/fullscreen_view.png
-	src/main/help/help/topics/FunctionGraphPlugin/images/shape_square_add.png
-	src/main/help/help/topics/FunctionGraphPlugin/images/house.png
-	src/main/help/help/topics/FunctionGraphPlugin/images/shape_ungroup.png
-	src/main/help/help/topics/FunctionGraphPlugin/images/shape_handles.png
-	src/main/help/help/topics/FunctionGraphPlugin/images/page_white_copy.png
-	src/main/help/help/topics/FunctionGraphPlugin/images/page_paste.png
-	src/main/help/help/topics/FunctionGraphPlugin/images/fullscreen_view.png
-
-Tango Icons - Public Domain:
-
-	src/main/resources/images/edit-redo.png
-	src/main/help/help/topics/FunctionGraphPlugin/images/edit-redo.png
-	src/main/help/help/topics/FunctionGraphPlugin/images/camera-photo.png
 

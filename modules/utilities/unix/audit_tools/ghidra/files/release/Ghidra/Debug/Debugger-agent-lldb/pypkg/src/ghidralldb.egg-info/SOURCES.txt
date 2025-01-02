@@ -1,0 +1,15 @@
+LICENSE
+MANIFEST.in
+README.md
+pyproject.toml
+src/ghidralldb/__init__.py
+src/ghidralldb/arch.py
+src/ghidralldb/commands.py
+src/ghidralldb/hooks.py
+src/ghidralldb/methods.py
+src/ghidralldb/util.py
+src/ghidralldb.egg-info/PKG-INFO
+src/ghidralldb.egg-info/SOURCES.txt
+src/ghidralldb.egg-info/dependency_links.txt
+src/ghidralldb.egg-info/requires.txt
+src/ghidralldb.egg-info/top_level.txt

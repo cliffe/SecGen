@@ -1,0 +1,18 @@
+Metadata-Version: 2.1
+Name: ghidragdb
+Version: 11.1.2
+Summary: Ghidra's Plugin for gdb
+Author: Ghidra Development Team
+Project-URL: Homepage, https://github.com/NationalSecurityAgency/ghidra
+Project-URL: Bug Tracker, https://github.com/NationalSecurityAgency/ghidra/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: ghidratrace==11.1.2
+
+# Ghidra Trace RMI
+
+Package for connecting GDB to Ghidra via Trace RMI.

@@ -7,7 +7,17 @@ require 'programr'
 require 'getoptlong'
 require 'thwait'
 
+def update_bot_state(bot_name, bots, current_attack)
+  bots[bot_name]['current_attack'] = current_attack
+  bots[bot_name]['current_quiz'] = nil
+  bots[bot_name]['attacks'][current_attack]['post_command_outputs'] ||= []
+  bots[bot_name]['attacks'][current_attack]['shell_command_outputs'] ||= []
+end
+
 def check_output_conditions(bot_name, bots, current, lines, m)
+  bots[bot_name]['attacks'][current]['shell_command_outputs'] ||= []
+  bots[bot_name]['attacks'][current]['shell_command_outputs'] << lines
+
   condition_met = false
   bots[bot_name]['attacks'][current]['condition'].each do |condition|
     if !condition_met && condition.key?('output_matches') && lines =~ /#{condition['output_matches']}/m
@@ -24,16 +34,12 @@ def check_output_conditions(bot_name, bots, current, lines, m)
     end
 
     if condition_met
-      # Repeated logic for trigger_next_attack
       if condition.key?('trigger_next_attack')
-        # is this the last one?
         if bots[bot_name]['current_attack'] < bots[bot_name]['attacks'].length - 1
-          bots[bot_name]['current_attack'] += 1
-          bots[bot_name]['current_quiz'] = nil
-          current = bots[bot_name]['current_attack']
+          current = bots[bot_name]['current_attack'] + 1
+          update_bot_state(bot_name, bots, current)
 
           sleep(1)
-          # prompt for current hack
           if bots[bot_name]['messages'].key?('show_attack_numbers')
             m.reply "** ##{current + 1} **"
           end
@@ -153,8 +159,8 @@ def read_bots (irc_server_ip_address)
           # is this the last one?
           if bots[bot_name]['current_attack'] < bots[bot_name]['attacks'].length - 1
             bots[bot_name]['current_attack'] += 1
-            bots[bot_name]['current_quiz'] = nil
             current = bots[bot_name]['current_attack']
+            update_bot_state(bot_name, bots, current)
 
             # prompt for current hack
             if bots[bot_name]['messages'].key?('show_attack_numbers')
@@ -176,8 +182,7 @@ def read_bots (irc_server_ip_address)
 
           # is this a valid attack number?
           if requested_index < bots[bot_name]['attacks'].length
-            bots[bot_name]['current_attack'] = requested_index
-            bots[bot_name]['current_quiz'] = nil
+            update_bot_state(bot_name, bots, requested_index)
             current = bots[bot_name]['current_attack']
 
             # prompt for current hack
@@ -193,48 +198,43 @@ def read_bots (irc_server_ip_address)
         end
 
         on :message, /^(the answer is|answer):? .+$/i do |m|
-          answer = m.message.chomp().split[1].to_i - 1
           answer = m.message.chomp().match(/(?:the )?answer(?: is)?:? (.+)$/i)[1]
-
-          # current_quiz = bots[bot_name]['current_quiz']
           current = bots[bot_name]['current_attack']
-
+        
           quiz = nil
-          # is there ONE quiz question?
           if bots[bot_name]['attacks'][current].key?('quiz') && bots[bot_name]['attacks'][current]['quiz'].key?('answer')
             quiz = bots[bot_name]['attacks'][current]['quiz']
-          # multiple quiz questions?
-          # elsif bots[bot_name]['attacks'][current]['quiz'][current_quiz].key?('answer')
-          #   quiz = bots[bot_name]['attacks'][current]['quiz'][current_quiz]
           end
-
+        
           if quiz != nil
             correct_answer = quiz['answer'].clone
             if bots[bot_name]['attacks'][current].key?('post_command_output')
-              correct_answer.gsub!(/{{post_command_output}}/, (bots[bot_name]['attacks'][current]['post_command_output']||''))
+              post_outputs = bots[bot_name]['attacks'][current]['post_command_outputs'].map(&:strip).join('|')
+              correct_answer.gsub!(/{{post_command_output}}/, post_outputs)
             end
             if bots[bot_name]['attacks'][current].key?('get_shell_command_output')
-              correct_answer.gsub!(/{{shell_command_output_first_line}}/, (bots[bot_name]['attacks'][current]['get_shell_command_output']||'').split("\n").first)
+              shell_outputs = bots[bot_name]['attacks'][current]['shell_command_outputs'].map { |output| output.lines.first.to_s.strip }.join('|')
+              correct_answer.gsub!(/{{shell_command_output_first_line}}/, shell_outputs)
             end
-            if bots[bot_name]['attacks'][current].key?('get_shell_command_output')
-              correct_answer.gsub!(/{{pre_shell_command_output_first_line}}/, (bots[bot_name]['attacks'][current]['get_shell_command_output']||'').split("\n").first)
+            if bots[bot_name]['attacks'][current].key?('pre_shell')
+              pre_shell_outputs = bots[bot_name]['attacks'][current]['pre_shell_command_outputs'] || []
+              pre_shell_output = pre_shell_outputs.map { |output| output.lines.first.to_s.strip }.join('|')
+              correct_answer.gsub!(/{{pre_shell_command_output_first_line}}/, pre_shell_output)
             end
             correct_answer.chomp!
             Print.debug "#{correct_answer}====#{answer}"
-
-            if answer.match(/#{correct_answer}/i)
+        
+            if answer.strip.match?(/^(?:#{correct_answer})$/i)
               m.reply bots[bot_name]['messages']['correct_answer']
               m.reply quiz['correct_answer_response']
-
-              # Repeated logic for trigger_next_attack
+        
               if quiz.key?('trigger_next_attack')
                 if bots[bot_name]['current_attack'] < bots[bot_name]['attacks'].length - 1
                   bots[bot_name]['current_attack'] += 1
-                  bots[bot_name]['current_quiz'] = nil
                   current = bots[bot_name]['current_attack']
-
+                  update_bot_state(bot_name, bots, current)
+        
                   sleep(1)
-                  # prompt for current hack
                   if bots[bot_name]['messages'].key?('show_attack_numbers')
                     m.reply "** ##{current + 1} **"
                   end
@@ -244,14 +244,12 @@ def read_bots (irc_server_ip_address)
                   m.reply bots[bot_name]['messages']['last_attack'].sample
                 end
               end
-
             else
               m.reply "#{bots[bot_name]['messages']['incorrect_answer']} (#{answer})"
             end
           else
             m.reply bots[bot_name]['messages']['no_quiz']
           end
-
         end
 
         on :message, 'previous' do |m|
@@ -260,10 +258,13 @@ def read_bots (irc_server_ip_address)
           # is this the last one?
           if bots[bot_name]['current_attack'] > 0
             bots[bot_name]['current_attack'] -= 1
-            bots[bot_name]['current_quiz'] = nil
             current = bots[bot_name]['current_attack']
+            update_bot_state(bot_name, bots, current)
 
             # prompt for current hack
+            if bots[bot_name]['messages'].key?('show_attack_numbers')
+              m.reply "** ##{current + 1} **"
+            end
             m.reply bots[bot_name]['attacks'][current]['prompt']
             m.reply bots[bot_name]['messages']['say_ready'].sample
 
@@ -321,9 +322,9 @@ def read_bots (irc_server_ip_address)
             unless bots[bot_name]['attacks'][current].key?('suppress_command_output_feedback')
               m.reply "FYI: #{pre_output}"
             end
-            bots[bot_name]['attacks'][current]['get_shell_command_output'] = pre_output
+            bots[bot_name]['attacks'][current]['pre_shell_command_outputs'] ||= []
+            bots[bot_name]['attacks'][current]['pre_shell_command_outputs'] << pre_output
             current = check_output_conditions(bot_name, bots, current, pre_output, m)
-
           end
 
           # use bot-wide method for obtaining shell, unless specified per-attack
@@ -417,6 +418,8 @@ def read_bots (irc_server_ip_address)
                 end
 
                 bots[bot_name]['attacks'][current]['post_command_output'] = post_lines
+                bots[bot_name]['attacks'][current]['post_command_outputs'] ||= []
+                bots[bot_name]['attacks'][current]['post_command_outputs'] << post_lines
 
                 unless bots[bot_name]['attacks'][current].key?('suppress_command_output_feedback')
                     m.reply "FYI: #{post_lines}"

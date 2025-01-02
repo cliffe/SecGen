@@ -1,4 +1,0 @@
-grant codebase "file:/${yajsw.home}${/}-"
-{
-permission java.security.AllPermission;
-};

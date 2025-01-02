@@ -34,7 +34,7 @@ Work through the below exercises, completing the Hackerbot challenges as noted.
 
 **On the ids_monitor VM:**
 
-==Ensure Snort's output== includes something more readable:
+==Confirm Snort's output== is set to something readable:
 
 ```bash
 sudo vi /etc/snort/snort.conf
@@ -43,16 +43,16 @@ sudo vi /etc/snort/snort.conf
 
 > ":wq" to write changes and quit)
 
-==Check for the following line:==
+==Check for the following lines:==
 `output alert_fast`
-
-==Ensure Snort's interface is correctly configured== to the interface with IP address <%= $ids_server_ip %> (likely ens3), and set the local network to your IP address range (or "any"):
+`output log_tcpdump: tcpdump.log`
 
 ```bash
 sudo vi /etc/snort/snort.debian.conf
 ```
-> If you are not sure which interface to use, list the interfaces with `ifconfig` or `ip a s`
-> Set the interface and HOME network range, and exit vi (Esc, ":wq").
+==Check Snort's interface== which will be ens18 (or as you identified earlier), and the local network is set to your IP address range (or "any"):
+
+> Confirm the above, and exit vi (Esc, ":wq").
 
 ==Restart Snort:==
 

@@ -1,3 +1,6 @@
+## ###
+#  IP: LGPL 2.1
+##
 """
 Provides a variety of introspective-type support functions for
 things like call tips and command auto completion.
@@ -71,8 +74,9 @@ def getAutoCompleteList(command='', locals=None, includeMagic=1,
                     pyObj = locals[attribute]
                 completion_list.append(PythonCodeCompletionFactory.
                                        newCodeCompletion(attribute,
-                                                         attribute[len(filter):],
-                                                         pyObj))
+                                                         attribute, 
+                                                         pyObj,
+                                                         filter))
             except:
                 # hmm, problem evaluating?  Examples of this include
                 # inner classes, e.g. access$0, which aren't valid Python

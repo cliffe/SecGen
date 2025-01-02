@@ -10,38 +10,58 @@ The 3rd party files in this module are as follows:
 
 GPL 3:
 
-	src/demangler_gnu/headers/libiberty.h
-	src/demangler_gnu/headers/ansidecl.h
-	src/demangler_gnu/headers/getopt.h
-	src/demangler_gnu/headers/dyn-string.h
-	src/demangler_gnu/c/getopt1.c
-	src/demangler_gnu/c/getopt.c
+	src/demangler_gnu_v2_24/headers/libiberty.h
+	src/demangler_gnu_v2_24/headers/ansidecl.h
+	src/demangler_gnu_v2_24/headers/getopt.h
+	src/demangler_gnu_v2_24/headers/dyn-string.h
+	src/demangler_gnu_v2_24/c/getopt1.c
+	src/demangler_gnu_v2_24/c/getopt.c
+	src/demangler_gnu_v2_41/headers/libiberty.h
+	src/demangler_gnu_v2_41/headers/getopt.h
+	src/demangler_gnu_v2_41/headers/dyn-string.h
+	src/demangler_gnu_v2_41/c/cxxfilt.c
 	os/linux64/demangler_gnu
 	os/win64/demangler_gnu.exe
 	os/osx64/demangler_gnu
 
 LGPL 3.0:
 
-	src/demangler_gnu/headers/demangle.h
-	src/demangler_gnu/headers/safe-ctype.h
+	src/demangler_gnu_v2_24/headers/demangle.h
+	src/demangler_gnu_v2_24/headers/safe-ctype.h
 
 LGPL 2.1:
 
-	src/demangler_gnu/c/alloca.c
-	src/demangler_gnu/c/safe-ctype.c
-	src/demangler_gnu/c/cplus-dem.c
-	src/demangler_gnu/c/xstrdup.c
-	src/demangler_gnu/c/argv.c
-	src/demangler_gnu/c/xexit.c
+	src/demangler_gnu_v2_24/c/cp-demangle.c
+	src/demangler_gnu_v2_24/c/alloca.c
+	src/demangler_gnu_v2_24/c/safe-ctype.c
+	src/demangler_gnu_v2_24/c/cplus-dem.c
+	src/demangler_gnu_v2_24/c/xstrdup.c
+	src/demangler_gnu_v2_24/c/argv.c
+	src/demangler_gnu_v2_24/c/xexit.c
+	src/demangler_gnu_v2_41/headers/demangle.h
+	src/demangler_gnu_v2_41/headers/ansidecl.h
+	src/demangler_gnu_v2_41/headers/cp-demangle.h
+	src/demangler_gnu_v2_41/headers/safe-ctype.h
+	src/demangler_gnu_v2_41/c/alloca.c
+	src/demangler_gnu_v2_41/c/missing.c
+	src/demangler_gnu_v2_41/c/safe-ctype.c
+	src/demangler_gnu_v2_41/c/cplus-dem.c
+	src/demangler_gnu_v2_41/c/argv.c
+	src/demangler_gnu_v2_41/c/rust-demangle.c
+	src/demangler_gnu_v2_41/c/d-demangle.c
+	src/demangler_gnu_v2_41/c/xexit.c
 
 GPL 3 Linking Permitted:
 
-	src/demangler_gnu/headers/cp-demangle.h
-	src/demangler_gnu/c/cp-demangle.c
-	src/demangler_gnu/c/dyn-string.c
+	src/demangler_gnu_v2_24/headers/cp-demangle.h
+	src/demangler_gnu_v2_24/c/dyn-string.c
+	src/demangler_gnu_v2_41/c/cp-demangle.c
+	src/demangler_gnu_v2_41/c/getopt1.c
+	src/demangler_gnu_v2_41/c/dyn-string.c
+	src/demangler_gnu_v2_41/c/getopt.c
 
 Public Domain:
 
-	settings.gradle
-	src/demangler_gnu/README.txt
+	src/demangler_gnu_v2_24/README.txt
+	src/demangler_gnu_v2_41/c/xstrdup.c
 

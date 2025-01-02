@@ -30,6 +30,19 @@ class cleanup::init {
     }
   }
 
+  # if kali_msf we have a default kali account setup by default
+  # some scenarios define a kali user for use
+  # others do not define the kali user, so change the kali user password to our secure root password.
+  if $operatingsystemrelease == 'kali-rolling' and $root_password {
+    $mysalt = 'mysalt'
+
+    exec { 'update_kali_password':
+      command => "/usr/bin/echo '${root_password}' | /usr/bin/openssl passwd -6 -salt ${mysalt} -stdin | xargs -I {} /usr/sbin/usermod -p '{}' kali",
+      unless  => "/bin/grep -q '^kali:.6.${mysalt}' /etc/shadow",
+      path    => ['/usr/bin', '/usr/sbin', '/bin'],
+    }
+  }
+
   # Disable ssh
   if $disable_ssh {
     service { 'ssh':

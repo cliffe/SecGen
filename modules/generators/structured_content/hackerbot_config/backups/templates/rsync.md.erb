@@ -23,7 +23,7 @@ sudo bash -c 'echo hello > /etc/hello'
 sudo rsync -av /etc /home/<%= $main_user %>/backups/rsync_backup/
 ```
 
-Note that only the new file was transferred (incremental) to update our epoch (full) backup of /etc/.
+Note that only the new file was transferred to update our epoch (full) backup of /etc/.
 
 ## Rsync remote copies via SSH with compression
 

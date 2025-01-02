@@ -76,7 +76,7 @@ attach variables [ ext_m16r32 m16_i8_r32 ] [
 
 @ifdef MIPS64
 attach variables [ m16_rxa m16_rya m16_rza m16_mv_rza]
-				 [ s0_lo s1_lo v0_lo v1_lo a0_lo a1_lo a2_lo a3_lo ];                 
+				 [ s0_lo s1_lo v0_lo v1_lo a0_lo a1_lo a2_lo a3_lo ];
 
 attach variables [ ext_m16r32a m16_i8_r32a ] [ 
     zero_lo  at_lo  v0_lo  v1_lo  a0_lo  a1_lo  a2_lo  a3_lo
@@ -85,7 +85,7 @@ attach variables [ ext_m16r32a m16_i8_r32a ] [
     t8_lo    t9_lo  k0_lo  k1_lo  gp_lo  sp_lo  s8_lo  ra_lo 
 ];
 
-RZ: m16_rz          is m16_rz           		{ export m16_rz; }
+RZ: m16_rz is m16_rz		{ export m16_rz; }
 
 @else # !MIPS64
 attach variables [ m16_rxa m16_rya m16_rza m16_mv_rza ]
@@ -106,10 +106,7 @@ RX: m16_rx          is m16_rx           		{ export m16_rx; }
 RX32: m16_rx		is m16_rx & m16_rxa 		{ export m16_rxa; }
 RY32: m16_ry		is m16_ry & m16_rya 		{ export m16_rya; }
 RZ32: m16_rz		is m16_rz & m16_rza 		{ export m16_rza; }
-#RMZ32: m16_mv_rz	is m16_mv_rz & m16_mv_rza	{ export m16_mv_rza; }
 
-#R32M: ext_m16r32	is ext_m16r32 & ext_m16r32a	{ export ext_m16r32a; }
-#R32I: m16_i8_r32	is m16_i8_r32 & m16_i8_r32a { export m16_i8_r32a; }
 
 attach names [ ext_svrs_sreg][
 	_		"s0"		"s1"	"s0-s1"
@@ -137,11 +134,11 @@ EXT_IS0: val						is m16_i_imm [ val = m16_i_imm << 0; ] { export *[const]:2 val
 EXT_IS1: val						is m16_i_imm [ val = m16_i_imm << 1; ] { export *[const]:2 val; }
 EXT_RI: val							is ext_value_1511 & ext_value_1005 & m16_ri_imm [val = (ext_value_1511 << 11) | (ext_value_1005 << 5) | m16_ri_imm; ] { export *[const]:2 val; }
 EXT_RRIA: val						is ext_is_ext=1 & ext_value_1411s & ext_value_1004 & m16_rria_imm [ val=(ext_value_1411s << 11) | (ext_value_1004 << 4) | m16_rria_imm; ] { export *[const]:2 val; }
-EXT_RRIA: m16_rria_simm				is ext_is_ext=0 & m16_rria_simm { tmp:1 = m16_rria_simm; tmpa:2 = sext(tmp); export *[const]:2 tmpa; }
+EXT_RRIA: m16_rria_simm				is ext_is_ext=0 & m16_rria_simm { export *[const]:2 m16_rria_simm; }
 
 EXT_IS8: val						is ext_is_ext=1 & ext_value_1511s & ext_value_1005 & m16_i8_imm [val=(ext_value_1511s << 11) | (ext_value_1005 << 5) | m16_i8_imm; ] { export *[const]:2 val; }
-EXT_IS8: m16_is8_imm				is ext_is_ext=0 & m16_is8_imm { tmp:1 = m16_is8_imm; tmpa:2 = sext(tmp); export *[const]:2 tmpa; }
-EXT_IS8L3: val						is ext_is_ext=0 & ext_value_1511 & ext_value_1005 & m16_is8_imm [val = m16_is8_imm << 3; ] { tmp:2 = val; export *[const]:2 tmp; }
+EXT_IS8: m16_is8_imm				is ext_is_ext=0 & m16_is8_imm { export *[const]:2 m16_is8_imm; }
+EXT_IS8L3: val						is ext_is_ext=0 & ext_value_1511 & ext_value_1005 & m16_is8_imm [val = m16_is8_imm << 3; ] { export *[const]:2 val; }
 
 EXT_IU8: val						is ext_is_ext=1 & ext_value_1511 & ext_value_1005 & m16_i8_imm [val = (ext_value_1511 << 11) | (ext_value_1005 << 5) | m16_i8_imm; ] { export *[const]:2 val; }
 EXT_IU8: val						is ext_is_ext=0 & m16_iu8_imm [val = m16_iu8_imm << 2; ] { export *[const]:2 val; }
@@ -153,7 +150,7 @@ EXT_SHIFT: ext_value_sa40			is ext_is_ext=1 & ext_value_saz=0 & m16_shft_sa=0 & 
 EXT_SHIFT: val						is ext_is_ext=0 & m16_shft_sa=0 				   [val = 8; ] { export *[const]:1 val;}
 EXT_SHIFT: m16_shft_sa				is ext_is_ext=0 & m16_shft_sa				   	   			   { export *[const]:1 m16_shft_sa;}
 
-EXT_SET: val						is ext_is_ext=1 & m16_ri_z=0 & ext_value_1511 & ext_value_1005 & m16_i8_imm [val = (ext_value_1511 << 11) | (ext_value_1005 << 5) | m16_i8_imm; ] { tmp:2 = val; tmpb:4 = sext(tmp); export *[const]:4 tmpb; }
+EXT_SET: val						is ext_is_ext=1 & m16_ri_z=0 & ext_value_1511 & ext_value_1005 & m16_i8_imm [val = (ext_value_1511 << 11) | (ext_value_1005 << 5) | m16_i8_imm; ] { export *[const]:4 val; }
 EXT_SET: m16_iu8_imm				is ext_is_ext=0 & m16_iu8_imm { export *[const]:4 m16_iu8_imm; }
 
 OFF_M16: EXT_IS8(m16_rx)  			is ext_is_ext=1 & EXT_IS8 & m16_rx    { tmp:$(REGSIZE) = m16_rx + sext(EXT_IS8); tmpscaled:$(ADDRSIZE) = 0; ValCast(tmpscaled,tmp); export tmpscaled; }

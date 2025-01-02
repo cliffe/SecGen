@@ -13,6 +13,18 @@
 
   <software_license>GPLv3</software_license>
 
+  <conflict>
+    <name>.*Debian.*Wheezy.*</name>
+  </conflict>
+  <conflict>
+    <name>.*Debian.*Stretch.*</name>
+  </conflict>
+  <conflict>
+    <name>.*Debian.*Buster.*</name>
+  </conflict>
+  <conflict>
+    <name>.*Kali.*</name>
+  </conflict>
 
   <requires>
     <type>update</type>

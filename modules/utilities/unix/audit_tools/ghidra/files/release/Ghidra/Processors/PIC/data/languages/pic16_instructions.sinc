@@ -10,7 +10,8 @@ define token instr16(16)
 	op12 =  (2,13)
 	op11 =	(3,13)
 	op9 =	(5,13)
-	op7 =   (7,13)
+	op8 = 	(6,13)
+	op7 = 	(7,13)
 	op6 =	(8,13)
 	op5 =	(9,13)
 	op4 =	(10,13)
@@ -26,6 +27,7 @@ define token instr16(16)
 	fsrk =	(6,6)
 	fregCore = (0,3)
 	k5 = 	(0,4)
+	k6 = 	(0,5)
 	k7 = 	(0,6)
 	k8 =	(0,7)
 	sk9 =   (0,8) signed
@@ -139,8 +141,8 @@ macro setSubtractCFlags(op1,op2) {
 macro setSubtractFlags(op1,op2) {
 	# op1 and op2 are assumed to be 8-bit values
 	# NOTE:  carry flag is SET if there is NO borrow
-	C = (op1 >= op2);
-	DC = ((op1<<4) < (op2<<4));
+	$(C) = (op1 >= op2);
+	$(DC) = ((op1<<4) < (op2<<4));
 }
 
 macro push(val) {	# TODO: Uncertain about this !!
@@ -257,7 +259,11 @@ imm8: "#"k8	is k8										{ export *[const]:1 k8; }
 imm7: "#"k7	is k7										{ export *[const]:1 k7; }
 
 # Immediate Data (Literal operation)
+imm6: "#"k6	is k6										{ export *[const]:1 k6; }
+
+# Immediate Data (Literal operation)
 imm5: "#"k5	is k5										{ export *[const]:1 k5; }
+
 @endif
 
 # Bit identifier
@@ -287,7 +293,7 @@ trisREG: "7"	is l5=7												{ local trl:2 = 0x10E; export *[DATA]:1 trl; } #
 
 @if PROCESSOR == "PIC_16F"
 
-:ADD^fsrk sk6	is op7=0x62 & fsrk & sk6 {
+:ADDFSR fsrk, sk6	is op7=0x62 & fsrk & sk6 {
 	fsrk = fsrk + sk6;
 }
 @endif
@@ -380,6 +386,14 @@ trisREG: "7"	is l5=7												{ local trl:2 = 0x10E; export *[DATA]:1 trl; } #
 	#  0000 0101 1010 0000	->	ANDWF 0x20, 1
 	val:1 = srcREG;
 	val = W & val;
+	setResultFlags(val);
+	destREG = val;
+}
+
+:ASRF srcREG, D				is op6=0x37 & srcREG & D & destREG					{
+	#  --11 0111 dfff ffff
+	$(C) = srcREG & 0x1;
+	val:1 = srcREG s>> 1;
 	setResultFlags(val);
 	destREG = val;
 }
@@ -612,6 +626,12 @@ trisREG: "7"	is l5=7												{ local trl:2 = 0x10E; export *[DATA]:1 trl; } #
 	call [absAddr11];
 }
 
+:CALLW					is op14=0x000a						{
+	#  --00 0000 0000 1010
+	push(&:2 inst_next);
+	call [W];
+}
+	
 :CLRF srcREG				is op6=0x01 & d=1 & srcREG						{
 	#  --00 0001 1fff ffff
 	#  0000 0001 1000 0000	->	CLRF INDF
@@ -735,6 +755,22 @@ srcFSRk: sk6"["fsrk"]" is fsrk & sk6 {
 	addr:2 = fsrk + sk6; export *[DATA]:1 addr;
 }
 
+:LSLF srcREG, D				is op6=0x35 & srcREG & D & destREG					{
+	#  --11 0101 dfff ffff
+	$(C) = (srcREG & 0x80) != 0;
+	val:1 = srcREG << 1;
+	setResultFlags(val);
+	destREG = val;
+}
+
+:LSRF srcREG, D				is op6=0x36 & srcREG & D & destREG					{
+	#  --11 0110 dfff ffff
+	$(C) = srcREG & 0x1;
+	val:1 = srcREG >> 1;
+	setResultFlags(val);
+	destREG = val;
+}
+
 :MOVIW srcFSR			is op11=2 & srcFSR {
 	W = srcFSR;
 	setResultFlags(W);
@@ -755,6 +791,11 @@ srcFSRk: sk6"["fsrk"]" is fsrk & sk6 {
 
 :MOVLB imm5			is op9=0x1 & imm5 {
 	BSR = imm5;
+}
+
+# Alternate variant in certain pic16f variants
+:MOVLB imm6			is op8=0x5 & imm6 {
+	BSR = imm6;
 }
 
 :MOVLP imm7				is op7=0x63 & imm7 {
@@ -890,17 +931,16 @@ srcFSRk: sk6"["fsrk"]" is fsrk & sk6 {
 :SUBWFB srcREG, D		is op6=0x3b & srcREG & D & destREG {
 	val:1 = srcREG;
 	bor:1 = !$(C);
-	
-	setSubtractFlags(val, W); 
+
+	setSubtractFlags(val, W);
 	val = val - W;
 	tb:1 = $(C);
 
 	setSubtractFlags(val,bor);
 	# first subtraction could cause borrow
-	$(C) = $(C) & tb;   # borrow if C not set                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
-	
+	$(C) = $(C) & tb;   # borrow if C not set
 	val = val - bor;
-	
+
 	setResultFlags(val);
 	destREG = val;
 }

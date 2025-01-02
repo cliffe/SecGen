@@ -15,12 +15,14 @@
     <base distro="Debian 10" type="desktop" name="KDE"/>
 
     <input into_datastore="IP_addresses">
-      <!-- 0 linux desktop -->
+      <!-- 0 linux debian 10 desktop -->
       <value>172.16.0.2</value>
       <!-- 1 windows 7 -->
       <value>172.16.0.3</value>
       <!-- 2 kali -->
       <value>172.16.0.4</value>
+      <!-- 3 linux debian 12 desktop -->
+      <value>172.16.0.5</value>
     </input>
 
     <!--generate two accounts, YOU and someone else-->
@@ -93,6 +95,67 @@
     <network type="private_network" >
       <input into="IP_address">
         <datastore access="0">IP_addresses</datastore>
+      </input>
+    </network>
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+
+  <system>
+    <system_name>debian_12_desktop</system_name>
+    <base distro="Debian 12" type="desktop" name="KDE"/>
+
+    <!--Create the users-->
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts">
+        <datastore>accounts</datastore>
+      </input>
+      <input into="strings_to_leak">
+        <value></value>
+      </input>
+    </utility>
+
+    <utility module_path=".*/kde_minimal">
+      <input into="autologin_user">
+        <datastore access="0" access_json="['username']">accounts</datastore>
+      </input>
+      <input into="accounts">
+        <datastore>accounts</datastore>
+      </input>
+      <input into="autostart_konsole">
+        <value>true</value>
+      </input>
+    </utility>
+    <utility module_path=".*/handy_cli_tools"/>
+    <utility module_path=".*/nmap"/>
+
+    <utility module_path=".*/iceweasel">
+      <input into="accounts">
+        <datastore>accounts</datastore>
+      </input>
+      <input into="autostart">
+        <value>false</value>
+      </input>
+      <input into="start_page">
+        <datastore access="0">IP_addresses</datastore>
+      </input>
+    </utility>
+
+    <vulnerability module_path=".*/ssh_root_login">
+      <input into="root_password">
+        <generator type="strong_password_generator"/>
+      </input>
+    </vulnerability>
+
+    <network type="private_network" >
+      <input into="IP_address">
+        <datastore access="3">IP_addresses</datastore>
       </input>
     </network>
     <input into_datastore="spoiler_admin_pass">

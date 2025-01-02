@@ -1,5 +1,5 @@
 // Startup and homepage settings
-user_pref("browser.startup.homepage", "<%=@start_pages.map { |k| k.start_with?("http") ? k : "http://#{k}" }.join('|')-%>");
+user_pref("browser.startup.homepage", "<%= @start_pages.map { |k| k.start_with?("http") || k.start_with?("file://") ? k : "http://#{k}" }.join('|')-%>");
 user_pref("browser.startup.page", 1);
 user_pref("browser.startup.homepage_override.mstone", "ignore");
 

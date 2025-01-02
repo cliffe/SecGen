@@ -29,14 +29,11 @@ class phish_victim_bot::install {
       }
     }
   }
-
-
   user { 'guest':
     ensure     => present,
     password   => pw_hash("guestpassword", 'SHA-512', 'bXlzYWx0'),
     managehome => true,
   }
-
   if $usernames {
     $usernames.each |$index, $username| {
       # Create user
@@ -83,20 +80,18 @@ class phish_victim_bot::install {
 
     }
   }
-
-
   file { '/opt/mailreader/':
     ensure   => directory,
     owner    => 'root',
     group    => 'root',
     mode     => '0755',
   }->
-  file { '/opt/mailreader/MailReader.class':
+  file { '/opt/mailreader/MailReader.java':
     ensure   => present,
     owner    => 'root',
     group    => 'root',
     mode     => '0755',
-    source => 'puppet:///modules/phish_victim_bot/MailReader.class',
+    source => 'puppet:///modules/phish_victim_bot/MailReader.java',
   }->
   file { '/opt/mailreader/activation-1.1-rev-1.jar':
     ensure   => present,
@@ -111,6 +106,11 @@ class phish_victim_bot::install {
     group    => 'root',
     mode     => '0755',
     source => 'puppet:///modules/phish_victim_bot/mail.jar',
+  }->
+  exec{ 'compile to mailreader class':
+    path    => ['/bin', '/usr/bin', '/usr/local/bin', '/sbin', '/usr/sbin'],
+    command => "javac -cp /opt/mailreader/mail.jar:/opt/mailreader/activation-1.1-rev-1.jar MailReader.java && chmod 0755 /opt/mailreader/MailReader.class && chown root:root /opt/mailreader/MailReader.class",
+    cwd     => '/opt/mailreader/',
   }
 
 }

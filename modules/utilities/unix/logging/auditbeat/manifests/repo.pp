@@ -4,11 +4,11 @@
 # @summary Manages the package repositories on the target nodes to install auditbeat
 class auditbeat::repo inherits auditbeat {
   $apt_repo_url = $auditbeat::apt_repo_url ? {
-    undef => "https://artifacts.elastic.co/packages/${auditbeat::major_version}.x/apt",
+    undef => "http://172.33.0.44/artifacts.elastic.co/packages/${auditbeat::major_version}.x/apt",
     default => $auditbeat::apt_repo_url,
   }
   $yum_repo_url = $auditbeat::yum_repo_url ? {
-    undef => "https://artifacts.elastic.co/packages/${auditbeat::major_version}.x/yum",
+    undef => "http://172.33.0.44/artifacts.elastic.co/packages/${auditbeat::major_version}.x/yum",
     default => $auditbeat::yum_repo_url,
   }
   $gpg_key_url = $auditbeat::gpg_key_url ? {

@@ -1,0 +1,44 @@
+Ghidra software is released under the Apache 2.0 license. In addition, 
+there are numerous 3rd party components that each have their 
+own license. The license file for each of these licenses can be found
+in the licenses directory in the installation root directory.
+
+The 3rd party files in this module are as follows:
+
+
+Oxygen Icons - LGPL 3.0:
+
+	src/main/resources/images/preferences-desktop-user-password.png
+	src/main/resources/images/preferences-web-browser-shortcuts-32.png
+
+Apache License 2.0:
+
+	lib/commons-dbcp2-2.9.0.jar
+	lib/json-simple-1.1.1.jar
+	lib/commons-pool2-2.11.1.jar
+	lib/commons-logging-1.2.jar
+
+Postgresql License:
+
+	postgresql-15.3.tar.gz
+
+PostgresqlJDBC License:
+
+	lib/postgresql-42.6.2.jar
+
+Crystal Clear Icons - LGPL 2.1:
+
+	src/main/resources/images/view_top_bottom.png
+
+LGPL 3.0:
+
+	src/main/resources/images/preferences-web-browser-shortcuts.png
+
+H2 Mozilla License 2.0:
+
+	lib/h2-2.2.220.jar
+
+FAMFAMFAM Icons - CC 2.5:
+
+	src/main/resources/images/flag_green.png
+

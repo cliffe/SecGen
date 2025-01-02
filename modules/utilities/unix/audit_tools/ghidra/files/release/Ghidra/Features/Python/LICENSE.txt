@@ -6,9 +6,9 @@ in the licenses directory in the installation root directory.
 The 3rd party files in this module are as follows:
 
 
-Apache License 2.0:
+Jython License:
 
-	lib/jython-standalone-2.7.1.jar
+	lib/jython-standalone-2.7.3.jar
 
 LGPL 2.1:
 

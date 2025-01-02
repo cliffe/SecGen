@@ -9,7 +9,7 @@ class elasticsearch::install (
    command => 'wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -'
   }->
   exec { 'es add apt repository':
-    command => 'echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list'
+    command => 'echo "deb http://172.33.0.44/artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list'
   }->
   exec { 'es update apt':
     command => 'apt-get update'

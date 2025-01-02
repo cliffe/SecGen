@@ -6,19 +6,24 @@ in the licenses directory in the installation root directory.
 The 3rd party files in this module are as follows:
 
 
-Oxygen Icons - LGPL 3.0:
+zlib License:
 
-	src/main/help/help/shared/warning.png
-	src/main/help/help/shared/note.png
-	src/main/help/help/shared/tip.png
-	src/main/help/help/shared/note-red.png
-	src/main/help/help/shared/note.yellow.png
-
-FAMFAMFAM Icons - CC 2.5:
-
-	src/main/help/help/topics/DecompilePlugin/images/page_edit.png
-
-Tango Icons - Public Domain:
-
-	src/main/help/help/topics/DecompilePlugin/images/camera-photo.png
+	src/decompile/zlib/zutil.h
+	src/decompile/zlib/inftrees.h
+	src/decompile/zlib/inflate.c
+	src/decompile/zlib/deflate.c
+	src/decompile/zlib/inffixed.h
+	src/decompile/zlib/trees.h
+	src/decompile/zlib/inffast.h
+	src/decompile/zlib/zutil.c
+	src/decompile/zlib/deflate.h
+	src/decompile/zlib/gzguts.h
+	src/decompile/zlib/zlib.h
+	src/decompile/zlib/inflate.h
+	src/decompile/zlib/inftrees.c
+	src/decompile/zlib/trees.c
+	src/decompile/zlib/inffast.c
+	src/decompile/zlib/adler32.c
+	src/decompile/zlib/zconf.h
+	src/decompile/zlib
 

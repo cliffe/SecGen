@@ -18,6 +18,24 @@ define space register type=register_space size=4;
 define register offset=0 size=$(REGISTER_SIZE) [ 
 	r0 r1 r2 r3 r4 r5 r6 r7 r8 r9 r10 r11 r12 r13 r14 r15
 	r16 r17 r18 r19 r20 r21 r22 r23 r24 r25 r26 r27 r28 r29 r30 r31 ];
+	
+@ifdef E500
+# Define 4-byte general purpose sub-registers (LSB) to be used by E500 compiler specification
+# which must restrict parameter/return passing to low 4-bytes of the 8-byte general purpose registers.
+@if ENDIAN == "big"
+define register offset=0 size=4 [ 
+	_	_r0		_	_r1		_	_r2		_	_r3		_	_r4		_	_r5		_	_r6		_	_r7		
+	_	_r8		_	_r9		_	_r10	_	_r11	_	_r12	_	_r13	_	_r14	_	_r15
+	_ 	_r16 	_ 	_r17 	_ 	_r18 	_ 	_r19 	_ 	_r20 	_ 	_r21 	_ 	_r22 	_ 	_r23 
+	_ 	_r24 	_ 	_r25 	_ 	_r26 	_ 	_r27 	_ 	_r28 	_ 	_r29 	_ 	_r30 	_ 	_r31 ];
+@else
+define register offset=0 size=4 [ 
+	_r0		_	_r1		_	_r2		_	_r3		_	_r4		_	_r5		_	_r6		_	_r7		_
+	_r8		_	_r9		_	_r10	_	_r11	_	_r12	_	_r13	_	_r14	_	_r15	_
+	_r16 	_ 	_r17 	_ 	_r18 	_ 	_r19 	_ 	_r20 	_ 	_r21 	_ 	_r22 	_ 	_r23 	_
+	_r24 	_ 	_r25 	_ 	_r26 	_ 	_r27 	_ 	_r28 	_ 	_r29 	_ 	_r30 	_ 	_r31 	_ ];
+@endif
+@endif
 
 # XER flags
 define register offset=0x400 size=1 [ xer_so xer_ov xer_ov32 xer_ca xer_ca32 xer_count ];
@@ -59,7 +77,7 @@ define register offset=0x1000 size=$(REGISTER_SIZE)
 	[ spr000 XER    spr002 spr003 spr004 spr005 spr006 spr007 LR     CTR    spr00a spr00b spr00c spr00d spr00e spr00f 
 	  spr010 spr011 spr012 spr013 spr014 spr015 spr016 spr017 spr018 spr019 SRR0   SRR1   spr01c spr01d spr01e spr01f 
 	  spr020 spr021 spr022 spr023 spr024 spr025 spr026 spr027 spr028 spr029 spr02a spr02b spr02c spr02d spr02e spr02f
-	  spr030 spr031 spr032 spr033 spr034 spr035 spr036 spr037 spr038 spr039 spr03a spr03b spr03c spr03d spr03e spr03f
+	  spr030 spr031 spr032 spr033 spr034 spr035 spr036 spr037 spr038 spr039 CSRR0 CSRR1  spr03c spr03d spr03e spr03f
 	  spr040 spr041 spr042 spr043 spr044 spr045 spr046 spr047 spr048 spr049 spr04a spr04b spr04c spr04d spr04e spr04f
 	  spr050 spr051 spr052 spr053 spr054 spr055 spr056 spr057 spr058 spr059 spr05a spr05b spr05c spr05d spr05e spr05f
 	  spr060 spr061 spr062 spr063 spr064 spr065 spr066 spr067 spr068 spr069 spr06a spr06b spr06c spr06d spr06e spr06f
@@ -91,7 +109,7 @@ define register offset=0x1000 size=$(REGISTER_SIZE)
 	  spr200 spr201 spr202 spr203 spr204 spr205 spr206 spr207 spr208 spr209 spr20a spr20b spr20c spr20d spr20e spr20f
 	  spr210 spr211 spr212 spr213 spr214 spr215 spr216 spr217 spr218 spr219 spr21a spr21b spr21c spr21d spr21e spr21f
 	  spr220 spr221 spr222 spr223 spr224 spr225 spr226 spr227 spr228 spr229 spr22a spr22b spr22c spr22d spr22e spr22f
-	  spr230 spr231 spr232 spr233 spr234 spr235 spr236 spr237 spr238 spr239 spr23a spr23b spr23c spr23d spr23e spr23f
+	  spr230 spr231 spr232 spr233 spr234 spr235 spr236 spr237 spr238 spr239 spr23a spr23b spr23c spr23d spr23e  spr23f 
 	  spr240 spr241 spr242 spr243 spr244 spr245 spr246 spr247 spr248 spr249 spr24a spr24b spr24c spr24d spr24e spr24f
 	  spr250 spr251 spr252 spr253 spr254 spr255 spr256 spr257 spr258 spr259 spr25a spr25b spr25c spr25d spr25e spr25f
 	  spr260 spr261 spr262 spr263 spr264 spr265 spr266 spr267 spr268 spr269 spr26a spr26b spr26c spr26d spr26e spr26f
@@ -1124,8 +1142,8 @@ attach variables SPRVAL [
 	spr017	spr037	spr057	spr077	spr097	spr0b7	spr0d7	spr0f7	spr117	spr137	spr157	spr177	spr197	spr1b7	spr1d7	spr1f7	spr217	spr237	spr257	spr277	spr297	spr2b7	spr2d7	spr2f7	spr317	spr337	spr357	spr377	spr397	spr3b7	spr3d7	spr3f7
 	spr018	spr038	spr058	spr078	spr098	spr0b8	spr0d8	spr0f8	spr118  spr138	spr158	spr178	spr198	spr1b8	spr1d8	spr1f8	spr218	spr238	spr258	spr278	spr298	spr2b8	spr2d8	spr2f8	spr318	spr338	spr358	spr378	spr398	spr3b8  spr3d8 	spr3f8
     spr019	spr039	spr059	spr079	spr099	spr0b9	spr0d9	spr0f9	spr119	spr139	spr159	spr179	spr199	spr1b9	spr1d9	spr1f9	spr219	spr239	spr259	spr279	spr299	spr2b9	spr2d9	spr2f9	spr319	spr339	spr359	spr379	spr399	spr3b9  spr3d9	spr3f9
-	SRR0 	spr03a	spr05a	spr07a	spr09a	spr0ba	spr0da	spr0fa	spr11a  spr13a	spr15a	spr17a	spr19a	spr1ba	spr1da	spr1fa	spr21a	spr23a	spr25a	spr27a	spr29a	spr2ba	spr2da	spr2fa	spr31a	spr33a	spr35a	spr37a	spr39a	spr3ba	spr3da 	spr3fa
-	SRR1	spr03b	spr05b	spr07b	spr09b	spr0bb	spr0db	spr0fb	spr11b	spr13b	spr15b	spr17b	spr19b	spr1bb	spr1db	spr1fb	spr21b	spr23b	spr25b	spr27b	spr29b	spr2bb	spr2db	spr2fb	spr31b	spr33b	spr35b	spr37b	spr39b	spr3bb	spr3db 	spr3fb
+	SRR0 	CSRR0	spr05a	spr07a	spr09a	spr0ba	spr0da	spr0fa	spr11a  spr13a	spr15a	spr17a	spr19a	spr1ba	spr1da	spr1fa	spr21a	spr23a	spr25a	spr27a	spr29a	spr2ba	spr2da	spr2fa	spr31a	spr33a	spr35a	spr37a	spr39a	spr3ba	spr3da 	spr3fa
+	SRR1	CSRR1	spr05b	spr07b	spr09b	spr0bb	spr0db	spr0fb	spr11b	spr13b	spr15b	spr17b	spr19b	spr1bb	spr1db	spr1fb	spr21b	spr23b	spr25b	spr27b	spr29b	spr2bb	spr2db	spr2fb	spr31b	spr33b	spr35b	spr37b	spr39b	spr3bb	spr3db 	spr3fb
 	spr01c	spr03c	spr05c	spr07c	spr09c	spr0bc	spr0dc	spr0fc	TBLw    spr13c	spr15c	spr17c	spr19c	spr1bc	spr1dc	spr1fc	spr21c	spr23c	spr25c	spr27c	spr29c	spr2bc	spr2dc	spr2fc	spr31c	spr33c	spr35c	spr37c	spr39c	spr3bc	spr3dc	spr3fc
 	spr01d	spr03d	spr05d	spr07d	spr09d	spr0bd	spr0dd	spr0fd	TBUw    spr13d	spr15d	spr17d	spr19d	spr1bd	spr1dd	spr1fd	spr21d	spr23d	spr25d	spr27d	spr29d	spr2bd	spr2dd	spr2fd	spr31d	spr33d	spr35d	spr37d	spr39d	spr3bd	spr3dd	spr3fd
 	spr01e	spr03e	spr05e	spr07e	spr09e  spr0be	spr0de	spr0fe	spr11e	spr13e	spr15e	spr17e	spr19e	spr1be	spr1de	spr1fe	spr21e	spr23e	spr25e	spr27e	spr29e	spr2be	spr2de	spr2fe	spr31e	spr33e	spr35e	spr37e	spr39e	spr3be	spr3de	spr3fe
@@ -1397,7 +1415,6 @@ attach variables vrC_8_15 [vr0_8_15 vr1_8_15 vr2_8_15 vr3_8_15 vr4_8_15 vr5_8_15
 ################################################################
 
 define pcodeop clearHistory;
-define pcodeop countLeadingZeros;
 define pcodeop countTrailingZeros;
 define pcodeop dataCacheBlockAllocate;
 define pcodeop dataCacheBlockFlush;
@@ -1470,6 +1487,9 @@ define pcodeop mematom;
 define pcodeop random;
 define pcodeop returnFromInterrupt;
 define pcodeop returnFromCriticalInterrupt;
+define pcodeop returnFromDebugInterrupt;
+define pcodeop returnFromGuestInterrupt;
+define pcodeop returnFromMachineCheckInterrupt;
 define pcodeop syscall;
 define pcodeop slbInvalidateAll;
 define pcodeop slbInvalidateEntry;
@@ -1552,51 +1572,79 @@ macro getCrBit(crReg, bitIndex, result)
 macro setCrBit(crReg, bitIndex, bit)
 {
 	shift:1 = 3-bitIndex;
-	mask:1 = ~(1<<shift);	
+	mask:1 = ~(1<<shift);
 	tmp:1 = bit<<shift;
 	crReg = crReg & mask;
 	crReg = crReg | tmp;
 }
 macro cr0flags(result ) {
-	setCrBit(cr0, 0, (result s< 0));
-	setCrBit(cr0, 1, (result s> 0));
-	setCrBit(cr0, 2, (result == 0));
+	# the first three bits of CR are set by signed comparison of the
+	# result to zero, and the fourth bit of CR is copied from the SO field
+	# of the XER
+	setCrBit(cr0, 0, (result s< 0)); # 0b100
+	setCrBit(cr0, 1, (result s> 0)); # 0b010
+	setCrBit(cr0, 2, (result == 0)); # 0b001
 	setCrBit(cr0, 3, (xer_so & 1));
 }
 
 macro addOverflow(a,b) {
-  xer_ov = scarry(a,b);
-  xer_so = xer_so || xer_ov;
-}
-macro addOverflowAgain(a,b) {
-  xer_ov = scarry(a,b) || xer_ov;
-  xer_so = xer_so || xer_ov;
+	xer_ov = scarry(a,b);
+	xer_so = xer_so || xer_ov;
 }
 
 macro subOverflow(a,b) {
-  xer_ov = sborrow(a,b);
-  xer_so = xer_so || xer_ov;
+	xer_ov = sborrow(a,b);
+	xer_so = xer_so || xer_ov;
+}
+
+macro addExtendedCarry(op1,op2){
+	local carryIn:$(REGISTER_SIZE) = zext(xer_ca);
+	tmp:$(REGISTER_SIZE) = op2 + carryIn;
+	xer_ca = carry(op2, carryIn) || carry(op1, tmp);
+}
+
+macro addExtendedOverflow(op1, op2) {
+	local carryIn:$(REGISTER_SIZE) = zext(xer_ca);
+	tmp:$(REGISTER_SIZE) = op1 + op2;
+	xer_ov = scarry(op1,op2) ^^ scarry(tmp, carryIn);
+	xer_so = xer_so || xer_ov;
+}
+
+macro subExtendedCarry(op1,op2){
+	local carryIn = zext(!xer_ca);
+	local CYa = op1 < op2;
+	local result = op1 - op2;
+	xer_ca = !(CYa || (result < carryIn) );
+}
+
+macro subExtendedOverflow(op1, op2) {
+	local carryIn = zext(!xer_ca);
+	local result = op1 - op2;
+	xer_ov = sborrow( op1, op2 ) ^^ sborrow( result, carryIn );
+	xer_so = xer_so || xer_ov;
 }
 
 # check b=0 or (a=0x80000000 and b=-1)
 macro divOverflow(a,b) {
 	xer_ov = (b==0) || ((b==-1) && (a==0x80000000));
-  	xer_so = xer_so || xer_ov;
+	xer_so = xer_so || xer_ov;
 }
-macro divZero(a,b) {
+macro divZero(b) {
 	xer_ov = (b==0);
-  	xer_so = xer_so || xer_ov;
+	xer_so = xer_so || xer_ov;
 }
 
 macro mulOverflow64(result) {
-	local tmp:4 = result(4);
-	xer_ov = tmp != 0 && tmp != 0xffff;
+	local tmp:4 = result(0);
+	local sext_tmp:8 = sext(tmp);
+	xer_ov = (sext_tmp != result);
 	xer_so = xer_so || xer_ov;
 }
 
 macro mulOverflow128(result) {
-	local tmp:8 = result(8);
-	xer_ov = tmp != 0 && tmp != 0xffff;
+	local tmp:8 = result(0);
+	local sext_tmp:16 = sext(tmp);
+	xer_ov = (sext_tmp != result);
 	xer_so = xer_so || xer_ov;
 }
 
@@ -1685,13 +1733,13 @@ macro loadReg(reg) {
 }
 
 macro loadRegisterPartial(reg, ea, sa) {
-        mask:$(REGISTER_SIZE) = 0xffffffff;
-        sa = ((4-sa) & 3) * 8;
-        mask = mask << sa;
+	mask:$(REGISTER_SIZE) = 0xffffffff;
+	sa = ((4-sa) & 3) * 8;
+	mask = mask << sa;
 @ifdef BIT_64
-  	reg = zext(*:4(ea));
+	reg = zext(*:4(ea));
 @else
-        reg = *:4(ea);
+	reg = *:4(ea);
 @endif
         reg = reg & mask;
         ea = ea + 4;
@@ -1699,7 +1747,8 @@ macro loadRegisterPartial(reg, ea, sa) {
 
 macro storeRegister(reg, ea) {
 @ifdef BIT_64
-	*:4(ea) = reg:4;
+    tmp:8 = reg; # workaround
+	*:4(ea) = tmp:4;
 @else
 	*:4(ea) = reg;
 @endif
@@ -1708,7 +1757,8 @@ macro storeRegister(reg, ea) {
 
 macro storeReg(reg) {
 @ifdef BIT_64
-	*:4(tea) = reg:4;
+	tmp:8 = reg; # workaround
+	*:4(tea) = tmp:4;
 @else
 	*:4(tea) = reg;
 @endif
@@ -1717,7 +1767,8 @@ macro storeReg(reg) {
 
 macro storeRegisterPartial(reg, ea, sa) {
 @ifdef BIT_64
-  *:4(ea) = reg:4;
+  tmp:8 = reg; # workaround
+  *:4(ea) = tmp:4;
 @else
   *:4(ea) = reg;
 @endif
@@ -1766,6 +1817,7 @@ macro unpackFPSCR(tmp) {
 		    fp_xe, fp_ni, fp_rn0, fp_rn1); 
 }
 
+
 ################################################################
 # Sub-Constructors
 ################################################################
@@ -1777,7 +1829,7 @@ addressLI: reloc 	is LI & AA=1		[ reloc = LI*4; ]				{ export *[ram]:4 reloc; }
 addressBD: reloc		is BD & AA=0		[ reloc = inst_start + BD*4; ]	{ export *[ram]:4 reloc; }
 addressBD: reloc		is BD & AA=1		[ reloc = BD*4; ]				{ export *[ram]:4 reloc; }
 
-OFF16SH: val		is D0 & D1 & D2 [ val = (D0 << 6) | (D1 << 1) | D2; ] { export *[const]:4 val;}
+OFF16SH: val		is D0 & D1 & D2 [ val = ((D0 << 6) | (D1 << 1) | D2) << 16; ] { export *[const]:4 val;}
 
 # X 00-------------------------------06 07-07 08-----------10 11-----------13 14------15 16----------------------------------------------------------------------------31 
 # X -----------------?-----------------|BO_1=1|-------?-------|-----BI_CR-----|--BI_CC---|---------------------------------------?----------------------------------------|
@@ -1873,7 +1925,30 @@ RB_OR_ZERO: 0   is B=0		{ export 0:$(REGISTER_SIZE); }
 RS_OR_ZERO:	S 	is S			{ export S; }
 RS_OR_ZERO: 0   is S=0		{ export 0:$(REGISTER_SIZE); }
 
-rotmask: mask   is MBL & ME [ mask = ((((ME-MBL)>>8) $and 1)*0xffffffff) $xor (0x7fffffff>>ME) $xor (0xffffffff>>MBL); ]   { export *[const]:4 mask; }
+@ifdef BIT_64
+MB: mbValue  is MBH & MBL 	[ mbValue=(MBH<<5)|MBL; ]	{ export *[const]:4 mbValue; }
+SH: shValue  is SHH & SHL 	[ shValue=(SHH<<5)|SHL; ]	{ export *[const]:4 shValue; }
+
+rotmask: mask is MBL & ME [mask =  ((((ME-MBL)>>8) $and 1)*0xffffffffffffffff) $xor (0x7fffffff>>ME) $xor (0xffffffff>>MBL); ]   { export *[const]:8 mask; }
+
+rotmask_SH: masksh, mbValue, shValue is MBL & MBH & SHL & SHH
+	[ mbValue= (MBH<<5)|MBL;
+	  shValue= (SHH<<5)|SHL;
+	  masksh = ((((shValue-mbValue)>>8) $and 1)*0xffffffffffffffff) $xor ((0x7fffffffffffffff >> shValue) $xor (0xffffffffffffffff >> mbValue));
+	]
+{
+	local start:4 = mbValue;
+	local stop:4 = 63-shValue;
+	mask_tmp:8 = (zext(start > stop) * 0xffffffffffffffff) ^ (0x7fffffffffffffff>>stop) ^ (0xffffffffffffffff>>start);
+	export *[const]:8 mask_tmp;
+}
+
+rotmask_Z: mask, mbValue is MBL & MBH [mbValue= (MBH<<5)|MBL; mask = ~(0xffffffffffffffff >> (mbValue+1)); ]
+{ mask_tmp:8 = ~(0xffffffffffffffff >> (mbValue+1)); export *[const]:8 mask_tmp; }
+
+@else
+rotmask: mask   is MBL & ME [ mask = ((((ME-MBL)>>8) $and 1)*0xffffffff) $xor (0x7fffffff>>ME) $xor (0xffffffff>>MBL); ] { export *[const]:4 mask; }
+@endif
 
 DSIZE: "w"		is L    {}      # L is a don't care bit in 32-bit languages although it should always be 0
 @ifdef BIT_64					# L can only be 1 when in 64 bit language
@@ -1929,11 +2004,6 @@ CRM_CR:	cr2		is CRM=32 & cr2	{tmp:4 = zext(cr2) << 20;export tmp;}
 CRM_CR:	cr1		is CRM=64 & cr1	{tmp:4 = zext(cr1) << 24;export tmp;}
 CRM_CR:	cr0		is CRM=128 & cr0	{tmp:4 = zext(cr0) << 28;export tmp;}
 
-@ifdef BIT_64
-MB: mbValue  is MBH & MBL 	[ mbValue=(MBH<<5)|MBL; ]	{ export *[const]:4 mbValue; }
-SH: shValue  is SHH & SHL 	[ shValue=(SHH<<5)|SHL; ]	{ export *[const]:4 shValue; }
-
-@endif
 
 ################################################################
 # Instructions

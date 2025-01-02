@@ -1,0 +1,2 @@
+ghidratrace==11.1.2
+pybag>=2.2.10

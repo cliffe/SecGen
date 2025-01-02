@@ -36,7 +36,7 @@ public class PropagateConstantReferences extends GhidraScript {
 	public void run() throws Exception {
 		long numInstructions = currentProgram.getListing().getNumInstructions();
 		monitor.initialize((int) (numInstructions));
-		monitor.setMessage("Constant Propogation Markup");
+		monitor.setMessage("Constant Propagation Markup");
 
 		// set up the address set to restrict processing
 		AddressSet restrictedSet =
@@ -70,7 +70,7 @@ public class PropagateConstantReferences extends GhidraScript {
 
 			// follow all flows building up context
 			// use context to fill out addresses on certain instructions 
-			ContextEvaluator eval = new ConstantPropagationContextEvaluator(true);
+			ContextEvaluator eval = new ConstantPropagationContextEvaluator(monitor, true);
 
 			SymbolicPropogator symEval = new SymbolicPropogator(currentProgram);
 

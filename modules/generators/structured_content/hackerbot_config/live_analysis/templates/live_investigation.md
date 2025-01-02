@@ -93,7 +93,7 @@ script -f /tmp/evid/invst.log
 ```
 > Note: *if you do this lab over multiple sessions*, be sure to save the log of your progress (/tmp/evid/invst.log), and restart `script`.
 
-==LogBook question: Make a note of the risks and benefits associated with storing a record of what we are doing locally on the computer that we are investigating.==
+==Log Book question: Make a note of the risks and benefits associated with storing a record of what we are doing locally on the computer that we are investigating.==
 
 Consider the advantages of *handwritten* documentation of what investigators are doing.
 
@@ -147,7 +147,7 @@ ps aux | ssh <%= $main_user %>@*desktop-IP-address* "cat > evidence/ps_out"
 
 > (Where *desktop-IP-address* is the IP address of your *desktop VM*, which should be on the same subnet as your compromised VM)
 
-==LogBook question: Why might it not be a good idea to ssh to your own account (if you had one on a Desktop in real life) and type your own password from the compromised system? What are some more secure alternatives?==
+==Log Book question: Why might it not be a good idea to ssh to your own account (if you had one on a Desktop in real life) and type your own password from the compromised system? What are some more secure alternatives?==
 
 **On your Desktop VM**, find the newly created files and view the contents.
 
@@ -196,7 +196,7 @@ $static/lsof | ssh <%= $main_user %>@*Desktop-IP-address* "cat > evidence/lsof_o
 
 **On your Desktop VM**, open evidence/lsof\_out.
 
-==LogBook question: Are any of these marked as "(deleted)"? How does this compare to the ils output? What does this indicate?==
+==Log Book question: Are any of these marked as "(deleted)"? How does this compare to the ils output? What does this indicate?==
 
 **On the compromised VM (Redhat7.2)**,
 

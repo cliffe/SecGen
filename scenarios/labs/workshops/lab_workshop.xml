@@ -168,7 +168,7 @@
 
   <system>
     <system_name>web_server</system_name>
-    <base distro="Debian 12" type="desktop" name="KDE"/>
+    <base distro="Debian 10" type="desktop" name="KDE"/>
 
     <vulnerability module_path=".*/unrealirc_3281_backdoor">
       <input into="strings_to_leak">

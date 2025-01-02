@@ -46,6 +46,7 @@
 
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
+import java.util.List;
 
 import ghidra.app.cmd.label.DemanglerCmd;
 import ghidra.app.script.GhidraScript;
@@ -138,7 +139,7 @@ public class VxWorksSymTab_6_1 extends GhidraScript {
 				String symDemangledName = null;
 				try {
 					// if successful, symDemangledName will be non-NULL
-					symDemangledName = demangler.demangle(symName, true).getSignature(false);
+					symDemangledName = demangler.demangle(symName).getSignature(false);
 				}
 				catch (DemangledException e) {
 					// if symName wasn't a mangled name, silently continue
@@ -185,8 +186,11 @@ public class VxWorksSymTab_6_1 extends GhidraScript {
 						createLabel(symLocAddr, symName, true);
 						if (symDemangledName != null) {
 							new DemanglerCmd(symLocAddr, symName).applyTo(currentProgram, monitor);
-							ghidraSymTbl.removeSymbolSpecial(
-								getSymbol(symName, currentProgram.getGlobalNamespace()));
+							List<Symbol> symbols =
+								getSymbols(symName, currentProgram.getGlobalNamespace());
+							if (!symbols.isEmpty()) {
+								ghidraSymTbl.removeSymbolSpecial(symbols.get(0));
+							}
 						}
 						break;
 					case 4: // Local .text
@@ -201,8 +205,11 @@ public class VxWorksSymTab_6_1 extends GhidraScript {
 							if (symDemangledName != null) {
 								new DemanglerCmd(symLocAddr, symName).applyTo(currentProgram,
 									monitor);
-								ghidraSymTbl.removeSymbolSpecial(
-									getSymbol(symName, currentProgram.getGlobalNamespace()));
+								List<Symbol> symbols =
+									getSymbols(symName, currentProgram.getGlobalNamespace());
+								if (!symbols.isEmpty()) {
+									ghidraSymTbl.removeSymbolSpecial(symbols.get(0));
+								}
 							}
 						}
 						else {
@@ -212,8 +219,11 @@ public class VxWorksSymTab_6_1 extends GhidraScript {
 							if (symDemangledName != null) {
 								new DemanglerCmd(symLocAddr, symName).applyTo(currentProgram,
 									monitor);
-								ghidraSymTbl.removeSymbolSpecial(
-									getSymbol(symName, currentProgram.getGlobalNamespace()));
+								List<Symbol> symbols =
+									getSymbols(symName, currentProgram.getGlobalNamespace());
+								if (!symbols.isEmpty()) {
+									ghidraSymTbl.removeSymbolSpecial(symbols.get(0));
+								}
 							}
 						}
 						break;

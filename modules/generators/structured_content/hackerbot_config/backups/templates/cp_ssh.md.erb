@@ -44,7 +44,7 @@ Using SSH (secure shell), `scp` (secure copy) can transfer files securely (encry
 ==Backup your /etc/ directory to the backup_server== computer using `scp`:
 
 ```bash
-sudo scp -pr /etc/ <%= $main_user %>@<%= $server_ip %>:/home/<%= $main_user %>/ssh_backup/
+sudo scp -pr /etc/ <%= $main_user %>@<%= $server_ip %>:/home/<%= $main_user %>/ssh_etc_backup
 ```
 > You will be prompted for your local password, to confirm the hosts fingerprint ("yes"), and the remote password (which is the same).
 > This copy may take some time, feel free to open another terminal console (Ctrl-T), to read the scp man page while you wait.

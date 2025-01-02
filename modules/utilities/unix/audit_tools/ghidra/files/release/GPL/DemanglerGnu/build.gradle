@@ -1,10 +1,14 @@
-apply from: file("../gpl.gradle").getCanonicalPath()
+/* ###
+ * IP: Public Domain
+ */
 
 if (findProject(':Generic') != null) {
 	apply from: "$rootProject.projectDir/gradle/nativeProject.gradle"
 	apply from: "$rootProject.projectDir/gradle/distributableGPLModule.gradle"
 }
 else {
+	apply from: "../utils.gradle"
+	apply from: "../nativePlatforms.gradle"
 	apply from: "../nativeBuildProperties.gradle"
 }
 
@@ -12,29 +16,11 @@ apply plugin: 'eclipse'
 
 eclipse.project.name = 'GPL DemanglerGnu'
 
-/****************************************************************************
- * Defines the platforms we have to support in Ghidra.  This model is used 
- * for all native builds and should be extended by each module as-needed.
- ****************************************************************************/
-model {
 
-	// define the platforms that we support in ghidra
-	platforms {
-		win64 {
-			architecture 'x86_64'
-			operatingSystem 'windows'
-		}
-		linux64 {
-			architecture 'x86_64'
-			operatingSystem 'linux'
-		}
-		osx64 {
-			architecture 'x86_64'
-			operatingSystem 'osx'
-		}
-	}	
-}
-
+def v41 = "demangler_gnu_v2_41"
+def v24 = "demangler_gnu_v2_24"
+def srcVersion41 = "src/demangler_gnu_v2_41"
+def srcVersion24 = "src/demangler_gnu_v2_24"
 
 /**
  * This project has some native 'c' code we need to include in the zip for licensing 
@@ -51,67 +37,135 @@ task zipBuildableSource(type:Zip) {
 
 	group 'private'
 	description "Collects the source files needed to build this module."
-	baseName project.name + "-src-for-build"
-	extension 'zip'
-			
-	from (project.projectDir.toString() + "/src/demangler_gnu/c") {
-		into "/src/demangler_gnu"
+	archiveBaseName = project.name + "-src-for-build"
+	archiveExtension = 'zip'
+		
+	//
+	// Version 2.41
+	// 
+	from (project.projectDir.toString() + "/" + srcVersion41 + "c") {
+		into "/" + srcVersion41
 	}
-	from (project.projectDir.toString() + "/src/demangler_gnu/headers") {
-		into "/src/demangler_gnu"
+	from (project.projectDir.toString() + "/" + srcVersion41 + "/headers") {
+		into "/" + srcVersion41
 	}
-	from (project.projectDir.toString() + "/src/demangler_gnu/build") {
-		into "/src/demangler_gnu"
+	from (project.projectDir.toString() + "/" + srcVersion41 + "/build") {
+		into "/" + srcVersion41
 	}
-	from (project.projectDir.toString() + "/src/demangler_gnu/README.txt")
+	from (project.projectDir.toString() + "/" + srcVersion41 + "/README.txt")
+	
+	//
+	// Version 2.24
+	// 
+	from (project.projectDir.toString() + "/" + srcVersion24 + "c") {
+		into "/" + srcVersion24
+	}
+	from (project.projectDir.toString() + "/" + srcVersion24 + "/headers") {
+		into "/" + srcVersion24
+	}
+	from (project.projectDir.toString() + "/" + srcVersion24 + "/build") {
+		into "/" + srcVersion24
+	}
+	from (project.projectDir.toString() + "/" + srcVersion24 + "/README.txt")
 }
 
 model {
+				
 	components {
-		demangler_gnu(NativeExecutableSpec) {
-			targetPlatform "win64"
-			targetPlatform "linux64"
-			targetPlatform "osx64"
+		//
+		// Version 2.41
+		//
+		demangler_gnu_v2_41(NativeExecutableSpec) {
+			targetPlatform "win_x86_64"
+			targetPlatform "linux_x86_64"
+			targetPlatform "linux_arm_64"
+			targetPlatform "mac_x86_64"
+			targetPlatform "mac_arm_64"
+			targetPlatform "freebsd_x86_64"
+			targetPlatform "freebsd_arm_64"
 			sources {
 				c {
 					source {
-						srcDir "src/demangler_gnu/c"
+						srcDir srcVersion41 + "/c"
 					}
 					exportedHeaders {
-						srcDir "src/demangler_gnu/headers"
+						srcDir srcVersion41 + "/headers"
 					}
 				}
-			}
-			
+			}			
 		}
+		
+		//
+		// Version 2.24
+		//
+		demangler_gnu_v2_24(NativeExecutableSpec) {
+			targetPlatform "win_x86_64"
+			targetPlatform "linux_x86_64"
+			targetPlatform "linux_arm_64"
+			targetPlatform "mac_x86_64"
+			targetPlatform "mac_arm_64"
+			targetPlatform "freebsd_x86_64"
+			targetPlatform "freebsd_arm_64"
+			sources {
+				c {
+					source {
+						srcDir srcVersion24 + "/c"
+					}
+					exportedHeaders {
+						srcDir srcVersion24 + "/headers"
+					}
+				}
+			}			
+		}	
 	}
 }
 
 model {
 	binaries {
+	
+		/*
+			Note: 'all' will pass all binary output, which is each platform for each version
+		*/
 		all{ b ->
-			if (toolChain in Gcc) {
-				cCompiler.args "-DMAIN_CPLUS_DEM"
-				cCompiler.args "-DHAVE_STDLIB_H"
-				cCompiler.args "-DHAVE_STRING_H"
-				if (targetPlatform.operatingSystem.linux) {
-//					linker.args "-static"
+		
+			def version = b.getApplication().getName()
+		
+			if (version.equals(v41)) {
+				if (toolChain in Gcc) {			
+					//cCompiler.args "-DCP_DEMANGLE_DEBUG"
+					cCompiler.args "-DHAVE_STDLIB_H"
+					cCompiler.args "-DHAVE_STRING_H"
+				}
+				else if (toolChain in VisualCpp) {
+					cCompiler.args "/D_CONSOLE"
+					cCompiler.args "-DHAVE_STDLIB_H"
+					cCompiler.args "-DHAVE_STRING_H"
+				}
+				else if (toolChain in Clang) {
+					cCompiler.args "-DHAVE_STDLIB_H"
+					cCompiler.args "-DHAVE_STRING_H"
 				}
 			}
-			else if (toolChain in VisualCpp) {
-				cCompiler.args "/D_CONSOLE"
-				cCompiler.args "/DMAIN_CPLUS_DEM"
-				cCompiler.args "-DHAVE_STDLIB_H"
-				cCompiler.args "-DHAVE_STRING_H"
-			}
-			else if (toolChain in Clang) {
-				cCompiler.args "-DMAIN_CPLUS_DEM"
-				cCompiler.args "-DHAVE_STDLIB_H"
-				cCompiler.args "-DHAVE_STRING_H"
-				if (targetPlatform.operatingSystem.linux) {
-//					linker.args "-static"
+			else if (version.equals(v24)) {
+				if (toolChain in Gcc) {
+					cCompiler.args "-DMAIN_CPLUS_DEM"
+					cCompiler.args "-DHAVE_STDLIB_H"
+					cCompiler.args "-DHAVE_STRING_H"
+				}
+				else if (toolChain in VisualCpp) {
+					cCompiler.args "/D_CONSOLE"
+					cCompiler.args "/DMAIN_CPLUS_DEM"
+					cCompiler.args "-DHAVE_STDLIB_H"
+					cCompiler.args "-DHAVE_STRING_H"
+				}
+				else if (toolChain in Clang) {
+					cCompiler.args "-DMAIN_CPLUS_DEM"
+					cCompiler.args "-DHAVE_STDLIB_H"
+					cCompiler.args "-DHAVE_STRING_H"
 				}
 			}
+		
+			
 		}
 	}
 }

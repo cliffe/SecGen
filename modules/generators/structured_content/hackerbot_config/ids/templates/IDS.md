@@ -199,7 +199,7 @@ tail -f /var/log/snort/alert
 ```
 >The tail program will wait for new alerts to be written to the file, and will display them as they are logged.
 
-==LogBook question: Does the log match what happened? Are there any false positives (alerts that describe things that did not actually happen)?==
+==Log Book question: Does the log match what happened? Are there any false positives (alerts that describe things that did not actually happen)?==
 
 ==Do an nmap port scan of the web_server== VM (from the desktop VM):
 

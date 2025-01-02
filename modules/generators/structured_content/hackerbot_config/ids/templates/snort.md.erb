@@ -2,13 +2,7 @@
 
 Continuing **on the ids_monitor VM:**
 
-==Make a backup== of the snort's configuration file in case anything goes wrong:
-
-```bash
-sudo cp /etc/snort/snort.conf /etc/snort/snort.conf.bak
-```
-
-==Change Snort's output== to something more readable:
+==Confirm Snort's output== is set to something readable:
 
 ```bash
 sudo vi /etc/snort/snort.conf
@@ -17,16 +11,16 @@ sudo vi /etc/snort/snort.conf
 
 > ":wq" to write changes and quit)
 
-==Add (or uncomment) the following lines:==
+==Check for the following lines:==
 `output alert_fast`
 `output log_tcpdump: tcpdump.log`
-
-==Change Snort's interface== to ens18 (or as you identified earlier), and set the local network to your IP address range (or "any"):
 
 ```bash
 sudo vi /etc/snort/snort.debian.conf
 ```
-> Set the interface and HOME network range, and exit vi (Esc, ":wq").
+==Check Snort's interface== which will be ens18 (or as you identified earlier), and the local network is set to your IP address range (or "any"):
+
+> Confirm the above, and exit vi (Esc, ":wq").
 
 ==Start Snort:==
 
@@ -53,7 +47,7 @@ sudo tail -f /var/log/snort/alert
 ```
 >The tail program will wait for new alerts to be written to the file, and will display them as they are logged. (Ctrl-C to exit)
 
-==LogBook question: What does the `-sX` in the nmap command mean? Does the log match what happened? Are there any false positives (alerts that describe things that did not actually happen)?==
+==Log Book question: What does the `-sX` in the nmap command mean? Does the log match what happened? Are there any false positives (alerts that describe things that did not actually happen)?==
 
 ==Try another type of port scan from the desktop== VM (Hint: `man nmap`).
 

@@ -11,31 +11,24 @@
 setlocal
 
 REM Get parent of current folder
-set SCRIPT_DIR=%~dp0
+set "SCRIPT_DIR=%~dp0"
 
-set GHIDRA_DIR=%SCRIPT_DIR%..\Ghidra
+set "GHIDRA_DIR=%SCRIPT_DIR%..\Ghidra"
 set OS_DIR=os
 
 REM Production Environment
 if exist "%GHIDRA_DIR%" goto continue
 
 REM Development Environment
-set GHIDRA_DIR=%SCRIPT_DIR%..\..\..
+set "GHIDRA_DIR=%SCRIPT_DIR%..\..\.."
 set OS_DIR=build\os
 
 :continue
 
 REM create absolute path
-for /f %%i in ("%GHIDRA_DIR%") do set GHIDRA_DIR=%%~fi
+for /f "delims=" %%i in ("%GHIDRA_DIR%") do set GHIDRA_DIR=%%~fi
 
-REM Determine if 64-bit or 32-bit
-if exist "%PROGRAMFILES(X86)%" (
-	set OS_TYPE=win64
-) else (
-	set OS_TYPE=win32
-)
-
-set PDB_EXE=%GHIDRA_DIR%\Features\PDB\%OS_DIR%\%OS_TYPE%\pdb.exe
+set "PDB_EXE=%GHIDRA_DIR%\Features\PDB\%OS_DIR%\win_x86_64\pdb.exe"
 
 if not exist "%PDB_EXE%" (
 	echo "%PDB_EXE% not found"
@@ -64,7 +57,7 @@ for /f "tokens=* delims=" %%a in ('dir %arg1% /s /b') do (
 			setlocal enableDelayedExpansion
 			(
 				echo "Processing file: %%a"
-				START /B /WAIT "" "%PDB_EXE%" %%a > "%%a.xml"
+				START /B /WAIT "" "%PDB_EXE%" "%%a" > "%%a.xml"
 
 				REM Exit if executable returned non-zero error code (signifies that there is a problem).
 				if !errorlevel! neq 0 (

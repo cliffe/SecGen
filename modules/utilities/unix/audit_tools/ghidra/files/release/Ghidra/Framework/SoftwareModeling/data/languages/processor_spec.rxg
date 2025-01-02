@@ -40,6 +40,14 @@
           </element>
         </optional>
 
+		<zeroOrMore>
+		  <element name="inferptrbounds">
+		    <oneOrMore>
+		      <ref name="range_type"/>
+		    </oneOrMore>
+		  </element>
+		</zeroOrMore>
+
         <optional>
           <element name="segmented_address">
             <attribute name="space"/>
@@ -64,6 +72,10 @@
           <element name="volatile">
             <attribute name="inputop"/>
             <attribute name="outputop"/>
+            <optional>
+              <attribute name="format"/>
+              <!-- format="functional" forces functional operator synxtax-->
+            </optional>
             <oneOrMore>
               <ref name="memory_tags_type"/>
             </oneOrMore>
@@ -92,15 +104,13 @@
                   <attribute name="rename"/>
                 </optional>
                 <optional>
+                  <attribute name="alias"/>
+                </optional>
+                <optional>
                   <attribute name="group"/>
                 </optional>
                 <optional>
                   <attribute name="hidden">
-                    <ref name="boolean_type"/>
-                  </attribute>
-                </optional>
-                <optional>
-                  <attribute name="unused">
                     <ref name="boolean_type"/>
                   </attribute>
                 </optional>
@@ -118,6 +128,14 @@
               <element name="symbol">
                 <attribute name="name"/>
                 <attribute name="address"/>
+                <optional>
+                  <attribute name="volatile">
+                    <ref name="boolean_type"/>
+                  </attribute>
+                </optional>
+                <optional>
+                  <attribute name="size"/>
+                </optional>
                 <optional>
                   <attribute name="entry">
                     <ref name="boolean_type"/>
@@ -140,11 +158,24 @@
               <element name="memory_block">
                 <attribute name="name"/>
                 <attribute name="start_address"/>
-                <optional> <attribute name="bit_mapped_address"/> </optional>
-                <optional> <attribute name="mode"/> </optional>
-                <optional> <attribute name="length"/> </optional>
-                <optional>
+                <attribute name="length"/>
+                <choice>
+                  <attribute name="bit_mapped_address"/>
+                  <!--
+                     byte_mapped_address - mapped memory address and optional mapping ratio
+                     Examples:
+                        byte_mapped_address="rom:1000" - maps every byte starting at rom:1000
+                        byte_mapped_address="rom:1000/1:2" - maps one byte for every two bytes 
+                           starting at rom:1000.  Facilitates skip of padding bytes.
+                  -->
+                  <attribute name="byte_mapped_address"/>
                   <attribute name="initialized">
+                    <ref name="boolean_type"/>
+                  </attribute>
+                 </choice>
+                <optional> <attribute name="mode"/> </optional>
+                <optional>
+                  <attribute name="overlay">
                     <ref name="boolean_type"/>
                   </attribute>
                 </optional>

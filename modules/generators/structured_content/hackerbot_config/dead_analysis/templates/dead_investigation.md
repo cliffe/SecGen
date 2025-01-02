@@ -295,7 +295,7 @@ whois *IP-address*
 
 Within Autopsy, ==view the /var/log/boot.log file==. At the top of this file Syslog reports starting at August 10 at 13:33:57. 
 
-==LogBook Question: Given what we have learned about this system during timeline analysis, what is suspicious about Syslog restarting on August 10th? Was the system actually restarted at that time?==
+==Log Book Question: Given what we have learned about this system during timeline analysis, what is suspicious about Syslog restarting on August 10th? Was the system actually restarted at that time?==
 
 Note that according to the log, Apache fails to restart. Why can't Apache restart? Do you think the attacker intended to do this?
 
@@ -313,7 +313,7 @@ ps aux | grep apache
 kill -9 21510 21511 23289 23292 23302
 ```
 
-==LogBook Question: What is the attacker attempting to do with these commands?==
+==Log Book Question: What is the attacker attempting to do with these commands?==
 
 Apache has clearly played an important role in the activity of the attacker, so it is natural to investigate Apache's configuration and logs.
 
@@ -351,7 +351,7 @@ Scroll down, and ==find any deleted email message logs.==
 
 > Hint: try pressing ":" then type "/To:".
 
-==LogBook Question: What sorts of information was emailed?==
+==Log Book Question: What sorts of information was emailed?==
 
 To get the list of all email recipients quit less (press 'q'), and ==run:==
 

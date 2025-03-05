@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>LibreNMS 1.43 Multiple Authenticated RCE vulnerabilities</name>
+  <author>Sofia Markusfeld</author>
+  <module_license>GNU GPLv3</module_license>
+  <description>
+    command injection vulnerability in the
+        Collectd graphing functionality in LibreNMS. - fix/elaborate
+  </description>
+
+  <type>remote</type>
+  <type>bruteforceable</type>
+  <type>in_the_wild</type>
+  <privilege>user_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>port</read_fact>
+  <read_fact>organisation</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+  <read_fact>known_username</read_fact>
+  <read_fact>known_password</read_fact>
+  <read_fact>strings_to_pre_leak</read_fact>
+  <read_fact>web_pre_leak_filename</read_fact>
+
+  <default_input into="port">
+    <value>80</value>
+  </default_input>
+
+  <default_input into="organisation">
+    <generator type="realistic_organisation" />
+  </default_input>
+
+  <!-- flags or other secrets exposed after exploitation -->
+  <default_input into="strings_to_leak">
+    <generator type="message_generator"/>
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+  </default_input>
+
+  <!-- these details need to be known or bruteforced to successful exploit the service -->
+  <!-- By default the username is admin, but it can be something else, so long as they can easily guess it (for example leak it to them) -->
+  <default_input into="known_username">
+		<!-- <generator type="random_sanitised_word">
+			<input into="wordlist">
+				<value>admin_name</value>
+			</input>
+		</generator> -->
+    <value>admin</value>
+  </default_input>
+
+  <default_input into="known_password">
+    <generator type="weak_password_generator" />
+  </default_input>
+
+  <!-- pre-leaked, these details are leaked before the main vuln is exploited, for example hidden content or hosted files -->
+  <default_input into="strings_to_pre_leak">
+    <generator type="message_generator"/>
+  </default_input>
+
+  <!-- ideally something found by dirbuster -->
+  <default_input into="web_pre_leak_filename">
+    <generator type="random_sanitised_word">
+			<input into="wordlist">
+				<value>www_buster_filename</value>
+			</input>
+		</generator>
+  </default_input>
+
+  <!--optional vulnerability details-->
+  <!-- image upload vuln -->
+  <cve>CVE-2019-10669 </cve>
+  <!-- bruteforce vuln -->
+  <cve>CVE-2018-20434</cve>
+
+  <cvss_base_score>9</cvss_base_score>
+  <cvss_vector>AV:N/AC:L/Au:S/C:C/I:C/A:C</cvss_vector>
+  <reference>https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/linux/http/bludit_upload_images_exec.rb</reference>
+  <reference>https://github.com/bludit/bludit/issues/1081</reference>
+  <software_name>bludit</software_name>
+  <software_license>MIT</software_license>
+
+
+  <!--optional hints-->
+  <msf_module>exploit/linux/http/bludit_upload_images_exec</msf_module>
+  <hint>Visit the webapp in a browser at: ip:80/bludit </hint>
+
+  <!-- can't live alongside other web sites, since it accepts any virtual host name -->
+  <conflict>
+    <type>webapp</type>
+  </conflict>
+
+  <requires>
+    <module_path>.*apache.*compatible.*</module_path>
+  </requires>
+
+  <requires>
+    <module_path>.*php.*compatible.*</module_path>
+  </requires>
+
+  <!-- CyBOK metadata - related security concepts / knowledge required -->
+  <CyBOK KA="WAM" topic="Fundamental Concepts and Approaches">
+    <keyword>authentication</keyword>
+    <keyword>passwords and alternatives</keyword>
+  </CyBOK>
+  <CyBOK KA="AAA" topic="Authentication">
+    <keyword>user authentication</keyword>
+    <keyword>BRUTEFORCE</keyword>
+  </CyBOK>
+
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>server-side misconfiguration and vulnerable components</keyword>
+    <keyword>FILE UPLOAD VULNERABILITY</keyword>
+  </CyBOK>
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION</keyword>
+    <keyword>EXPLOITATION FRAMEWORKS</keyword>
+  </CyBOK>
+  <CyBOK KA="SS" topic="Categories of Vulnerabilities">
+    <keyword>CVEs and CWEs</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+
+</vulnerability>

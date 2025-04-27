@@ -5,6 +5,7 @@
          xsi:schemaLocation="http://www.github/cliffe/SecGen/base">
   <name>Kali Light, MSF, XFCE and Puppet</name>
   <author>Z. Cliffe Schreuders</author>
+  <author>James Davis</author>
   <module_license>GPLv3</module_license>
   <description>Kali Light rolling release XFCE minimal install, with metasploit framework and puppet.</description>
   <cpu_word_size>64-bit</cpu_word_size>
@@ -14,7 +15,7 @@
   <platform>linux</platform>
   <platform>unix</platform>
   <distro>Kali Linux Rolling</distro>
-  <url>https://app.vagrantup.com/secgen/boxes/kali_light_msf/versions/1.0/providers/virtualbox.box</url>
+  <url>https://api.cloud.hashicorp.com/vagrant-archivist/v1/object/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiJzZWNnZW4va2FsaV9saWdodC8yLjAuMS92aXJ0dWFsYm94LzY3NDYxYTBkLWNhZjMtMTFlZi05ZGIxLTIyMGFmOGE0NzQ3ZCIsIm1vZGUiOiJyIiwiZmlsZW5hbWUiOiJrYWxpX2xpZ2h0XzIuMC4xX3ZpcnR1YWxib3hfYW1kNjQuYm94In0.QNeeCdfTHvSP38idvSoBy0DHeR0tVLJ1yaN8JxLHUJE</url>
   <esxi_url></esxi_url>
   <ovirt_template>kali-linux-mfs-20231114</ovirt_template>
   <proxmox_template>kali-linux-msf-20250108</proxmox_template>

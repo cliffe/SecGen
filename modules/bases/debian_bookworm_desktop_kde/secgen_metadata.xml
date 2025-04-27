@@ -5,6 +5,7 @@
          xsi:schemaLocation="http://www.github/cliffe/SecGen/base">
   <name>Debian 12 Bookworm Desktop KDE: PROXMOX ONLY</name>
   <author>Z. Cliffe Schreuders</author>
+  <author>James Davis</author>
   <module_license>GPLv3</module_license>
   <description>Debian 12 Bookworm Desktop KDE amd64 -- dist-upgrade from buster box. Use buster on VirtualBox and oVirt. For testing purposes, the default root password is puppet.
   I need to build this for VirtualBox.</description>
@@ -13,8 +14,8 @@
 
   <platform>linux</platform>
   <platform>unix</platform>
-  <distro>Debian 12 Bookworm amd64</distro>
-  <url>https://app.vagrantup.com/secgen/boxes/debian_stretch_desktop_kde/versions/1.2/providers/virtualbox.box</url>
+  <distro>Debian 12 Buster amd64</distro>
+  <url>https://app.vagrantup.com/secgen/boxes/bookworm-base/versions/1.0.1/providers/virtualbox/amd64/download/vagrant.box</url>
   <esxi_url>https://app.vagrantup.com/redwiz666/boxes/debian_stretch_desktop_kde/versions/1.0.0/providers/vmware.box</esxi_url>
   <ovirt_template>buster_desktop_kde_20230615</ovirt_template>
   <proxmox_template>bookworm-desktop-kde-20241114</proxmox_template>

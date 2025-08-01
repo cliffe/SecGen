@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://github.com/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://github.com/cliffe/SecGen/vulnerability">
+
+  <name>GravCMS</name>
+  <author>Harry J. Hall</author>
+  <module_license>MIT</module_license>
+  <description>This module exploits arbitrary config write/update vulnerability to achieve remote code execution.
+          Unauthenticated users can execute a terminal command under the context of the web server user.
+          Grav Admin Plugin is an HTML user interface that provides a way to configure Grav and create and modify pages.
+          In versions 1.10.7 and earlier, an unauthenticated user can execute some methods of administrator controller without
+          needing any credentials. Particular method execution will result in arbitrary YAML file creation or content change of
+          existing YAML files on the system. Successfully exploitation of that vulnerability results in configuration changes,
+          such as general site information change, custom scheduler job definition, etc. Due to the nature of the vulnerability,
+          an adversary can change some part of the webpage, or hijack an administrator account, or execute operating system command
+          under the context of the web-server user.</description>
+
+  <type>web</type>
+  <privilege>user_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>medium</difficulty>
+
+  <read_fact>server_name</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+
+  <default_input into="strings_to_leak">
+    <generator type="message_generator" />
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator" />
+  </default_input>
+
+  <reference>
+    https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/linux/http/gravcms_exec.rb
+  </reference>
+</vulnerability>

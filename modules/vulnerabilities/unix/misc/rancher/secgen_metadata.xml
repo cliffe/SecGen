@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://github.com/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://github.com/cliffe/SecGen/vulnerability">
+
+  <name>Rancher</name>
+  <author>Harry J. Hall</author>
+  <module_license>MIT</module_license>
+  <description>This exploit allows users of the rancher server to gain access to the hosts running docker that are managed by rancher.
+      It can be mitigated by limiting permissions of rancher users to read only for untrusted users.</description>
+
+  <type>docker</type>
+  <privilege>root_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>medium</difficulty>
+
+  <read_fact>server_name</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+  <read_fact>ports</read_fact>
+
+  <default_input into="strings_to_leak">
+    <generator type="message_generator" />
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator" />
+  </default_input>
+
+  <reference>
+    https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/linux/http/rancher_server.rb
+  </reference>
+</vulnerability>

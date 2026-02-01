@@ -59,7 +59,7 @@ class gitlab_13102::configure {
     require => Exec['set_git_home_ownership'],
   }
   
-  if $difficulty == 'hard' {
+  if $difficulty[0] == 'hard' {
     exec { 'create_project_dir':
       command => 'mkdir -p /tmp/dev-notes',
       creates => '/tmp/dev-notes',
@@ -124,7 +124,7 @@ class gitlab_13102::configure {
     }
     ->
     exec { 'git_add_remote':
-      command => "git remote add origin <http://root:${strings_to_leak>[0]}@localhost/root/dev-notes.git",
+      command => "git remote add origin http://root:${strings_to_leak[0]}@localhost/root/dev-notes.git",
       cwd     => '/tmp/dev-notes',
     }
     ->

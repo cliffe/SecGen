@@ -285,7 +285,7 @@ end
              $adapterWords = $words | Where-Object { $_ -ne 'Enabled' -and $_ -ne 'Connected' -and $_ -ne 'Dedicated' }
              $adapter = ($adapterWords -join ' ').Trim()
              $ipAddress = '<%= resolve_network(selected_module)%>'
-             $subnetMask = '255.255.255.0'
+             $subnetMask = '255.0.0.0'
              $command = \"netsh interface ip set address name=`\"$adapter`\" static $ipAddress $subnetMask\"
              New-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\RunOnce' -Name ('SetStaticIP_' + $adapter) -Value $command -PropertyType String -Force
            "

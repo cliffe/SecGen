@@ -68,15 +68,6 @@ curl -X POST http://target:PORT/ajax/openvpn/del_ovpncfg.php \
 3. Students discover the command injection vulnerability
 4. Students exploit to find leaked flag files
 
-## Known Issues
-
-### TODO: Main webpage returns 403 Forbidden
-The main RaspAP index.php returns 403 Forbidden. This is due to missing RaspAP dependencies
-(session handling, authentication, etc.). The vulnerable endpoint `/ajax/openvpn/del_ovpncfg.php`
-works correctly, so the CTF challenge is functional.
-
-**Workaround**: Access the vulnerable endpoint directly rather than the main UI.
-
 ## Troubleshooting
 
 ### Service won't start

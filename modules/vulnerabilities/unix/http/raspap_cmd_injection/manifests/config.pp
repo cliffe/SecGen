@@ -57,15 +57,6 @@ class raspap_cmd_injection::config {
     require => Exec['create-openvpn-dir'],
   }
 
-  # Create pre-leak page with hints
-  file { "${install_dir}/index.html":
-    ensure  => file,
-    content => template('raspap_cmd_injection/index.html.erb'),
-    owner   => $user,
-    mode    => '0644',
-    require => Class['raspap_cmd_injection::install'],
-  }
-
   # Set log directory permissions
   exec { 'set-log-perms':
     command => 'chmod 755 /var/log/lighttpd',

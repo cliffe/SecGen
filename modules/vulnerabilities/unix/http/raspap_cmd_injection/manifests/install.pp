@@ -18,7 +18,8 @@ class raspap_cmd_injection::install {
     'php-sqlite3',
     'hostapd',
     'dnsmasq',
-    'unzip'
+    'unzip',
+    'apache2-utils'  # for htpasswd (bcrypt password hashing)
   ])
 
   # Enable PHP in lighttpd

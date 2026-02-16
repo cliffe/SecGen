@@ -1,16 +1,34 @@
 <?php
 // RaspAP User Configuration File
-// This is a minimal configuration for CTF purposes
+// This is a minimal configuration for CTF purposes (CVE-2022-39986)
 
-// Basic settings
-$raspap_config = array(
-    'admin_user' => 'admin',
-    'admin_pass' => 'admin',  // Intentionally weak for CTF
-);
+/**
+ * Get RaspAP configuration
+ * Returns admin credentials for web interface authentication
+ */
+function getConfig()
+{
+    $config = array(
+        'admin_user' => 'admin',
+        'admin_pass' => '$2y$10$YKIyWAmnQLtiJAy6QgHQ.eCpY4m.HCEbiHaTgN6.acNC6bDElzt.i'  // default: secret
+    );
+
+    if (file_exists(RASPI_CONFIG . '/raspap.auth')) {
+        if ($auth_details = fopen(RASPI_CONFIG . '/raspap.auth', 'r')) {
+            $config['admin_user'] = trim(fgets($auth_details));
+            $config['admin_pass'] = trim(fgets($auth_details));
+            fclose($auth_details);
+        }
+    }
+    return $config;
+}
 
 // Theme setting
 define('RASPI_THEME', 'default');
 
 // Debug mode (disabled for CTF realism)
 define('RASPI_DEBUG', false);
+
+// Disable authentication for CTF (allows unauthenticated access to exploit CVE)
+define('RASPI_AUTH_ENABLED', false);
 ?>

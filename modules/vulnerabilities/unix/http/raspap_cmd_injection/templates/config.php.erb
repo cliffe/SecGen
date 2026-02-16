@@ -31,6 +31,11 @@ define('RASPI_ACCESS_CHECK_IP', '1.1.1.1');
 define('RASPI_ACCESS_CHECK_DNS', 'one.one.one.one');
 define('RASPI_5GHZ_ISO_ALPHA2', array('NL','US'));
 define('RASPI_5GHZ_MAX_CHANNEL', 165);
+
+// Enable basic authentication for the web admin (disabled for CTF)
+define('RASPI_AUTH_ENABLED', false);
+
+// Optional services
 define('RASPI_WIFICLIENT_ENABLED', true);
 define('RASPI_HOTSPOT_ENABLED', true);
 define('RASPI_NETWORK_ENABLED', true);
@@ -44,6 +49,8 @@ define('RASPI_CHANGETHEME_ENABLED', true);
 define('RASPI_VNSTAT_ENABLED', true);
 define('RASPI_SYSTEM_ENABLED', true);
 define('RASPI_MONITOR_ENABLED', false);
+
+// Locale settings
 define('LOCALE_ROOT', 'locale');
 define('LOCALE_DOMAIN', 'messages');
 ?>

@@ -56,6 +56,11 @@ accesslog.filename          = "/var/log/lighttpd/access.log"
 # Directory listing disabled
 dir-listing.activate        = "disable"
 
+# Redirect root URL to index.php
+url.redirect = (
+    "^/$" => "/index.php"
+)
+
 # URL rewriting for RaspAP - exclude ajax endpoints to preserve vulnerability
 url.rewrite-if-not-file = (
     "^/([^?]+)(\?.*)?$" => "/index.php?page=$1$2"

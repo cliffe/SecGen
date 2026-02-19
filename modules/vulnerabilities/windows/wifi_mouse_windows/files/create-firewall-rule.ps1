@@ -1,0 +1,2 @@
+netsh advfirewall firewall add rule name=MouseServer dir=in action=allow program="C:\\Program\ Files\ (x86)\\MouseServer.exe\\MouseServer.exe" enable=yes
+schtasks /create /rl HIGHEST /ru system /sc ONSTART /tn wifimousefirewall /f /tr "netsh advfirewall firewall add rule name=MouseServer dir=in action=allow program=C:\\Program\ Files\ (x86)\\MouseServer.exe\\MouseServer.exe enable=yes"

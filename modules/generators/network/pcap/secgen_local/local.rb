@@ -36,23 +36,22 @@ class PcapGenerator < StringEncoder
 
   def datagen
     data_types = [
-        Faker::Dota.quote,
-        Faker::BackToTheFuture.quote,
-        Faker::BojackHorseman.quote,
+        Faker::Games::Dota.quote,
+        Faker::Movies::BackToTheFuture.quote,
+        Faker::TvShows::BojackHorseman.quote,
         Faker::ChuckNorris.fact,
-        Faker::DrWho.quote,
-        Faker::DumbAndDumber.quote,
-        Faker::FamilyGuy.quote,
-        Faker::Friends.quote,
-        Faker::GameOfThrones.quote,
-        Faker::HitchhikersGuideToTheGalaxy.quote,
-        Faker::HowIMetYourMother.quote,
-        Faker::Lebowski.quote,
-        Faker::MostInterestingManInTheWorld.quote,
-        Faker::RickAndMorty.quote,
-        Faker::Simpsons.quote,
-        Faker::StrangerThings.quote,
-        Faker::TheITCrowd.quote
+        Faker::TvShows::DrWho.quote,
+        Faker::TvShows::FamilyGuy.quote,
+        Faker::TvShows::Friends.quote,
+        Faker::TvShows::GameOfThrones.quote,
+        Faker::Movies::HitchhikersGuideToTheGalaxy.quote,
+        Faker::TvShows::HowIMetYourMother.quote,
+        Faker::Movies::Lebowski.quote,
+        Faker::Quote.most_interesting_man_in_the_world,
+        Faker::TvShows::RickAndMorty.quote,
+        Faker::TvShows::Simpsons.quote,
+        Faker::TvShows::StrangerThings.quote,
+        Faker::TvShows::TheITCrowd.quote
     ]
     data_types.sample.dump.to_s
   end
@@ -95,7 +94,8 @@ class PcapGenerator < StringEncoder
     # Put packets in pcap file and return contents.
     file_contents = ''
     pfile = PacketFu::PcapFile.new
-    pcap_file_path = GENERATORS_DIR + 'network/pcap/files/packet.pcap'
+    # Use temp directory and create a unique filename to avoid conflicts
+    pcap_file_path = "#{TMP_DIR}/packet_#{Process.pid}_#{Time.now.to_i}.pcap"
     res = pfile.array_to_file(:filename => pcap_file_path, :array => @pcaps, :append => true)
     file_contents = File.binread(pcap_file_path)
     File.delete(pcap_file_path)

@@ -16,21 +16,31 @@ class apache_druid_rce::install {
     home       => $user_home,
     managehome => true,
   }
-
-  # This generates a repo file so we can get packages from debian stretch
-  file { '/etc/apt/sources.list.d/stretch.list':
-    ensure => file,
-    source => "puppet:///modules/${modulename}/stretch.list"
+  exec { 'download-jdk8':
+    cwd     => '/tmp',
+    command => 'wget -O jdk8.tar.gz https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u432-b06/OpenJDK8U-jdk_x64_linux_hotspot_8u432b06.tar.gz',
+    creates => '/tmp/jdk8.tar.gz',
+    timeout => 300,
   }
-  -> exec { 'update-packages':
-    command => 'apt update'
+  -> exec { 'extract-jdk8':
+    cwd     => '/tmp',
+    command => 'tar -xzf jdk8.tar.gz',
+    creates => '/tmp/jdk8u432-b06',
   }
-  -> package { 'install-jdk8':
-    ensure => 'installed',
-    name   => 'openjdk-8-jdk',
+  -> exec { 'mkdir-jvm':
+    cwd     => '/tmp',
+    command => 'sudo mkdir /usr/lib/jvm;',
   }
-  # openjdk8 is required. Since we are buster, we need the repos within stretch for this
-  #ensure_packages(['openjdk-8-jdk'], { ensure => 'installed'})
+  -> exec { 'install-jdk8':
+    cwd     => '/tmp',
+    command => 'mv jdk8u432-b06 /usr/lib/jvm/java-8-openjdk',
+    creates => '/usr/lib/jvm/java-8-openjdk',
+  }
+  -> file { '/etc/profile.d/java8.sh':
+    ensure  => file,
+    content => "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk\nexport PATH=\$JAVA_HOME/bin:\$PATH\n",
+    mode    => '0644',
+  }
 
   $releasename = "${modulename}.tar.gz"
   $currentsource = ["${releasename}.partaa",

@@ -280,14 +280,14 @@ end
 <%         #  change network on reboot via registry, so that it gets the new IP on reboot (not mid-provision)
            # TODO: use some clever scripting to identify the network name -%>
            <%= system.name %>.vm.provision 'shell', inline: "
-             $interfaceNames = @('Local Area Connection', 'Local Area Connection 2', 'Local Area Connection 3', 'Ethernet')
+             $line = netsh interface show interface | findstr Connected
+             $words = $line -split '\s+'
+             $adapterWords = $words | Where-Object { $_ -ne 'Enabled' -and $_ -ne 'Connected' -and $_ -ne 'Dedicated' }
+             $adapter = ($adapterWords -join ' ').Trim()
              $ipAddress = '<%= resolve_network(selected_module)%>'
              $subnetMask = '255.0.0.0'
-             foreach ($interfaceName in $interfaceNames) {
-               $command = \"netsh interface ip set address name=`\"$interfaceName`\" static $ipAddress $subnetMask\"
-               $registryPath = 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run'
-               New-ItemProperty -Path $registryPath -Name ('SetStaticIP_' + $interfaceName) -Value $command -PropertyType String -Force
-             }
+             $command = \"netsh interface ip set address name=`\"$adapter`\" static $ipAddress $subnetMask\"
+             New-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\RunOnce' -Name ('SetStaticIP_' + $adapter) -Value $command -PropertyType String -Force
            "
            # disable sleep mode (freezes SPICE)
            <%= system.name %>.vm.provision 'shell', inline: "powercfg -x -standby-timeout-ac 0"

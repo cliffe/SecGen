@@ -1,0 +1,8 @@
+[Unit]
+Description=Vulnerable remote mouse software.
+
+[Service]
+ExecStart=/usr/bin/mouseserver
+
+[Install]
+WantedBy=multi-user.target

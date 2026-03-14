@@ -11,7 +11,11 @@
         via the 'username' parameter in a POST request to the /login endpoint. This occurs
         due to unsafe handling of user-supplied input passed to subprocess.check_output() in
         core/http.py, allowing injection of shell metacharacters. Exploitation does not require
-        authentication and commands are executed with the privileges of the MalTrail server process.</description>
+        authentication and commands are executed with the privileges of the MalTrail server process.
+        
+        This module creates a dual-flag CTF challenge: Flag 1 is found via RCE exploitation and 
+        file system access, while Flag 2 is hidden within MalTrail's threat data and discovered 
+        via web UI analysis.</description>
 
     <type>http</type>
     <privilege>user_rwx</privilege>
@@ -23,6 +27,9 @@
     <read_fact>strings_to_leak</read_fact>
     <read_fact>leaked_filenames</read_fact>
     <read_fact>unix_username</read_fact>
+    <read_fact>maltrail_flag</read_fact>
+    <read_fact>data_volume</read_fact>
+    <read_fact>maltrail_data</read_fact>
 
     <!-- Uses fixed default port 8338 (MalTrail default) -->
     <default_input into="port">
@@ -39,6 +46,22 @@
 
     <default_input into="unix_username">
         <value>maltrail</value>
+    </default_input>
+
+    <!-- Second flag embedded in MalTrail log data -->
+    <default_input into="maltrail_flag">
+        <generator type="flag_generator" />
+    </default_input>
+
+    <!-- Volume of randomized threat data: low, medium, or high -->
+    <default_input into="data_volume">
+        <value>medium</value>
+    </default_input>
+
+    <!-- Generate randomized MalTrail threat data with embedded flag -->
+    <!-- data_volume passed from scenario, embedded_flag generates second flag -->
+    <default_input into="maltrail_data">
+        <generator type="maltrail_data"/>
     </default_input>
 
     <!-- Vulnerability details -->

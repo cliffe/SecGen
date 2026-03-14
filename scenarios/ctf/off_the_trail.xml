@@ -6,7 +6,11 @@
 
   <name>Off the trail</name>
   <author>Rosie Fletcher</author>
-  <description>A multi-stage penetration testing exercise where students exploit a critical command injection vulnerability in MalTrail (CVE-2025-34073) to gain initial access, then escalate privileges using a misconfigured SUID binary. This lab teaches the full attack lifecycle from reconnaissance to root compromise.
+  <description>A multi-stage penetration testing exercise where students:
+    1. Exploit CVE-2025-34073 (MalTrail RCE) for initial access
+    2. Find the first flag via file system exploration
+    3. Analyze MalTrail's web interface to discover a second hidden flag embedded in threat data
+  This lab teaches the full attack lifecycle from reconnaissance to root compromise.
   </description>
 
   <type>ctf</type>
@@ -91,9 +95,16 @@
     <base distro="Debian 12" type="desktop" name="KDE"/>
 
     <!-- MalTrail RCE vulnerability - provides initial access as maltrail user -->
+    <!-- Dual flag challenge: Flag 1 in filesystem, Flag 2 embedded in MalTrail threat data -->
     <vulnerability module_path=".*/maltrail_rce" access="remote" privilege="user_rwx">
       <input into="strings_to_leak">
         <generator type="flag_generator" />
+      </input>
+      <input into="maltrail_flag">
+        <generator type="flag_generator" />
+      </input>
+      <input into="data_volume">
+        <value>medium</value>
       </input>
     </vulnerability>
 

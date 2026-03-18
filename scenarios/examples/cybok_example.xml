@@ -58,7 +58,7 @@
 		<system_name>example_system</system_name>
 		<base />
 		<vulnerability/>
-		<network type="private_network" range="dhcp"/>
+		<network type="private_network" />
 	</system>
 
 </scenario>

@@ -40,7 +40,7 @@
       </input>
     </vulnerability>
 
-    <network type="private_network" range="dhcp"/>
+    <network type="private_network" />
   </system>
 
 </scenario>

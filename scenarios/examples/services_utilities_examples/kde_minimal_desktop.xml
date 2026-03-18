@@ -11,7 +11,7 @@
     <utility module_path=".*/kde_minimal"/>
     <utility module_path=".*/iceweasel" />
 
-    <network module_path=".*/private_network_2"/>
+    <network type="private_network"/>
 
   </system>
 

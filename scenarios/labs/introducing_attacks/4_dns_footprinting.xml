@@ -63,7 +63,7 @@ Throughout this lab, you will learn how to use DNS-related commands and tools to
       </input>
     </network> -->
 
-    <network type="private_network" range="dhcp"/>
+    <network type="public_network" />
 
     <input into_datastore="spoiler_admin_pass">
       <generator type="strong_password_generator"/>

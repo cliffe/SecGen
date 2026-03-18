@@ -11,7 +11,7 @@
 
     <utility module_path="modules/utilities/unix/firewall/firewall"/>
 
-    <network type="private_network" range="dhcp"></network>
+    <network type="private_network" />
   </system>
 
 </scenario>

@@ -10,7 +10,7 @@
 		<!--<base platform="windows" name="Windows 2008 Virtualbox puppet 32"/>-->
 		<base platform="windows" name="Windows 2008 Virtualbox puppet 64"/>
 
-		<network type="private_network" range="dhcp"/>
+		<network type="private_network" />
 	</system>
 
 </scenario>

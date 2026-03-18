@@ -35,6 +35,6 @@
 				</encoder>
 			</input>
 		</vulnerability>
-      <network module_path=".*/private_network_1"/>
+		<network type="private_network"/>
 	</system>
 </scenario>

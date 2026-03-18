@@ -146,7 +146,7 @@
       </input>
     </vulnerability>
 
-    <network module_path=".*/private_network_1"/>
+    <network type="private_network"/>
     <input into_datastore="spoiler_admin_pass">
       <generator type="strong_password_generator"/>
     </input>

@@ -11,7 +11,7 @@
 		<service module_path="modules/services/unix/database/mysql"/>
 		<service module_path=".*/apache"/>
 
-		<network type="private_network" range="dhcp"/>
+		<network type="private_network" />
 	</system>
 
 	<system>
@@ -20,7 +20,7 @@
 
 		<service module_path=".*/apache"/>
 
-		<network type="private_network" range="dhcp"/>
+		<network type="private_network" />
 	</system>
 
 </scenario>

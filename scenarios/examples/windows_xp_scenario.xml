@@ -9,7 +9,7 @@
 		<system_name>windows</system_name>
 		<base platform="windows" name=".*XP SP2.*"/>
 
-		<network type="private_network" range="dhcp"/>
+		<network type="private_network" />
 	</system>
 
 </scenario>

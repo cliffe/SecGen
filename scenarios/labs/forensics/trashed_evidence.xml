@@ -194,7 +194,7 @@
       </input>
     </vulnerability>
 
-    <network type="private_network" range="dhcp"/>
+    <network type="private_network" />
     <input into_datastore="spoiler_admin_pass">
       <generator type="strong_password_generator"/>
     </input>

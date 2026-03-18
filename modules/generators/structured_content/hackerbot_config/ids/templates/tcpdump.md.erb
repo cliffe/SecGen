@@ -13,9 +13,9 @@ ip -4 -o a s | grep <%= $ids_server_ip %>
 > The "ip a s" command lists all local IP addresses, and -4 filters to only show IPv4, while -o sets one-line output mode
 
 ```bash
-sudo tcpdump -i ens18
+sudo tcpdump -i ens19
 ```
-> Where **ens18**, is the name of the interface given in response to the above command.
+> Where **ens19**, is the name of the interface given in response to the above command.
 
 With tcpdump still running,  **from the desktop VM** ==perform a ping to the ids_monitor VM.==
 
@@ -44,7 +44,7 @@ Tcpdump can format the output in various ways, showing various levels of detail.
 **From the ids_monitor**, ==run:==
 
 ```bash
-sudo tcpdump -A  -i ens18
+sudo tcpdump -A  -i ens19
 ```
 > This shows the packet **content** without the information about the source and destination. Note that this content will contain binary data that can be difficult understand.
 
@@ -63,7 +63,7 @@ Stop tcpdump (Ctrl-C) on the ids_monitor VM once you have observed the output.
 ==Run the following== command **on the ids_monitor:**
 
 ```bash
-sudo tcpdump -v  -i ens18
+sudo tcpdump -v  -i ens19
 ```
 > The above is even more verbose, showing lots of detail about the network traffic.
 
@@ -71,7 +71,7 @@ Now try the ==above again==. Note the very detailed output.
 
 It is possible to write tcpdump network traffic to storage, so that it can be analysed later:
 ```bash
-sudo tcpdump -w /tmp/tcpdump-output  -i ens18
+sudo tcpdump -w /tmp/tcpdump-output  -i ens19
 ```
 
 While that is running, ==access a web page from Firefox on the desktop VM== browse to ==[*http://<%= $web_server_ip %>*](http://<%= $web_server_ip %>)== (In a new tab.)
@@ -104,10 +104,10 @@ kdesudo wireshark &
 ```
 And in another command tab:
 ```bash
-sudo tcpdump -A  -i ens18 | grep "GET"
+sudo tcpdump -A  -i ens19 | grep "GET"
 ```
 
-In Wireshark, choose the network interface card (such as ens18) then click the start icon, to ==start monitoring traffic==. Generate some traffic and explore how to ==view it using Wireshark==.
+In Wireshark, choose the network interface card (such as ens19) then click the start icon, to ==start monitoring traffic==. Generate some traffic and explore how to ==view it using Wireshark==.
 
 You can also open the captured network traffic in Wireshark.
 

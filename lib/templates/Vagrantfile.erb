@@ -202,10 +202,12 @@ end
 
 <%= selected_module.to_s_comment -%>
 <% if selected_module.module_type == 'network' and selected_module.received_inputs.include? 'IP_address' %>
-<%= '    # This module has a datastore entry for IP_address, using that instead of the default.' %>
-<% elsif selected_module.module_type == 'network' and @options.has_key? :ip_ranges -%>
-<%= '    # This module has a command line ip_range, using that instead of the default.'  %>
-<% end -%>
+<%= '    # This module has a specific IP_address input, using that verbatim.' %>
+<% elsif selected_module.module_type == 'network' and selected_module.received_inputs.include? 'range' %>
+<%= '    # This module has a range input, auto-assigning IP from that range.' %>
+<% elsif selected_module.module_type == 'network' and @options.has_key? :ip_ranges %>
+<%= '    # This module has a command line ip_range, using that instead of the default.' %>
+<% end %>
 <%
   case selected_module.module_type
   when 'base'
@@ -250,51 +252,59 @@ end
     <% end %>
 <%   when 'network' -%>
 <%     # DHCP networking -%>
-<%     if (selected_module.attributes['range'].first.nil? || selected_module.attributes['range'].first == "dhcp") and (!selected_module.received_inputs.include? 'IP_address' and !@options[:ip_ranges])-%>
-<%       if (@options.has_key? :ovirtnetwork) && provider == "ovirt"  %>
+      <% if (!selected_module.received_inputs.include?('IP_address')) and (selected_module.received_inputs['range']&.first.nil? || selected_module.received_inputs['range']&.first == 'dhcp') %>
+        <%       if (@options.has_key? :ovirtnetwork) && provider == "ovirt"  %>
     <%= system.name %>.vm.network :<%= selected_module.attributes['type'].first %>, type: "dhcp", :ovirt__network_name => '<%= get_ovirt_network_name(system.name, @options[:ovirtnetwork]) %>'
+<%       elsif provider == "proxmox"  %>
+    <%= system.name %>.vm.network :private_network, type: "dhcp", proxmox_bridge: "vmbr3", proxmox_vlan: 1
 <%       else %>
-    <%= system.name %>.vm.network :<%= selected_module.attributes['type'].first %>, type: "dhcp", auto_config: false
+    <%= system.name %>.vm.network :<%= selected_module.attributes['type'].first %>, type: "dhcp"
 <%       end %>
-       <% # Below string is used within testing, do not delete. -%>
+        <% # Below string is used within testing, do not delete. -%>
      # ip_address_for_<%= system.name %>=DHCP
-<%     # Static networking -%>
 <%     else -%>
+<%     # Static networking -%>
 <%      # Static oVirt/Proxmox networking -%>
 <%       if (provider == "ovirt" || provider == "proxmox") && @base_template && @base_template !~ /win/i -%>
-<%         interface = 'ens3' if provider =="ovirt" -%>
-<%         interface = 'ens18' if provider =="proxmox" -%>
-<%         if @base_template =~ /kali|debian_desktop_kde|debian_wheezy_server/ -%>
-<%          interface = 'eth0' -%>
-<%         end -%>
-           # use some shell scripting to identify the name of the network interface (eth0/ens3/...), and set the IP address statically
-           <%= system.name %>.vm.provision 'shell', inline: "echo -e \"auto lo\niface lo inet loopback\n\nauto <%= interface %>\niface <%= interface %> inet static\n\taddress <%= resolve_network(selected_module)%>\" > /etc/network/interfaces"
-           <%= system.name %>.vm.provision 'shell', inline: "echo '' > /etc/environment"
+<%         if provider == "proxmox" -%>
+            <%= system.name %>.vm.network :<%= selected_module.attributes['type'].first %>, ip: "<%= lookup_network_ip(selected_module) %>", proxmox_bridge: "vmbr1", proxmox_vlan: <%= lookup_network_vlan(selected_module) %>
+<%         else # ovirt -%>
+              # use some shell scripting to identify the name of the network interface (eth0/ens3/...), and set the IP address statically
+            <%= system.name %>.vm.provision 'shell', inline: "echo -e \"auto lo\niface lo inet loopback\n\nauto <%= interface %>\niface <%= interface %> inet static\n\taddress <%= lookup_network_ip(selected_module)%>\" > /etc/network/interfaces"
+            <%= system.name %>.vm.provision 'shell', inline: "echo '' > /etc/environment"
+  <%         end -%>
+
 <%        # Below string is used within testing, do not delete. -%>
-          # ip_address_for_<%= system.name %>=<%= resolve_network(selected_module)%>
+          # ip_address_for_<%= system.name %>=<%= lookup_network_ip(selected_module)%>
+
 <%       elsif (provider == "ovirt" || provider == "proxmox") && @base_template && @base_template =~ /win/i -%>
-<%         # Windows on oVirt/Proxmox
-           # re-activate windows now, and then rearm on reboot (after it's started after provisioning) -%>
-           <%= system.name %>.vm.provision 'shell', inline: 'cscript //b c:\windows\system32\slmgr.vbs /ato'
-           <%= system.name %>.vm.provision 'shell', inline: "reg add HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\RunOnce /v RearmWindows /t REG_SZ /d \"cscript //b c:\\windows\\system32\\slmgr.vbs /rearm\" /f"
-<%         #  change network on reboot via registry, so that it gets the new IP on reboot (not mid-provision)
-           # TODO: use some clever scripting to identify the network name -%>
-           <%= system.name %>.vm.provision 'shell', inline: "
-             $interfaceNames = @('Local Area Connection', 'Local Area Connection 2', 'Local Area Connection 3', 'Ethernet')
-             $ipAddress = '<%= resolve_network(selected_module)%>'
-             $subnetMask = '255.0.0.0'
-             foreach ($interfaceName in $interfaceNames) {
-               $command = \"netsh interface ip set address name=`\"$interfaceName`\" static $ipAddress $subnetMask\"
-               $registryPath = 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run'
-               New-ItemProperty -Path $registryPath -Name ('SetStaticIP_' + $interfaceName) -Value $command -PropertyType String -Force
-             }
-           "
-           # disable sleep mode (freezes SPICE)
-           <%= system.name %>.vm.provision 'shell', inline: "powercfg -x -standby-timeout-ac 0"
+  <%         if provider == "proxmox" -%>
+    <%= system.name %>.vm.network :<%= selected_module.attributes['type'].first %>, ip: "<%= lookup_network_ip(selected_module) %>", proxmox_bridge: "vmbr1", proxmox_vlan: <%= lookup_network_vlan(selected_module) %>
+    # ip_address_for_<%= system.name %>=<%= lookup_network_ip(selected_module) %>
+  <%         else # ovirt -%>
+    <%           # re-activate windows now, and then rearm on reboot (after it's started after provisioning) -%>
+    <%= system.name %>.vm.provision 'shell', inline: 'cscript //b c:\windows\system32\slmgr.vbs /ato'
+    <%= system.name %>.vm.provision 'shell', inline: "reg add HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\RunOnce /v RearmWindows /t REG_SZ /d \"cscript //b c:\\windows\\system32\\slmgr.vbs /rearm\" /f"
+    <%= system.name %>.vm.provision 'shell', inline: "
+    $interfaceNames = @('Local Area Connection', 'Local Area Connection 2', 'Local Area Connection 3', 'Ethernet')
+    $ipAddress = '<%= lookup_network_ip(selected_module)%>'
+    $subnetMask = '255.0.0.0'
+    foreach ($interfaceName in $interfaceNames) {
+    $command = \"netsh interface ip set address name=`\"$interfaceName`\" static $ipAddress $subnetMask\"
+    $registryPath = 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run'
+    New-ItemProperty -Path $registryPath -Name ('SetStaticIP_' + $interfaceName) -Value $command -PropertyType String -Force
+    }
+    "
+    # disable sleep mode (freezes SPICE)
+    <%= system.name %>.vm.provision 'shell', inline: "powercfg -x -standby-timeout-ac 0"
+
+    # ip_address_for_<%= system.name %>=<%= lookup_network_ip(selected_module) %>
+
+<%         end -%>
 <%       else # not windows or not ovirt -%>
-  <%= system.name %>.vm.network :<%= selected_module.attributes['type'].first %>, ip: "<%= resolve_network(selected_module)%>"
+    <%= system.name %>.vm.network :<%= selected_module.attributes['type'].first %>, ip: "<%= lookup_network_ip(selected_module)%>"
 <%       # Below string is used within testing, do not delete. -%>
-     # ip_address_for_<%= system.name %>=<%= resolve_network(selected_module)%>
+# ip_address_for_<%= system.name %>=<%= lookup_network_ip(selected_module)%>
 <%       end -%>
 <%     end -%>
 <%   when 'vulnerability', 'service', 'utility', 'build' -%>

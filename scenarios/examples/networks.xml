@@ -1,0 +1,157 @@
+<?xml version="1.0"?>
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <!--
+    Network configuration test/reference scenario.
+
+    This scenario demonstrates the three ways to assign IPs to network modules:
+
+    1. IP_address — a specific verbatim IP, no auto-assignment.
+       Use when you need an exact IP on a specific VLAN.
+       Example:
+         <network type="private_network">
+           <input into="IP_address">
+             <value>172.17.0.2</value>
+           </input>
+           <input into="vlan">
+             <value>5</value>
+           </input>
+         </network>
+
+    2. range — a subnet for auto-assignment. The last octet is incremented
+       automatically per network module, skipping any octets already claimed
+       by IP_address entries on the same VLAN. Range must end in .0 and must
+       not use CIDR notation.
+       Example:
+         <network type="private_network">
+           <input into="range">
+             <value>10.10.0.0</value>
+           </input>
+           <input into="vlan">
+             <value>3</value>
+           </input>
+         </network>
+
+    3. DHCP — omit both IP_address and range inputs (or leave the network
+       module with no inputs). The public_network module defaults to DHCP.
+       Example:
+         <network type="public_network"/>
+
+    VLANs are specified via <input into="vlan"> with a logical index (1, 2, 3...).
+    The actual Proxmox VLAN tag = proxmox_base_vlan + (vlan_index * 100).
+    If no vlan input is specified, the default is 1.
+
+    One subnet per VLAN and one VLAN per subnet is enforced — mismatches
+    will produce an error at build time.
+
+    IP_address and range are mutually exclusive on a single network module.
+
+    The --network-ranges command line option overrides all subnets in the
+    scenario, in VLAN order (sorted numerically). Supply one replacement
+    subnet per distinct subnet in the scenario, each ending in .0.
+    Example:
+      ruby secgen.rb --scenario scenarios/dev/network_updates.xml \
+        --network-ranges 192.168.1.0,192.168.2.0,192.168.3.0,192.168.5.0,192.168.6.0 \
+        build-project
+
+    IP_address entries sourced from datastores are also overridden — the
+    last octet is preserved and only the subnet is replaced.
+  -->
+
+  <system>
+    <system_name>testing_deb</system_name>
+    <base platform="linux" distro="Debian 10" type="desktop"/>
+
+    <input into_datastore="IP_addresses">
+      <value>172.17.0.2</value>
+      <value>10.123.123.3</value>
+      <value>10.124.124.4</value>
+    </input>
+
+    <input into_datastore="spoiler_admin_pass">
+      <value>tiaspbiqe2r</value>
+    </input>
+
+    <!-- Example 1: specific IP_address from datastore, explicit VLAN -->
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="0">IP_addresses</datastore>
+      </input>
+      <input into="vlan">
+        <value>5</value>
+      </input>
+    </network>
+
+    <!-- Example 2: literal IP_address value (not from datastore), explicit VLAN -->
+    <network type="private_network">
+      <input into="IP_address">
+        <value>10.123.123.3</value>
+      </input>
+      <input into="vlan">
+        <value>2</value>
+      </input>
+    </network>
+
+    <!-- Example 3: range-based auto-assignment, different VLAN -->
+    <network type="private_network">
+      <input into="range">
+        <value>10.10.0.0</value>
+      </input>
+      <input into="vlan">
+        <value>3</value>
+      </input>
+    </network>
+
+    <!-- Example 4: range-based auto-assignment on same VLAN as Example 1.
+         The auto-assigned octet will skip .2 (already claimed above). -->
+    <network type="private_network">
+      <input into="range">
+        <value>172.17.0.0</value>
+      </input>
+      <input into="vlan">
+        <value>5</value>
+      </input>
+    </network>
+
+    <!-- Example 5: DHCP — public_network defaults to dhcp, no inputs needed -->
+    <network type="public_network"/>
+
+  </system>
+
+  <system>
+    <system_name>testing_win7_2</system_name>
+    <base platform="windows" distro="7"/>
+
+    <!-- Example 6: specific IP_address from datastore, no vlan input —
+         defaults to vlan index 1 -->
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="2">IP_addresses</datastore>
+      </input>
+    </network>
+
+    <!-- Example 7: literal IP_address value, explicit VLAN -->
+    <network type="private_network">
+      <input into="IP_address">
+        <value>10.123.123.5</value>
+      </input>
+      <input into="vlan">
+        <value>2</value>
+      </input>
+    </network>
+
+    <!-- Example 8: literal IP_address value, different VLAN -->
+    <network type="private_network">
+      <input into="IP_address">
+        <value>10.144.144.2</value>
+      </input>
+      <input into="vlan">
+        <value>6</value>
+      </input>
+    </network>
+
+  </system>
+
+</scenario>

@@ -54,7 +54,7 @@ class System
     begin
       selected_modules = []
       self.num_actioned_module_conflicts = 0
-      replace_datastore_ips(options)
+      replace_datastore_ips(options) unless options[:ip_ranges]
 
       # for each module specified in the scenario
       module_selectors.each do |module_filter|

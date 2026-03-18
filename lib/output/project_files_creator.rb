@@ -1,5 +1,6 @@
 require 'erb'
 require_relative '../helpers/constants.rb'
+require_relative '../helpers/network.rb'
 require_relative 'xml_scenario_generator.rb'
 require_relative 'xml_marker_generator.rb'
 require_relative 'xml_cybok_generator.rb'
@@ -233,34 +234,42 @@ class ProjectFilesCreator
     end
   end
 
-# Resolves the network based on the scenario and ip_range.
-# In the case that both command-line --network-ranges and datastores are provided, we have already handled the replacement of the ranges in the datastore.
-# Because of this we prioritise datastore['IP_address'], then command line options (i.e. when no datastore is used, but the --network-ranges are passed), then the default network module's IP range.
-  def resolve_network(network_module)
-    current_network = network_module
-    scenario_ip_range = network_module.attributes['range'].first
 
-    # Prioritise datastore IP_address
-    if current_network.received_inputs.include? 'IP_address'
-      ip_address = current_network.received_inputs['IP_address'].first
-    elsif @options.has_key? :ip_ranges
-    # if we have options[:ip_ranges] we want to use those instead of the ip_range argument.
-    # Store the mappings of scenario_ip_ranges => @options[:ip_range]  in @option_range_map
-      # Have we seen this scenario_ip_range before? If so, use the value we've assigned
-      if @option_range_map.has_key? scenario_ip_range
-        ip_range = @option_range_map[scenario_ip_range]
-      else
-        # Remove options_ips that have already been used
-        options_ips = @options[:ip_ranges]
-        options_ips.delete_if { |ip| @option_range_map.has_value? ip }
-        @option_range_map[scenario_ip_range] = options_ips.first
-        ip_range = options_ips.first
-      end
-      ip_address = get_ip_from_range(ip_range)
+  def lookup_network_vlan(network_module)
+    vlan_index = network_module.received_inputs['vlan']&.first&.to_i || 1
+    base_vlan = @options[:proxmoxvlan].to_i rescue 0
+    base_vlan + (vlan_index * 100)
+  end
+
+  def lookup_network_ip(network_module)
+    base_vlan = @options[:proxmoxvlan].to_i rescue 0
+    key = NetworkFunctions.compute_vlan(network_module, base_vlan)
+    @options[:network_map]&.key?(key) ? @options[:network_map][key][:ips][network_module.unique_id] : nil
+  end
+
+
+  # Resolves the IP address to use for a network module in the Vagrantfile.
+  # Priority: specific IP_address (verbatim) > range with --network-ranges override > range default
+    def resolve_network(network_module)
+    if network_module.received_inputs.include?('IP_address')
+      # Specific IP provided — use verbatim
+      network_module.received_inputs['IP_address'].first
     else
-      ip_address = get_ip_from_range(scenario_ip_range)
+      ip_range = if @options.has_key?(:ip_ranges)
+                   scenario_ip_range = network_module.received_inputs['range']&.first
+                   if @option_range_map.has_key?(scenario_ip_range)
+                     @option_range_map[scenario_ip_range]
+                   else
+                     options_ips = @options[:ip_ranges].dup
+                     options_ips.delete_if { |ip| @option_range_map.has_value?(ip) }
+                     @option_range_map[scenario_ip_range] = options_ips.first
+                     options_ips.first
+                   end
+                 else
+                   network_module.received_inputs['range']&.first
+                 end
+      get_ip_from_range(ip_range)
     end
-    ip_address
   end
 
   def get_ip_from_range(ip_range)

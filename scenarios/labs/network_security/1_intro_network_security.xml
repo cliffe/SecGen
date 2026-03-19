@@ -1,0 +1,262 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+    <name>Network Security Fundamentals</name>
+    <author>Tom Shaw</author>
+    <description>
+        TODO
+    </description>
+    <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/network_security/1-intro-network-security/</lab_sheet_url>
+
+    <type>ctf-lab</type>
+    <type>lab-sheet</type>
+    <difficulty>intermediate</difficulty>
+
+    <CyBOK KA="NS" topic="Network Security Fundamentals">
+        <keyword>NETWORK SEGMENTATION</keyword>
+        <keyword>DEMILITARISED ZONE (DMZ)</keyword>
+        <keyword>NETWORK ADDRESS TRANSLATION (NAT)</keyword>
+        <keyword>FIREWALLS</keyword>
+        <keyword>IPTABLES</keyword>
+        <keyword>DEFAULT DENY</keyword>
+    </CyBOK>
+
+    <CyBOK KA="NS" topic="Network Defence">
+        <keyword>perimeter security</keyword>
+        <keyword>firewall configuration</keyword>
+        <keyword>stateful packet inspection</keyword>
+    </CyBOK>
+
+
+
+    <!-- =====================================================================
+     GATEWAY — multi-homed router/firewall
+     Interfaces:
+       eth1: 10.0.1.1/24  (internal LAN)
+       eth2: 10.0.2.1/24  (DMZ)
+     Responsibilities:
+       - IP forwarding between segments
+       - iptables FILTER rules enforcing segmentation (with intentional
+         misconfiguration for Challenge 3, fixed by students in Challenge 5/6)
+       - iptables NAT rules: MASQUERADE for outbound, DNAT for Challenge 4
+       - iptables comment embedding a flag (Challenge 2)
+     ===================================================================== -->
+
+    <system>
+        <system_name>gateway</system_name>
+        <base distro="Debian 12" type="desktop"/>
+
+        <!-- Store all scenario IPs in a shared datastore for cross-VM references -->
+        <input into_datastore="IP_addresses">
+            <!-- [0] gateway LAN-side -->
+            <value>10.0.1.1</value>
+            <!-- [1] workstation -->
+            <value>10.0.1.10</value>
+            <!-- [2] server -->
+            <value>10.0.1.20</value>
+            <!-- [3] gateway DMZ-side -->
+            <value>10.0.2.1</value>
+            <!-- [4] webserver -->
+            <value>10.0.2.10</value>
+        </input>
+
+        <input into_datastore="spoiler_admin_pass">
+            <value>tiaspbiqe2r</value>
+<!--            <generator type="strong_password_generator"/>-->
+        </input>
+
+        <utility module_path=".*/parameterised_accounts">
+            <input into="accounts" into_datastore="account">
+                <generator type="account">
+                    <input into="username">
+                        <generator type="username_generator"/>
+                    </input>
+                    <input into="password">
+                        <value>tiaspbiqe2r</value>
+                    </input>
+                    <input into="super_user">
+                        <value>true</value>
+                    </input>
+                </generator>
+            </input>
+        </utility>
+
+
+        <!-- IP forwarding + iptables configuration.
+             TODO: requires a gateway/router utility module (e.g. .*ip_forwarding or
+                   .*iptables_netsec_lab) that accepts the parameters below and:
+                     1. Enables net.ipv4.ip_forward
+                     2. Installs the FILTER ruleset (default FORWARD DROP policy,
+                        allow LAN<->DMZ for specific services, allow ESTABLISHED/RELATED,
+                        intentionally allow webserver->server on challenge3_port)
+                     3. Embeds challenge2_flag as an iptables rule comment (-m comment)
+                     4. Installs POSTROUTING MASQUERADE for outbound NAT
+                     5. Installs PREROUTING DNAT: external challenge4_external_port
+                        -> server:challenge4_internal_port
+        -->
+
+<!--        <utility module_path=".*iptables_netsec_gateway">-->
+<!--            <input into="lan_network">-->
+<!--                <value>10.0.1.0/24</value>-->
+<!--            </input>-->
+<!--            <input into="dmz_network">-->
+<!--                <value>10.0.2.0/24</value>-->
+<!--            </input>-->
+<!--            <input into="server_ip">-->
+<!--                <datastore access="2">IP_addresses</datastore>-->
+<!--            </input>-->
+<!--            <input into="webserver_ip">-->
+<!--                <datastore access="4">IP_addresses</datastore>-->
+<!--            </input>-->
+<!--            &lt;!&ndash; Port that must be intentionally left open from DMZ->server (the misconfiguration) &ndash;&gt;-->
+<!--            <input into="misconfigured_port">-->
+<!--                <datastore access="0">challenge3_port</datastore>-->
+<!--            </input>-->
+<!--            &lt;!&ndash; DNAT forwarding: external port on gateway -> internal port on server &ndash;&gt;-->
+<!--            <input into="dnat_external_port">-->
+<!--                <datastore access="0">challenge4_external_port</datastore>-->
+<!--            </input>-->
+<!--            <input into="dnat_internal_port">-->
+<!--                <datastore access="0">challenge4_internal_port</datastore>-->
+<!--            </input>-->
+<!--            &lt;!&ndash; Flag embedded as iptables rule comment (Challenge 2) &ndash;&gt;-->
+<!--            <input into="iptables_comment_flag">-->
+<!--                <datastore>challenge2_flag</datastore>-->
+<!--            </input>-->
+<!--        </utility>-->
+
+
+        <!-- LAN-side interface -->
+        <network type="private_network">
+            <input into="IP_address">
+                <datastore access="0">IP_addresses</datastore>
+            </input>
+        </network>
+
+        <!-- DMZ-side interface -->
+        <network type="private_network">
+            <input into="IP_address">
+                <datastore access="3">IP_addresses</datastore>
+            </input>
+        </network>
+
+        <build type="cleanup">
+            <input into="root_password">
+                <datastore>spoiler_admin_pass</datastore>
+            </input>
+        </build>
+
+    </system>
+
+
+    <system>
+        <system_name>desktop</system_name>
+        <base distro="Debian 12" type="desktop" name="KDE"/>
+
+        <utility module_path=".*/parameterised_accounts">
+            <input into="accounts">
+                <datastore>account</datastore>
+            </input>
+        </utility>
+
+
+        <utility module_path=".*/handy_cli_tools"/>
+        <utility module_path=".*/nmap"/>
+        <utility module_path=".*/wireshark"/>
+
+        <!-- Workstation networking: static IP on internal LAN, default route via gateway -->
+        <network type="private_network">
+            <input into="IP_address">
+                <datastore access="1">IP_addresses</datastore>
+            </input>
+        </network>
+
+        <build type="cleanup">
+            <input into="root_password">
+                <datastore>spoiler_admin_pass</datastore>
+            </input>
+        </build>
+
+    </system>
+
+    <!-- =====================================================================
+         SERVER — internal LAN host
+         Runs:
+           - Challenge 1: TCP banner service on a randomised high port
+           - Challenge 3: TCP banner service on a second randomised port
+                          (intentionally left reachable from DMZ — the misconfiguration)
+           - Challenge 4: TCP banner service on a randomised internal port,
+                          exposed via DNAT rule on gateway
+         ===================================================================== -->
+
+    <system>
+        <system_name>server</system_name>
+        <base distro="Debian 12" type="desktop"/>
+
+        <!-- TODO: REMOVE/MODIFY ME WHEN WE ADD CHALLENGES -->
+        <utility module_path=".*/parameterised_accounts">
+            <input into="accounts">
+                <datastore>account</datastore>
+            </input>
+        </utility>
+
+        <utility module_path=".*/wireshark"/>
+
+        <!-- TODO: Add Challenges -->
+
+        <network type="private_network">
+            <input into="IP_address">
+                <datastore access="1">IP_addresses</datastore>
+            </input>
+<!--            <input into="gateway">-->
+<!--                <datastore access="0">IP_addresses</datastore>-->
+<!--            </input>-->
+        </network>
+
+        <build type="cleanup">
+            <input into="root_password">
+                <datastore>spoiler_admin_pass</datastore>
+            </input>
+        </build>
+
+    </system>
+
+    <!-- =====================================================================
+         WEBSERVER — DMZ host
+         Runs apache on port 80. Also has nmap, tcpdump + wireshark so students
+         can run scans from the DMZ perspective (Challenges 3 and 6).
+         ===================================================================== -->
+
+    <system>
+        <system_name>webserver</system_name>
+        <base distro="Debian 12" type="desktop"/>
+
+        <utility module_path=".*/parameterised_accounts">
+            <input into="accounts">
+                <datastore>account</datastore>
+            </input>
+        </utility>
+
+        <service module_path=".*/apache"/>
+        <utility module_path=".*/nmap"/>
+        <utility module_path=".*/wireshark"/>
+
+
+        <network type="private_network">
+            <input into="IP_address">
+                <datastore access="4">IP_addresses</datastore>
+            </input>
+        </network>
+
+        <build type="cleanup">
+            <input into="root_password">
+                <datastore>spoiler_admin_pass</datastore>
+            </input>
+        </build>
+
+    </system>
+
+</scenario>

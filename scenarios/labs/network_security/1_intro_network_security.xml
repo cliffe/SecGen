@@ -38,25 +38,24 @@
          SHARED DATASTORE — IP addresses
          =================================================================
          Index  IP             Host / Interface
-         [0]    10.0.1.1       gateway — Internal LAN side
-         [1]    10.0.1.10      desktop
-         [2]    10.0.2.1       gateway — DMZ side
-         [3]    10.0.2.10      webserver
-         [4]    10.0.3.1       gateway — Server zone side
-         [5]    10.0.3.10      server
+         [0]    10.0.1.1       gateway — Internal LAN side  (VLAN 1)
+         [1]    10.0.1.10      desktop                       (VLAN 1)
+         [2]    10.0.2.1       gateway — DMZ side            (VLAN 2)
+         [3]    10.0.2.10      webserver                     (VLAN 2)
+         [4]    10.0.3.1       gateway — Server zone side    (VLAN 3)
+         [5]    10.0.3.10      server                        (VLAN 3)
          ================================================================= -->
 
 
     <!-- =================================================================
          DESKTOP — student starting point
-         Segment: Internal LAN (10.0.1.0/24)
+         Segment: Internal LAN (10.0.1.0/24) — VLAN 1
          Software: nmap, wireshark, handy CLI tools
-         Access: Hacktivity console (only VM with direct console access)
          ================================================================= -->
 
     <system>
         <system_name>desktop</system_name>
-        <base distro="Debian 12" type="desktop" name="KDE"/>
+        <base platform="linux" distro="Debian 12" type="desktop" name="KDE"/>
 
         <!-- Shared IP datastore — defined here on the first system -->
         <input into_datastore="IP_addresses">
@@ -76,7 +75,6 @@
 
         <input into_datastore="spoiler_admin_pass">
             <value>tiaspbiqe2r</value>
-            <!--            <generator type="strong_password_generator"/>-->
         </input>
 
         <utility module_path=".*/parameterised_accounts">
@@ -99,10 +97,13 @@
         <utility module_path=".*/nmap"/>
         <utility module_path=".*/wireshark"/>
 
-        <!-- Internal LAN interface -->
+        <!-- Internal LAN interface (VLAN 1) -->
         <network type="private_network">
             <input into="IP_address">
                 <datastore access="1">IP_addresses</datastore>
+            </input>
+            <input into="vlan">
+                <value>1</value>
             </input>
         </network>
 
@@ -117,8 +118,7 @@
 
     <!-- =================================================================
          GATEWAY — multi-homed router/firewall
-         Segments: Internal LAN (10.0.1.0/24), DMZ (10.0.2.0/24),
-                   Server zone (10.0.3.0/24)
+         Segments: Internal LAN (VLAN 1), DMZ (VLAN 2), Server zone (VLAN 3)
          Responsibilities:
            - IP forwarding between segments (students enable this)
            - iptables FILTER rules enforcing segmentation (with intentional
@@ -128,25 +128,13 @@
 
     <system>
         <system_name>gateway_server</system_name>
-        <base distro="Debian 12" type="desktop"/>
+        <base platform="linux" distro="Debian 12" type="desktop"/>
 
         <utility module_path=".*/parameterised_accounts">
             <input into="accounts">
                 <datastore>account</datastore>
             </input>
         </utility>
-
-        <!-- IP forwarding + iptables configuration.
-             TODO: requires a gateway/router utility module (e.g. .*ip_forwarding or
-                   .*iptables_netsec_lab) that accepts the parameters below and:
-                     1. Does NOT enable net.ipv4.ip_forward (students do this in Ch 1)
-                     2. Installs the FILTER ruleset (default FORWARD DROP policy,
-                        allow LAN<->DMZ for specific services, allow ESTABLISHED/RELATED,
-                        intentionally allow webserver->server on challenge3_port)
-                     3. Installs POSTROUTING MASQUERADE for outbound NAT
-                     4. Installs PREROUTING DNAT: external challenge5_external_port
-                        -> server:challenge5_internal_port
-        -->
 
         <!--        <utility module_path=".*iptables_netsec_gateway">-->
         <!--            <input into="lan_network">-->
@@ -164,11 +152,9 @@
         <!--            <input into="webserver_ip">-->
         <!--                <datastore access="3">IP_addresses</datastore>-->
         <!--            </input>-->
-        <!--            &lt;!&ndash; Port intentionally left open from DMZ->server (the misconfiguration) &ndash;&gt;-->
         <!--            <input into="misconfigured_port">-->
         <!--                <datastore access="0">challenge3_port</datastore>-->
         <!--            </input>-->
-        <!--            &lt;!&ndash; DNAT forwarding: external port on gateway -> internal port on server &ndash;&gt;-->
         <!--            <input into="dnat_external_port">-->
         <!--                <datastore access="0">challenge5_external_port</datastore>-->
         <!--            </input>-->
@@ -177,24 +163,33 @@
         <!--            </input>-->
         <!--        </utility>-->
 
-        <!-- Internal LAN interface -->
+        <!-- Internal LAN interface (VLAN 1) -->
         <network type="private_network">
             <input into="IP_address">
                 <datastore access="0">IP_addresses</datastore>
             </input>
+            <input into="vlan">
+                <value>1</value>
+            </input>
         </network>
 
-        <!-- DMZ interface -->
+        <!-- DMZ interface (VLAN 2) -->
         <network type="private_network">
             <input into="IP_address">
                 <datastore access="2">IP_addresses</datastore>
             </input>
+            <input into="vlan">
+                <value>2</value>
+            </input>
         </network>
 
-        <!-- Server zone interface -->
+        <!-- Server zone interface (VLAN 3) -->
         <network type="private_network">
             <input into="IP_address">
                 <datastore access="4">IP_addresses</datastore>
+            </input>
+            <input into="vlan">
+                <value>3</value>
             </input>
         </network>
 
@@ -209,7 +204,7 @@
 
     <!-- =================================================================
          WEBSERVER — DMZ host
-         Segment: DMZ (10.0.2.0/24)
+         Segment: DMZ (10.0.2.0/24) — VLAN 2
          Runs apache on port 80. Also has nmap and wireshark so students
          can run scans from the DMZ perspective (Challenge 3).
          Contains a flag file in the user home directory (Challenge 2).
@@ -217,7 +212,7 @@
 
     <system>
         <system_name>webserver</system_name>
-        <base distro="Debian 12" type="desktop"/>
+        <base platform="linux" distro="Debian 12" type="desktop"/>
 
         <utility module_path=".*/parameterised_accounts">
             <input into="accounts">
@@ -231,10 +226,13 @@
 
         <!-- TODO: Place a randomised flag in /home/<user>/flag.txt (Challenge 2) -->
 
-        <!-- DMZ interface -->
+        <!-- DMZ interface (VLAN 2) -->
         <network type="private_network">
             <input into="IP_address">
                 <datastore access="3">IP_addresses</datastore>
+            </input>
+            <input into="vlan">
+                <value>2</value>
             </input>
         </network>
 
@@ -249,7 +247,7 @@
 
     <!-- =================================================================
          SERVER — internal server
-         Segment: Server zone (10.0.3.0/24)
+         Segment: Server zone (10.0.3.0/24) — VLAN 3
          Runs:
            - Challenge 3: TCP banner service on a randomised port
                           (intentionally reachable from DMZ — the misconfiguration)
@@ -259,7 +257,7 @@
 
     <system>
         <system_name>server</system_name>
-        <base distro="Debian 12" type="desktop"/>
+        <base platform="linux" distro="Debian 12" type="desktop"/>
 
         <utility module_path=".*/parameterised_accounts">
             <input into="accounts">
@@ -271,10 +269,13 @@
 
         <!-- TODO: Add flag-returning services for Challenges 3 and 5 -->
 
-        <!-- Server zone interface -->
+        <!-- Server zone interface (VLAN 3) -->
         <network type="private_network">
             <input into="IP_address">
                 <datastore access="5">IP_addresses</datastore>
+            </input>
+            <input into="vlan">
+                <value>3</value>
             </input>
         </network>
 
@@ -285,6 +286,5 @@
         </build>
 
     </system>
-
 
 </scenario>

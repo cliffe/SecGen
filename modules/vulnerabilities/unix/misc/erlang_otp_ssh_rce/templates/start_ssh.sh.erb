@@ -1,6 +1,0 @@
-#!/bin/bash
-PORT=<%= @port %>
-cd /opt/erlang_ssh
-erl -noshell -eval "ssh_daemon:start($PORT)" &
-echo $! > /var/run/erlang_ssh.pid
-echo "Erlang SSH daemon started on port $PORT"

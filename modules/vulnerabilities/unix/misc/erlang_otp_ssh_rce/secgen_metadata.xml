@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>Erlang/OTP SSH Unauthenticated RCE</name>
+  <author>Your Name</author>
+  <module_license>MIT</module_license>
+  <description>Erlang/OTP SSH server allows unauthenticated remote code execution via crafted SSH protocol messages. CVE-2025-32433 affects versions prior to OTP-27.3.3, OTP-26.2.5.11, and OTP-25.3.2.20. The vulnerability exists in the SSH handshake message handling where message types >= 80 are incorrectly processed before authentication.</description>
+
+  <type>erlang_ssh</type>
+  <privilege>root_rwx</privilege>
+  <access>remote</access>
+  <platform>unix</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+
+  <default_input into="strings_to_leak">
+    <generator type="message_generator"/>
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+  </default_input>
+
+  <cve>CVE-2025-32433</cve>
+  <cvss_base_score>10.0</cvss_base_score>
+  <cvss_vector>AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H</cvss_vector>
+  <reference>https://github.com/erlang/otp/security/advisories/GHSA-37cp-fgq5-7wc2</reference>
+  <reference>https://nvd.nist.gov/vuln/detail/CVE-2025-32433</reference>
+  <software_name>erlang</software_name>
+  <software_license>Apache-2.0</software_license>
+
+  <hint>Erlang SSH server running on a non-standard port</hint>
+  <solution>Erlang/OTP SSH is vulnerable to pre-authentication RCE. Exploit via SSH_MSG_CHANNEL_REQUEST (type 94) sent before authentication.</solution>
+
+  <conflict>
+    <software_name>erlang</software_name>
+  </conflict>
+  <requires>
+    <type>update</type>
+  </requires>
+
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION</keyword>
+    <keyword>EXPLOITATION FRAMEWORKS</keyword>
+  </CyBOK>
+  <CyBOK KA="SS" topic="Categories of Vulnerabilities">
+    <keyword>CVEs and CWEs</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+</vulnerability>

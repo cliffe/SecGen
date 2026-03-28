@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>Cron Tar Wildcard Privilege Escalation</name>
+  <author>SecGen</author>
+  <module_license>MIT</module_license>
+  <description>A root cron job runs tar with a wildcard (*) inside a user-writable directory. This can be
+    exploited using tar checkpoint flag injection by creating specially-named files (--checkpoint=1 and
+    --checkpoint-action=exec=sh exploit.sh) to execute arbitrary commands as root.
+  </description>
+
+  <type>access_control_misconfiguration</type>
+  <type>cron_privilege_escalation</type>
+  <privilege>root_rwx</privilege>
+  <access>local</access>
+  <platform>linux</platform>
+  <difficulty>medium</difficulty>
+
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+
+  <default_input into="strings_to_leak">
+    <generator type="flag_generator"/>
+  </default_input>
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+  </default_input>
+
+  <requires>
+    <module_path>utilities/unix/puppet_module/cron_new</module_path>
+  </requires>
+
+  <CyBOK KA="AAA" topic="Authorisation">
+    <keyword>access control</keyword>
+    <keyword>Elevated privileges</keyword>
+    <keyword>Vulnerabilities and attacks on access control misconfigurations</keyword>
+  </CyBOK>
+  <CyBOK KA="OSV" topic="Primitives for Isolation and Mediation">
+    <keyword>Access controls and operating systems</keyword>
+    <keyword>Linux security model</keyword>
+    <keyword>cron</keyword>
+  </CyBOK>
+</vulnerability>

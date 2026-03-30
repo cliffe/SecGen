@@ -15,7 +15,7 @@
   <privilege>root_rwx</privilege>
   <access>local</access>
   <platform>linux</platform>
-  <difficulty>easy</difficulty>
+  <difficulty>low</difficulty>
 
   <read_fact>strings_to_leak</read_fact>
   <read_fact>leaked_filenames</read_fact>

@@ -52,7 +52,6 @@
 
   <cve>CVE-2022-39986</cve>
   <cvss_base_score>9.8</cvss_base_score>
-  <cvss_vector>AV:N/AC:L/Au:N/C:C/I:C/A:C</cvss_vector>
   <reference>https://nvd.nist.gov/vuln/detail/CVE-2022-39986</reference>
   <reference>https://github.com/advisories/GHSA-7c28-wg7r-pg6f</reference>
   <reference>https://github.com/tucommenceapousser/RaspAP-CVE-2022-39986-PoC</reference>

@@ -7,7 +7,6 @@ class raspap_cmd_injection::config {
   $strings_to_leak = $secgen_parameters['strings_to_leak']
   $leaked_filenames = $secgen_parameters['leaked_filenames']
   $strings_to_pre_leak = $secgen_parameters['strings_to_pre_leak']
-  $raspap_password = $secgen_parameters['raspap_password'][0]
 
   $user = 'www-data'
   $install_dir = '/var/www/raspap'
@@ -31,22 +30,6 @@ class raspap_cmd_injection::config {
     group   => $user,
     mode    => '0644',
     require => Class['raspap_cmd_injection::install'],
-  }
-
-  # Create raspap.auth file with bcrypt hashed password
-  # RaspAP uses PHP's password_verify() which expects bcrypt format: admin:$2y$10$hash
-  exec { 'create-raspap-auth':
-    command => "htpasswd -nbB admin '${raspap_password}' | sed 's/admin://g' | xargs -I {} echo 'admin:{}' > ${install_dir}/config/raspap.auth",
-    unless  => "test -f ${install_dir}/config/raspap.auth",
-    require => Class['raspap_cmd_injection::install'],
-  }
-
-  file { "${install_dir}/config/raspap.auth":
-    ensure  => file,
-    owner   => $user,
-    group   => $user,
-    mode    => '0640',
-    require => Exec['create-raspap-auth'],
   }
 
   # Configure lighttpd

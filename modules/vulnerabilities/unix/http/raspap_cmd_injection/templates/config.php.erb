@@ -32,8 +32,8 @@ define('RASPI_ACCESS_CHECK_DNS', 'one.one.one.one');
 define('RASPI_5GHZ_ISO_ALPHA2', array('NL','US'));
 define('RASPI_5GHZ_MAX_CHANNEL', 165);
 
-// Enable basic authentication for the web admin
-define('RASPI_AUTH_ENABLED', true);
+// Disable authentication for CTF (unauthenticated CVE-2022-39986)
+define('RASPI_AUTH_ENABLED', false);
 
 // Optional services
 define('RASPI_WIFICLIENT_ENABLED', true);

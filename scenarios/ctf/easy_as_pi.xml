@@ -64,7 +64,7 @@
     </utility>
 
     <utility module_path=".*/iceweasel">
-      <input into="accounts"
+      <input into="accounts">
         <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
       </input>
       <input into="autostart">
@@ -91,7 +91,7 @@
   </system>
 
   <system>
-    <system_name>raspap_server</system_name>
+    <system_name>server</system_name>
     <base distro="Debian 12" type="desktop" name="KDE"/>
 
     <vulnerability module_path=".*/raspap_cmd_injection">

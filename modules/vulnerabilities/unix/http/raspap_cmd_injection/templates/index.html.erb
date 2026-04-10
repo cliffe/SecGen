@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RaspAP Web Interface</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
+        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #e74c3c; }
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; }
+        .hint { background: #d1ecf1; border-left: 4px solid #17a2b8; padding: 15px; margin: 20px 0; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>RaspAP Web GUI</h1>
+        <div class="warning">
+            <strong>Warning:</strong> This system is running a vulnerable version of RaspAP.
+        </div>
+
+        <h2>System Information</h2>
+        <p><strong>Version:</strong> 2.8.7</p>
+        <p><strong>Status:</strong> Configuration Interface</p>
+        <p><strong>Access Point:</strong> wlan0</p>
+
+        <div class="hint">
+            <strong>Hint:</strong> The OpenVPN configuration management feature might be interesting to explore...
+            <br><br>
+            <em>Pre-leaked information:</em><br>
+            <% @strings_to_pre_leak.each do |hint| -%>
+                <code><%= hint %></code><br>
+            <% end -%>
+        </div>
+
+        <h2>Quick Links</h2>
+        <ul>
+            <li><a href="ajax/openvpn/del_ovpncfg.php">OpenVPN Configuration Management</a></li>
+            <li><a href="includes/authenticate.php">Authentication Check</a></li>
+        </ul>
+    </div>
+</body>
+</html>

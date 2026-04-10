@@ -1,0 +1,62 @@
+# Lighttpd configuration for RaspAP
+# Configured for CVE-2022-39986 vulnerability module
+
+server.modules = (
+    "mod_access",
+    "mod_alias",
+    "mod_redirect",
+    "mod_rewrite",
+    "mod_fastcgi",
+    "mod_accesslog",
+)
+
+server.document-root        = "/var/www/raspap"
+server.upload-dirs          = ( "/var/cache/lighttpd/uploads" )
+server.errorlog             = "/var/log/lighttpd/error.log"
+server.pid-file             = "/var/run/lighttpd.pid"
+server.username             = "www-data"
+server.groupname            = "www-data"
+server.port                 = <%= @port %>
+server.bind                 = "0.0.0.0"
+
+# PHP configuration
+fastcgi.server = (
+    ".php" => ((
+        "bin-path" => "/usr/bin/php-cgi",
+        "socket" => "/tmp/php.socket",
+        "max-procs" => 1,
+        "bin-environment" => (
+            "PHP_FCGI_CHILDREN" => "4",
+            "PHP_FCGI_MAX_REQUESTS" => "10000"
+        ),
+        "bin-copy-environment" => (
+            "PATH", "SHELL", "USER"
+        ),
+        "broken-scriptfilename" => "enable"
+    ))
+)
+
+# Static file caching
+static-file.exclude-extensions = ( ".php", ".pl", ".fcgi" )
+
+# MIME types
+mimetype.assign             = (
+    ".php" => "application/x-httpd-php",
+    ".html" => "text/html",
+    ".txt" => "text/plain",
+    ".jpg" => "image/jpeg",
+    ".png" => "image/png",
+    ".css" => "text/css",
+    ".js" => "application/javascript"
+)
+
+# Access log
+accesslog.filename          = "/var/log/lighttpd/access.log"
+
+# Directory listing disabled
+dir-listing.activate        = "disable"
+
+# URL rewriting for RaspAP - exclude ajax endpoints to preserve vulnerability
+url.rewrite-if-not-file = (
+    "^/([^?]+)(\?.*)?$" => "/index.php?page=$1$2"
+)

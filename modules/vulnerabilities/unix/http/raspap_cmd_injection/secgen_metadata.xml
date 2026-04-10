@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>RaspAP Unauthenticated Command Injection</name>
+  <author>Rosie Fletcher</author>
+  <module_license>MIT</module_license>
+  <description>
+    RaspAP versions 2.8.0 through 2.8.7 are vulnerable to unauthenticated
+    remote command execution via CVE-2022-39986. The vulnerability exists
+    in ajax/openvpn/del_ovpncfg.php due to insufficient input validation
+    on the cfg_id parameter, allowing attackers to inject arbitrary shell
+    commands. No authentication is required to exploit this vulnerability.
+
+    RaspAP is a web interface for managing wireless access points on
+    Raspberry Pi devices. This module installs RaspAP 2.8.7 in its
+    vulnerable configuration.
+  </description>
+
+  <type>http</type>
+  <privilege>user_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>port</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+  <read_fact>strings_to_pre_leak</read_fact>
+
+  <default_input into="port">
+    <generator module_path=".*/random_unregistered_port"/>
+  </default_input>
+
+  <default_input into="strings_to_leak">
+    <generator type="message_generator"/>
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+  </default_input>
+
+  <default_input into="strings_to_pre_leak">
+    <generator type="message_generator"/>
+  </default_input>
+
+  <cve>CVE-2022-39986</cve>
+  <cvss_base_score>9.8</cvss_base_score>
+  <cvss_vector>AV:N/AC:L/Au:N/C:C/I:C/A:C</cvss_vector>
+  <reference>https://nvd.nist.gov/vuln/detail/CVE-2022-39986</reference>
+  <reference>https://github.com/advisories/GHSA-7c28-wg7r-pg6f</reference>
+  <reference>https://github.com/tucommenceapousser/RaspAP-CVE-2022-39986-PoC</reference>
+  <reference>https://github.com/billz/raspap-webgui/</reference>
+
+  <software_name>RaspAP Web GUI</software_name>
+  <software_license>GPL-3.0</software_license>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>server-side misconfiguration and vulnerable components</keyword>
+    <keyword>Command injection</keyword>
+    <keyword>Input validation</keyword>
+  </CyBOK>
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION</keyword>
+    <keyword>EXPLOITATION FRAMEWORKS</keyword>
+    <keyword>Command Injection</keyword>
+  </CyBOK>
+  <CyBOK KA="SS" topic="Categories of Vulnerabilities">
+    <keyword>CVEs and CWEs</keyword>
+    <keyword>CWE-78: OS Command Injection</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+</vulnerability>

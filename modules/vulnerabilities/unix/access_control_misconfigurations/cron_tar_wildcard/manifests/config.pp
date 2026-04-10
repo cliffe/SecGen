@@ -2,6 +2,17 @@ class cron_tar_wildcard::config {
   $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
   $leaked_filenames = $secgen_parameters['leaked_filenames']
   $strings_to_leak = $secgen_parameters['strings_to_leak']
+  $show_crontab_hint = $secgen_parameters['show_crontab_hint']
+
+  package { 'cron':
+    ensure => installed,
+  }
+
+  service { 'cron':
+    ensure  => running,
+    enable  => true,
+    require => Package['cron'],
+  }
 
   file { '/var/spool/backups':
     ensure => directory,
@@ -17,12 +28,37 @@ class cron_tar_wildcard::config {
     mode   => '0777',
   }
 
-  file { '/opt/backup.txt':
-    ensure  => file,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-    content => "# cron backup hint\n(cd /opt/backup && tar -zcf /var/spool/backups/backup.tar.gz *)\n",
+  if $show_crontab_hint =~ /^(true|1|yes)$/ {
+    # Enable sudo access to crontab -l so players can discover the cron job
+    class { 'sudo':
+      config_file_replace => false,
+    }
+
+    sudo::conf { 'users_sudo_list':
+      ensure  => present,
+      content => 'ALL  ALL=(root) NOPASSWD: /usr/bin/sudo -l',
+    }
+
+    sudo::conf { 'users_crontab_list':
+      ensure  => present,
+      content => 'ALL  ALL=(root) NOPASSWD: /usr/bin/crontab -l',
+    }
+
+    file { '/opt/backup.txt':
+      ensure  => file,
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
+      content => "# cron backup hint\n# Try: sudo -l to see what you can run\n# Then: sudo crontab -l to view root's cron jobs\n(cd /opt/backup && tar -zcf /var/spool/backups/backup.tar.gz *)\n",
+    }
+  } else {
+    file { '/opt/backup.txt':
+      ensure  => file,
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
+      content => "# cron backup hint\n(cd /opt/backup && tar -zcf /var/spool/backups/backup.tar.gz *)\n",
+    }
   }
 
   cron { 'backup_wildcard':
@@ -30,6 +66,7 @@ class cron_tar_wildcard::config {
     user    => 'root',
     hour    => '*',
     minute  => '*',
+    require => [Service['cron'], File['/opt/backup']],
   }
 
   ::secgen_functions::leak_files { 'cron_tar_wildcard-file-leak':

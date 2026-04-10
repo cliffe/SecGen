@@ -19,12 +19,16 @@
 
   <read_fact>strings_to_leak</read_fact>
   <read_fact>leaked_filenames</read_fact>
+  <read_fact>show_crontab_hint</read_fact>
 
   <default_input into="strings_to_leak">
     <generator type="flag_generator"/>
   </default_input>
   <default_input into="leaked_filenames">
     <generator type="filename_generator"/>
+  </default_input>
+  <default_input into="show_crontab_hint">
+    <value>false</value>
   </default_input>
 
   <requires>

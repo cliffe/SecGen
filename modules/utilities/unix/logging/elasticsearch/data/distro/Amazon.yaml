@@ -1,3 +1,0 @@
----
-elasticsearch::init_template: "%{module_name}/etc/init.d/elasticsearch.RedHat.erb"
-elasticsearch::service_provider: init

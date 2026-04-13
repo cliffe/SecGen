@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<service xmlns="http://www.github/cliffe/SecGen/service"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
+  <name>openvpn_server</name>
+  <author>Tom Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Installs and configures an OpenVPN server using a pre-generated PKI bundle. Optionally starts and enables the service on boot.</description>
+
+  <type>vpn</type>
+  <platform>linux</platform>
+
+  <read_fact>openvpn_pki</read_fact>
+  <read_fact>start_on_boot</read_fact>
+
+  <default_input into="start_on_boot">
+    <value>false</value>
+  </default_input>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+</service>

@@ -85,6 +85,9 @@
         <input into_datastore="spoiler_admin_pass">
             <generator type="strong_password_generator"/>
         </input>
+        <input into_datastore="hackerbot_key">
+          <generator type="ssh_key_pair"/>
+        </input>
 
         <input into_datastore="user_password">
             <value>tiaspbiqe2r</value>
@@ -94,7 +97,11 @@
             <input into="accounts" into_datastore="account">
                 <generator type="account">
                     <input into="username" into_datastore="username">
-                        <generator type="username_generator"/>
+                        <generator type="random_sanitised_word">
+                            <input into="wordlist">
+                                <value>mythical_creatures</value>
+                            </input>
+                        </generator>
                     </input>
                     <input into="password">
                         <datastore>user_password</datastore>
@@ -131,11 +138,11 @@
             </input>
         </utility>
 
-        <vulnerability module_path=".*/ssh_root_login">
-            <input into="root_password">
-                <datastore>spoiler_admin_pass</datastore>
-            </input>
-        </vulnerability>
+        <utility module_path=".*/hackerbot_client">
+          <input into="ssh_key_pair">
+            <datastore>hackerbot_key</datastore>
+          </input>
+        </utility>
 
         <!-- Internal LAN interface (VLAN 1) -->
         <network type="private_network">
@@ -176,11 +183,11 @@
             </input>
         </utility>
 
-        <vulnerability module_path=".*/ssh_root_login">
-            <input into="root_password">
-                <datastore>spoiler_admin_pass</datastore>
-            </input>
-        </vulnerability>
+        <utility module_path=".*/hackerbot_client">
+          <input into="ssh_key_pair">
+            <datastore>hackerbot_key</datastore>
+          </input>
+        </utility>
 
         <!-- Internal LAN interface (VLAN 1) -->
         <network type="private_network">
@@ -259,7 +266,11 @@
         <utility module_path=".*/nmap"/>
         <utility module_path=".*/wireshark"/>
 
-        <!-- TODO: Place a randomised flag in /home/<user>/flag.txt (Challenge 2) -->
+        <utility module_path=".*/hackerbot_client">
+            <input into="ssh_key_pair">
+                <datastore>hackerbot_key</datastore>
+            </input>
+        </utility>
 
         <!-- DMZ interface (VLAN 2) -->
         <network type="private_network">
@@ -319,6 +330,11 @@
         <utility module_path=".*/wireshark"/>
 
         <!-- Server zone interface (VLAN 3) -->
+        <utility module_path=".*/hackerbot_client">
+          <input into="ssh_key_pair">
+            <datastore>hackerbot_key</datastore>
+          </input>
+        </utility>
         <network type="private_network">
             <input into="IP_address">
                 <datastore access="5">IP_addresses</datastore>
@@ -348,13 +364,16 @@
         <service type="httpd"/>
 
         <utility module_path=".*/hackerbot">
+          <input into="ssh_key_pair">
+            <datastore>hackerbot_key</datastore>
+          </input>
             <input into="hackerbot_configs" into_datastore="hackerbot_instructions">
                 <generator module_path=".*/networks_intro">
                     <input into="accounts">
                         <datastore>account</datastore>
                     </input>
-                    <input into="root_password">
-                        <datastore>spoiler_admin_pass</datastore>
+                    <input into="ip_addresses">
+                        <datastore>IP_addresses</datastore>
                     </input>
                 </generator>
             </input>

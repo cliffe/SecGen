@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Handy networking tools</name>
+  <author>Tom Shaw</author>
+  <module_license>Apache v2</module_license>
+  <description>Installs some handy networking tools.</description>
+
+  <type>network_tools</type>
+  <platform>linux</platform>
+
+  <read_fact>disable_ntp</read_fact>
+
+  <default_input into="disable_ntp">
+    <value>false</value>
+  </default_input>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+  <requires>
+    <module_path>.*/wireshark</module_path>
+  </requires>
+
+  <requires>
+    <module_path>.*/nmap</module_path>
+  </requires>
+
+</utility>

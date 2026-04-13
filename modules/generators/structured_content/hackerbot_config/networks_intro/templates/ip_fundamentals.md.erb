@@ -18,7 +18,7 @@ ping <%= $gateway_lan_ip %>
 
 ```bash
 # On: desktop
-sudo ip addr add 10.0.1.200/24 dev ens19
+sudo ip addr add <%= $first_2_octets %>.1.200/24 dev ens19
 ```
 
 ==Verify the new address has been added:==
@@ -28,13 +28,13 @@ sudo ip addr add 10.0.1.200/24 dev ens19
 ip addr show ens19
 ```
 
-You should see both your original IP and the new 10.0.1.200 address listed on the same interface.
+You should see both your original IP and the new <%= $first_2_octets %>.1.200 address listed on the same interface.
 
 ==Remove the additional address to return to your original configuration:==
 
 ```bash
 # On: desktop
-sudo ip addr del 10.0.1.200/24 dev ens19
+sudo ip addr del <%= $first_2_octets %>.1.200/24 dev ens19
 ```
 
 The above demonstrates adding and removing IPs temporarily using `ip addr`. However, changes made this way are lost on reboot. To permanently change your IP address, you should edit the network configuration file instead.
@@ -45,11 +45,11 @@ The above demonstrates adding and removing IPs temporarily using `ip addr`. Howe
 sudo vi /etc/network/interfaces
 ```
 
-Find the block for your interface and change the `address` line to the new IP. For example, to change from 10.0.1.10 to 10.0.1.50:
+Find the block for your interface and change the `address` line to the new IP. For example, to change from <%= $first_2_octets %>.1.10 to <%= $first_2_octets %>.1.50:
 ```
 auto ens19
 iface ens19 inet static
-    address 10.0.1.50/24
+    address <%= $first_2_octets %>.1.50/24
     gateway <%= $gateway_lan_ip %>
 ```
 

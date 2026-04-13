@@ -15,14 +15,21 @@
   <read_fact>IP_address</read_fact>
   <read_fact>range</read_fact>
   <read_fact>vlan</read_fact>
+  <read_fact>subnet_mask</read_fact>
+  <read_fact>default_gateway</read_fact>
+  <read_fact>dns_nameservers</read_fact>
+  <read_fact>routes</read_fact>
 
   <default_input into="range">
-    <value>172.22.0.0</value>
+    <generator type="random_ip_range"/>
   </default_input>
 
   <default_input into="vlan">
     <value>1</value>
   </default_input>
 
+  <default_input into="subnet_mask">
+    <value>255.255.255.0</value>
+  </default_input>
 
 </network>

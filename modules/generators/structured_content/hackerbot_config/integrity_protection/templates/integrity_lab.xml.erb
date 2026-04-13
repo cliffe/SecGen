@@ -57,7 +57,7 @@
 
 	<!--Method for gaining shell access, can be overwritten per-attack-->
 	<!--<get_shell>bash</get_shell>-->
-	<get_shell>sshpass -p <%= $root_password %> ssh -oStrictHostKeyChecking=no root@{{chat_ip_address}} /bin/bash</get_shell>
+	<get_shell>ssh -i /opt/hackerbot/keys/id_rsa -oStrictHostKeyChecking=no root@{{chat_ip_address}} /bin/bash</get_shell>
 
 	<messages>
     <show_attack_numbers />

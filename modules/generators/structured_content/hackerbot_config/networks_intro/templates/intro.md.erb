@@ -20,9 +20,9 @@ Your environment consists of the following VMs, spread across three separate net
 
 | VM             | Hostname     | Network segment | Role                               |
 |----------------|--------------|---|------------------------------------|
-| **desktop**    | `desktop`    | Internal LAN (10.0.1.0/24) | Your Linux desktop system          |
-| **web_server** | `web_server` | DMZ (10.0.2.0/24) | A public-facing web server in the DMZ |
-| **server**     | `server`     | Server zone (10.0.3.0/24) | An internal server running several services |
+| **desktop**    | `desktop`    | Internal LAN (<%= $desktop_vlan %>/24) | Your Linux desktop system          |
+| **web_server** | `web_server` | DMZ (<%= $web_server_vlan %>/24) | A public-facing web server in the DMZ |
+| **server**     | `server`     | Server zone (<%= $server_vlan %>/24) | An internal server running several services |
 | **gateway**    | `gateway`    | All three segments | A Linux router/firewall system     |
 
 The **gateway** has a network interface on each of the three segments and routes traffic between them.

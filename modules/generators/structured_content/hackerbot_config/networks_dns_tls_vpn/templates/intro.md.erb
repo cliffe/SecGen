@@ -1,0 +1,43 @@
+## Getting started
+
+### VMs in this lab
+
+This lab builds upon the network topology from the Network Security Fundamentals lab. Your environment has been pre-configured to match the end state of that lab. The routing, IP forwarding, and firewall rules are all in place. Your task is to layer additional security mechanisms on top of that foundation.
+
+| VM | Hostname               | Network segment | Role                                                         |
+|---|------------------------|---|--------------------------------------------------------------|
+| desktop | desktop.<%= $domain %> | Internal LAN (<%= $desktop_ip.sub(/\.\d+$/, '.0') %>/24) | Debian desktop - work from here unless told otherwise   |
+| web_server | web.<%= $domain %>     | DMZ (<%= $webserver_ip.sub(/\.\d+$/, '.0') %>/24) | A public-facing web server running HTTPS                     |
+| server | server.<%= $domain %>  | Server zone (<%= $server_ip.sub(/\.\d+$/, '.0') %>/24) | An internal server running DNS and other services            |
+| gateway | gateway.<%= $domain %> | All segments + external | A Linux router/firewall                                      |
+| remote | n/a                    | External (<%= $remote_ip.sub(/\.\d+$/, '.0') %>/24) | A remote client outside the organisation (<%= $remote_ip %>) |
+
+The **remote** VM represents a machine outside the organisation - a remote worker's laptop. It can reach the gateway's external interface (<%= $gateway_ext_ip %>) but has no access to any internal systems at the start of this lab.
+
+Start all VMs if you have not already done so. You do not need to log into the hackerbot_server directly.
+
+### Your login details
+
+| | |
+|---|---|
+| Username | `<%= $main_user %>` |
+| Password | `<%= $user_password %>` |
+
+You can use these credentials on the **desktop** and **remote** VMs via their consoles, and to SSH between systems throughout the lab.
+
+> **Note:** Commands throughout this lab are prefixed with the VM you should run them on, for example `# On: desktop`. Unless told otherwise, you should be working on the desktop VM.
+
+## Hackerbot!
+![small-right](images/skullandusb.svg)
+
+Part of this lab involves interacting with Hackerbot, a chatbot that will set you challenges and verify your work. When you complete a challenge correctly, Hackerbot will reveal a flag to you.
+
+On the **desktop** VM, open Pidgin and send some messages to Hackerbot to get started:
+
+- Send `hello`
+- Send `help`
+- Send `list`
+
+You can skip to a specific challenge at any time by sending `goto N` where N is the challenge number. Work through the exercises below and complete the Hackerbot challenges as you go.
+
+**Don't forget to save and submit any flags you find!**

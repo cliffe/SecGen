@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>OpenVPN client</name>
+  <author>Tom Shaw</author>
+  <module_license>GPLv3</module_license>
+  <description>Installs OpenVPN and deploys a pre-generated client configuration from an openvpn_pki bundle. Optionally starts and enables the service on boot.</description>
+
+  <type>vpn</type>
+  <platform>linux</platform>
+
+  <software_license>GPLv3</software_license>
+
+  <read_fact>openvpn_pki</read_fact>
+  <read_fact>client_index</read_fact>
+  <read_fact>start_on_boot</read_fact>
+
+  <default_input into="client_index">
+    <value>0</value>
+  </default_input>
+
+  <default_input into="start_on_boot">
+    <value>false</value>
+  </default_input>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+</utility>

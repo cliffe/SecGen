@@ -1,0 +1,28 @@
+$TTL 604800
+@   IN  SOA <%= @ns_hostname %>. admin.<%= @domain %>. (
+<%= @serial %>  ; Serial
+604800          ; Refresh
+86400           ; Retry
+2419200         ; Expire
+604800 )        ; Negative Cache TTL
+@       IN  NS  <%= @ns_hostname %>.
+<% (@dns_records || []).each do |r| -%>
+<%   parts = r.split('|') -%>
+<%   hostname = parts[0] -%>
+<%   type = parts[1].upcase -%>
+<%   value = parts[2] -%>
+<%   priority = parts[3] -%>
+<%   if type == 'A' || type == 'AAAA' -%>
+<%= hostname %>  IN  <%= type %>  <%= value %>
+<%   elsif type == 'CNAME' -%>
+<%= hostname %>  IN  CNAME  <%= value %>.
+<%   elsif type == 'TXT' -%>
+<%= hostname %>  IN  TXT  "<%= value %>"
+<%   elsif type == 'MX' -%>
+<%= hostname %>  IN  MX  <%= priority || '10' %>  <%= value %>.
+<%   elsif type == 'NS' -%>
+<%= hostname %>  IN  NS  <%= value %>.
+<%   elsif type == 'PTR' -%>
+<%= hostname %>  IN  PTR  <%= value %>.
+<%   end -%>
+<% end -%>

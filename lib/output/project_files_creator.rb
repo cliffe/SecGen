@@ -256,6 +256,24 @@ class ProjectFilesCreator
     @options[:network_map]&.key?(key) ? @options[:network_map][key][:ips][network_module.unique_id] : nil
   end
 
+  def lookup_network_gateway(network_module)
+    base_vlan = @options[:proxmoxvlan].to_i rescue 0
+    key = NetworkFunctions.compute_vlan(network_module, base_vlan)
+    @options[:network_map]&.key?(key) ? @options[:network_map][key][:gateway][network_module.unique_id] : nil
+  end
+
+  def lookup_network_dns(network_module)
+    base_vlan = @options[:proxmoxvlan].to_i rescue 0
+    key = NetworkFunctions.compute_vlan(network_module, base_vlan)
+    @options[:network_map]&.key?(key) ? @options[:network_map][key][:dns_nameservers][network_module.unique_id] : nil
+  end
+
+  def lookup_network_routes(network_module)
+    base_vlan = @options[:proxmoxvlan].to_i rescue 0
+    key = NetworkFunctions.compute_vlan(network_module, base_vlan)
+    return [] unless @options[:network_map]&.key?(key)
+    @options[:network_map][key][:routes][network_module.unique_id] || []
+  end
 
   # Resolves the IP address to use for a network module in the Vagrantfile.
   # Priority: specific IP_address (verbatim) > range with --network-ranges override > range default

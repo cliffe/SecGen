@@ -8,7 +8,7 @@
   <author>Z. Cliffe Schreuders</author>
   <description>Your task is to design and implement technical security defenses, to achieve the required functionality as specified in the separately provided requirements specification: https://tinyurl.com/y3rcarp9.</description>
 
-  <type>hackerbot-lab</type>
+  <type>configuration</type>
   <type>lab-sheet</type>
   <difficulty>intermediate</difficulty>
 

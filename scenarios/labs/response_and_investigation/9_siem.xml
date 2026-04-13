@@ -159,6 +159,9 @@
     <input into_datastore="spoiler_admin_pass">
       <generator type="strong_password_generator"/>
     </input>
+    <input into_datastore="hackerbot_key">
+      <generator type="ssh_key_pair"/>
+    </input>
 
     <input into_datastore="elasticsearch_port">
       <value>9200</value>
@@ -272,11 +275,11 @@
 
     <utility module_path=".*/elastalert.*"/>
 
-    <vulnerability module_path=".*/ssh_root_login">
-      <input into="root_password">
-        <datastore>spoiler_admin_pass</datastore>
+    <utility module_path=".*/hackerbot_client">
+      <input into="ssh_key_pair">
+        <datastore>hackerbot_key</datastore>
       </input>
-    </vulnerability>
+    </utility>
 
     <network type="private_network" >
       <input into="IP_address">
@@ -356,11 +359,11 @@
       </input>
     </utility>
 
-    <vulnerability module_path=".*/ssh_root_login">
-      <input into="root_password">
-        <datastore>spoiler_admin_pass</datastore>
+    <utility module_path=".*/hackerbot_client">
+      <input into="ssh_key_pair">
+        <datastore>hackerbot_key</datastore>
       </input>
-    </vulnerability>
+    </utility>
 
     <network type="private_network" >
       <input into="IP_address">
@@ -388,13 +391,13 @@
     <service type="httpd"/>
 
     <utility module_path=".*/hackerbot">
+      <input into="ssh_key_pair">
+        <datastore>hackerbot_key</datastore>
+      </input>
       <input into="hackerbot_configs" into_datastore="hackerbot_instructions">
         <generator module_path=".*/hb_siem">
           <input into="accounts">
             <datastore>accounts</datastore>
-          </input>
-          <input into="root_password">
-            <datastore>spoiler_admin_pass</datastore>
           </input>
         </generator>
       </input>

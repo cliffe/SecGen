@@ -1,7 +1,7 @@
 	<attack>
 <% $rand_content1 = SecureRandom.hex(3)
    $rand_alert2 = SecureRandom.hex(3) %>
-		<pre_shell>sshpass -p <%= $root_password %> scp -prv -oStrictHostKeyChecking=no root@<%= $ids_server_ip %>:/var/log/snort/alert /tmp/snort_alert_before; stat1=$?; (sleep 1; echo "USER <%= $rand_content1 %>"; sleep 2; killall -9 nc ) | nc <%= $web_server_ip %> 110 > /dev/null; (sleep 1; echo "user test"; echo "pass test"; echo "stat"; echo "quit"; sleep 2; killall -9 nc ) | nc <%= $web_server_ip %> 110 > /dev/null; stat2=$?; sshpass -p <%= $root_password %> scp -prv -oStrictHostKeyChecking=no root@<%= $ids_server_ip %>:/var/log/snort/alert /tmp/snort_alert_after; stat3=$?; echo --$stat1$stat2$stat3; diff -n /tmp/snort_alert_before /tmp/snort_alert_after | tail -n 5</pre_shell>
+		<pre_shell>scp -i /opt/hackerbot/keys/id_rsa -prv -oStrictHostKeyChecking=no root@<%= $ids_server_ip %>:/var/log/snort/alert /tmp/snort_alert_before; stat1=$?; (sleep 1; echo "USER <%= $rand_content1 %>"; sleep 2; killall -9 nc ) | nc <%= $web_server_ip %> 110 > /dev/null; (sleep 1; echo "user test"; echo "pass test"; echo "stat"; echo "quit"; sleep 2; killall -9 nc ) | nc <%= $web_server_ip %> 110 > /dev/null; stat2=$?; scp -i /opt/hackerbot/keys/id_rsa -prv -oStrictHostKeyChecking=no root@<%= $ids_server_ip %>:/var/log/snort/alert /tmp/snort_alert_after; stat3=$?; echo --$stat1$stat2$stat3; diff -n /tmp/snort_alert_before /tmp/snort_alert_after | tail -n 5</pre_shell>
 		<get_shell>false</get_shell>
 		<post_command></post_command>
 

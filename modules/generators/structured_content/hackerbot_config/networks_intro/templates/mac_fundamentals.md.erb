@@ -20,7 +20,7 @@ Add a `hwaddress` line to your interface block. For example, to change your MAC 
 ```
 auto ens19
 iface ens19 inet static
-    address 10.0.1.10/24
+    address <%= $first_2_octets %>.1.10/24
     gateway <%= $gateway_lan_ip %>
     hwaddress ether 00:11:22:33:44:55
 ```

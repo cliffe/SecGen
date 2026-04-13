@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+
+  <name>Hackerbot config for introduction to networking DNS, TLS, and VPN lab</name>
+  <author>Tom Shaw</author>
+  <module_license>GPLv3</module_license>
+  <description>Generates a config file for a hackerbot for a secure communications lab covering DNS security, TLS certificate inspection, and VPNs.</description>
+
+  <type>hackerbot_config</type>
+  <platform>linux</platform>
+
+  <read_fact>accounts</read_fact>
+  <read_fact>IP_addresses</read_fact>
+  <read_fact>uri</read_fact>
+  <read_fact>dns_fix_flag</read_fact>
+  <read_fact>vpn_connect_flag</read_fact>
+
+  <default_input into="accounts">
+    <generator type="account">
+      <input into="username">
+        <value>vagrant</value>
+      </input>
+    </generator>
+  </default_input>
+
+  <default_input into="dns_fix_flag">
+    <generator type="flag_generator"/>
+  </default_input>
+  <default_input into="vpn_connect_flag">
+    <generator type="flag_generator"/>
+  </default_input>
+
+  <output_type>hackerbot</output_type>
+
+</generator>

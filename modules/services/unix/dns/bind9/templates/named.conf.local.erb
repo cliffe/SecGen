@@ -1,0 +1,5 @@
+zone "<%= @domain %>" {
+  type master;
+  file "/etc/bind/db.<%= @domain %>";
+  allow-transfer { <%= @allow_transfer %>; };
+};

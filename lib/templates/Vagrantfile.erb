@@ -267,7 +267,7 @@ end
 <%      # Static oVirt/Proxmox networking -%>
 <%       if (provider == "ovirt" || provider == "proxmox") && @base_template && @base_template !~ /win/i -%>
 <%         if provider == "proxmox" -%>
-            <%= system.name %>.vm.network :<%= selected_module.attributes['type'].first %>, ip: "<%= lookup_network_ip(selected_module) %>", proxmox_bridge: "vmbr1", proxmox_vlan: <%= lookup_network_vlan(selected_module) %>
+            <%= system.name %>.vm.network :<%= selected_module.attributes['type'].first %>, ip: "<%= lookup_network_ip(selected_module) %>", proxmox_bridge: "vmbr1", proxmox_vlan: <%= lookup_network_vlan(selected_module) %><%= lookup_network_gateway(selected_module) ? ", proxmox_gateway: \"#{lookup_network_gateway(selected_module)}\"" : "" %><%= lookup_network_dns(selected_module) ? ", proxmox_dns_nameservers: \"#{lookup_network_dns(selected_module)}\"" : "" %><%= lookup_network_routes(selected_module).any? ? ", proxmox_routes: #{lookup_network_routes(selected_module).inspect}" : "" %>
 <%         else # ovirt -%>
               # use some shell scripting to identify the name of the network interface (eth0/ens3/...), and set the IP address statically
             <%= system.name %>.vm.provision 'shell', inline: "echo -e \"auto lo\niface lo inet loopback\n\nauto <%= interface %>\niface <%= interface %> inet static\n\taddress <%= lookup_network_ip(selected_module)%>\" > /etc/network/interfaces"

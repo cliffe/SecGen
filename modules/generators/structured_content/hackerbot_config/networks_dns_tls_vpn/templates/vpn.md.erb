@@ -1,0 +1,186 @@
+## VPNs
+
+### What is a VPN?
+
+A Virtual Private Network (VPN) creates an encrypted tunnel between two endpoints over an untrusted network. Traffic inside the tunnel is encrypted so that anyone intercepting it on the external network sees only encrypted VPN packets rather than the content, destinations, or metadata of the connections inside.
+
+VPNs are used in two main configurations:
+
+- **Remote access VPN** - a single client connects to a corporate gateway, gaining access to internal resources as if they were on the local network. This is the configuration you will set up in this lab.
+- **Site-to-site VPN** - two gateways connect their respective networks together, allowing hosts on both sides to communicate as if they share the same network.
+
+#### Why use a VPN if TLS already encrypts traffic?
+
+TLS encrypts the *content* of individual connections, but the destination IP address is still visible to anyone monitoring the network. An attacker watching your traffic can see which servers you are connecting to, how often, and how much data is being transferred - even if they cannot read what is inside those connections.
+
+A VPN wraps all traffic, including TLS-encrypted traffic, inside an additional encryption layer. From the perspective of anyone on the external network, all they see is encrypted VPN packets flowing between the client and the VPN gateway. The actual destinations, ports, and contents of connections inside the tunnel are hidden entirely.
+
+#### OpenVPN
+
+OpenVPN is an open-source VPN implementation that uses TLS for its control channel and strong symmetric encryption for its data channel. It supports certificate-based authentication, where both the client and server present certificates signed by a shared Certificate Authority, ensuring that only authorised clients can connect.
+
+In this lab, the gateway (<%= $gateway_ext_ip %>) is configured as an OpenVPN server using certificate-based authentication. A client certificate and key pair have already been generated and placed on the remote VM. The VPN tunnel subnet is `10.8.0.0/24`. When the tunnel is up, the remote client will be assigned an address in this range.
+
+### Demonstrating the problem: remote access without a VPN
+
+Log in to the remote VM directly via the VM console.
+
+From the remote VM, try to reach internal services:
+
+```
+# On: remote
+ping <%= $desktop_ip %>
+ping <%= $webserver_ip %>
+curl http://<%= $webserver_ip %>
+```
+
+All of these should fail. The remote VM is on the external segment (<%= $remote_ip %>/24) and has no route into the internal network. The gateway's firewall also blocks direct access from the external segment to internal systems.
+
+This is the situation a remote worker faces - they can reach the gateway's external interface, but cannot access any internal resources.
+
+### Understanding the OpenVPN client configuration
+
+Examine the client configuration file that has been prepared:
+
+```
+# On: remote
+cat /etc/openvpn/client/client.ovpn
+```
+
+The key directives in this file are:
+
+- `client` - this is a client configuration
+- `remote <%= $gateway_ext_ip %>` - the address of the OpenVPN server to connect to
+- `ca`, `cert`, `key` - paths to the CA certificate, client certificate, and client private key
+- `dev tun` - use a TUN (tunnel) device, which operates at the IP layer
+- `proto udp` - use UDP as the transport protocol
+
+The presence of a client certificate and key means the server will verify your identity during the handshake. Only clients with a certificate signed by the correct CA can establish a tunnel.
+
+### Starting the OpenVPN server on the gateway
+
+The OpenVPN server on the gateway is installed but not set to start automatically - you will start it manually as part of this exercise.
+
+SSH into the gateway from the desktop:
+
+```
+# On: desktop
+ssh <%= $gateway_lan_ip %>
+```
+
+Start the OpenVPN server:
+
+```
+# On: gateway
+sudo openvpn --config /etc/openvpn/server/server.conf --daemon
+```
+
+Verify the server is running and the tunnel interface has been created:
+
+```
+# On: gateway
+ip link show tun0
+```
+
+You should see a `tun0` interface. The server is now listening for client connections.
+
+### Establishing the VPN tunnel from the remote VM
+
+Log in to the remote VM via the VM console and start the OpenVPN client:
+
+```
+# On: remote
+sudo openvpn --config /etc/openvpn/client/client.ovpn
+```
+
+You should see log output showing the TLS handshake and tunnel negotiation. Look for a line containing `Initialization Sequence Completed` - this indicates the tunnel is up.
+
+Open a second terminal on the remote VM and verify the tunnel interface has appeared:
+
+```
+# On: remote
+ip addr show tun0
+ip route
+```
+
+You should see a `tun0` interface with an IP address in the `10.8.0.0/24` range, and new routes in the routing table for traffic destined for the internal network.
+
+Now try to reach internal hosts:
+
+```
+# On: remote
+ping <%= $desktop_ip %>
+```
+
+This will probably still fail. The tunnel is up, but recall from the previous lab that the gateway has a default FORWARD policy of DROP. There is no rule yet allowing traffic arriving from the VPN tunnel interface to be forwarded onward. This is the same problem you solved before - a new network path requires a new firewall rule.
+
+### Opening firewall rules for VPN traffic
+
+SSH into the gateway from the desktop and add rules to permit forwarded traffic through the tunnel interface:
+
+```
+# On: desktop
+ssh <%= $gateway_lan_ip %>
+```
+
+```
+# On: gateway
+sudo iptables -A FORWARD -i tun0 -j ACCEPT
+sudo iptables -A FORWARD -o tun0 -j ACCEPT
+sudo bash -c 'iptables-save > /etc/iptables/rules.v4'
+```
+
+The first rule allows traffic arriving on `tun0` to be forwarded to other interfaces. The second allows return traffic to be forwarded back through the tunnel. Together they permit bidirectional traffic flow through the VPN.
+
+Now test connectivity from the remote VM again:
+
+```
+# On: remote
+ping <%= $desktop_ip %>
+curl -k https://<%= $webserver_ip %>
+```
+
+Both should now succeed. The remote VM has access to internal resources through the encrypted tunnel.
+
+### Accessing internal resources through the VPN
+
+With the tunnel established, the remote VM is effectively on the internal network. It can reach services that are only accessible from inside - including services that are explicitly blocked from the external segment.
+
+You can also use hostnames from the remote VM if DNS is configured. Check whether it is already set up:
+
+```
+# On: remote
+cat /etc/resolv.conf
+```
+
+If `<%= $server_ip %>` is not listed as a nameserver, add it the same way you did on the desktop (i.e. by editing `/etc/network/interfaces` and adding `dns-nameservers <%= $server_ip %>` to the interface block, then restarting the interface).
+
+Once DNS is working, try:
+
+```
+# On: remote
+ssh server.<%= $domain %>
+curl -k https://web.<%= $domain %>
+```
+
+Both should succeed through the tunnel.
+
+Open Wireshark on the remote VM.
+
+```
+# On: remote
+sudo wireshark
+```
+
+Select the `ens19` interface and start a capture.
+
+With the VPN tunnel **active**, make an HTTPS request to the web server:
+
+```
+# On: remote
+curl -k https://<%= $webserver_ip %>
+```
+
+Look at the Wireshark output. Filter by `udp` so that all you see is encrypted UDP packets flowing between the remote VM and the gateway at <%= $gateway_ext_ip %>. The actual destination <%= $webserver_ip %> is not visible anywhere.
+
+Now stop the capture and try the same request **without** the VPN active (kill the OpenVPN process first with `sudo killall openvpn`). If you restart the capture, you will see the TCP connection attempt going directly to <%= $webserver_ip %> with the destination fully visible.

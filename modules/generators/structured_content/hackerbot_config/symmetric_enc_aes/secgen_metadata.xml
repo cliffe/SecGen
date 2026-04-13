@@ -15,7 +15,6 @@
 
   <read_fact>keys</read_fact>
   <read_fact>flags</read_fact>
-  <read_fact>root_password</read_fact>
   <read_fact>desktop_ip</read_fact>
   <read_fact>hackerbot_server_ip</read_fact>
   <read_fact>accounts</read_fact>
@@ -34,10 +33,6 @@
     <generator type="flag_generator"/>
     <generator type="flag_generator"/>
     <generator type="flag_generator"/>
-  </default_input>
-
-  <default_input into="root_password">
-    <value>puppet</value>
   </default_input>
 
   <output_type>hackerbot</output_type>

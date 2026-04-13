@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Hackerbot Client</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>GPLv3</module_license>
+  <description>Configures a VM to accept SSH connections from Hackerbot using key-based
+    authentication. Installs the Hackerbot public key into /root/.ssh/authorized_keys,
+    ensures correct permissions, and configures sshd to permit root login via key.</description>
+
+  <type>hackerbot_client</type>
+  <platform>linux</platform>
+
+  <read_fact>ssh_key_pair</read_fact>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+</utility>

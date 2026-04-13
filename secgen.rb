@@ -109,15 +109,22 @@ def build_config(scenario, out_dir, options)
 
   all_available_modules = ModuleReader.get_all_available_modules
 
+  Print.info 'Pre-resolving network modules...'
+  systems.each do |system|
+    system.resolve_network_modules(all_available_modules, options)
+  end
+
+  Print.info 'Configuring networks...'
+  NetworkFunctions.build_network_map(systems, options)
+
+  Print.info 'Resolving deferred network IP references...'
+  NetworkFunctions.resolve_deferred_inputs(systems, options)
+
   Print.info 'Resolving systems: randomising scenario...'
-  # update systems with module selections
   systems.map! {|system|
     system.module_selections = system.resolve_module_selection(all_available_modules, options)
     system
   }
-
-  Print.info 'Configuring networks...'
-  NetworkFunctions.build_network_map(systems, options)
 
   Print.info "Creating project: #{out_dir}..."
   # creates Vagrantfile and other outputs and starts the vagrant installation

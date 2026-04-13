@@ -30,12 +30,28 @@ class SystemReader < XMLReader
       # system attributes, such as basebox selection
       system_attributes = read_attributes(system_node)
 
-      # literal values to store directly in a datastore
-      system_node.xpath('*[@into_datastore]/value').each do |value|
-        name = value.xpath('../@into_datastore').to_s
-        ($datastore[name] ||= []).push(value.text)
+      # populate datastores in document order, deferring network_ip references
+      system_node.xpath('input[@into_datastore]').each do |input_node|
+        datastore_name = input_node.xpath('@into_datastore').to_s
+        input_node.xpath('*').each do |child|
+          case child.name
+          when 'value'
+            ($datastore[datastore_name] ||= []).push(child.text)
+          when 'network_ip'
+            sentinel_id = child.path.gsub(/[^a-zA-Z0-9]/, '')
+            referenced_system = child.xpath('@system').to_s
+            vlan = child.xpath('@vlan').to_s
+            vlan = '1' if vlan.empty?
+            Print.verbose "  -- datastore network_ip: #{datastore_name}[#{($datastore[datastore_name] ||= []).size}] = #{referenced_system} vlan #{vlan} (#{sentinel_id})"
+            ($datastore[datastore_name] ||= []).push(sentinel_id)
+            (options[:deferred_datastore_network_ips] ||= {})[sentinel_id] = {
+              datastore: datastore_name,
+              system: referenced_system,
+              vlan: vlan.to_i
+            }
+          end
+        end
       end
-
       # datastore in a datastore
       if system_node.xpath('//*[@into_datastore]/datastore').to_s != ""
         Print.err "WARNING: a datastore cannot capture the values from another datastore (this will be ignored)"
@@ -44,7 +60,7 @@ class SystemReader < XMLReader
       end
 
       # for each module selection
-      system_node.xpath('//vulnerability | //service | //utility | //build | //network | //base | //encoder | //generator').each do |module_node|
+      system_node.xpath('.//vulnerability | .//service | .//utility | .//build | .//network | .//base | .//encoder | .//generator').each do |module_node|
         # create a selector module, which is a regular module instance used as a placeholder for matching requirements
         module_selector = Module.new(module_node.name)
 
@@ -77,6 +93,7 @@ class SystemReader < XMLReader
           value = input_value.text
           Print.verbose "  -- literal value: #{variable} = #{value}"
           (module_selector.received_inputs[variable] ||= []).push(value)
+          module_selector.explicit_inputs << variable
         end
 
         # check if we are being passed a datastore as input
@@ -92,6 +109,16 @@ class SystemReader < XMLReader
           (module_selector.received_datastores[variable] ||= []).push('variablename'   => value,
                                                                       'access'         => access,
                                                                       'access_json'    => access_json)
+          module_selector.explicit_inputs << variable
+        end
+
+        module_node.xpath('input/network_ip').each do |network_ip_node|
+          variable = network_ip_node.xpath('../@into').to_s
+          referenced_system = network_ip_node.xpath('@system').to_s
+          vlan = network_ip_node.xpath('@vlan').to_s
+          vlan = '1' if vlan.empty?
+          Print.verbose "  -- network_ip: #{variable} = #{referenced_system} vlan #{vlan}"
+          (module_selector.deferred_network_inputs[variable] ||= []) << { system: referenced_system, vlan: vlan.to_i }
         end
 
         module_node.xpath('@*').each do |attr|

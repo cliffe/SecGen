@@ -1,0 +1,111 @@
+## TLS and HTTPS
+
+### What is TLS?
+
+Transport Layer Security (TLS) is the cryptographic protocol that underpins HTTPS. When you connect to a server over HTTPS, TLS provides three things:
+
+- **Confidentiality** - the content of your communication is encrypted and cannot be read by anyone intercepting the traffic
+- **Integrity** - any tampering with data in transit will be detected
+- **Authentication** - you can verify that you are talking to the intended server, and not an impostor
+
+TLS uses a combination of asymmetric and symmetric cryptography. During the TLS handshake, the client and server use asymmetric cryptography (public/private key pairs) to authenticate and negotiate a shared session key. All subsequent communication is encrypted with that session key using fast symmetric encryption.
+
+#### The TLS handshake
+
+In simplified form, the TLS handshake works as follows:
+
+1. The client sends a `ClientHello`, advertising the TLS versions and cipher suites it supports
+2. The server responds with a `ServerHello`, selects a cipher suite, and presents its certificate
+3. The client verifies the certificate against its trusted Certificate Authorities (CAs)
+4. The client and server negotiate a shared session key
+5. Both sides confirm the handshake is complete and switch to encrypted communication
+
+#### Certificates
+
+A TLS certificate binds a public key to an identity (a domain name). It is signed by a Certificate Authority (CA), whose signature allows clients to verify that the certificate is legitimate and belongs to the claimed identity.
+
+Certificates contain several important fields:
+
+- **Subject** - the identity the certificate is issued to (e.g. `CN=web.<%= $domain %>`)
+- **Subject Alternative Name (SAN)** - additional hostnames, IPs, or URIs the certificate is valid for
+- **Issuer** - the CA that signed the certificate
+- **Validity period** - the Not Before and Not After dates
+- **Public key** - the server's public key
+- **Fingerprint** - a hash of the certificate, useful for verifying you are seeing the expected certificate
+
+A **self-signed certificate** is one where the issuer and subject are the same, i.e. the certificate has been signed with its own private key rather than by a trusted CA. Browsers and other clients will warn about self-signed certificates because there is no trusted third party vouching for the server's identity.
+
+### Observing HTTP vs HTTPS
+
+First we should compare unencrypted HTTP and encrypted HTTPS traffic on the wire to see the difference.
+
+Open Wireshark on the desktop. Select the `ens19` interface and start a capture.
+
+```
+# On: desktop
+sudo wireshark
+```
+
+
+In your terminal, make an HTTP request to the web server:
+
+
+```
+# On: desktop
+export http_proxy=
+curl http://<%= $webserver_ip %>
+```
+
+In the Wireshark display filter bar, type `http` and press Enter. You should be able to see the HTTP request and response in plaintext, where the request method, path, and response body are all clearly visible. Right-click a packet and select **Follow -> TCP Stream** to see the full conversation including headers and page content.
+
+==action: Clear the display filter, then type `tls` and press Enter.==
+
+Make an HTTPS request. The `-k` flag tells curl to accept the self-signed certificate without rejecting it:
+
+```
+# On: desktop
+curl -k https://<%= $webserver_ip %>
+```
+
+Look at the Wireshark output now. You can see the TLS handshake packets and encrypted application data, but the content is unreadable. Unlike the HTTP capture, you cannot see the request path, headers, or response body - everything inside the TLS tunnel is opaque.
+
+==action: Stop the wireshark capture when you are done.==
+
+
+### Inspecting a TLS certificate
+
+You can inspect the certificate that a server presents during the TLS handshake using `openssl s_client`:
+
+```
+# On: desktop
+openssl s_client -connect <%= $webserver_ip %>:443 -showcerts
+```
+
+This prints a lot of output. The most important parts are the certificate block between `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----`, and the `Verify return code` line - for a self-signed certificate you will see an error here, which is expected.
+
+To see a more readable summary of the certificate fields, pipe the output through `openssl x509`:
+
+```
+# On: desktop
+openssl s_client -connect <%= $webserver_ip %>:443 2>/dev/null | openssl x509 -noout -text
+```
+
+Look through the output and identify:
+
+- The **Subject** - what identity does this certificate claim?
+- The **Subject Alternative Name** - what hostnames or URIs is it valid for?
+- The **Issuer** - who signed this certificate?
+- The **Validity** period - when does it expire?
+
+To get just the SHA-256 fingerprint:
+
+```
+# On: desktop
+openssl s_client -connect <%= $webserver_ip %>:443 2>/dev/null | openssl x509 -noout -fingerprint -sha256
+```
+
+==Inspect the TLS certificate presented by web.<%= $domain %> and find the flag hidden in one of its fields.==
+
+==hint: Look carefully at the Subject Alternative Name extension - it can contain URIs as well as hostnames. If you find a URI, try fetching it.==
+
+**Don't forget to save and submit any flags you find!**

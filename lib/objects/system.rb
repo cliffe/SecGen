@@ -11,6 +11,7 @@ class System
   attr_accessor :attributes # (basebox selection)
   attr_accessor :module_selectors # (filters)
   attr_accessor :module_selections # (after resolution)
+  attr_accessor :network_module_selections
   attr_accessor :num_actioned_module_conflicts
   attr_accessor :memory  # (RAM allocation for the system)
   attr_accessor :options  # (command line options hash)
@@ -22,6 +23,7 @@ class System
   attr_accessor :original_module_selectors
   attr_accessor :original_available_modules
 
+
   # Initalizes System object
   # @param [Object] name of the system
   # @param [Object] attributes such as base box selection
@@ -31,6 +33,7 @@ class System
     self.attributes = attributes
     self.module_selectors = module_selectors
     self.module_selections = []
+    self.network_module_selections = []
     self.num_actioned_module_conflicts = 0
     self.memory = "512"
     self.options = options
@@ -61,7 +64,7 @@ class System
 
       # for each module specified in the scenario
       module_selectors.each do |module_filter|
-        selected_modules += select_modules(module_filter.module_type, module_filter.attributes, available_mods, selected_modules, module_filter.unique_id, module_filter.write_output_variable, module_filter.write_to_module_with_id, module_filter.received_inputs, module_filter.default_inputs_literals, module_filter.write_to_datastore, module_filter.received_datastores, module_filter.write_module_path_to_datastore)
+        selected_modules += select_modules(module_filter.module_type, module_filter.attributes, available_mods, selected_modules, module_filter.unique_id, module_filter.write_output_variable, module_filter.write_to_module_with_id, module_filter.received_inputs, module_filter.default_inputs_literals, module_filter.write_to_datastore, module_filter.received_datastores, module_filter.write_module_path_to_datastore, module_filter.explicit_inputs, module_filter.deferred_network_inputs)
       end
       selected_modules
 
@@ -95,6 +98,30 @@ class System
         exit 1
       end
     end
+  end
+
+  def resolve_network_modules(available_modules, options)
+    selected_modules = []
+    module_selectors.each do |module_filter|
+      next unless module_filter.module_type == 'network'
+      selected_modules += select_modules(
+        module_filter.module_type,
+        module_filter.attributes,
+        duplicate(available_modules),
+        selected_modules,
+        module_filter.unique_id,
+        module_filter.write_output_variable,
+        module_filter.write_to_module_with_id,
+        module_filter.received_inputs,
+        module_filter.default_inputs_literals,
+        module_filter.write_to_datastore,
+        module_filter.received_datastores,
+        module_filter.write_module_path_to_datastore,
+        module_filter.explicit_inputs,
+        module_filter.deferred_network_inputs
+      )
+    end
+    self.network_module_selections = selected_modules
   end
 
   def replace_datastore_ips(options)
@@ -152,7 +179,7 @@ class System
   # returns a list containing a module (plus any default input modules and dependencies recursively) of the module type with the required attributes
   # modules are selected from the list of available modules and will be checked against previously selected modules for conflicts
   # raises an exception when unable to resolve and the retry limit has not been reached
-  def select_modules(module_type, required_attributes, available_modules, previously_selected_modules, unique_id, write_outputs_to, write_to_module_with_id, received_inputs, default_inputs_literals, write_to_datastore, received_datastores, write_module_path_to_datastore)
+  def select_modules(module_type, required_attributes, available_modules, previously_selected_modules, unique_id, write_outputs_to, write_to_module_with_id, received_inputs, default_inputs_literals, write_to_datastore, received_datastores, write_module_path_to_datastore, explicit_inputs_from_selector = [], deferred_network_inputs_from_selector = {})
     default_modules_to_add = []
 
     search_list = duplicate(available_modules)
@@ -205,6 +232,8 @@ class System
       selected.received_datastores = received_datastores
       selected.write_module_path_to_datastore = write_module_path_to_datastore
       selected.default_inputs_literals = selected.default_inputs_literals.merge(default_inputs_literals)
+      selected.explicit_inputs = explicit_inputs_from_selector
+      selected.deferred_network_inputs = deferred_network_inputs_from_selector
 
       # add module path to write_module_path_to_datastore
       if selected.write_module_path_to_datastore != nil && selected.write_module_path_to_datastore != ''

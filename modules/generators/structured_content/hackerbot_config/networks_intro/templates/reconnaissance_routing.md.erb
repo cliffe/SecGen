@@ -9,7 +9,7 @@ On your **desktop**, ==open a terminal and run:==
 ip addr show
 ```
 
-This shows your network interfaces and IP addresses. You should see that your desktop has an interface on the **Internal LAN** segment (10.0.1.0/24). Note your IP address and subnet mask.
+This shows your network interfaces and IP addresses. You should see that your desktop has an interface on the **Internal LAN** segment (<%= $desktop_vlan %>/24). Note your IP address and subnet mask.
 
 ==Now check your routing table:==
 
@@ -21,19 +21,19 @@ ip route
 You will likely see something like this:
 
 ```
-10.0.1.0/24 dev ens19 proto kernel scope link src 10.0.1.10
+<%= $desktop_vlan %>/24 dev ens19 proto kernel scope link src <%= $first_2_octets %>.1.10
 ```
 
-This tells you that your desktop knows how to reach hosts on the 10.0.1.0/24 subnet (the Internal LAN), but notice that there is **no default route** set. This means your desktop currently has no idea how to reach any other network segment, including the web server in the DMZ (10.0.2.0/24). Any traffic sent to a host outside your local subnet will currently fail.
+This tells you that your desktop knows how to reach hosts on the <%= $desktop_vlan %>/24 subnet (the Internal LAN), but notice that there is **no default route** set. This means your desktop currently has no idea how to reach any other network segment, including the web server in the DMZ (<%= $web_server_vlan %>/24). Any traffic sent to a host outside your local subnet will currently fail.
 
 ==Try to ping the web_server in the DMZ to confirm this:==
 
 ```bash
 # On: desktop
-ping 10.0.2.10
+ping <%= $web_server_ip %>
 ```
 
-This should fail with "Network is unreachable" as your desktop has no route to 10.0.2.0/24.
+This should fail with "Network is unreachable" as your desktop has no route to <%= $web_server_vlan %>/24.
 
 
 ### Discovering hosts on the network
@@ -42,7 +42,7 @@ This should fail with "Network is unreachable" as your desktop has no route to 1
 
 ```bash
 # On: desktop
-nmap -sn 10.0.1.0/24
+nmap -sn <%= $desktop_vlan %>/24
 ```
 
 You should find the **gateway** on this segment (the desktop itself will also appear). Note the gateway's Internal LAN IP address for future use. The server and web_server are on separate segments and will not appear here until routes are added.
@@ -64,11 +64,11 @@ Find the block for your network interface (e.g. `ens19`) and add a `gateway` lin
 ```
 auto ens19
 iface ens19 inet static
-    address 10.0.1.10/24
+    address <%= $first_2_octets %>.1.10/24
     gateway <%= $gateway_lan_ip %>
 ```
 
-==action: Press "i" to enter insert mode to update the file as above, then *Esc*, :wq" to write changes and quit==
+==Press "i" to enter insert mode to update the file as above, then *Esc*, :wq" to write changes and quit==
 
 Restart the interface to apply the changes:
 
@@ -88,7 +88,7 @@ ip route
 
 You should now see a `default via <%= $gateway_lan_ip %>` line in the output.
 
-When configuring the other VMs, use the gateway's IP on **their** local segment: for the web_server on the DMZ, this is the gateway's 10.0.2.x address. For the server on the Server zone, this is the gateway's 10.0.3.x address.
+When configuring the other VMs, use the gateway's IP on **their** local segment: for the web_server on the DMZ, this is the gateway's <%= $first_2_octets %>.2.x address. For the server on the Server zone, this is the gateway's <%= $first_2_octets %>.3.x address.
 
 
 ### Understanding IP forwarding
@@ -132,7 +132,7 @@ This should now show `1`. Without IP forwarding enabled on the gateway, no traff
 
 ### Reaching hosts on other segments via SSH
 
-Currently, your desktop can only reach hosts on the Internal LAN (10.0.1.0/24). The only other host on this segment is the **gateway**. The **server** (10.0.3.0/24) and **web_server** (10.0.2.0/24) are both on different subnets, so you cannot reach them directly.
+Currently, your desktop can only reach hosts on the Internal LAN (<%= $desktop_vlan %>/24). The only other host on this segment is the **gateway**. The **server** (<%= $server_vlan %>/24) and **web_server** (<%= $web_server_vlan %>/24) are both on different subnets, so you cannot reach them directly.
 
 However, the **gateway** has interfaces on all three segments. This means that once you SSH into the gateway, you can SSH from there to the server or the web_server even before IP forwarding or routes are configured.
 

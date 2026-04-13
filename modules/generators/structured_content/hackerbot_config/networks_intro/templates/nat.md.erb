@@ -10,7 +10,7 @@ Without NAT, every device that wanted to communicate with the outside world woul
 
 NAT also provides a degree of implicit security as hosts on the internal network are not directly reachable from the outside because they have no routable address. However, this should not be relied upon and is not as secure as deploying a proper firewall.
 
-In this lab, NAT is used on the **gateway** to allow hosts on the internal LAN (10.0.1.0/24) to
+In this lab, NAT is used on the **gateway** to allow hosts on the internal LAN (<%= $desktop_vlan %>/24) to
 communicate across segments. You are going to configure it from scratch.
 
 ### Setting up outbound NAT (MASQUERADE)
@@ -24,10 +24,10 @@ The most common form of NAT in small networks is **MASQUERADE**. Rather than spe
 ssh <%= $gateway_lan_ip %>
 
 # On: gateway
-sudo iptables -t nat -A POSTROUTING -s 10.0.1.0/24 -o ens20 -j MASQUERADE
+sudo iptables -t nat -A POSTROUTING -s <%= $desktop_vlan %>/24 -o ens20 -j MASQUERADE
 ```
 
-This rule says that for any packet originating from the 10.0.1.0/24 subnet leaving via `ens20`, rewrite the source IP to match the gateway's address on that interface.
+This rule says that for any packet originating from the <%= $desktop_vlan %>/24 subnet leaving via `ens20`, rewrite the source IP to match the gateway's address on that interface.
 
 ==Verify the rule has been added:==
 ```bash
@@ -67,6 +67,6 @@ sudo tcpdump -i any -n port 80
 curl http://<%= $webserver_ip %>
 ```
 
-Look at the source IP address in the tcpdump output on the web_server. You should see that the incoming packets appear to originate from the **gateway's DMZ-facing IP** (<%= $gateway_dmz_ip %>), not from your desktop's real address on the 10.0.1.0/24 subnet. The gateway has rewritten the source before forwarding the packet into the DMZ.
+Look at the source IP address in the tcpdump output on the web_server. You should see that the incoming packets appear to originate from the **gateway's DMZ-facing IP** (<%= $gateway_dmz_ip %>), not from your desktop's real address on the <%= $desktop_vlan %>/24 subnet. The gateway has rewritten the source before forwarding the packet into the DMZ.
 
 > **Consider the implications of this for logging and attribution. If the web_server were compromised and an attacker examined its access logs, what would they and what would they *not* be able to learn about the internal network?

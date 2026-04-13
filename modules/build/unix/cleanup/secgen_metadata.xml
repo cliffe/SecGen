@@ -14,6 +14,7 @@
   <read_fact>root_password</read_fact>
   <read_fact>clobber_file_times</read_fact>
   <read_fact>disable_ssh</read_fact>
+  <read_fact>remove_proxy_env_vars</read_fact>
 
   <default_input into="remove_history">
     <value>true</value>
@@ -28,6 +29,10 @@
   </default_input>
 
   <default_input into="disable_ssh">
+    <value>false</value>
+  </default_input>
+
+  <default_input into="remove_proxy_env_vars">
     <value>false</value>
   </default_input>
 

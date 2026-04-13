@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+
+  <name>Self-Signed TLS Certificate Generator</name>
+  <author>Tom Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Generates a self-signed RSA certificate and private key. strings_to_leak[0] is used as the CN (typically the domain); the uri input embeds a full URI in the SAN extension pointing to the flag endpoint.</description>
+
+  <type>self_signed_cert</type>
+  <platform>unix</platform>
+
+  <read_fact>domain</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>uri</read_fact>
+  <read_fact>key_size</read_fact>
+  <read_fact>days</read_fact>
+
+  <default_input into="domain">
+    <value>localhost</value>
+  </default_input>
+
+  <!-- strings_to_leak[0] -> CN (use domain for realistic cert)        -->
+  <!-- strings_to_leak[1] -> flag served at the san uri path by Apache -->
+  <default_input into="strings_to_leak">
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+  </default_input>
+
+  <!-- Full URI embedded in SAN -->
+  <default_input into="uri">
+    <value>localhost</value>
+  </default_input>
+
+  <default_input into="key_size">
+    <value>2048</value>
+  </default_input>
+
+  <default_input into="days">
+    <value>365</value>
+  </default_input>
+
+  <output_type>cert_pem</output_type>
+
+</generator>

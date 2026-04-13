@@ -42,7 +42,7 @@ This should now fail as the gateway is dropping all forwarded traffic.
 ==Add a rule to allow traffic from the desktop's subnet to the webserver's subnet:==
 ```bash
 # On: gateway
-sudo iptables -A FORWARD -s 10.0.1.0/24 -d 10.0.2.0/24 -j ACCEPT
+sudo iptables -A FORWARD -s <%= $desktop_vlan %>/24 -d <%= $web_server_vlan %>/24 -j ACCEPT
 ```
 
 ==Try pinging the webserver again from the desktop - again, it should fail:==
@@ -73,7 +73,7 @@ This should now work. The first rule allows new connections from the desktop to 
 ==Now add a rule to allow the desktop to reach the server zone as well:==
 ```bash
 # On: gateway
-sudo iptables -A FORWARD -s 10.0.1.0/24 -d 10.0.3.0/24 -j ACCEPT
+sudo iptables -A FORWARD -s <%= $desktop_vlan %>/24 -d <%= $server_vlan %>/24 -j ACCEPT
 ```
 
 ==Verify the desktop can now reach both zones:==

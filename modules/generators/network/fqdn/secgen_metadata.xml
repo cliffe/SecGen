@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Fully-qualified Domain Generator</name>
+  <author>Tom Shaw</author>
+  <module_license>GPLv3</module_license>
+  <description>Generates domain and adds subdomain(s) in a stack, FILO. e.g. with domain=[localhost] and subdomains=[test,web] we get test.web.localhost.co.uk or  </description>
+
+  <type>fqdn</type>
+  <type>domain</type>
+  <platform>linux</platform>
+
+  <read_fact>domain</read_fact>
+  <read_fact>subdomains</read_fact>
+
+  <default_input into="domain">
+    <value>localhost</value>
+  </default_input>
+
+  <default_input into="subdomains">
+    <value>example</value>
+  </default_input>
+
+  <output_type>domain</output_type>
+
+</generator>

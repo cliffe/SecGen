@@ -1,0 +1,13 @@
+*filter
+-P INPUT ACCEPT
+-P OUTPUT ACCEPT
+<% @filter_rules.each do |rule| -%>
+  <%= rule %>
+<% end -%>
+COMMIT
+
+*nat
+<% @nat_rules_clean.each do |rule| -%>
+  <%= rule %>
+<% end -%>
+COMMIT

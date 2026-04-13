@@ -6,9 +6,7 @@
   <name>Hackerbot config for introduction to network security lab</name>
   <author>Tom Shaw</author>
   <module_license>GPLv3</module_license>
-  <description>Generates a config file for a hackerbot for an intro to network security lab.
-    Topics covered: Detecting changes to resources using backups;
-    File integrity checkers.</description>
+  <description>Generates a config file for a hackerbot for an intro to network security lab. Topics covered: network segmentation and firewalls</description>
 
   <type>hackerbot_config</type>
   <platform>linux</platform>
@@ -16,6 +14,11 @@
   <read_fact>accounts</read_fact>
   <read_fact>flags</read_fact>
   <read_fact>root_password</read_fact>
+  <read_fact>desktop_ip</read_fact>
+  <read_fact>web_server_ip</read_fact>
+  <read_fact>server_ip</read_fact>
+  <read_fact>hackerbot_server_ip</read_fact>
+
 
   <default_input into="accounts">
     <generator type="account">

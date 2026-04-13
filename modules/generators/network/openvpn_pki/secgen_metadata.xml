@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>openvpn_pki</name>
+  <author>Tom Shaw</author>
+  <module_license>GPLv3</module_license>
+  <description>Generates a full OpenVPN PKI including CA, server cert/key, DH params, and one or more client cert/key pairs. Outputs a single JSON bundle consumed by openvpn_server and openvpn_client_config.</description>
+
+  <type>openvpn_pki</type>
+  <platform>linux</platform>
+
+  <read_fact>server_ip</read_fact>
+  <read_fact>port</read_fact>
+  <read_fact>vpn_subnet</read_fact>
+  <read_fact>vpn_subnet_mask</read_fact>
+  <read_fact>push_routes</read_fact>
+  <read_fact>num_clients</read_fact>
+
+  <default_input into="port">
+    <value>1194</value>
+  </default_input>
+
+  <default_input into="vpn_subnet">
+    <value>10.8.0.0</value>
+  </default_input>
+
+  <default_input into="vpn_subnet_mask">
+    <value>255.255.255.0</value>
+  </default_input>
+
+  <default_input into="num_clients">
+    <value>1</value>
+  </default_input>
+
+  <output_type>openvpn_pki</output_type>
+</generator>

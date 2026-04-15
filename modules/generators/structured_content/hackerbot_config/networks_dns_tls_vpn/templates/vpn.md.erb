@@ -36,7 +36,16 @@ curl http://<%= $webserver_ip %>
 
 All of these should fail. The remote VM is on the external segment (<%= $remote_ip %>/24) and has no route into the internal network. The gateway's firewall also blocks direct access from the external segment to internal systems.
 
-This is the situation a remote worker faces - they can reach the gateway's external interface, but cannot access any internal resources.
+
+Now, try to ping the gateway's external IP.
+
+```
+# On: remote
+ping <%= $gateway_ext_ip %>
+
+```
+
+This should succeed. Remote workers can typically only access the gateway's external interface, and cannot access any internal resources without VPN access.
 
 ### Understanding the OpenVPN client configuration
 
@@ -65,7 +74,7 @@ SSH into the gateway from the desktop:
 
 ```
 # On: desktop
-ssh <%= $gateway_lan_ip %>
+ssh gateway.<%= $domain %>
 ```
 
 Start the OpenVPN server:
@@ -86,7 +95,7 @@ You should see a `tun0` interface. The server is now listening for client connec
 
 ### Establishing the VPN tunnel from the remote VM
 
-Log in to the remote VM via the VM console and start the OpenVPN client:
+Switch back to the remote VM and start the OpenVPN client:
 
 ```
 # On: remote
@@ -112,7 +121,7 @@ Now try to reach internal hosts:
 ping <%= $desktop_ip %>
 ```
 
-This will probably still fail. The tunnel is up, but recall from the previous lab that the gateway has a default FORWARD policy of DROP. There is no rule yet allowing traffic arriving from the VPN tunnel interface to be forwarded onward. This is the same problem you solved before - a new network path requires a new firewall rule.
+This will probably still fail. The tunnel is up, but recall from the previous lab that the gateway has a default FORWARD policy of DROP. There is no rule yet allowing traffic arriving from the VPN tunnel interface to be forwarded onward. This is the same problem you solved before, where a new network path requires a new firewall rule.
 
 ### Opening firewall rules for VPN traffic
 

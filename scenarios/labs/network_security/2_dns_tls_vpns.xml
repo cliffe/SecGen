@@ -118,36 +118,6 @@
       </generator>
     </input>
 
-    <!-- Flag served by Apache at the hex path embedded in the URI -->
-    <input into_datastore="tls_cert_flag">
-      <generator type="flag_generator"/>
-    </input>
-
-    <input into_datastore="tls_cert_uri">
-      <generator type="string_concat">
-        <input into="strings_to_join">
-          <value>https://web.hacktivity-netsec.co.uk/</value>
-          <generator type="hex_generator"/>
-        </input>
-      </generator>
-    </input>
-
-    <!-- Cert bundle — CN is the domain, URI embedded in SAN -->
-    <input into_datastore="tls_cert_bundle">
-      <generator module_path=".*/self_signed_cert">
-        <input into="domain">
-          <datastore>web_domain</datastore>
-        </input>
-        <input into="strings_to_leak">
-          <datastore>web_domain</datastore>
-          <datastore>tls_cert_flag</datastore>
-        </input>
-        <input into="uri">
-          <datastore>tls_cert_uri</datastore>
-        </input>
-      </generator>
-    </input>
-
     <utility module_path=".*/parameterised_accounts">
       <input into="accounts" into_datastore="account">
         <generator type="account">
@@ -393,6 +363,33 @@
   <system>
     <system_name>web_server</system_name>
     <base platform="linux" distro="Debian 12" type="desktop"/>
+
+    <input into_datastore="tls_cert_uri">
+      <generator type="string_concat">
+        <input into="strings_to_join">
+          <value>https://web.hacktivity-netsec.co.uk/</value>
+          <generator type="hex_generator"/>
+        </input>
+      </generator>
+    </input>
+
+    <!-- Cert bundle — CN is the domain, URI embedded in SAN -->
+    <input into_datastore="tls_cert_bundle">
+      <generator module_path=".*/self_signed_cert">
+        <input into="domain">
+          <datastore>web_domain</datastore>
+        </input>
+        <input into="strings_to_leak">
+          <datastore>web_domain</datastore>
+        </input>
+       <input into="strings_to_leak"  into_datastore="tls_cert_flag">
+          <generator type="flag_generator"/>
+        </input>
+        <input into="uri">
+          <datastore>tls_cert_uri</datastore>
+        </input>
+      </generator>
+    </input>
 
     <utility module_path=".*/parameterised_accounts">
       <input into="accounts">

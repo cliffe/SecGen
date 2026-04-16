@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+  <system>
+    <system_name>testing_ordering</system_name>
+    <base platform="linux" distro="Debian 7.8" type="server"/>
+
+    <input into_datastore="IP_addresses">
+      <value>172.17.0.0</value>
+    </input>
+
+
+    <input into_datastore="web_domain">
+      <generator type="fqdn">
+        <input into="domain">
+          <value>web.test.co.uk</value>
+        </input>
+        <input into="subdomains">
+          <value>web</value>
+        </input>
+      </generator>
+    </input>
+
+    <input into_datastore="tls_cert_uri">
+      <generator type="concat_string">
+        <input into="strings_to_join">
+          <value>https://</value>
+          <datastore>web_domain</datastore>
+          <value>/</value>
+          <generator type="hex_generator"/>
+          <value>/</value>
+        </input>
+      </generator>
+    </input>
+
+
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="0">IP_addresses</datastore>
+      </input>
+    </network>
+  </system>
+
+</scenario>

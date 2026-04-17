@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
 
     <name>Erlang SSH RCE</name>
-    <author>Your Name</author>
+    <author>Rosie Fletcher</author>
     <description>
         A server is running an Erlang/OTP SSH daemon vulnerable to CVE-2025-32433.
         Exploit the pre-authentication RCE to gain root access and capture the flag.

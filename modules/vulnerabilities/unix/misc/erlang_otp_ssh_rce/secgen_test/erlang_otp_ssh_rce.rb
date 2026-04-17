@@ -21,17 +21,18 @@ class ErlangOtpSshRceTest < PostProvisionTest
     result = @ssh.exec!('erl -eval "erlang:display(erlang:system_info(otp_release)), halt()." -noshell 2>&1')
     version = result.strip
     puts "Erlang/OTP version: #{version}"
-    assert(version.match?(/^(25|26)/), "Erlang/OTP version should be vulnerable (25.x or 26.x), got: #{version}")
+    assert(version.include?('26'), "Erlang/OTP version should be vulnerable 26.x, got: #{version}")
   end
 
   def test_flag_files_exist
-    result = @ssh.exec!('ls -la /home/erlang_ssh/')
-    assert(!result.empty?, 'Flag files should exist in /home/erlang_ssh/')
+    daemon_user = @ssh.exec!("ps -eo user,cmd | awk '/start_ssh\\.escript/ && !/awk/ {print $1; exit}'").strip
+    result = @ssh.exec!("ls -la /home/#{daemon_user}/")
+    assert(!result.empty?, "Flag files should exist in /home/#{daemon_user}/")
   end
 
-  def test_beam_file_compiled
-    result = @ssh.exec!('test -f /opt/erlang_ssh/ssh_daemon.beam && echo "exists"')
-    assert(result.include?('exists'), 'ssh_daemon.beam should be compiled')
+  def test_start_script_exists
+    result = @ssh.exec!('test -x /opt/erlang_ssh/start_ssh.escript && echo "exists"')
+    assert(result.include?('exists'), 'start_ssh.escript should exist and be executable')
   end
 end
 

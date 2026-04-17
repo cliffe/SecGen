@@ -3,7 +3,7 @@
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
   <name>Erlang/OTP SSH Unauthenticated RCE</name>
-  <author>Your Name</author>
+  <author>Rosie Fletcher</author>
   <module_license>MIT</module_license>
   <description>Erlang/OTP SSH server allows unauthenticated remote code execution via crafted SSH protocol messages. CVE-2025-32433 affects versions prior to OTP-27.3.3, OTP-26.2.5.11, and OTP-25.3.2.20. The vulnerability exists in the SSH handshake message handling where message types >= 80 are incorrectly processed before authentication.</description>
 
@@ -15,6 +15,7 @@
 
   <read_fact>strings_to_leak</read_fact>
   <read_fact>leaked_filenames</read_fact>
+  <read_fact>unix_username</read_fact>
 
   <default_input into="strings_to_leak">
     <generator type="message_generator"/>
@@ -24,9 +25,11 @@
     <generator type="filename_generator"/>
   </default_input>
 
+  <default_input into="unix_username">
+    <generator type="username_generator"/>
+  </default_input>
+
   <cve>CVE-2025-32433</cve>
-  <cvss_base_score>10.0</cvss_base_score>
-  <cvss_vector>AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H</cvss_vector>
   <reference>https://github.com/erlang/otp/security/advisories/GHSA-37cp-fgq5-7wc2</reference>
   <reference>https://nvd.nist.gov/vuln/detail/CVE-2025-32433</reference>
   <software_name>erlang</software_name>

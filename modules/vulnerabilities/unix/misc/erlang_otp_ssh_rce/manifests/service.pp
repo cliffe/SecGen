@@ -54,7 +54,7 @@ WantedBy=multi-user.target
       File['/var/log/erlang_otp_ssh_rce'],
       Exec['generate-ssh-host-ecdsa-key'],
       File['/opt/erlang_ssh/start_ssh.escript'],
-      Exec['install-erlang-otp-source'],
+      Exec['install-erlang-otp-prebuilt'],
       User[$ssh_username],
     ],
   }

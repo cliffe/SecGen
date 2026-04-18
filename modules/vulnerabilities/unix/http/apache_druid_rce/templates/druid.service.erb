@@ -9,6 +9,9 @@ WorkingDirectory=/usr/local/apache-druid/
 ExecStart=/usr/local/apache-druid/bin/start-nano-quickstart
 Restart=always
 RestartSec=1
+Environment="JAVA_HOME=/usr/lib/jvm/java-8-openjdk"
+Environment="PATH=/usr/lib/jvm/java-8-openjdk/bin:/usr/bin:/bin"
+Environment="DRUID_SKIP_JAVA_CHECK=1"
 
 [Install]
 WantedBy=multi-user.target

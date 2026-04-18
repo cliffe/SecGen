@@ -91,13 +91,16 @@
 
     <system>
         <system_name>server</system_name>
-        <base distro="Debian 10" type="desktop" name="KDE" />
+        <base distro="Debian 12" type="desktop" name="KDE" />
 
         <vulnerability module_path=".*/apache_druid_rce">
             <input into="strings_to_leak">
                 <generator type="flag_generator" />
             </input>
-            <input into="strings_to_pre_leak">
+        </vulnerability>
+
+        <vulnerability module_path=".*/sudo_root_more">
+        <input into="strings_to_leak">
                 <encoder type="^(ascii|alpha)_reversible$" difficulty="low">
                     <input into="strings_to_encode">
                         <generator type="flag_generator" />
@@ -105,8 +108,6 @@
                 </encoder>
             </input>
         </vulnerability>
-
-        <vulnerability module_path=".*/sudo_root_more"></vulnerability>
 
         <network type="private_network">
             <input into="IP_address">

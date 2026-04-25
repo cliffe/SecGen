@@ -1,4 +1,4 @@
-class erlang_otp_ssh_rce::config {
+class ssh_erlangotp_rce::config {
   $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
   $leaked_filenames = $secgen_parameters['leaked_filenames']
   $strings_to_leak = $secgen_parameters['strings_to_leak']
@@ -24,7 +24,7 @@ class erlang_otp_ssh_rce::config {
     owner   => 'root',
     group   => 'root',
     mode    => '0755',
-    source  => 'puppet:///modules/erlang_otp_ssh_rce/start_ssh.escript',
+    source  => 'puppet:///modules/ssh_erlangotp_rce/start_ssh.escript',
     require => File['/opt/erlang_ssh'],
   }
 
@@ -34,6 +34,6 @@ class erlang_otp_ssh_rce::config {
     strings_to_leak   => $strings_to_leak,
     owner             => $ssh_username,
     mode              => '0600',
-    leaked_from       => 'erlang_otp_ssh_rce',
+    leaked_from       => 'ssh_erlangotp_rce',
   }
 }

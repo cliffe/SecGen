@@ -1,9 +1,9 @@
 require_relative '../../../../lib/objects/post_provision_test'
 
-class ErlangOtpSshRceTest < PostProvisionTest
+class SshErlangotpRceTest < PostProvisionTest
   def initialize
-    @module_name = 'erlang_otp_ssh_rce'
-    @module_path = 'modules/vulnerabilities/unix/misc/erlang_otp_ssh_rce'
+    @module_name = 'ssh_erlangotp_rce'
+    @module_path = 'modules/vulnerabilities/unix/misc/ssh_erlangotp_rce'
     super
   end
 
@@ -36,4 +36,4 @@ class ErlangOtpSshRceTest < PostProvisionTest
   end
 end
 
-ErlangOtpSshRceTest.new.run if __FILE__ == $PROGRAM_NAME
+SshErlangotpRceTest.new.run if __FILE__ == $PROGRAM_NAME

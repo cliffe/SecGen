@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
 
-    <name>Erlang SSH RCE</name>
+    <name>SSH-it happens</name>
     <author>Rosie Fletcher</author>
     <description>
         A server is running an Erlang/OTP SSH daemon vulnerable to CVE-2025-32433.
@@ -76,15 +76,21 @@
     </system>
 
     <system>
-        <system_name>erlang_server</system_name>
+        <system_name>server</system_name>
         <base distro="Debian 12" type="desktop" name="KDE" />
 
-        <vulnerability module_path=".*/erlang_otp_ssh_rce">
+.*/ssh_erlangotp_rce">
             <input into="strings_to_leak">
                 <generator type="flag_generator" />
             </input>
             <input into="ssh_port">
                 <value>2222</value>
+            </input>
+        </vulnerability>
+
+        <vulnerability module_path=".*/sudo_root_awk | .*/sudo_root_less">
+            <input into="strings_to_leak">
+                <generator type="flag_generator"/>
             </input>
         </vulnerability>
 

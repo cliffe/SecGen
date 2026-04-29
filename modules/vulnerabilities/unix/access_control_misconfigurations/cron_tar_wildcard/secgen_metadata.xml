@@ -5,10 +5,13 @@
   <name>Cron Tar Wildcard Privilege Escalation</name>
   <author>Rosie Fletcher</author>
   <module_license>MIT</module_license>
-  <description>A root cron job runs tar with a wildcard (*) inside a user-writable directory. This can be
+  <description>A cron job runs tar with a wildcard (*) inside a user-writable directory. This can be
     exploited using tar checkpoint flag injection by creating specially-named files (--checkpoint=1 and
-    --checkpoint-action=exec=sh exploit.sh) to execute arbitrary commands as root.
-  </description>
+    --checkpoint-action=exec=sh exploit.sh) to execute arbitrary commands as the cron user.
+
+    By default, the backup directory is world-writable (mode 0777) allowing any user to exploit.
+    Optionally, write access can be restricted to a specific user via the restrict_write_user parameter,
+    enabling targeted privilege escalation scenarios where only that user can exploit the vulnerability.</description>
 
   <type>access_control_misconfiguration</type>
   <type>cron_privilege_escalation</type>
@@ -21,6 +24,8 @@
   <read_fact>leaked_filenames</read_fact>
   <read_fact>show_crontab_hint</read_fact>
   <read_fact>cron_location</read_fact>
+  <read_fact>cron_user</read_fact>
+  <read_fact>restrict_write_user</read_fact>
 
   <default_input into="strings_to_leak">
     <generator type="flag_generator"/>
@@ -33,6 +38,12 @@
   </default_input>
   <default_input into="cron_location">
     <generator module_path="generators/random/random_file_path"/>
+  </default_input>
+  <default_input into="cron_user">
+    <value>root</value>
+  </default_input>
+  <default_input into="restrict_write_user">
+    <value></value>
   </default_input>
 
   <requires>

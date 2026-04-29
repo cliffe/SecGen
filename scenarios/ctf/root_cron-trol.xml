@@ -3,19 +3,22 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
 
-  <name>Cron Privilege Escalation</name>
-  <author>SecGen</author>
-  <description>SSH into the target server as a standard user and escalate to root via cron
-    misconfigurations. Find the flag in /root/.
-  </description>
+  <name>Root Cron-trol</name>
+  <author>Rosie Fletcher</author>
+  <description>A two-stage privilege escalation challenge. Gain initial SSH access as a low-privileged user,
+    then perform horizontal privilege escalation by exploiting a writable cron script owned by another user.
+    Finally, achieve vertical privilege escalation to root through a tar wildcard injection vulnerability in a
+    root-owned cron job. Master the art of cron-based privilege escalation!</description>
 
   <type>ctf</type>
   <type>attack-ctf</type>
   <type>pwn-ctf</type>
-  <difficulty>easy</difficulty>
+  <difficulty>intermediate</difficulty>
   <CyBOK KA="AAA" topic="Authorisation">
     <keyword>Elevated privileges</keyword>
     <keyword>Vulnerabilities and attacks on access control misconfigurations</keyword>
+    <keyword>Horizontal privilege escalation</keyword>
+    <keyword>Vertical privilege escalation</keyword>
   </CyBOK>
   <CyBOK KA="OSV" topic="Primitives for Isolation and Mediation">
     <keyword>Access controls and operating systems</keyword>
@@ -72,17 +75,41 @@
   </system>
 
   <system>
-    <system_name>cron_privesc_server</system_name>
+    <system_name>server</system_name>
     <base distro="Debian 12" type="desktop" name="KDE"/>
+
+    <input into_datastore="lowpriv_user">
+      <generator type="username_generator"/>
+    </input>
+    <input into_datastore="lowpriv_pass">
+      <value>tiaspbiqe2r</value>
+    </input>
+    <input into_datastore="target_user">
+      <value>backup</value>
+    </input>
+    <input into_datastore="target_pass">
+      <generator type="weak_password_generator"/>
+    </input>
 
     <utility module_path=".*/parameterised_accounts">
       <input into="accounts">
         <generator type="account">
           <input into="username">
-            <generator type="username_generator"/>
+            <datastore>lowpriv_user</datastore>
           </input>
           <input into="password">
-            <value>tiaspbiqe2r</value>
+            <datastore>lowpriv_pass</datastore>
+          </input>
+          <input into="super_user">
+            <value>false</value>
+          </input>
+        </generator>
+        <generator type="account">
+          <input into="username">
+            <datastore>target_user</datastore>
+          </input>
+          <input into="password">
+            <datastore>target_pass</datastore>
           </input>
           <input into="super_user">
             <value>false</value>
@@ -91,6 +118,9 @@
       </input>
     </utility>
 
+    <input into_datastore="horizontal_flag">
+      <generator type="flag_generator"/>
+    </input>
     <input into_datastore="root_flag">
       <generator type="flag_generator"/>
     </input>
@@ -101,15 +131,38 @@
       </input>
     </vulnerability>
 
+    <vulnerability module_path=".*/cron_writable_script">
+      <input into="strings_to_leak">
+        <datastore>horizontal_flag</datastore>
+      </input>
+      <input into="cron_user">
+        <datastore>target_user</datastore>
+      </input>
+      <input into="cron_location">
+        <generator module_path="generators/random/random_file_path">
+          <input into="username">
+            <datastore>target_user</datastore>
+          </input>
+        </generator>
+      </input>
+    </vulnerability>
+
     <vulnerability module_path=".*/cron_tar_wildcard">
       <input into="strings_to_leak">
         <datastore>root_flag</datastore>
       </input>
-    </vulnerability>
-
-    <vulnerability module_path=".*/cron_writable_script">
-      <input into="strings_to_leak">
-        <datastore>root_flag</datastore>
+      <input into="cron_user">
+        <value>root</value>
+      </input>
+      <input into="restrict_write_user">
+        <datastore>target_user</datastore>
+      </input>
+      <input into="cron_location">
+        <generator module_path="generators/random/random_file_path">
+          <input into="username">
+            <datastore>target_user</datastore>
+          </input>
+        </generator>
       </input>
     </vulnerability>
 

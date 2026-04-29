@@ -136,6 +136,13 @@
     <input into_datastore="root_flag">
       <generator type="flag_generator"/>
     </input>
+    <input into_datastore="cron_location">
+      <generator module_path="generators/random/random_file_path">
+        <input into="username">
+          <datastore>target_user</datastore>
+        </input>
+      </generator>
+    </input>
 
     <!-- SSH for initial access -->
     <vulnerability module_path=".*/ssh_root_login">
@@ -153,11 +160,7 @@
         <datastore>target_user</datastore>
       </input>
       <input into="cron_location">
-        <generator module_path="generators/random/random_file_path">
-          <input into="username">
-            <datastore>target_user</datastore>
-          </input>
-        </generator>
+        <datastore>cron_location</datastore>
       </input>
     </vulnerability>
 
@@ -173,11 +176,7 @@
         <datastore>target_user</datastore>
       </input>
       <input into="cron_location">
-        <generator module_path="generators/random/random_file_path">
-          <input into="username">
-            <datastore>target_user</datastore>
-          </input>
-        </generator>
+        <datastore>cron_location</datastore>
       </input>
     </vulnerability>
 

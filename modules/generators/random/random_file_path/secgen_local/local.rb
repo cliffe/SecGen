@@ -1,6 +1,5 @@
 #!/usr/bin/ruby
 require_relative '../../../../../lib/objects/local_string_generator.rb'
-require 'fileutils'
 require 'logger'
 
 class FilePathGenerator < StringGenerator

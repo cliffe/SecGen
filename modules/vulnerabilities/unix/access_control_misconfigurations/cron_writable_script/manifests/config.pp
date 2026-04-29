@@ -22,6 +22,15 @@ class cron_writable_script::config {
     default => $cron_user_raw[0],
   }
 
+  # Validate cron_user exists (if not root)
+  if $cron_user != 'root' {
+    exec { "validate_cron_user_${cron_user}":
+      command => "/usr/bin/id ${cron_user}",
+      unless  => "/usr/bin/id ${cron_user}",
+      path    => ['/usr/bin'],
+    }
+  }
+
   $cron_script_path = "${cron_location}/cron.sh"
   $leak_storage_dir = $cron_user ? {
     'root' => '/root',
@@ -34,6 +43,10 @@ class cron_writable_script::config {
     group   => 'root',
     mode    => '0777',
     content => "#!/bin/bash -p\necho '${cron_message}' >> /tmp/cron.log\n",
+    require => $cron_user ? {
+      'root' => undef,
+      default => Exec["validate_cron_user_${cron_user}"],
+    },
   }
 
   cron { 'writable_cron_script':

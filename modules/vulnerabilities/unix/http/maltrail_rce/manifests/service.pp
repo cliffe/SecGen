@@ -1,7 +1,6 @@
-# Class: maltrail_rce::service
 # Service management for MalTrail
 class maltrail_rce::service {
-  require maltrail_rce::configure
+  require maltrail_rce::config
 
   $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
   $user = $secgen_parameters['unix_username'][0]

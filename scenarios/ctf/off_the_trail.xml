@@ -16,7 +16,7 @@
   <type>ctf</type>
   <type>attack-ctf</type>
   <type>pwn-ctf</type>
-  <difficulty>intermediate</difficulty>
+  <difficulty>low</difficulty>
 
   <!-- Command Injection / RCE -->
   <CyBOK KA="MAT" topic="Attacks and exploitation">
@@ -91,20 +91,32 @@
 
   <!-- Target VM with MalTrail RCE vulnerability and SUID privilege escalation -->
   <system>
-    <system_name>maltrail_server</system_name>
+    <system_name>server</system_name>
     <base distro="Debian 12" type="desktop" name="KDE"/>
 
     <!-- MalTrail RCE vulnerability - provides initial access as maltrail user -->
     <!-- Dual flag challenge: Flag 1 in filesystem, Flag 2 embedded in MalTrail threat data -->
+    <!-- Generate flag at scenario level so it appears in project info -->
+    <input into_datastore="maltrail_flag">
+      <generator type="flag_generator"/>
+    </input>
+
     <vulnerability module_path=".*/maltrail_rce" access="remote" privilege="user_rwx">
       <input into="strings_to_leak">
-        <generator type="flag_generator" />
+        <generator type="flag_generator"/>
       </input>
-      <input into="maltrail_flag">
-        <generator type="flag_generator" />
+      <input into="maltrail_data">
+        <generator type="maltrail_data">
+          <input into="embedded_flag">
+            <datastore>maltrail_flag</datastore>
+          </input>
+        </generator>
       </input>
-      <input into="data_volume">
-        <value>medium</value>
+    </vulnerability>
+
+    <vulnerability module_path=".*/writable_passwd|.*/writable_shadow">
+      <input into="strings_to_leak">
+        <generator type="flag_generator"/>
       </input>
     </vulnerability>
 

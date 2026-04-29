@@ -1,6 +1,4 @@
-# Class: maltrail_rce::configure
-# Configuration for vulnerable MalTrail with randomized threat data and dual flags
-class maltrail_rce::configure {
+class maltrail_rce::config {
   $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
   $modulename = 'maltrail_rce'
   $user = $secgen_parameters['unix_username'][0]

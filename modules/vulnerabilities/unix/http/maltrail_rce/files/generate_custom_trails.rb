@@ -22,6 +22,9 @@ begin
   trails << "#"
   trails << "# Malicious IPs"
   
+  # Check for flag trail first
+  flag_trail = data['custom_trails'].find { |t| t.include?('update.flag.local') }
+  
   # Add IP-based trails
   data['custom_trails'].each do |trail_entry|
     # Check if it's an IP (starts with a number)
@@ -36,9 +39,17 @@ begin
   # Add domain-based trails
   data['custom_trails'].each do |trail_entry|
     # Check if it's a domain (starts with a letter)
-    if trail_entry =~ /^[a-z]/i
+    if trail_entry =~ /^[a-z]/i && !trail_entry.include?('update.flag.local')
       trails << trail_entry
     end
+  end
+  
+  # Insert flag trail in the middle of the file if found
+  if flag_trail
+    insert_position = (trails.length / 2).to_i
+    trails.insert(insert_position, "#")
+    trails.insert(insert_position + 1, "# SUSPICIOUS DOMAIN")
+    trails.insert(insert_position + 2, flag_trail)
   end
   
   # Output the trails content

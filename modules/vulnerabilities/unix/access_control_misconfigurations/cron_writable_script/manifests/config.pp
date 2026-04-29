@@ -10,8 +10,16 @@ class cron_writable_script::config {
     undef   => 'hello from cron',
     default => $secgen_parameters['cron_message'],
   }
+  $cron_user = $secgen_parameters['cron_user'] ? {
+    undef   => 'root',
+    default => $secgen_parameters['cron_user'],
+  }
 
   $cron_script_path = "${cron_location}/cron.sh"
+  $leak_storage_dir = $cron_user ? {
+    'root' => '/root',
+    default => "/home/${cron_user}",
+  }
 
   file { $cron_script_path:
     ensure  => file,
@@ -23,17 +31,17 @@ class cron_writable_script::config {
 
   cron { 'writable_cron_script':
     command => $cron_script_path,
-    user    => 'root',
+    user    => $cron_user,
     hour    => '*',
     minute  => '*',
     require => File[$cron_script_path],
   }
 
   ::secgen_functions::leak_files { 'cron_writable_script-file-leak':
-    storage_directory => '/root',
+    storage_directory => $leak_storage_dir,
     leaked_filenames  => $leaked_filenames,
     strings_to_leak   => $strings_to_leak,
-    owner             => 'root',
+    owner             => $cron_user,
     mode              => '0600',
     leaked_from       => 'cron_writable_script',
   }

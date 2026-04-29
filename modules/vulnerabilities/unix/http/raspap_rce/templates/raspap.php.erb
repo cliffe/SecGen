@@ -10,7 +10,7 @@ function getConfig()
 {
     $config = array(
         'admin_user' => 'admin',
-        'admin_pass' => '$2y$10$YKIyWAmnQLtiJAy6QgHQ.eCpY4m.HCEbiHaTgN6.acNC6bDElzt.i'  // default: secret
+        'admin_pass' => ''  // Will be read from raspap.auth file
     );
 
     if (file_exists(RASPI_CONFIG . '/raspap.auth')) {

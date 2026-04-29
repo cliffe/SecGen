@@ -7,6 +7,7 @@ class raspap_rce::config {
   $strings_to_leak = $secgen_parameters['strings_to_leak']
   $leaked_filenames = $secgen_parameters['leaked_filenames']
   $strings_to_pre_leak = $secgen_parameters['strings_to_pre_leak']
+  $admin_password = $secgen_parameters['admin_password'][0]
 
   $user = 'www-data'
   $install_dir = '/var/www/raspap'
@@ -30,6 +31,20 @@ class raspap_rce::config {
     group   => $user,
     mode    => '0644',
     require => Class['raspap_rce::install'],
+  }
+
+  # Create raspap.auth file with bcrypt hashed admin password
+  # RaspAP expects: line 1 = username, line 2 = bcrypt hash
+  # htpasswd outputs username:hash format, so we extract and create separate lines
+  exec { 'create-raspap-auth':
+    command => "htpasswd -bcB /tmp/raspap_auth_temp admin '${admin_password}' && awk -F: '{print $1; print $2}' /tmp/raspap_auth_temp > ${install_dir}/config/raspap.auth && rm /tmp/raspap_auth_temp",
+    require => [Class['raspap_rce::install'], Package['apache2-utils']],
+    creates => "${install_dir}/config/raspap.auth",
+  }
+  -> file { "${install_dir}/config/raspap.auth":
+    owner   => $user,
+    group   => $user,
+    mode    => '0644',
   }
 
   # Configure lighttpd

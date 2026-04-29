@@ -11,7 +11,6 @@
     zone transfer misconfiguration, inspect TLS certificates, and establish an OpenVPN tunnel from an external client
     into the internal network. Builds on the network topology from the Network Security Fundamentals lab.
   </description>
-  <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/network_security/2-secure-comms/</lab_sheet_url>
 
   <type>ctf-lab</type>
   <type>lab-sheet</type>

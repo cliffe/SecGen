@@ -12,7 +12,6 @@
         investigate firewall rules, discover misconfigurations, and build
         segmentation policies using iptables.
     </description>
-    <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/network_security/1-intro-network-security/</lab_sheet_url>
 
     <type>ctf-lab</type>
     <type>lab-sheet</type>

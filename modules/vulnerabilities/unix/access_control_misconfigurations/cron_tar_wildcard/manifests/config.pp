@@ -36,6 +36,14 @@ class cron_tar_wildcard::config {
     default => "/home/${cron_user}",
   }
 
+  # Ensure cron_location directory exists (may be nested like /home/user/.config/local)
+  file { $cron_location:
+    ensure  => directory,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
+  }
+
   # Declare sudo class at top level (sudo::conf requires $sudo::config_dir)
   class { 'sudo':
     config_file_replace => false,
@@ -83,7 +91,7 @@ class cron_tar_wildcard::config {
       owner   => $backup_dir_owner,
       group   => $backup_dir_group,
       mode    => $backup_dir_mode,
-      require => Exec['validate_restricted_user'],
+      require => [Exec['validate_restricted_user'], File[$cron_location]],
     }
   } else {
     $backup_dir_owner = 'root'
@@ -109,6 +117,7 @@ class cron_tar_wildcard::config {
       owner  => $backup_dir_owner,
       group  => $backup_dir_group,
       mode   => $backup_dir_mode,
+      require => File[$cron_location],
     }
   }
 

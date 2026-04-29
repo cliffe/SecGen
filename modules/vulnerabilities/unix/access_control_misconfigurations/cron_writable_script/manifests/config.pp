@@ -37,16 +37,28 @@ class cron_writable_script::config {
     default => "/home/${cron_user}",
   }
 
+  # Ensure cron_location directory exists (may be nested like /home/user/.config/local)
+  file { $cron_location:
+    ensure  => directory,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
+  }
+
+  # Define requirements for the script file
+  if $cron_user == 'root' {
+    $cron_script_requires = [File[$cron_location]]
+  } else {
+    $cron_script_requires = [Exec["validate_cron_user_${cron_user}"], File[$cron_location]]
+  }
+
   file { $cron_script_path:
     ensure  => file,
     owner   => 'root',
     group   => 'root',
     mode    => '0777',
     content => "#!/bin/bash -p\necho '${cron_message}' >> /tmp/cron.log\n",
-    require => $cron_user ? {
-      'root' => undef,
-      default => Exec["validate_cron_user_${cron_user}"],
-    },
+    require => $cron_script_requires,
   }
 
   cron { 'writable_cron_script':

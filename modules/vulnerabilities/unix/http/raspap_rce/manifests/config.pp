@@ -1,6 +1,6 @@
-# Class: raspap_cmd_injection::config
+# Class: raspap_rce::config
 # Configure RaspAP in its vulnerable state and set up the CTF challenge
-class raspap_cmd_injection::config {
+class raspap_rce::config {
   Exec { path => [ '/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/' ] }
   $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
   $port = $secgen_parameters['port'][0]
@@ -15,27 +15,27 @@ class raspap_cmd_injection::config {
   # The vulnerable code does: require_once '../../includes/config.php'
   file { "${install_dir}/includes/config.php":
     ensure  => file,
-    content => template('raspap_cmd_injection/config.php.erb'),
+    content => template('raspap_rce/config.php.erb'),
     owner   => $user,
     group   => $user,
     mode    => '0644',
-    require => Class['raspap_cmd_injection::install'],
+    require => Class['raspap_rce::install'],
   }
 
   # Create raspap.php in config directory (required by index.php)
   file { "${install_dir}/config/raspap.php":
     ensure  => file,
-    content => template('raspap_cmd_injection/raspap.php.erb'),
+    content => template('raspap_rce/raspap.php.erb'),
     owner   => $user,
     group   => $user,
     mode    => '0644',
-    require => Class['raspap_cmd_injection::install'],
+    require => Class['raspap_rce::install'],
   }
 
   # Configure lighttpd
   file { '/etc/lighttpd/lighttpd.conf':
     ensure  => file,
-    content => template('raspap_cmd_injection/lighttpd.conf.erb'),
+    content => template('raspap_rce/lighttpd.conf.erb'),
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
@@ -60,7 +60,7 @@ class raspap_cmd_injection::config {
   # Set log directory permissions
   exec { 'set-log-perms':
     command => 'chmod 755 /var/log/lighttpd',
-    require => Class['raspap_cmd_injection::install'],
+    require => Class['raspap_rce::install'],
   }
 
   # Leak flag files for students to find
@@ -70,6 +70,6 @@ class raspap_cmd_injection::config {
     strings_to_leak   => $strings_to_leak,
     owner             => $user,
     mode              => '0600',
-    leaked_from       => 'raspap_cmd_injection',
+    leaked_from       => 'raspap_rce',
   }
 }

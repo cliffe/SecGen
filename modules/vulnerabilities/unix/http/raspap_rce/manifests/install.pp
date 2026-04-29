@@ -1,7 +1,7 @@
-# Class: raspap_cmd_injection::install
+# Class: raspap_rce::install
 # Install RaspAP v2.8.7 and all required dependencies
 # All packages are available in Debian 12 standard repositories
-class raspap_cmd_injection::install {
+class raspap_rce::install {
   Exec { path => [ '/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/' ] }
   $user = 'www-data'
   $install_dir = '/var/www/raspap'
@@ -40,7 +40,7 @@ class raspap_cmd_injection::install {
   # Copy RaspAP archive to the system
   # Note: File is named with capital AP but is actually a ZIP archive
   file { "${user_home}/raspAP-webgui-2.8.7.tar.gz":
-    source => 'puppet:///modules/raspap_cmd_injection/raspAP-webgui-2.8.7.tar.gz',
+    source => 'puppet:///modules/raspap_rce/raspAP-webgui-2.8.7.tar.gz',
     owner  => $user,
     mode   => '0644',
     require => Package['lighttpd'],

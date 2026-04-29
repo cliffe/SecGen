@@ -94,13 +94,19 @@
     <system_name>server</system_name>
     <base distro="Debian 12" type="desktop" name="KDE"/>
 
-    <vulnerability module_path=".*/raspap_cmd_injection">
+    <vulnerability module_path=".*/raspap_rce">
       <input into="strings_to_leak">
         <generator type="flag_generator"/>
       </input>
       <input into="strings_to_pre_leak">
         <generator type="flag_generator"/>
       </input>
+    </vulnerability>
+
+    <vulnerability module_path=".*/sudo_root_awk">
+        <input into="strings_to_leak">
+            <generator type="flag_generator"/>
+        </input>
     </vulnerability>
 
     <network type="private_network">

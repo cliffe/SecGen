@@ -2,17 +2,24 @@ class cron_writable_script::config {
   $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
   $leaked_filenames = $secgen_parameters['leaked_filenames']
   $strings_to_leak = $secgen_parameters['strings_to_leak']
-  $cron_location = $secgen_parameters['cron_location'] ? {
+  
+  # Extract first element from arrays (SecGen generators output arrays)
+  $cron_location_raw = $secgen_parameters['cron_location']
+  $cron_location = $cron_location_raw ? {
     undef   => '/opt',
-    default => $secgen_parameters['cron_location'],
+    default => $cron_location_raw[0],
   }
-  $cron_message = $secgen_parameters['cron_message'] ? {
+  
+  $cron_message_raw = $secgen_parameters['cron_message']
+  $cron_message = $cron_message_raw ? {
     undef   => 'hello from cron',
-    default => $secgen_parameters['cron_message'],
+    default => $cron_message_raw[0],
   }
-  $cron_user = $secgen_parameters['cron_user'] ? {
+  
+  $cron_user_raw = $secgen_parameters['cron_user']
+  $cron_user = $cron_user_raw ? {
     undef   => 'root',
-    default => $secgen_parameters['cron_user'],
+    default => $cron_user_raw[0],
   }
 
   $cron_script_path = "${cron_location}/cron.sh"

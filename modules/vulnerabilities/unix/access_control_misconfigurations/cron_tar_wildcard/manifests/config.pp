@@ -2,16 +2,31 @@ class cron_tar_wildcard::config {
   $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
   $leaked_filenames = $secgen_parameters['leaked_filenames']
   $strings_to_leak = $secgen_parameters['strings_to_leak']
-  $show_crontab_hint = $secgen_parameters['show_crontab_hint']
-  $cron_location = $secgen_parameters['cron_location'] ? {
+  
+  # Extract first element from arrays (SecGen generators output arrays)
+  $show_crontab_hint_raw = $secgen_parameters['show_crontab_hint']
+  $show_crontab_hint = $show_crontab_hint_raw ? {
+    undef   => 'false',
+    default => $show_crontab_hint_raw[0],
+  }
+  
+  $cron_location_raw = $secgen_parameters['cron_location']
+  $cron_location = $cron_location_raw ? {
     undef   => '/opt',
-    default => $secgen_parameters['cron_location'],
+    default => $cron_location_raw[0],
   }
-  $cron_user = $secgen_parameters['cron_user'] ? {
+  
+  $cron_user_raw = $secgen_parameters['cron_user']
+  $cron_user = $cron_user_raw ? {
     undef   => 'root',
-    default => $secgen_parameters['cron_user'],
+    default => $cron_user_raw[0],
   }
-  $restrict_write_user_input = $secgen_parameters['restrict_write_user']
+  
+  $restrict_write_user_raw = $secgen_parameters['restrict_write_user']
+  $restrict_write_user_input = $restrict_write_user_raw ? {
+    undef   => '',
+    default => $restrict_write_user_raw[0],
+  }
 
   $backup_dir = "${cron_location}/backup"
   $archive_dest = '/var/spool/backups'

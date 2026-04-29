@@ -102,9 +102,20 @@ class cron_tar_wildcard::config {
       content => 'ALL  ALL=(root) NOPASSWD: /usr/bin/sudo -l',
     }
 
-    sudo::conf { 'users_crontab_list':
-      ensure  => present,
-      content => 'ALL  ALL=(root) NOPASSWD: /usr/bin/crontab -l',
+    if $restrict_write_user_input and $restrict_write_user_input != '' {
+      sudo::conf { 'restricted_crontab_list':
+        ensure  => present,
+        content => "${restrict_write_user}  ALL=(root) NOPASSWD: /usr/bin/crontab -l",
+      }
+
+      notice("Crontab hint restricted: Only user '${restrict_write_user}' can view crontab")
+    } else {
+      sudo::conf { 'users_crontab_list':
+        ensure  => present,
+        content => 'ALL  ALL=(root) NOPASSWD: /usr/bin/crontab -l',
+      }
+
+      notice("Crontab hint global: All users can view crontab")
     }
 
     file { "${cron_location}/backup.txt":

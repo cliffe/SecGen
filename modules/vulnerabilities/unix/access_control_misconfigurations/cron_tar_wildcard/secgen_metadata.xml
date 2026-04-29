@@ -11,7 +11,8 @@
 
     By default, the backup directory is world-writable (mode 0777) allowing any user to exploit.
     Optionally, write access can be restricted to a specific user via the restrict_write_user parameter,
-    enabling targeted privilege escalation scenarios where only that user can exploit the vulnerability.</description>
+    enabling targeted privilege escalation scenarios where only that user can exploit the vulnerability.
+    When restrict_write_user is set, crontab viewing via sudo is also restricted to that user only.</description>
 
   <type>access_control_misconfiguration</type>
   <type>cron_privilege_escalation</type>

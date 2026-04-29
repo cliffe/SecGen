@@ -26,7 +26,7 @@ class FilePathGenerator < StringGenerator
   def initialize
     super
     self.module_name = 'Random File Path Generator'
-    @logger = Logger.new($stdout)
+    @logger = Logger.new($stderr)
     @logger.level = Logger::INFO
     @logger.formatter = proc do |severity, datetime, _progname, msg|
       "[#{datetime.strftime('%Y-%m-%d %H:%M:%S')}] #{severity}: #{msg}\n"

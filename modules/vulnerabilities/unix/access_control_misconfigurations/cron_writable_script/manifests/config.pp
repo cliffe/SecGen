@@ -2,20 +2,31 @@ class cron_writable_script::config {
   $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
   $leaked_filenames = $secgen_parameters['leaked_filenames']
   $strings_to_leak = $secgen_parameters['strings_to_leak']
+  $cron_location = $secgen_parameters['cron_location'] ? {
+    undef   => '/opt',
+    default => $secgen_parameters['cron_location'],
+  }
+  $cron_message = $secgen_parameters['cron_message'] ? {
+    undef   => 'hello from cron',
+    default => $secgen_parameters['cron_message'],
+  }
 
-  file { '/opt/cron.sh':
+  $cron_script_path = "${cron_location}/cron.sh"
+
+  file { $cron_script_path:
     ensure  => file,
     owner   => 'root',
     group   => 'root',
     mode    => '0777',
-    content => "#!/bin/bash -p\necho 'hello from cron' >> /tmp/cron.log\n",
+    content => "#!/bin/bash -p\necho '${cron_message}' >> /tmp/cron.log\n",
   }
 
   cron { 'writable_cron_script':
-    command => '/opt/cron.sh',
+    command => $cron_script_path,
     user    => 'root',
     hour    => '*',
     minute  => '*',
+    require => File[$cron_script_path],
   }
 
   ::secgen_functions::leak_files { 'cron_writable_script-file-leak':

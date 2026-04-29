@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>Random File Path Generator</name>
+  <author>Rosie Fletcher</author>
+  <module_license>MIT</module_license>
+  <description>Randomly selects a file path from a predefined list of system locations designed for misconfiguration privilege escalation vulnerabilities, specifically cron. If a username is provided, user-specific paths are also included.</description>
+
+  <type>location_generator</type>
+  <type>path_generator</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+
+  <read_fact>username</read_fact>
+
+  <output_type>location</output_type>
+</generator>

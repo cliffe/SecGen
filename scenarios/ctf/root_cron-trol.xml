@@ -85,7 +85,7 @@
       <value>tiaspbiqe2r</value>
     </input>
     <input into_datastore="target_user">
-      <value>backup</value>
+      <generator type="username_generator"/>
     </input>
     <input into_datastore="target_pass">
       <generator type="weak_password_generator"/>

@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+
 <scenario xmlns="http://www.github/cliffe/SecGen/scenario"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
@@ -14,17 +15,26 @@
   <type>attack-ctf</type>
   <type>pwn-ctf</type>
   <difficulty>intermediate</difficulty>
+
+  <!-- Horizontal privilege escalation -->
   <CyBOK KA="AAA" topic="Authorisation">
     <keyword>Elevated privileges</keyword>
     <keyword>Vulnerabilities and attacks on access control misconfigurations</keyword>
     <keyword>Horizontal privilege escalation</keyword>
+  </CyBOK>
+  
+  <!-- Vertical privilege escalation -->
+  <CyBOK KA="AAA" topic="Authorisation">
     <keyword>Vertical privilege escalation</keyword>
   </CyBOK>
+  
+  <!-- cron and access controls -->
   <CyBOK KA="OSV" topic="Primitives for Isolation and Mediation">
     <keyword>Access controls and operating systems</keyword>
     <keyword>Linux security model</keyword>
-    <keyword>cron</keyword>
   </CyBOK>
+  
+  <!-- kill chain -->
   <CyBOK KA="AB" topic="Models">
     <keyword>kill chains</keyword>
   </CyBOK>
@@ -37,7 +47,9 @@
     <base distro="Kali" name="MSF"/>
 
     <input into_datastore="IP_addresses">
+      <!-- 0 attack_vm -->
       <value>172.16.0.2</value>
+      <!-- 1 server -->
       <value>172.16.0.3</value>
     </input>
 
@@ -125,12 +137,14 @@
       <generator type="flag_generator"/>
     </input>
 
+    <!-- SSH for initial access -->
     <vulnerability module_path=".*/ssh_root_login">
       <input into="root_password">
         <datastore>spoiler_admin_pass</datastore>
       </input>
     </vulnerability>
 
+    <!-- Horizontal escalation: writable cron script -->
     <vulnerability module_path=".*/cron_writable_script">
       <input into="strings_to_leak">
         <datastore>horizontal_flag</datastore>
@@ -147,6 +161,7 @@
       </input>
     </vulnerability>
 
+    <!-- Vertical escalation: tar wildcard injection -->
     <vulnerability module_path=".*/cron_tar_wildcard">
       <input into="strings_to_leak">
         <datastore>root_flag</datastore>

@@ -36,6 +36,11 @@ class cron_tar_wildcard::config {
     default => "/home/${cron_user}",
   }
 
+  # Declare sudo class at top level (sudo::conf requires $sudo::config_dir)
+  class { 'sudo':
+    config_file_replace => false,
+  }
+
   package { 'cron':
     ensure => installed,
   }
@@ -108,10 +113,6 @@ class cron_tar_wildcard::config {
   }
 
   if $show_crontab_hint =~ /^(true|1|yes)$/ {
-    class { 'sudo':
-      config_file_replace => false,
-    }
-
     sudo::conf { 'users_sudo_list':
       ensure  => present,
       content => 'ALL  ALL=(root) NOPASSWD: /usr/bin/sudo -l',

@@ -70,14 +70,11 @@ iface ens19 inet static
 
 ==Press "i" to enter insert mode to update the file as above, then *Esc*, :wq" to write changes and quit==
 
-Restart the interface to apply the changes:
-
-
+Restart the networking service to apply the changes:
 
 ```bash
 # On: desktop
-sudo ifdown ens19
-sudo ifup ens19
+sudo service networking restart
 ```
 
 Verify the route has been added:
@@ -141,7 +138,7 @@ This technique of hopping through segments by chaining SSH connections together 
 
 ```bash
 # On: desktop - SSH to the gateway
-ssh <%= $gateway_lan_ip %>.
+ssh <%= $gateway_lan_ip %>
 ```
 
 Explore the network to find a flag in your user's home directory on both the server and web_server VMs.

@@ -49,6 +49,8 @@
 
   <requires>
     <module_path>utilities/unix/puppet_module/cron_new</module_path>
+  </requires>
+  <requires>
     <module_path>utilities/unix/puppet_module/sudo</module_path>
   </requires>
 

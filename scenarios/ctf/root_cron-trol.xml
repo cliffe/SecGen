@@ -9,17 +9,12 @@
   <description>A two-stage privilege escalation challenge. Login to the desktop as a low-privileged user (password: tiaspbiqe2r),
     then perform horizontal privilege escalation by exploiting a writable cron script owned by another user.
     Finally, achieve vertical privilege escalation to root through a tar wildcard injection vulnerability in a
-    root-owned cron job. Master the art of cron-based privilege escalation!</description>
+    root-owned cron job. Master the art of cron-based privilege escalation! Login password: tiaspbiqe2r</description>
 
   <type>ctf</type>
   <type>attack-ctf</type>
   <type>pwn-ctf</type>
   <difficulty>intermediate</difficulty>
-  
-  <hint>Login password: tiaspbiqe2r</hint>
-  <hint>Check sudo -l and crontab -l for cron job hints</hint>
-  <hint>Look for world-writable scripts executed by cron</hint>
-  <hint>tar wildcard injection: --checkpoint=1 --checkpoint-action=exec=sh shell.sh</hint>
 
   <!-- Horizontal privilege escalation -->
   <CyBOK KA="AAA" topic="Authorisation">
@@ -65,7 +60,7 @@
       <generator type="username_generator"/>
     </input>
     <input into_datastore="target_pass">
-      <generator type="weak_password_generator"/>
+      <generator type="strong_password_generator"/>
     </input>
 
     <!-- Create both user accounts -->
@@ -96,6 +91,15 @@
       </input>
     </utility>
 
+    <utility module_path=".*/kde_minimal">
+      <input into="autologin_user">
+        <datastore>lowpriv_user</datastore>
+      </input>
+      <input into="autostart_konsole">
+        <value>true</value>
+      </input>
+    </utility>
+
     <!-- Flags for each escalation stage -->
     <input into_datastore="horizontal_flag">
       <generator type="flag_generator"/>
@@ -104,8 +108,15 @@
       <generator type="flag_generator"/>
     </input>
     
-    <!-- Random cron location -->
-    <input into_datastore="cron_location">
+    <!-- Random cron locations for each stage -->
+    <input into_datastore="horizontal_cron_location">
+      <generator module_path="generators/random/random_file_path">
+        <input into="username">
+          <datastore>target_user</datastore>
+        </input>
+      </generator>
+    </input>
+    <input into_datastore="vertical_cron_location">
       <generator module_path="generators/random/random_file_path">
         <input into="username">
           <datastore>target_user</datastore>
@@ -122,7 +133,7 @@
         <datastore>target_user</datastore>
       </input>
       <input into="cron_location">
-        <datastore>cron_location</datastore>
+        <datastore>horizontal_cron_location</datastore>
       </input>
     </vulnerability>
 
@@ -138,22 +149,22 @@
         <datastore>target_user</datastore>
       </input>
       <input into="cron_location">
-        <datastore>cron_location</datastore>
+        <datastore>vertical_cron_location</datastore>
       </input>
       <input into="show_crontab_hint">
         <value>true</value>
       </input>
     </vulnerability>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <value>192.168.56.10</value>
-      </input>
-    </network>
+<network type="private_network" range="dhcp"/>
     
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+
     <build type="cleanup">
       <input into="root_password">
-        <value>root</value>
+        <datastore>spoiler_admin_pass</datastore>
       </input>
     </build>
   </system>

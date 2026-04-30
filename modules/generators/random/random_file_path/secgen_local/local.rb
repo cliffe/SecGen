@@ -1,6 +1,7 @@
 #!/usr/bin/ruby
 require_relative '../../../../../lib/objects/local_string_generator.rb'
 require 'logger'
+require 'securerandom'
 
 class FilePathGenerator < StringGenerator
   attr_accessor :selected_location
@@ -154,7 +155,7 @@ class FilePathGenerator < StringGenerator
       available_locations = writable_locations
     end
 
-    selected = available_locations.sample
+    selected = available_locations.sample(random: Random.new)
     @logger.info("=" * 60)
     @logger.info("SELECTED PATH: #{selected}")
     @logger.info("Username context: #{@username}")

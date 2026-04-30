@@ -6,7 +6,7 @@
 
   <name>Root Cron-trol</name>
   <author>Rosie Fletcher</author>
-  <description>A two-stage privilege escalation challenge. Start as a low-privileged user on a local system,
+  <description>A two-stage privilege escalation challenge. Login to the desktop as a low-privileged user (password: tiaspbiqe2r),
     then perform horizontal privilege escalation by exploiting a writable cron script owned by another user.
     Finally, achieve vertical privilege escalation to root through a tar wildcard injection vulnerability in a
     root-owned cron job. Master the art of cron-based privilege escalation!</description>
@@ -15,6 +15,11 @@
   <type>attack-ctf</type>
   <type>pwn-ctf</type>
   <difficulty>intermediate</difficulty>
+  
+  <hint>Login password: tiaspbiqe2r</hint>
+  <hint>Check sudo -l and crontab -l for cron job hints</hint>
+  <hint>Look for world-writable scripts executed by cron</hint>
+  <hint>tar wildcard injection: --checkpoint=1 --checkpoint-action=exec=sh shell.sh</hint>
 
   <!-- Horizontal privilege escalation -->
   <CyBOK KA="AAA" topic="Authorisation">
@@ -47,12 +52,12 @@
     <system_name>server</system_name>
     <base distro="Debian 12" type="desktop" name="KDE"/>
 
-    <!-- Fixed lowpriv credentials for local access -->
+    <!-- Random lowpriv user for initial access -->
     <input into_datastore="lowpriv_user">
-      <value>lowpriv</value>
+      <generator type="username_generator"/>
     </input>
     <input into_datastore="lowpriv_pass">
-      <value>password</value>
+      <value>tiaspbiqe2r</value>
     </input>
     
     <!-- Random target user for horizontal escalation -->

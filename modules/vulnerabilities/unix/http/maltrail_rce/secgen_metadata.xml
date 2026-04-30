@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+    <name>MalTrail RCE</name>
+    <author>Rosie Fletcher</author>
+    <module_license>MIT</module_license>
+    <description>MalTrail versions &lt;= 0.52 contain an unauthenticated command injection vulnerability
+        in the login endpoint. A remote attacker can execute arbitrary operating system commands
+        via the 'username' parameter in a POST request to the /login endpoint. This occurs
+        due to unsafe handling of user-supplied input passed to subprocess.check_output() in
+        core/http.py, allowing injection of shell metacharacters. Exploitation does not require
+        authentication and commands are executed with the privileges of the MalTrail server process.
+        
+        This module creates a dual-flag CTF challenge: Flag 1 is found via RCE exploitation and 
+        file system access, while Flag 2 is hidden within MalTrail's threat data and discovered 
+        via web UI analysis.</description>
+
+    <type>http</type>
+    <privilege>user_rwx</privilege>
+    <access>remote</access>
+    <platform>linux</platform>
+    <difficulty>low</difficulty>
+
+    <read_fact>port</read_fact>
+    <read_fact>strings_to_leak</read_fact>
+    <read_fact>leaked_filenames</read_fact>
+    <read_fact>unix_username</read_fact>
+    <read_fact>maltrail_data</read_fact>
+
+    <!-- Uses fixed default port 8338 (MalTrail default) -->
+    <default_input into="port">
+        <value>8338</value>
+    </default_input>
+
+    <default_input into="strings_to_leak">
+        <generator type="message_generator" />
+    </default_input>
+
+    <default_input into="leaked_filenames">
+        <generator type="filename_generator" />
+    </default_input>
+
+    <default_input into="unix_username">
+        <generator type="username_generator"/>
+    </default_input>
+
+    <!-- Volume of randomized threat data: low, medium, or high -->
+    <default_input into="data_volume">
+        <value>medium</value>
+    </default_input>
+
+    <!-- Generate randomized MalTrail threat data (scenario passes embedded_flag) -->
+    <default_input into="maltrail_data">
+        <generator type="maltrail_data"/>
+    </default_input>
+
+    <!-- Vulnerability details -->
+    <cve>CVE-2025-34073</cve>
+    <cvss_base_score>10</cvss_base_score>
+    <cvss_vector>AV:N/AC:L/Au:N/C:C/I:C/A:C</cvss_vector>
+    <reference>https://github.com/stamparm/maltrail</reference>
+    <reference>https://github.com/stamparm/maltrail/issues/19146</reference>
+    <reference>https://nvd.nist.gov/vuln/detail/CVE-2025-34073</reference>
+    <reference>https://vulncheck.com/advisories/stamparm-maltrail-rce</reference>
+    <software_name>MalTrail</software_name>
+    <software_license>MIT</software_license>
+
+    <!-- Cybersecurity Body of Knowledge mapping -->
+    <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+      <keyword>server-side misconfiguration and vulnerable components</keyword>
+    </CyBOK>
+    <CyBOK KA="MAT" topic="Attacks and exploitation">
+      <keyword>EXPLOITATION</keyword>
+      <keyword>EXPLOITATION FRAMEWORKS</keyword>
+    </CyBOK>
+    <CyBOK KA="SS" topic="Categories of Vulnerabilities">
+      <keyword>CVEs and CWEs</keyword>
+    </CyBOK>
+    <CyBOK KA="SOIM" topic="Penetration Testing">
+      <keyword>Penetration Testing - Software Tools</keyword>
+      <keyword>Penetration Testing - Active Penetration</keyword>
+    </CyBOK>
+</vulnerability>

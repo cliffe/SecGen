@@ -21,3 +21,4 @@ lib/resources/images/scenario
 rgloader
 .ruby-version
 vendor/**
+plans/

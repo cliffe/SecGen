@@ -6,7 +6,7 @@
 
   <name>Root Cron-trol</name>
   <author>Rosie Fletcher</author>
-  <description>A two-stage privilege escalation challenge. Gain initial SSH access as a low-privileged user,
+  <description>A two-stage privilege escalation challenge. Start as a low-privileged user on a local system,
     then perform horizontal privilege escalation by exploiting a writable cron script owned by another user.
     Finally, achieve vertical privilege escalation to root through a tar wildcard injection vulnerability in a
     root-owned cron job. Master the art of cron-based privilege escalation!</description>
@@ -42,60 +42,20 @@
     <keyword>cyber kill chain</keyword>
   </CyBOK>
 
-  <system>
-    <system_name>attack_vm</system_name>
-    <base distro="Kali" name="MSF"/>
-
-    <input into_datastore="IP_addresses">
-      <!-- 0 attack_vm -->
-      <value>172.16.0.2</value>
-      <!-- 1 server -->
-      <value>172.16.0.3</value>
-    </input>
-
-    <utility module_path=".*/parameterised_accounts">
-      <input into="accounts">
-        <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
-      </input>
-    </utility>
-
-    <utility module_path=".*/iceweasel">
-      <input into="accounts">
-        <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
-      </input>
-      <input into="autostart">
-        <value>false</value>
-      </input>
-    </utility>
-
-    <utility module_path=".*/kali_top10"/>
-    <utility module_path=".*/kali_web"/>
-
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="0">IP_addresses</datastore>
-      </input>
-    </network>
-    <input into_datastore="spoiler_admin_pass">
-      <generator type="strong_password_generator"/>
-    </input>
-    <build type="cleanup">
-      <input into="root_password">
-        <datastore>spoiler_admin_pass</datastore>
-      </input>
-    </build>
-  </system>
-
+  <!-- Single system: Debian server with cron vulnerabilities -->
   <system>
     <system_name>server</system_name>
     <base distro="Debian 12" type="desktop" name="KDE"/>
 
+    <!-- Fixed lowpriv credentials for local access -->
     <input into_datastore="lowpriv_user">
-      <generator type="username_generator"/>
+      <value>lowpriv</value>
     </input>
     <input into_datastore="lowpriv_pass">
-      <value>tiaspbiqe2r</value>
+      <value>password</value>
     </input>
+    
+    <!-- Random target user for horizontal escalation -->
     <input into_datastore="target_user">
       <generator type="username_generator"/>
     </input>
@@ -103,6 +63,7 @@
       <generator type="weak_password_generator"/>
     </input>
 
+    <!-- Create both user accounts -->
     <utility module_path=".*/parameterised_accounts">
       <input into="accounts">
         <generator type="account">
@@ -130,12 +91,15 @@
       </input>
     </utility>
 
+    <!-- Flags for each escalation stage -->
     <input into_datastore="horizontal_flag">
       <generator type="flag_generator"/>
     </input>
     <input into_datastore="root_flag">
       <generator type="flag_generator"/>
     </input>
+    
+    <!-- Random cron location -->
     <input into_datastore="cron_location">
       <generator module_path="generators/random/random_file_path">
         <input into="username">
@@ -144,14 +108,7 @@
       </generator>
     </input>
 
-    <!-- SSH for initial access -->
-    <vulnerability module_path=".*/ssh_root_login">
-      <input into="root_password">
-        <datastore>spoiler_admin_pass</datastore>
-      </input>
-    </vulnerability>
-
-    <!-- Horizontal escalation: writable cron script -->
+    <!-- Horizontal escalation: writable cron script (runs as target_user) -->
     <vulnerability module_path=".*/cron_writable_script">
       <input into="strings_to_leak">
         <datastore>horizontal_flag</datastore>
@@ -164,7 +121,7 @@
       </input>
     </vulnerability>
 
-    <!-- Vertical escalation: tar wildcard injection -->
+    <!-- Vertical escalation: tar wildcard injection (runs as root) -->
     <vulnerability module_path=".*/cron_tar_wildcard">
       <input into="strings_to_leak">
         <datastore>root_flag</datastore>
@@ -178,16 +135,20 @@
       <input into="cron_location">
         <datastore>cron_location</datastore>
       </input>
+      <input into="show_crontab_hint">
+        <value>true</value>
+      </input>
     </vulnerability>
 
     <network type="private_network">
       <input into="IP_address">
-        <datastore access="1">IP_addresses</datastore>
+        <value>192.168.56.10</value>
       </input>
     </network>
+    
     <build type="cleanup">
       <input into="root_password">
-        <datastore>spoiler_admin_pass</datastore>
+        <value>root</value>
       </input>
     </build>
   </system>

@@ -145,7 +145,7 @@ class ProjectFilesCreator
     x3file = "#{@out_dir}/#{CYBOK_FILENAME}"
     xml_cybok_generator = XmlCybokGenerator.new(@systems, @scenario, @time)
     xml = xml_cybok_generator.output
-    Print.std "Creating flags and hints file: #{x3file}"
+    Print.std "Creating CyBOK file: #{x3file}"
     write_data_to_file(xml, x3file)
 
     Print.std "Saving spoiler/admin records..."

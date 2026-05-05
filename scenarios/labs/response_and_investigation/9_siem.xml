@@ -81,11 +81,11 @@
 
     <input into_datastore="IP_addresses">
       <!-- 0 siem_management -->
-      <value>172.16.0.2</value>
+      <network_ip system="siem_management"/>
       <!-- 1 desktop -->
-      <value>172.16.0.3</value>
+      <network_ip system="desktop"/>
       <!-- 2 hackerbot -->
-      <value>172.16.0.4</value>
+      <network_ip system="hackerbot_server"/>
     </input>
 
     <!--generate two accounts, YOU and someone else-->
@@ -281,11 +281,7 @@
       </input>
     </utility>
 
-    <network type="private_network" >
-      <input into="IP_address">
-        <datastore access="0">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
     <build type="cleanup">
       <input into="root_password">
         <datastore>spoiler_admin_pass</datastore>
@@ -365,11 +361,7 @@
       </input>
     </utility>
 
-    <network type="private_network" >
-      <input into="IP_address">
-        <datastore access="1">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
     <build type="cleanup">
       <input into="root_password">
         <datastore>spoiler_admin_pass</datastore>
@@ -403,11 +395,7 @@
       </input>
     </utility>
 
-    <network type="private_network" >
-      <input into="IP_address">
-        <datastore access="2">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
     <build type="cleanup">
       <input into="root_password">
         <generator type="strong_password_generator"/>

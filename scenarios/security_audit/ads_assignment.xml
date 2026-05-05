@@ -12,7 +12,7 @@
     <base platform="linux" type="server" module_path=".*/stretch.*"/>
 
     <input into_datastore="IP_addresses">
-      <value>172.16.0.2</value>
+      <network_ip system="access_control_misconfigurations"/>
     </input>
 
     <vulnerability type="in_the_wild" module_path=".*/webapp.*">
@@ -80,11 +80,7 @@
       </input>
     </utility>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="0">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
 
   </system>
 

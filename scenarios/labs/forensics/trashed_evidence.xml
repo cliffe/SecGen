@@ -57,7 +57,7 @@
     <base distro="Debian 12" type="desktop" name="KDE"/>
 
     <input into_datastore="IP_addresses">
-      <value>172.16.0.2</value>
+      <network_ip system="seized_desktop"/>
     </input>
 
     <!-- this can be a random secure password, if the hdd is being analysed, as it is leaked -->

@@ -222,7 +222,7 @@ class NetworkFunctions
       end
     end
 
-    Print.debug "Full network map: #{options[:network_map].inspect}"
+    Print.info "Full network map: #{options[:network_map].inspect}"
 
   end
 

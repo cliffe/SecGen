@@ -85,11 +85,11 @@
 
     <input into_datastore="IP_addresses">
       <!-- 0 desktop -->
-      <value>172.16.0.2</value>
+      <network_ip system="shared_desktop"/>
       <!-- 1 server -->
-      <value>172.16.0.3</value>
+      <network_ip system="server"/>
       <!-- 2 hackerbot_server -->
-      <value>172.16.0.4</value>
+      <network_ip system="hackerbot_server"/>
     </input>
 
     <!-- generate some usernames to use -->
@@ -247,11 +247,7 @@ int main()
       </input>
     </utility>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="0">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
     <build type="cleanup">
       <input into="root_password">
         <datastore>spoiler_admin_pass</datastore>
@@ -354,11 +350,7 @@ int main()
     </vulnerability> -->
 
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="1">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
     <build type="cleanup">
       <input into="root_password">
         <datastore>spoiler_admin_pass</datastore>
@@ -394,11 +386,7 @@ int main()
       </input>
     </utility>
 
-    <network type="private_network" >
-       <input into="IP_address">
-        <datastore access="2">IP_addresses</datastore>
-       </input>
-    </network>
+    <network type="private_network"/>
 
     <build type="cleanup">
       <input into="root_password">

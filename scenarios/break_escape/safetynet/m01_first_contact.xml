@@ -147,7 +147,7 @@ T-72 hours to launch.
         </input>
         <input into="strings_to_leak">
           <generator type="flag_generator" /> <!-- flag3: launch authorization code -->
-          <encoder module_path="modules/encoders/string/base64"> <!-- shatter_configuration -->
+          <encoder module_path="modules/encoders/base/base64"> <!-- shatter_configuration -->
             <input into="strings_to_encode">
               <value>OPERATION SHATTER -- DEPLOYMENT CONFIGURATION
 Classification: ENTROPY EYES ONLY

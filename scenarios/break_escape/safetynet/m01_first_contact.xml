@@ -1,0 +1,275 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>Introduction to Linux and Security lab</name>
+  <author>Z. Cliffe Schreuders</author>
+  <description>
+# Introduction
+In this lab, you will delve into the fascinating world of Linux and security tools, gaining practical knowledge and skills that are highly relevant in the field of cybersecurity. Linux is a powerful and versatile operating system widely used in the IT industry. Understanding Linux and its command-line interface is crucial for anyone interested in security testing and ethical hacking. You'll begin by familiarizing yourself with Linux basics, from fundamental command-line operations to concepts like piping between programs and file redirection. This lab will also introduce you to the Kali Linux distribution, a platform designed for penetration testing and ethical hacking.
+
+Throughout this lab, you will learn how to perform various tasks, such as creating and manipulating files, exploring the Linux file system, and conducting network-related activities. You will gain hands-on experience with SSH, a secure remote shell protocol used for administration, and even attempt online brute force attacks to understand the importance of security in the digital realm. By the end of this lab, you will have honed your Linux command-line skills, developed a basic understanding of networking, and practiced using essential security tools, preparing you for more advanced challenges in the field of cybersecurity. Get ready to embark on an engaging journey where you will explore the core elements of Linux and security.
+
+# Lecture
+[Slides here](http://z.cliffe.schreuders.org/presentations/slides/DSL_DS_OSPT_Lectures_1_Intro_to_Unix_FOSS_and_Linux.html)
+
+# Reading
+[Chapters 1 "Introduction" and 2 "Unix History and Lineage": Garfinkel, S. and Spafford, G. and Schwartz, A. (2003), Practical Unix and Internet Security, O'Reilly. (ISBN-10: 0596003234)](http://www.dawsonera.com.ezproxy.leedsbeckett.ac.uk/depp/reader/protected/external/AbstractView/S9781449310325)
+
+Suggested:
+
+Chapter 1 "An Overview of Computer Security": Bishop, M. (2005), Introduction to Computer Security, Addison-Wesley. (ISBN-10: 0321247442)
+  </description>
+  <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/introducing_attacks/1-intro-linux/</lab_sheet_url>
+  <type>ctf-lab</type>
+  <type>lab-sheet</type>
+  <difficulty>easy</difficulty>
+
+  <CyBOK KA="NS" topic="Network Protocols and Vulnerability">
+    <keyword>common network attacks</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+  </CyBOK>
+
+  <system>
+    <system_name>desktop</system_name>
+    <base distro="Debian 12" type="desktop" name="KDE"/>
+
+    <input into_datastore="IP_addresses">
+      <!-- 0 desktop -->
+      <value>172.16.0.2</value>
+      <!-- 1 kali -->
+      <value>172.16.0.3</value>
+    </input>
+
+
+    <!-- accounts on the desktop, with the main user as a normal user, a victim user with a crackable password (via ssh) with a flag and sudo access, and a bystander with a flag which the victim superuser can access via sudo -->
+    <input into_datastore="user_accounts_desktop">
+      <!-- main user, sudoer -->
+      <generator type="account">
+        <input into="username">
+          <generator type="random_sanitised_word">
+            <input into="wordlist">
+              <value>mythical_creatures</value>
+            </input>
+          </generator>
+        </input>
+        <input into="password">
+          <value>tiaspbiqe2r</value>
+        </input>
+        <input into="super_user">
+          <value>false</value>
+        </input>
+      </generator>
+      <!-- derek: ENTROPY cell operative, SSH brute force target, has sudo access -->
+      <generator type="account">
+        <input into="username">
+          <value>derek</value>
+        </input>
+        <input into="password">
+          <encoder type="string_selector">
+            <input into="strings_to_encode">
+              <value>Derek0419</value>
+              <value>Derek_0419</value>
+              <value>0419Derek</value>
+              <value>April19Derek</value>
+              <value>ViralDynamics</value>
+              <value>ViralMedia2024</value>
+              <value>Marketing2024</value>
+              <value>Campaign2024</value>
+              <value>SocialFabric2024</value>
+              <value>Viral_Dynamics_Admin</value>
+              <value>ViralAdmin0419</value>
+              <value>OperationShatter</value>
+              <value>OpShatter2024</value>
+              <value>Entropy2024</value>
+              <value>ZDS_Partner</value>
+              <value>TrustIsLie</value>
+              <value>VerifyEverything</value>
+              <value>FilingCabinet0419</value>
+              <value>Inevitable</value>
+              <value>TheArchitect</value>
+              <value>PatriciaKnew</value>
+              <value>Misinformation</value>
+              <value>NetworkSegment</value>
+              <value>SafetyNet</value>
+              <value>Derek_Marketing</value>
+              <value>0419Marketing</value>
+              <value>Architect0419</value>
+            </input>
+          </encoder>
+        </input>
+        <input into="super_user">
+          <value>true</value>
+        </input>
+        <input into="leaked_filenames">
+          <value>DECRYPTION_KEY</value> <!-- flag1: decryption key for the ENTROPY archive -->
+          <value>operation_shatter/deployment_notes</value> <!-- flag2: directory traversal intel -->
+        </input>
+        <input into="strings_to_leak">
+          <generator type="flag_generator" /> <!-- flag1: decryption key for the ENTROPY archive -->
+          
+          <encoder module_path="modules/encoders/selector/concatenate"> <!-- deployment_notes -->
+            <input into="strings_to_encode">
+              <value>OPERATION SHATTER -- DEPLOYMENT NOTES
+Classification: ENTROPY CELL -- SOCIAL FABRIC
+Operative: D. Lawson
+Status: ACTIVE
+
+The shatter account holds restricted operation files.
+Use privileged access to read /home/shatter/ contents.
+Archive credentials are stored in shatter's operation_shatter/ directory.
+
+T-72 hours to launch.
+-- The Architect</value>
+              <generator type="flag_generator" /> <!-- flag2: directory traversal intel -->
+            </input>
+          </encoder>
+        </input>
+      </generator>
+      <!-- shatter: ENTROPY infrastructure account, privilege escalation target, holds archive key -->
+      <generator type="account">
+        <input into="username">
+          <value>shatter</value>
+        </input>
+        <input into="password">
+          <generator type="strong_password_generator"/>
+        </input>
+        <input into="super_user">
+          <value>false</value>
+        </input>
+        <input into="leaked_filenames">
+          <value>launch_code/launch_flag</value> <!-- flag3: launch authorization code -->
+          <value>shatter_configuration</value> <!-- flag4: encoded deployment intel -->
+        </input>
+        <input into="strings_to_leak">
+          <generator type="flag_generator" /> <!-- flag3: launch authorization code -->
+          <encoder module_path="modules/encoders/string/base64"> <!-- shatter_configuration -->
+            <input into="strings_to_encode">
+              <value>OPERATION SHATTER -- DEPLOYMENT CONFIGURATION
+Classification: ENTROPY EYES ONLY
+
+Infrastructure Role: Social Fabric Content Distribution Node
+Cell Operator: D. Lawson (derek)
+Status: ACTIVE -- Launch T-72 Hours
+
+Message vectors loaded: 2,347,832 targeted profiles
+Deployment method: Coordinated social platform injection
+Launch window: Sunday 06:00 UTC
+
+TWO AUTHORIZATION CODES REQUIRED:
+  ~/DECRYPTION_KEY              = ENTROPY Encrypted Archive decryption key
+  ~/launch_code/launch_flag     = Operation Shatter launch authorization code
+
+Both are required for full operational access. Do not combine.
+-- The Architect
+
+OPERATION SHATTER -- TARGET MANIFEST SUMMARY
+
+TOTAL ACTIVE TARGETS: 2,347,832 profiled individuals
+
+Segment 1 -- High-Leverage Stress Cohorts:    47,832 profiles
+  (Composite stress/isolation indices; tailored misinformation variants)
+Segment 2 -- Cascade Amplifiers:    156,432 profiles
+  (High re-share velocity; large local follower networks)
+Segment 3 -- Cross-Channel Super-Users:    89,247 profiles
+  (Multi-platform engagement; maximizes coordinated-blast reach)
+Segment 4 -- Isolation × Institutional Trust:     34,891 profiles
+  (Limited corroboration networks; high trust in official-branded alerts)
+
+Disinformation payload ready:
+  - Fabricated hospital closure alerts
+  - Fake bank failure notifications
+  - Forged government emergency messages
+  - Coordinated panic accounts (social media)
+
+DEPLOYMENT: SUNDAY 06:00 UTC
+AUTHORISED BY: The Architect
+
+This operation will not be stopped.</value>
+              <generator type="flag_generator" /> <!-- flag4: encoded deployment intel -->
+
+            </input>
+          </encoder>
+          
+        </input>
+      </generator>
+    </input>
+
+    <input into_datastore="desktop_root_password">
+      <generator type="strong_password_generator"/>
+    </input>
+
+    <!--Create the users-->
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts">
+        <datastore>user_accounts_desktop</datastore>
+      </input>
+    </utility>
+
+    <utility module_path=".*/kde_minimal">
+      <input into="autologin_user">
+        <datastore access="0" access_json="['username']">user_accounts_desktop</datastore>
+      </input>
+      <input into="accounts">
+        <datastore>user_accounts_desktop</datastore>
+      </input>
+      <input into="autostart_konsole">
+        <value>true</value>
+      </input>
+    </utility>
+    <utility module_path=".*/handy_cli_tools"/>
+
+    <vulnerability module_path=".*/ssh_root_login">
+      <input into="root_password">
+        <datastore>desktop_root_password</datastore>
+      </input>
+    </vulnerability>
+
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="0">IP_addresses</datastore>
+      </input>
+    </network>
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+
+  <system>
+    <system_name>kali</system_name>
+    <base distro="Kali" name="MSF"/>
+
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts">
+        <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
+      </input>
+    </utility>
+
+    <utility module_path=".*/kali_pwtools"/>
+    <utility module_path=".*/metasploit_framework"/>
+    <utility module_path=".*/handy_cli_tools"/>
+    <utility module_path=".*/nmap"/>
+
+    <network type="private_network" >
+      <input into="IP_address">
+        <datastore access="1">IP_addresses</datastore>
+      </input>
+    </network>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+
+  </system>
+
+</scenario>

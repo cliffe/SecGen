@@ -18,6 +18,7 @@
   <read_fact>autostart</read_fact>
   <read_fact>start_page</read_fact>
   <read_fact>disable_proxy</read_fact>
+  <read_fact>disable_https_upgrade</read_fact>
 
   <default_input into="autostart">
     <value>true</value>

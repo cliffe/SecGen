@@ -81,9 +81,9 @@ Throughout the lab, you will learn to self-host PHP pages, use OWASP Zap to anal
 
         <input into_datastore="IP_addresses">
             <!-- 0 web_server -->
-            <value>172.16.0.2</value>
+            <network_ip system="web_server"/>
             <!-- 1 kali -->
-            <value>172.16.0.3</value>
+            <network_ip system="kali"/>
         </input>
 
         <utility module_path=".*/parameterised_accounts">
@@ -142,11 +142,7 @@ Throughout the lab, you will learn to self-host PHP pages, use OWASP Zap to anal
             </input>
         </utility>
 
-        <network type="private_network">
-            <input into="IP_address">
-                <datastore access="0">IP_addresses</datastore>
-            </input>
-        </network>
+        <network type="private_network"/>
     </system>
 
     <system>
@@ -202,11 +198,7 @@ Throughout the lab, you will learn to self-host PHP pages, use OWASP Zap to anal
                 <datastore>spoiler_admin_pass</datastore>
             </input>
         </build>
-        <network type="private_network">
-            <input into="IP_address">
-                <datastore access="1">IP_addresses</datastore>
-            </input>
-        </network>
+        <network type="private_network"/>
     </system>
 
 </scenario>

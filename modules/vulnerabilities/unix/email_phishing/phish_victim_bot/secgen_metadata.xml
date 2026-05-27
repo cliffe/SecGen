@@ -21,7 +21,7 @@
 
   <read_fact>strings_to_leak</read_fact>
   <read_fact>leaked_filenames</read_fact>
-  <read_fact>phish_victim_bot_config</read_fact>
+  <read_fact>phish_victim_bot_configs</read_fact>
   <read_fact>usernames</read_fact>
   <read_fact>passwords</read_fact>
 

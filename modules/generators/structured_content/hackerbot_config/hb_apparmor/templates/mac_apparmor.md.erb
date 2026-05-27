@@ -87,9 +87,9 @@ You should now be able to ==use the /tmp/ping program== as any user, and it will
 
 The advantage is that now the program cannot do all the other things root can do, so a vulnerability in ping wouldn't expose your entire system
 
-==Log Book Question: What approach does your desktop VM use to run ping?==
+==Question: What approach does your desktop VM use to run ping?==
 
-==Log Book Question: Describe and demonstrate another example where capabilities can be used to remove the need for setuid.==
+==Question: Consider where capabilities can be used to remove the need for setuid.==
 
 ## AppArmor: Rule-based fine-grained controls
 
@@ -257,4 +257,4 @@ If you edit profiles directly, you can reload profiles with:
 sudo service apparmor reload
 ```
 
-==Log Book Question: What are the advantages and disadvantages of using a blacklist (deny) vs whitelist (ignore) approach to writing AppArmor rules?==
+==Question: What are the advantages and disadvantages of using a blacklist (deny) vs whitelist (ignore) approach to writing AppArmor rules?==

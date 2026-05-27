@@ -23,8 +23,22 @@ WARNING: This module needs some further testing, and may not work without input 
 <read_fact>organisation</read_fact>
 <read_fact>idor</read_fact>
 <read_fact>insecure_cookie</read_fact>
+<read_fact>default_admin_string_to_leak</read_fact>
+<read_fact>default_admin_deactivation</read_fact>
+<read_fact>strong_password</read_fact>
+<read_fact>alternate_username</read_fact>
+<read_fact>verbose_error_deactivation</read_fact>
+<read_fact>user</read_fact>
+<read_fact>theme</read_fact>
+<read_fact>user_table_name</read_fact>
 
-<default_input into="port">
+  <read_fact>db_password</read_fact>
+  <read_fact>admin_account</read_fact>
+  <read_fact>port</read_fact>
+
+
+
+  <default_input into="port">
 	<value>80</value>
 </default_input>
 

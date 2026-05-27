@@ -112,7 +112,7 @@ sudo mount --bind /proc /opt/chrootdir/proc
 
 Read `man mount` to see what this does, and understand the security consequences.
 
-==Lab Book Question: Why can it be a bad idea to bind mount the entire root "/" directory into the chroot cage?==
+==Question: Why can it be a bad idea to bind mount the entire root "/" directory into the chroot cage?==
 
 Now run bash inside the chroot:
 
@@ -140,7 +140,7 @@ Experiment with what is possible from within the chroot cage. You may wish to co
 
 What can you see in /, /opt, /proc?
 
-==Lab Book Question: Can you access anything outside of the chroot? As a normal user? As root?==
+==Question: Can you access anything outside of the chroot? As a normal user? As root?==
 
 Understand that you can still access the network and possibly do damage via the bind mounted directories.
 
@@ -201,7 +201,7 @@ Run an interactive Ubuntu command-line:
 sudo docker run -it ubuntu:xenial bash
 ```
 
-==Lab Book Question: Using Docker, can you access anything outside of the chroot? As a normal user? As root? How much isolation does it provide? How does this compare to a full VM, for example in oVirt?==
+==Question: Using Docker, can you access anything outside of the chroot? As a normal user? As root? How much isolation does it provide? How does this compare to a full VM, for example in Proxmox?==
 
 **BEFORE YOU EXIT THE SAFETY OF THE DOCKER CONTAINER**, run:
 
@@ -241,7 +241,7 @@ Attempt to write to the file within the container.
 
 > Press Ctrl-D to exit the container.
 
-==Lab Book Question: How does Docker's file sharing feature work?==
+==Question: How does Docker's file sharing feature work?==
 
 Note that our various containers are still running:
 

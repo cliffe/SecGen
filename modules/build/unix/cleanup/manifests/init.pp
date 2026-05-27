@@ -4,6 +4,7 @@ class cleanup::init {
   $root_password = $secgen_params['root_password'][0]
   $clobber_file_times = str2bool($secgen_params['clobber_file_times'][0])
   $disable_ssh = str2bool($secgen_params['disable_ssh'][0])
+  $remove_proxy_env_vars = str2bool($secgen_params['remove_proxy_env_vars'][0])
 
   Exec { path => ['/bin','/sbin','/usr/bin', '/usr/sbin'] }
 
@@ -64,4 +65,12 @@ class cleanup::init {
       command => "/bin/bash -c 'history -c && history -w'"
     }
   }
+
+  if $remove_proxy_env_vars {
+    file { '/etc/environment':
+      ensure => file,
+      content => "",
+    }
+  }
+
 }

@@ -12,6 +12,10 @@
   <type>cookie_snippet</type>
   <platform>unix</platform>
 
+  <read_fact>default_superuser_role</read_fact>
+  <read_fact>default_user_role</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+
   <default_input into="default_superuser_role">
     <generator module_path=".*default_superuser_role"/>
   </default_input>

@@ -1,7 +1,7 @@
 
 	<attack>
 		<!-- topic: Protecting integrity with read-only filesystems-->
-		<prompt>An attempt to edit a file in /etc/ is coming. Stop the attack by bind mounting /etc/ as read-only. (Don't forget to 'sudo umount /etc/' to reverse this after you complete this challenge!)</prompt>
+		<prompt>An attempt to edit a file in /etc/ is coming. Stop the attack by bind mounting /etc/ as read-only. (Don't forget to 'sudo mount -o remount,rw /etc/' to reverse this after you complete this challenge!)</prompt>
 
 		<post_command>echo 'not read only!' > /etc/you_were_hacked; adduser --disabled-password --gecos "" yourehacked</post_command>
 		<condition>

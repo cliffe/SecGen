@@ -20,6 +20,7 @@
 
   <read_fact>base64_image</read_fact>
   <read_fact>strings_to_leak</read_fact>
+  <read_fact>password</read_fact>
 
   <default_input into="base64_image">
     <generator type="random_jpg"/>

@@ -24,6 +24,8 @@
 
   <!-- Takes account as a non-default value and fills in the missing fields with the randomly generated data. -->
   <read_fact>account</read_fact>
+  <read_fact>credit_card</read_fact>
+  <read_fact>national_insurance_number</read_fact>
 
   <default_input into="name">
     <generator type="name_generator"/>

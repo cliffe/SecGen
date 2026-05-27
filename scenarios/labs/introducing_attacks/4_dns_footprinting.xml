@@ -43,7 +43,7 @@ Throughout this lab, you will learn how to use DNS-related commands and tools to
     <base distro="Kali" name="MSF"/>
 
     <!-- <input into_datastore="IP_addresses">
-      <value>172.16.0.2</value>
+      <network_ip system="kali"/>
     </input> -->
 
     <utility module_path=".*/parameterised_accounts">
@@ -57,13 +57,9 @@ Throughout this lab, you will learn how to use DNS-related commands and tools to
     <utility module_path=".*/nmap"/>
     <utility module_path=".*/dns_tools"/>
 
-    <!-- <network type="private_network" >
-      <input into="IP_address">
-        <datastore access="0">IP_addresses</datastore>
-      </input>
-    </network> -->
+    <!-- <network type="private_network"/> -->
 
-    <network type="private_network" range="dhcp"/>
+    <network type="public_network" />
 
     <input into_datastore="spoiler_admin_pass">
       <generator type="strong_password_generator"/>

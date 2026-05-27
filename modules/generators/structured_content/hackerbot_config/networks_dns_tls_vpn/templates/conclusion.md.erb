@@ -1,0 +1,11 @@
+## Conclusion
+
+In this lab you have configured and explored three complementary mechanisms for securing network communications.
+
+In the **DNS section**, you configured hostname resolution using a local authoritative DNS server, observed that standard DNS traffic is plaintext and exposes every hostname you query to anyone on the network path, and discovered and remediated a zone transfer misconfiguration that would allow an attacker to enumerate the entire internal infrastructure in a single request.
+
+In the **SSL/TLS section**, you were introduced to the concept of certificate authorities (CAs), compared unencrypted HTTP and encrypted HTTPS on the wire, and inspected a TLS certificate in detail to understand what information it contains, what trust it provides, and how certificate fields can carry information beyond what is immediately obvious.
+
+In the **VPN section**, you demonstrated the limitations of remote access without a VPN, established an OpenVPN tunnel using certificate-based authentication, extended the gateway firewall policy from the previous lab to accommodate VPN traffic, and observed that a VPN conceals not just the content but also the destinations and metadata of connections.
+
+These three mechanisms address different layers of the same underlying problem: how do you communicate securely over a network you do not fully trust?

@@ -34,6 +34,7 @@
         <xs:element name='encoder' type='ServiceUtilityBuildEncoderGeneratorType' minOccurs='0' maxOccurs='unbounded' />
         <xs:element name='value' type='xs:string' minOccurs='0' maxOccurs='unbounded' />
         <xs:element name='datastore' type='DatastoreType' minOccurs='0' maxOccurs='unbounded' />
+        <xs:element name='network_ip' type='NetworkIpType' minOccurs='0' maxOccurs='unbounded' />
       </xs:choice>
     </xs:sequence>
     <xs:attribute name='into' type='xs:string'/>
@@ -193,5 +194,11 @@
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
+
+  <xs:complexType name="NetworkIpType">
+    <xs:attribute name="system" type="xs:string" use="required"/>
+    <xs:attribute name="vlan" type="xs:integer"/>
+  </xs:complexType>
+
 
 </xs:schema>

@@ -17,8 +17,7 @@
     <base distro="Debian 9" type="desktop" name="KDE"/>
 
     <input into_datastore="IP_addresses">
-      <value>172.16.0.2</value>
-      <value>172.16.0.3</value>
+      <network_ip system="desktop"/>
     </input>
 
     <!--generate two accounts, YOU and someone else-->
@@ -86,7 +85,7 @@
         <value>true</value>
       </input>
       <input into="start_page">
-        <datastore access="1">IP_addresses</datastore>
+        <datastore access="0">IP_addresses</datastore>
       </input>
     </utility>
 
@@ -105,35 +104,7 @@
       </input>
     </utility>
 
-    <!-- <service type="ircd"/>
-
-    <utility module_path=".*/hackerbot">
-      <input into="hackerbot_configs" into_datastore="hackerbot_instructions">
-        <generator module_path=".*/integrity_protection">
-          <input into="accounts">
-            <datastore>accounts</datastore>
-          </input>
-          <input into="root_password">
-            <value>removeme</value>
-          </input>
-        </generator>
-      </input>
-    </utility> -->
-
-    <!-- <utility module_path=".*/pidgin">
-      <input into="server_ip">
-        <value>localhost</value>
-      </input>
-      <input into="accounts">
-        <datastore access="0">accounts</datastore>
-      </input>
-    </utility> -->
-
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="0">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
     <input into_datastore="spoiler_admin_pass">
       <generator type="strong_password_generator"/>
     </input>

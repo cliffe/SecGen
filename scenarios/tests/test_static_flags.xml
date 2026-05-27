@@ -8,7 +8,7 @@
     <base platform="linux" distro="Debian 10" type="desktop"/>
 
     <input into_datastore="IP_addresses">
-      <value>172.16.0.2</value>
+      <network_ip system="ts_test_grader"/>
     </input>
 
     <vulnerability module_path=".*readable_shadow.*"/>
@@ -76,11 +76,7 @@
       </input>
     </utility>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="0">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
   </system>
 
 </scenario>

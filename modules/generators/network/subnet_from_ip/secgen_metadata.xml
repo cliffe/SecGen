@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>subnet_from_ip</name>
+  <author>Tom Shaw</author>
+  <module_license>GPLv3</module_license>
+  <description>Derives a /24 subnet address (e.g. 10.0.1.0/24) from a host IP address (e.g. 10.0.1.10). Used to parameterise iptables rules and other subnet-level config from the IP_addresses datastore.</description>
+
+  <type>subnet</type>
+  <platform>linux</platform>
+
+  <read_fact>ip_address</read_fact>
+
+  <output_type>subnet</output_type>
+
+</generator>

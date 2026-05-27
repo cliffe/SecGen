@@ -1,0 +1,21 @@
+dev tun
+proto udp
+port <%= @port %>
+local <%= @server_ip %>
+
+ca /etc/openvpn/server/ca.crt
+cert /etc/openvpn/server/server.crt
+key /etc/openvpn/server/server.key
+dh /etc/openvpn/server/dh.pem
+
+server <%= @vpn_subnet %> <%= @vpn_subnet_mask %>
+
+keepalive 10 120
+persist-key
+persist-tun
+
+<% @push_routes.each do |route| -%>
+  push "route <%= route %>"
+<% end -%>
+
+verb 3

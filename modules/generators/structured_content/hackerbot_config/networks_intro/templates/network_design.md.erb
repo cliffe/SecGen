@@ -1,0 +1,25 @@
+## Network design principles
+
+The following quote from Bruce Schneier speaks to two core principles of secure network design:
+
+"Defence in depth ensures that no single vulnerability can compromise security. Compartmentalisation ensures that a single vulnerability cannot compromise security entirely."
+
+### Defence in depth
+
+Defence in depth is the idea that onew single security mechanism is not enough to protect a system, as it is a single point of failure, and that using a combination of multiple controls is a better approach towards mitigate the potential damage caused if a compromise were to occur. In this lab we will look at two such controls, where you will configure a segmented network with a firewall.
+
+### Network segmentation
+
+Flat networks are those where all hosts are on the same subnet, which enables them to communicate with eachother directly. Network segmentation involves creating separate-yet-interconnected zones which have different rules and permissions depending on their purpose. In these more complex network designs, routing systems and firewalls can be used to determine where traffic should be permitted or restricted to travel.
+
+Common zones in a typical organisation include:
+
+* **Internal LAN / Intranet**: workstations, printers, file servers. This is where most employees work day-to-day.
+* **Server/data zone**: databases, application servers, domain controllers. These hold sensitive data and should only be accessible to authorised hosts.
+* **Demilitarised Zone (DMZ)**: public-facing services such as web servers, mail servers, and external DNS. These are exposed to the internet and are therefore at higher risk of compromise.
+* **Management network** - network infrastructure devices (switches, routers, firewalls). Access should be tightly restricted.
+* **Guest network** - untrusted devices that need internet access but should not be able to reach internal systems, for example a university guest WiFi.
+
+When designing a network, you are essentially making decisions about **trust**. Hosts in the same zone generally trust each other more than hosts in other zones. It is important to consider what an attacker could reach from a compromised system and to plan towards minimising their ability to directly attack other potentially more important or valuable target systems.
+
+In this lab, your environment implements a three-zone design: an internal LAN (desktop), a server zone (server), and a DMZ (web_server), with a gateway controlling traffic between all three.

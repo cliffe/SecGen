@@ -29,10 +29,8 @@
 
 
     <input into_datastore="IP_addresses">
-      <value>172.16.0.2</value>
-      <value>172.16.0.3</value>
-      <value>172.16.0.4</value>
-      <value>172.16.0.5</value>
+      <network_ip system="attack_vm"/>
+      <network_ip system="decode_me"/>
     </input>
 
     <utility module_path=".*/parameterised_accounts">
@@ -59,11 +57,7 @@
     <utility module_path=".*/kali_top10"/>
     <utility module_path=".*/kali_web"/>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="0">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
     <input into_datastore="spoiler_admin_pass">
       <generator type="strong_password_generator"/>
     </input>
@@ -126,11 +120,7 @@
       </input>
     </vulnerability>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="1">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
     <build type="cleanup">
       <input into="root_password">
         <datastore>spoiler_admin_pass</datastore>

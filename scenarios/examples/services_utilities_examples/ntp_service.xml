@@ -11,7 +11,7 @@
 
 		<service module_path="modules/services/unix/ntp/ntp"></service>
 
-		<network type="private_network" range="dhcp"></network>
+		<network type="private_network" />
 	</system>
 
 </scenario>

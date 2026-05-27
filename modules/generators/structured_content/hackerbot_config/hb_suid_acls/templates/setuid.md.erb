@@ -66,7 +66,7 @@ Make sure you understand the significance of the ruser and euser outputs not mat
 sudo find / -type f -perm -4000 -exec ls -ldb {} \;
 ```
 
-==Log Book Question: Document why each SUID program on your desktop requires SUID permissions.==
+==Question: Consider why each SUID program on your desktop requires SUID permissions.==
 
 > Hint: look up each command using man.
 
@@ -86,7 +86,7 @@ ls -la /usr/bin/wall
 ps -o ruser,euser,rgroup,egroup,comm -C wall
 ```
 
-==Log Book Question: Document why the `wall` program requires SGID permissions.==
+==Question: Consider why the `wall` program requires SGID permissions.==
 
 
 ==Search for all programs on your system that have SGID set.==
@@ -163,9 +163,9 @@ Think about the security of this solution. How secure is it? Would it be safe fo
 
 ==**Recommended AFTER completing all the flags:**==
 
-==Log Book Question:== It is possible to use this SUID program to get read access to **any** one of the owner user's files! Modify the program to correct the above vulnerability.
+==Task:== It is possible to use this SUID program to get read access to **any** one of the owner user's files! Modify the program to correct the above vulnerability.
 
-==Log Book Question:== Modify the program so that the script checks the UID and only continues for a specific user (for example, if the user is root).
+==Task:== Modify the program so that the script checks the UID and only continues for a specific user (for example, if the user is root).
 
 > Hint: `man getuid`
 

@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>Network Examples: defaults and network_ip</name>
+  <author>Tom Shaw</author>
+  <description>
+    Demonstrates the default network configuration options and direct use of
+    network_ip tags for cross-VM IP references.
+
+    Three VMs are defined on a single VLAN using default behaviour (random subnet,
+    VLAN 1). The gateway has a statically defined IP address. The desktop also has
+    a public_network interface for DHCP-based management access alongside its
+    private_network interface.
+
+    Expected output:
+    desktop: auto-assigned, e.g. x.x.x.2 (random subnet, VLAN 1)
+    server: auto-assigned, e.g. x.x.x.3 (same subnet, next octet, VLAN 1)
+    gateway: 10.0.0.1 (static, same VLAN 1 subnet — auto-assigned IPs); public dhcp network
+
+    See networks_with_datastores.xml for the IP_addresses datastore pattern, and
+    networks_vlans.xml for multi-VLAN scenarios.
+  </description>
+
+  <system>
+    <system_name>desktop</system_name>
+    <base distro="Debian 12" type="desktop" name="KDE"/>
+
+    <!--
+      Bare private_network — all defaults apply:
+      range is assigned by the random_ip_range generator, vlan defaults to 1.
+      All VMs sharing VLAN 1 are placed on the same randomly generated subnet.
+    -->
+    <network type="private_network"/>
+
+    <!--
+      public_network provides a DHCP-assigned address on the host's bridged
+      network, typically used for management access (e.g. SSH, Vagrant).
+      It does not participate in the randomised network map and cannot be
+      referenced with network_ip. A VM can have both a public_network and
+      one or more private_network interfaces simultaneously.
+    -->
+    <network type="public_network"/>
+
+    <build type="cleanup">
+      <input into="root_password">
+        <value>toor</value>
+      </input>
+    </build>
+  </system>
+
+  <system>
+    <system_name>server</system_name>
+    <base distro="Debian 12"/>
+
+    <!-- Same defaults as desktop — placed on the same random subnet, next octet -->
+    <network type="private_network"/>
+
+    <build type="cleanup">
+      <input into="root_password">
+        <value>toor</value>
+      </input>
+    </build>
+  </system>
+
+  <system>
+    <system_name>gateway</system_name>
+    <base distro="Debian 12"/>
+
+    <!--
+      Static IP_address assignment. Use this when a VM needs a known fixed IP,
+      for example a gateway or target that students must reach by a specific address.
+
+      network_ip references to this system resolve to 10.0.0.1.
+
+      Static IPs are registered first during network map construction. Auto-assigned
+      IPs on the same VLAN skip any octets already claimed by static assignments
+      (even when static networks are defined later in the scenario).
+
+      IP_address and range are mutually exclusive.
+    -->
+    <network type="private_network">
+      <input into="IP_address">
+        <value>10.0.0.1</value>
+      </input>
+    </network>
+
+    <!-- Assign a network interface to use a public facing IP address resolved via DHCP server -->
+    <network type="public_network"/>
+
+    <build type="cleanup">
+      <input into="root_password">
+        <value>toor</value>
+      </input>
+    </build>
+  </system>
+
+</scenario>

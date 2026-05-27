@@ -11,6 +11,7 @@
   <type>string_encoder</type>
   <type>ascii_reversible</type>
   <type>alpha_reversible</type>
+  <type>base64</type>
   <platform>linux</platform>
   <platform>windows</platform>
   <difficulty>low</difficulty>

@@ -11,8 +11,8 @@
 		<base platform="linux" distro="Buster"/>
 
 		<input into_datastore="IP_addresses">
-			<value>172.16.0.2</value>
-			<value>172.16.0.3</value>
+			<network_ip system="elk"/>
+			<network_ip system="auditpusher"/>
 		</input>
 
 		<input into_datastore="elasticsearch_port">
@@ -83,11 +83,7 @@
 
 		<utility module_path=".*/elastalert.*"/>
 
-		<network type="private_network" >
-			<input into="IP_address">
-				<datastore access="0">IP_addresses</datastore>
-			</input>
-		</network>
+		<network type="private_network"/>
 		<build type="cleanup">
 			<input into="root_password">
 				<value>dev</value>
@@ -130,11 +126,7 @@
 			</input>
 		</utility>
 
-		<network type="private_network" >
-			<input into="IP_address">
-				<datastore access="1">IP_addresses</datastore>
-			</input>
-		</network>
+		<network type="private_network"/>
 	</system>
 
 </scenario>

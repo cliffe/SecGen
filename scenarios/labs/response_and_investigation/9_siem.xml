@@ -81,11 +81,11 @@
 
     <input into_datastore="IP_addresses">
       <!-- 0 siem_management -->
-      <value>172.16.0.2</value>
+      <network_ip system="siem_management"/>
       <!-- 1 desktop -->
-      <value>172.16.0.3</value>
+      <network_ip system="desktop"/>
       <!-- 2 hackerbot -->
-      <value>172.16.0.4</value>
+      <network_ip system="hackerbot_server"/>
     </input>
 
     <!--generate two accounts, YOU and someone else-->
@@ -158,6 +158,9 @@
     <!-- an admin account used for hackerbot access to the desktop and also spoilers/administration of the challenge -->
     <input into_datastore="spoiler_admin_pass">
       <generator type="strong_password_generator"/>
+    </input>
+    <input into_datastore="hackerbot_key">
+      <generator type="ssh_key_pair"/>
     </input>
 
     <input into_datastore="elasticsearch_port">
@@ -272,17 +275,13 @@
 
     <utility module_path=".*/elastalert.*"/>
 
-    <vulnerability module_path=".*/ssh_root_login">
-      <input into="root_password">
-        <datastore>spoiler_admin_pass</datastore>
+    <utility module_path=".*/hackerbot_client">
+      <input into="ssh_key_pair">
+        <datastore>hackerbot_key</datastore>
       </input>
-    </vulnerability>
+    </utility>
 
-    <network type="private_network" >
-      <input into="IP_address">
-        <datastore access="0">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
     <build type="cleanup">
       <input into="root_password">
         <datastore>spoiler_admin_pass</datastore>
@@ -356,17 +355,13 @@
       </input>
     </utility>
 
-    <vulnerability module_path=".*/ssh_root_login">
-      <input into="root_password">
-        <datastore>spoiler_admin_pass</datastore>
+    <utility module_path=".*/hackerbot_client">
+      <input into="ssh_key_pair">
+        <datastore>hackerbot_key</datastore>
       </input>
-    </vulnerability>
+    </utility>
 
-    <network type="private_network" >
-      <input into="IP_address">
-        <datastore access="1">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
     <build type="cleanup">
       <input into="root_password">
         <datastore>spoiler_admin_pass</datastore>
@@ -388,23 +383,19 @@
     <service type="httpd"/>
 
     <utility module_path=".*/hackerbot">
+      <input into="ssh_key_pair">
+        <datastore>hackerbot_key</datastore>
+      </input>
       <input into="hackerbot_configs" into_datastore="hackerbot_instructions">
         <generator module_path=".*/hb_siem">
           <input into="accounts">
             <datastore>accounts</datastore>
           </input>
-          <input into="root_password">
-            <datastore>spoiler_admin_pass</datastore>
-          </input>
         </generator>
       </input>
     </utility>
 
-    <network type="private_network" >
-      <input into="IP_address">
-        <datastore access="2">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
     <build type="cleanup">
       <input into="root_password">
         <generator type="strong_password_generator"/>

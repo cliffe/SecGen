@@ -2,7 +2,7 @@
 <% $rand_read_command = ['tail -f'].sample
 	 $rand_read_file = ['/etc/passwd', '/etc/shadow', '/etc/gshadow'].sample
 	 %>
-		<pre_shell>sshpass -p <%= $root_password %> ssh -oStrictHostKeyChecking=no root@<%= $web_server_ip %> '(<%= $rand_read_command %> <%=$rand_read_file %> >/dev/null) &amp;'; echo 'OK'</pre_shell>
+		<pre_shell>ssh -i /opt/hackerbot/keys/id_rsa -oStrictHostKeyChecking=no root@<%= $web_server_ip %> '(<%= $rand_read_command %> <%=$rand_read_file %> >/dev/null) &amp;'; echo 'OK'</pre_shell>
 
 		<get_shell>false</get_shell>
 		<post_command></post_command>

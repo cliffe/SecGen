@@ -44,9 +44,9 @@ This lab provides an in-depth exploration of scanning techniques. You will learn
 
     <input into_datastore="IP_addresses">
       <!-- 0 linux server -->
-      <value>172.16.0.10</value>
+      <network_ip system="linux_victim_server"/>
       <!-- 1 kali -->
-      <value>172.16.0.2</value>
+      <network_ip system="kali"/>
     </input>
 
     <!-- vulnerable distcc server -->
@@ -84,11 +84,7 @@ This lab provides an in-depth exploration of scanning techniques. You will learn
     <service type="httpd" module_path=".*/apache$"/>
     <service type="ftp"/>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="0">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
     <input into_datastore="spoiler_admin_pass">
       <generator type="strong_password_generator"/>
     </input>
@@ -116,11 +112,7 @@ This lab provides an in-depth exploration of scanning techniques. You will learn
     <!-- <utility module_path=".*/zenmap"/> -->
     <utility module_path=".*/amap"/>
 
-    <network type="private_network" >
-      <input into="IP_address">
-        <datastore access="1">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
     <build type="cleanup">
       <input into="root_password">
         <datastore>spoiler_admin_pass</datastore>

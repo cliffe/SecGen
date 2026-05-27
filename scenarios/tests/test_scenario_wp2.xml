@@ -8,10 +8,10 @@
     <base platform="linux" distro="Debian 9" type="server"/>
 
     <input into_datastore="IP_addresses">
-      <value>172.16.0.2</value>
-      <value>172.16.0.3</value>
-      <value>172.16.0.4</value>
-      <value>172.16.0.5</value>
+      <network_ip system="wp_2x_stretch_https"/>
+      <network_ip system="wp_2x_stretch_http"/>
+      <network_ip system="wp_2x_wheezy_https"/>
+      <network_ip system="wp_2x_wheezy_http"/>
     </input>
 
     <vulnerability module_path=".*wordpress_2x.*">
@@ -23,11 +23,7 @@
       </input>
     </vulnerability>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="0">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
   </system>
 
   <system>
@@ -43,11 +39,7 @@
       </input>
     </vulnerability>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="1">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
   </system>
 
   <system>
@@ -63,11 +55,7 @@
       </input>
     </vulnerability>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="2">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
   </system>
 
 
@@ -84,11 +72,7 @@
       </input>
     </vulnerability>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="3">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
   </system>
 
 </scenario>

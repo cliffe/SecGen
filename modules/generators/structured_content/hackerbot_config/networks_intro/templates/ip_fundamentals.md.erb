@@ -1,0 +1,76 @@
+## IP and MAC address fundamentals
+
+Every device on a network has at least two addresses that identify it: an **IP address** which is for Layer 3, aka the network layer, which is responsible for routing traffic between networks, and a **MAC address** for Layer 2, the data link layer, responsible for communication within a single network segment.
+
+### IP addresses
+
+An IP address identifies a host on a network. IP addresses can be assigned statically (manually configured) or dynamically (via DHCP). IP addresses can be added to interfaces and changed and therefore a host is not permanently bound to a particular IP.
+
+==Let's demonstrate this. On your desktop, first note your current IP address and confirm you can ping the gateway:==
+
+```bash
+# On: desktop
+ip addr show ens19
+ping <%= $gateway_lan_ip %>
+```
+
+==Now temporarily add a second IP address to your interface:==
+
+```bash
+# On: desktop
+sudo ip addr add <%= $first_2_octets %>.1.200/24 dev ens19
+```
+
+==Verify the new address has been added:==
+
+```bash
+# On: desktop
+ip addr show ens19
+```
+
+You should see both your original IP and the new <%= $first_2_octets %>.1.200 address listed on the same interface.
+
+==Remove the additional address to return to your original configuration:==
+
+```bash
+# On: desktop
+sudo ip addr del <%= $first_2_octets %>.1.200/24 dev ens19
+```
+
+The above demonstrates adding and removing IPs temporarily using `ip addr`. However, changes made this way are lost on reboot. To permanently change your IP address, you should edit the network configuration file instead.
+
+==To change your IP persistently, edit `/etc/network/interfaces`:==
+```bash
+# On: desktop
+sudo vi /etc/network/interfaces
+```
+
+Find the block for your interface and change the `address` line to the new IP. For example, to change from <%= $first_2_octets %>.1.10 to <%= $first_2_octets %>.1.50:
+```
+auto ens19
+iface ens19 inet static
+    address <%= $first_2_octets %>.1.50/24
+    gateway <%= $gateway_lan_ip %>
+```
+
+==Then restart the networking service to apply the change:==
+```bash
+# On: desktop
+sudo service networking restart
+```
+
+==Verify your IP has changed:==
+```bash
+# On: desktop
+ip addr show ens19
+ping <%= $gateway_lan_ip %>
+```
+
+This method is safer than using `ip addr` commands directly, because it preserves your default route and handles the network transition cleanly. You will use this approach in the Hackerbot challenge that follows.
+
+> **Security implication:** If IP addresses can be easily changed, any security mechanism that relies solely on IP address for identification can potentially be bypassed by an attacker who changes their IP. Consider the implications of an attacker changing their IP to match a trusted host, how would the network tell the difference?
+
+> **Tip:** If you accidentally misconfigure your network, try restarting the network service with `sudo service networking restart` and if that fails revert your VM to restore the original configuration.
+
+---
+

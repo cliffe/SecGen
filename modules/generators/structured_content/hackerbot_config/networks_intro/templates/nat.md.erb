@@ -1,0 +1,72 @@
+## Network Address Translation (NAT)
+
+NAT is one of the most widely deployed techniques in networking. Understanding it is essential for anyone working with firewalls, network design, or traffic analysis.
+
+### Why NAT exists
+
+IPv4 addresses are a finite resource. When the internet was designed, no one anticipated that billions of devices would eventually need unique addresses. NAT offered a solution by allowing many devices on a private network to share a single public-facing IP address.
+
+Without NAT, every device that wanted to communicate with the outside world would need its own globally unique IP address. With NAT, the gateway translates it and rewrites the source IP address on outgoing packets (replacing the private internal IP with its own public-facing IP), and keeps track of those translations so it can rewrite the destination address on incoming reply packets and deliver them back to the correct internal host.
+
+NAT also provides a degree of implicit security as hosts on the internal network are not directly reachable from the outside because they have no routable address. However, this should not be relied upon and is not as secure as deploying a proper firewall.
+
+In this lab, NAT is used on the **gateway** to allow hosts on the internal LAN (<%= $desktop_vlan %>/24) to
+communicate across segments. You are going to configure it from scratch.
+
+### Setting up outbound NAT (MASQUERADE)
+
+The most common form of NAT in small networks is **MASQUERADE**. Rather than specifying a fixed IP address to translate to, MASQUERADE automatically uses whatever IP address the outgoing interface has. This means that when a packet from an internal host leaves the gateway, the source IP is rewritten to the gateway's own address on that interface. As far as any host on the other side is concerned, the traffic appears to originate from the gateway itself, not from the internal host that sent it.
+
+==SSH into the gateway and add a MASQUERADE rule to the POSTROUTING chain of the NAT table:==
+
+```bash
+# On: desktop
+ssh <%= $gateway_lan_ip %>
+
+# On: gateway
+sudo iptables -t nat -A POSTROUTING -s <%= $desktop_vlan %>/24 -o ens20 -j MASQUERADE
+```
+
+This rule says that for any packet originating from the <%= $desktop_vlan %>/24 subnet leaving via `ens20`, rewrite the source IP to match the gateway's address on that interface.
+
+==Verify the rule has been added:==
+```bash
+# On: gateway
+sudo iptables -t nat -L POSTROUTING -v -n
+```
+
+You should see your new MASQUERADE rule listed with the source network and output interface.
+
+### Observing NAT in action
+
+With the rule in place, let's verify it is working and observe what it actually does to traffic.
+
+==First, check the desktop can reach the webserver. Back on the desktop, unset any proxy environment variables that might interfere with `curl`, then make an HTTP request:==
+
+```bash
+# On: desktop
+unset http_proxy HTTP_PROXY
+curl http://<%= $webserver_ip %>
+```
+
+If you get a response from the webserver, NAT is working — the gateway is translating your
+desktop's source IP as packets cross into the DMZ.
+
+==To see exactly what NAT is doing, SSH into the web_server and start a packet capture:==
+```bash
+# On: desktop (second terminal)
+ssh <%= $webserver_ip %>
+
+# On: web_server
+sudo tcpdump -i any -n port 80
+```
+
+==Then, back on the desktop, make another HTTP request:==
+```bash
+# On: desktop
+curl http://<%= $webserver_ip %>
+```
+
+Look at the source IP address in the tcpdump output on the web_server. You should see that the incoming packets appear to originate from the **gateway's DMZ-facing IP** (<%= $gateway_dmz_ip %>), not from your desktop's real address on the <%= $desktop_vlan %>/24 subnet. The gateway has rewritten the source before forwarding the packet into the DMZ.
+
+> **Consider the implications of this for logging and attribution. If the web_server were compromised and an attacker examined its access logs, what would they and what would they *not* be able to learn about the internal network?

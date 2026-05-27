@@ -20,6 +20,7 @@
   <read_fact>root_password</read_fact>
   <read_fact>desktop_ip</read_fact>
   <read_fact>hackerbot_server_ip</read_fact>
+  <read_fact>accounts</read_fact>
 
   <default_input into="accounts">
     <generator type="account">

@@ -1,7 +1,7 @@
 
 	<attack>
     <!--shell on the backup server-->
-		<get_shell>sshpass -p <%= $root_password %> ssh -oStrictHostKeyChecking=no root@<%= $backup_server_ip %> /bin/bash</get_shell>
+		<get_shell>ssh -i /opt/hackerbot/keys/id_rsa -oStrictHostKeyChecking=no root@<%= $backup_server_ip %> /bin/bash</get_shell>
 
 		<!-- topic: Rsync-->
 		<prompt>It's your job to set up remote backups for <%= $second_user %> (a user on your system). Use rsync to create a full (epoch) remote backup of /home/<%= $second_user %> from your desktop system to the backup_server: <%= $backup_server_ip %>:/home/<%= $main_user %>/remote-rsync-full-backup/<%= $second_user %>.</prompt>
@@ -45,7 +45,7 @@
 
 	<attack>
     <!--shell on the backup server-->
-		<get_shell>sshpass -p <%= $root_password %> ssh -oStrictHostKeyChecking=no root@<%= $backup_server_ip %> /bin/bash</get_shell>
+		<get_shell>ssh -i /opt/hackerbot/keys/id_rsa -oStrictHostKeyChecking=no root@<%= $backup_server_ip %> /bin/bash</get_shell>
 
 		<!-- topic: Rsync differential-->
 		<prompt>Create a differential backup of <%= $second_user %>'s desktop files to the backup_server: <%= $backup_server_ip %>:/home/<%= $main_user %>/remote-rsync-differential1/.</prompt>

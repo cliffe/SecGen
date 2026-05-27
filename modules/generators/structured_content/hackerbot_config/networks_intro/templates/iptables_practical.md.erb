@@ -1,0 +1,109 @@
+## Understanding firewall rules and segmentation
+
+In this scenario the **gateway** VM sits between the three network segments, routing traffic between them. You are going to configure `iptables` rules on the gateway to control which traffic is allowed to cross between zones.
+
+### Setting up firewall rules on the gateway
+
+==SSH into the gateway and check the current FORWARD policy:==
+```bash
+# On: gateway
+sudo iptables -L FORWARD -v -n
+```
+
+You should see that the FORWARD chain has a policy of ACCEPT, meaning all traffic between segments is allowed with no restrictions. As any host on any segment can reach any other host, which is insecure, we should change that.
+
+==First, set the default FORWARD policy to DROP:==
+```bash
+# On: gateway
+sudo iptables -P FORWARD DROP
+```
+
+This is the principle of *default deny*, where all forwarded traffic is now blocked unless explicitly allowed by a rule. You can verify this by looking at the policy shown in parentheses at the top of the chain output:
+
+> **Note:** iptables rules are not persistent by default and will be lost if the gateway reboots. To save your rules at any point, run `sudo iptables-save > /etc/iptables/rules.v4` on the gateway. It's worth doing this after each step as you go.
+
+> **Note:** Always save your rules after making changes you want to keep. If you need to start fresh, you can flush all rules with `sudo iptables -F` and `sudo iptables -t nat -F`, but be careful as this will remove all rules.
+
+```bash
+# On: gateway
+sudo iptables -L FORWARD -v -n
+```
+
+You should see `Chain FORWARD (policy DROP)`.
+
+==Now try to ping the webserver from your desktop:==
+```bash
+# On: desktop
+ping <%= $webserver_ip %>
+```
+
+This should now fail as the gateway is dropping all forwarded traffic.
+
+==Add a rule to allow traffic from the desktop's subnet to the webserver's subnet:==
+```bash
+# On: gateway
+sudo iptables -A FORWARD -s <%= $desktop_vlan %>/24 -d <%= $web_server_vlan %>/24 -j ACCEPT
+```
+
+==Try pinging the webserver again from the desktop - again, it should fail:==
+```bash
+# On: desktop
+ping <%= $webserver_ip %>
+```
+
+The ping gets there, but you probably won't get a reply. Why? Because the reply from the webserver back to the desktop is also forwarded traffic, and there is no rule allowing it in the other direction.
+
+
+==Add a rule to allow established and related traffic back through:==
+```bash
+# On: gateway
+sudo iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+```
+
+This rule uses **stateful packet inspection** to allow packets through that are part of an existing connection (ESTABLISHED) or related to one (RELATED), without allowing new connections in that direction.
+
+==Now try pinging the webserver again:==
+```bash
+# On: desktop
+ping <%= $webserver_ip %>
+```
+
+This should now work. The first rule allows new connections from the desktop to the DMZ, and the stateful rule allows the replies back through.
+
+==Now add a rule to allow the desktop to reach the server zone as well:==
+```bash
+# On: gateway
+sudo iptables -A FORWARD -s <%= $desktop_vlan %>/24 -d <%= $server_vlan %>/24 -j ACCEPT
+```
+
+==Verify the desktop can now reach both zones:==
+```bash
+# On: desktop
+ping <%= $server_ip %>
+```
+
+> **Tip:** If connectivity is not behaving as you expect, check your ruleset with `sudo iptables -L FORWARD -v -n --line-numbers` on the gateway. Work through each rule top to bottom and check whether your traffic matches an ACCEPT rule or falls through to the DROP policy.
+
+### Testing DMZ isolation
+
+Now let's verify that the DMZ is properly isolated from the other zones.
+
+==SSH into the webserver and try to reach the server:==
+```bash
+# On: webserver
+ping <%= $server_ip %>
+```
+
+This should fail as there is no rule allowing the webserver to initiate connections to the server zone. DMZs are configured like this so that if the webserver is compromised, the attacker cannot pivot to internal systems.
+
+==Review your complete ruleset on the gateway:==
+```bash
+# On: gateway
+sudo iptables -L FORWARD -v -n
+```
+
+Compare what you see against the traffic you just tested. You should be able to match each result (allowed or blocked) to a specific rule or the default DROP policy. This is how firewall rules enforce network segmentation in practice.
+
+Because the web_server is on a different subnet, all traffic from your desktop to the web_server passes through the gateway's FORWARD chain. This means the gateway's forwarding rules directly determine what you can and cannot reach across zone boundaries.
+
+---

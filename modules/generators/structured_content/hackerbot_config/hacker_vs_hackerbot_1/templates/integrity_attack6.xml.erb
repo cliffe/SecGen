@@ -1,7 +1,7 @@
 	<attack>
 		<!-- topic: File integrity checkers-->
-		<prompt>Going to copy a new random binary in /bin/ or /usr/bin/ use hash comparisons to find the filename of the copied file.</prompt>
-		<post_command>srcf=`find /bin/ /usr/bin/ -executable | sort -R | head -n 1`; srcf="${srcf%\\n}"; dest=$srcf.$RANDOM; cp $srcf $dest; echo $dest</post_command>
+		<prompt>Going to copy a new random binary in /bin/ use hash comparisons to find the filename of the copied file.</prompt>
+		<post_command>srcf=`find /bin/ -executable | sort -R | head -n 1`; srcf="${srcf%\\n}"; dest=$srcf.$RANDOM; cp $srcf $dest; echo $dest</post_command>
 		<suppress_command_output_feedback />
 
 		<condition>

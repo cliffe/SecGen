@@ -52,7 +52,7 @@
     <base platform="linux" type="desktop" distro="Stretch"/>
 
     <input into_datastore="IP_addresses">
-      <value>172.16.0.12</value>
+      <network_ip system="system"/>
     </input>
 
     <input into_datastore="challenges" unique_module_list="unique_encoders">
@@ -548,11 +548,7 @@ Good luck and have fun!
       </input>
     </utility>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="0">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
 
     <input into_datastore="spoiler_admin_pass">
       <generator type="strong_password_generator"/>

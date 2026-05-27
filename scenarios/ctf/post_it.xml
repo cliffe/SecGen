@@ -53,11 +53,11 @@
 
     <input into_datastore="IP_addresses">
       <!-- 0 windows desktop -->
-      <value>172.16.0.2</value>
+      <network_ip system="windows_server"/>
       <!-- 1 linux server -->
-      <value>172.16.0.3</value>
+      <network_ip system="linux_server"/>
       <!-- 1 kali -->
-      <value>172.16.0.4</value>
+      <network_ip system="kali"/>
     </input>
 
     <utility module_path=".*/parameterised_accounts" platform="windows">
@@ -89,11 +89,7 @@
     <!-- vulnerable ftp server -->
     <vulnerability module_path=".*/easyftp_rce"/>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="0">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
     <input into_datastore="spoiler_admin_pass">
       <generator type="strong_password_generator"/>
     </input>
@@ -178,11 +174,7 @@
       </input>
     </vulnerability>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="1">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
     <build type="cleanup">
       <input into="root_password">
         <datastore>spoiler_admin_pass</datastore>
@@ -207,11 +199,7 @@
     <utility module_path=".*/nmap"/>
     <utility module_path=".*/kali_pwtools"/>
 
-    <network type="private_network" >
-      <input into="IP_address">
-        <datastore access="2">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
     <build type="cleanup">
       <input into="root_password">
         <datastore>spoiler_admin_pass</datastore>

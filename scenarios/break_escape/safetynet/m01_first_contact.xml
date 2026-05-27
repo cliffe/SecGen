@@ -4,25 +4,36 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
 
-  <name>Introduction to Linux and Security lab</name>
+  <name>Break Escape SAFETYNET: Mission 1 — First Contact VMs</name>
   <author>Z. Cliffe Schreuders</author>
   <description>
-# Introduction
-In this lab, you will delve into the fascinating world of Linux and security tools, gaining practical knowledge and skills that are highly relevant in the field of cybersecurity. Linux is a powerful and versatile operating system widely used in the IT industry. Understanding Linux and its command-line interface is crucial for anyone interested in security testing and ethical hacking. You'll begin by familiarizing yourself with Linux basics, from fundamental command-line operations to concepts like piping between programs and file redirection. This lab will also introduce you to the Kali Linux distribution, a platform designed for penetration testing and ethical hacking.
+# Break Escape SAFETYNET Mission 1: First Contact
 
-Throughout this lab, you will learn how to perform various tasks, such as creating and manipulating files, exploring the Linux file system, and conducting network-related activities. You will gain hands-on experience with SSH, a secure remote shell protocol used for administration, and even attempt online brute force attacks to understand the importance of security in the digital realm. By the end of this lab, you will have honed your Linux command-line skills, developed a basic understanding of networking, and practiced using essential security tools, preparing you for more advanced challenges in the field of cybersecurity. Get ready to embark on an engaging journey where you will explore the core elements of Linux and security.
+Virtual machines for the Break Escape SAFETYNET mission 1 narrative experience. These VMs support the "First Contact" mission where operatives investigate Viral Dynamics Media to uncover ENTROPY's Operation Shatter disinformation campaign.
 
-# Lecture
-[Slides here](http://z.cliffe.schreuders.org/presentations/slides/DSL_DS_OSPT_Lectures_1_Intro_to_Unix_FOSS_and_Linux.html)
+## Included Systems
 
-# Reading
-[Chapters 1 "Introduction" and 2 "Unix History and Lineage": Garfinkel, S. and Spafford, G. and Schwartz, A. (2003), Practical Unix and Internet Security, O'Reilly. (ISBN-10: 0596003234)](http://www.dawsonera.com.ezproxy.leedsbeckett.ac.uk/depp/reader/protected/external/AbstractView/S9781449310325)
+**shatter_server** (172.16.0.2)
+- Debian 12 desktop system
+- Hosts ENTROPY infrastructure for Operation Shatter
+- Contains accounts: derek (SSH brute force target), shatter (privilege escalation target)
+- Intelligence: Archive decryption key, deployment notes, operation configuration
 
-Suggested:
+**kali** (172.16.0.3)
+- Kali Linux penetration testing platform
+- Used for reconnaissance and credential testing against shatter_server
+- Includes Hydra for SSH brute force, standard penetration testing tools
 
-Chapter 1 "An Overview of Computer Security": Bishop, M. (2005), Introduction to Computer Security, Addison-Wesley. (ISBN-10: 0321247442)
+## Integration with Break Escape
+
+These VMs are provisioned by the Break Escape game engine via SecGen integration. Players interact with these systems through the game's narrative and task system, with guided hints delivered via SAFETYNET field guides.
+
+## CyBOK Coverage
+
+- Network Protocols and Vulnerability
+- Penetration Testing Tools and Techniques
   </description>
-  <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/introducing_attacks/1-intro-linux/</lab_sheet_url>
+  <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/m01_first_contact/safetynet-field-guide-ssh-access-and-linux-basics/</lab_sheet_url>
   <type>ctf-lab</type>
   <type>lab-sheet</type>
   <difficulty>easy</difficulty>
@@ -35,7 +46,7 @@ Chapter 1 "An Overview of Computer Security": Bishop, M. (2005), Introduction to
   </CyBOK>
 
   <system>
-    <system_name>desktop</system_name>
+    <system_name>shatter_server</system_name>
     <base distro="Debian 12" type="desktop" name="KDE"/>
 
     <input into_datastore="IP_addresses">

@@ -1,0 +1,401 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>Mission 2: Ransomed Trust - Hospital Backup Server</name>
+  <author>Z. Cliffe Schreuders</author>
+  <description>
+# Mission 2: Ransomed Trust
+
+St. Catherine's Regional Medical Center has been hit by ransomware. Forty-seven patients on life support systems are at risk. Ghost has encrypted critical hospital systems and is demanding $87,000 in Bitcoin.
+
+You have been deployed to investigate the attack and restore hospital operations. Intelligence suggests Ghost infiltrated the network weeks ago via an insider — codename "Asset #47" — who planted equipment and exploited an unpatched ProFTPD vulnerability on the hospital's backup server.
+
+## Your Objectives
+
+1. **Gain access to the hospital backup server** - The server is running a vulnerable ProFTPD service
+2. **Locate Ghost's operational files** - Evidence of the infiltration is hidden on the system
+3. **Recover the offline backup keys** - These keys can decrypt patient data without paying the ransom
+4. **Identify the insider** - Find evidence linking Asset #47 to the attack
+5. **Trace ENTROPY's attack methodology** - Understand how Ghost penetrated hospital security
+
+## Investigation Brief
+
+**IT Administrator**: Marcus Webb warned hospital management about the ProFTPD vulnerability 6 months ago. His warnings were ignored. Ghost is now using him as a scapegoat.
+
+**Network Bridge**: Asset #47 planted a wireless network bridge in the IT department, providing Ghost remote access to the backup server.
+
+**Equipment Manifest**: Ghost's operational files should reveal the full scope of the infiltration, including details about Asset #47, the equipment deployed, and the hospital emergency storage safe PIN.
+
+**Database Backup**: The server contains encrypted patient database backups. Finding these will reveal the path to Ghost's operational logs and prove Marcus Webb's innocence.
+
+## Technical Challenge Path
+
+You will need to:
+- Exploit the ProFTPD backdoor (CVE-2010-4652)
+- Escalate privileges to access restricted files
+- Decode Ghost's obfuscated operational files
+- Connect technical evidence to physical game elements (PIN cracker device, guard identity)
+
+## Narrative Payoff
+
+Successfully rooting this server will:
+- Prove Marcus Webb was warning about vulnerabilities (vindicating him)
+- Reveal Asset #47's identity as the hospital security guard
+- Expose the PIN (4729) needed to open the emergency storage safe
+- Provide evidence of Ghost's infiltration methodology
+- Connect the VM challenge to the physical escape room investigation
+
+Ghost doesn't know you're coming. Make it count.
+  </description>
+
+  <type>ctf</type>
+  <type>attack-ctf</type>
+  <type>pwn-ctf</type>
+  <difficulty>medium</difficulty>
+
+  <!-- ftp root -->
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION</keyword>
+    <keyword>EXPLOITATION FRAMEWORKS</keyword>
+    <keyword>BACKDOOR TROJANS</keyword>
+  </CyBOK>
+  <CyBOK KA="SS" topic="Categories of Vulnerabilities">
+    <keyword>CVEs and CWEs</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+  <CyBOK KA="NS" topic="PENETRATION TESTING">
+    <keyword>FILE - TRANSFER PROTOCOL (FTP)</keyword>
+  </CyBOK>
+
+  <!-- encoding challenges -->
+  <CyBOK KA="F" topic="Artifact Analysis">
+    <keyword>Encoding and alternative data formats</keyword>
+  </CyBOK>
+  <CyBOK KA="AC" topic="Symmetric Cryptography">
+    <keyword>symmetric encryption and authentication</keyword>
+  </CyBOK>
+
+
+  <system>
+    <system_name>attack_vm</system_name>
+    <base distro="Kali" name="MSF"/>
+
+
+    <input into_datastore="IP_addresses">
+      <!-- 0 attack_vm -->
+      <value>172.16.0.2</value>
+      <!-- 1 hackme_server -->
+      <value>172.16.0.3</value>
+    </input>
+
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts">
+        <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
+      </input>
+    </utility>
+
+    <utility module_path=".*/iceweasel">
+      <input into="accounts">
+        <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
+      </input>
+      <input into="autostart">
+        <value>false</value>
+      </input>
+    </utility>
+
+    <utility module_path=".*/kali_top10"/>
+    <utility module_path=".*/kali_web"/>
+
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="0">IP_addresses</datastore>
+      </input>
+    </network>
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+
+  <system>
+    <system_name>server</system_name>
+    <base distro="Debian 12" type="desktop" name="KDE"/>
+
+    <!-- User accounts on the hospital backup server -->
+    <input into_datastore="user_accounts_server">
+      <!-- marcus: IT Administrator, scapegoated by Ghost, has vulnerability warnings -->
+      <generator type="account">
+        <input into="username">
+          <value>marcus</value>
+        </input>
+        <input into="password">
+          <generator type="random_word_generator">
+            <input into="wordlist">
+              <value>top-20-common-SSH-passwords</value>
+            </input>
+          </generator>
+        </input>
+        <input into="super_user">
+          <value>false</value>
+        </input>
+        <input into="leaked_filenames">
+          <value>vulnerability_warnings/proftpd_warning_email</value>
+          <value>hospital_docs/backup_procedures</value>
+        </input>
+        <input into="strings_to_leak">
+          <!-- Vulnerability warning email proves Marcus warned management -->
+          <value>From: Marcus Webb &lt;mwebb@stcatherines.hospital&gt;
+To: Hospital IT Committee &lt;itcommittee@stcatherines.hospital&gt;
+Date: November 12, 2025
+Subject: URGENT: ProFTPD Vulnerability Requires Immediate Patching
+
+Dear Committee Members,
+
+I am writing to formally document a CRITICAL security vulnerability on our backup server (backup01.stcatherines.local).
+
+VULNERABILITY DETAILS:
+- Service: ProFTPD 1.3.3c
+- CVE: CVE-2010-4652 (Backdoor in distribution)
+- CVSS Score: 10.0 (CRITICAL)
+- Exploit Status: Public exploits available
+
+RISK ASSESSMENT:
+This backdoor allows UNAUTHENTICATED REMOTE ROOT ACCESS. An attacker could:
+- Access all patient database backups
+- Steal offline recovery keys
+- Plant ransomware or malware
+- Exfiltrate sensitive medical records
+
+RECOMMENDATION:
+IMMEDIATE patching to ProFTPD 1.3.4 or later is required.
+Estimated downtime: 30 minutes during maintenance window.
+
+This is my THIRD WARNING about this vulnerability.
+Previous warnings: August 2025, September 2025
+
+I take no responsibility for breaches resulting from continued inaction.
+
+Regards,
+Marcus Webb
+Senior IT Administrator
+St. Catherine's Regional Medical Center</value>
+
+          <!-- Backup procedures document with flag -->
+          <encoder module_path="modules/encoders/selector/concatenate">
+            <input into="strings_to_encode">
+              <value>ST. CATHERINE'S HOSPITAL - BACKUP PROCEDURES
+
+OFFLINE BACKUP ENCRYPTION KEYS
+Location: Emergency Storage Safe (Physical Security)
+Safe Model: Sargent &amp; Greenleaf 6120
+Access: PIN-locked (4-digit code)
+PIN Location: Restricted (IT Director only)
+
+ONLINE RECOVERY KEYS
+Location: /var/backups/hospital_db/
+Encryption: AES-256
+Access: Root user only
+
+RECOVERY PROCEDURE:
+1. Retrieve offline backup keys from emergency storage safe
+2. Combine with online recovery keys from backup server
+3. Use combined keys to decrypt patient database backups
+4. Restore to production systems
+
+NOTE: Both key sets are required for full recovery.
+Marcus Webb documented this procedure after management refused
+to implement proper cloud backup solutions.
+
+For investigation of suspected intrusion, check:
+/root/.ghost_ops/ directory (if it exists - indicates compromise)</value>
+              <generator type="flag_generator" />
+            </input>
+          </encoder>
+        </input>
+      </generator>
+    </input>
+
+    <input into_datastore="server_root_password">
+      <generator type="strong_password_generator"/>
+    </input>
+
+    <!--Create the user accounts-->
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts">
+        <datastore>user_accounts_server</datastore>
+      </input>
+    </utility>
+
+    <utility module_path=".*/kde_minimal">
+      <input into="autologin_user">
+        <value>marcus</value>
+      </input>
+      <input into="accounts">
+        <datastore>user_accounts_server</datastore>
+      </input>
+      <input into="autostart_konsole">
+        <value>true</value>
+      </input>
+    </utility>
+    <utility module_path=".*/handy_cli_tools"/>
+
+    <vulnerability module_path="vulnerabilities/unix/ftp/proftpd_133c_backdoor">
+      <input into="strings_to_leak">
+        <!-- Post-exploitation: Ghost's equipment manifest (reveals Asset #47, PIN 4729, equipment details) -->
+        <value>OPERATION RANSOMED TRUST - EQUIPMENT DEPLOYMENT LOG
+====================================================
+
+INFILTRATION TIMELINE:
+Week 1: Network bridge deployment
+Week 3: Emergency storage reconnaissance  
+Week 6: ProFTPD exploit execution
+
+ASSET DETAILS:
+-------------
+Asset ID: #47
+Cover: Hospital Security Guard (Night Shift)
+Handler: Ghost
+Payment: $8,700 (10% of projected ransom)
+Status: ACTIVE
+
+EQUIPMENT ISSUED:
+----------------
+1. Wireless Network Bridge (Netgear R6400)
+   - Serial: WNB-2024-0847-A
+   - Location: IT Department, hidden behind server rack
+   - Purpose: Remote access foothold
+   - Status: Deployed Week 1, operational
+
+2. PIN Cracker Device v2.4
+   - Serial: RI-2024-0847
+   - Location: Server Room, maintenance cabinet (Rack 3)
+   - Purpose: Emergency storage safe access (reconnaissance)
+   - Target PIN discovered: 4729
+   - Status: Concealed Week 6, ready for recovery
+
+3. ProFTPD Exploit Payload (CVE-2010-4652)
+   - Deployment: Week 6 via network bridge
+   - Execution: Successful
+   - Ransom note delivered: Confirmed
+
+RECOVERY INSTRUCTIONS:
+---------------------
+Equipment Location: Server Maintenance Cabinet
+- Rack 3, bottom shelf
+- Behind power supply stack
+- Access code: Asset47
+
+Emergency Safe PIN (if needed): 4729
+Payment wallet: bc1q7cyrfmckn2ewz5m78ts6jt9lcfhfwcvzefm27k
+
+OPERATIONAL SECURITY:
+--------------------
+- Asset #47 has plausible deniability (legitimate security role)
+- Equipment serials sanitized (untraceable to ENTROPY)
+- Payment routed through 3 BTC mixers
+- If Asset compromised: DENY ALL KNOWLEDGE
+
+-- Ghost, Ransomware Incorporated</value>
+        <generator type="flag_generator"/>
+      </input>
+      <input into="strings_to_pre_leak">
+        <!-- Pre-exploitation via FTP anonymous: Database backup location hint -->
+        <value>ST. CATHERINE'S HOSPITAL - BACKUP SERVER
+=========================================
+
+FTP Service: ProFTPD 1.3.3c
+Status: ACTIVE
+Anonymous Access: READ-ONLY
+
+Available Backups:
+- /backups/public/system_configs/ (public)
+- /backups/public/application_logs/ (public)
+
+RESTRICTED AREAS (requires authentication):
+- /var/backups/hospital_db/ (encrypted patient data)
+- /root/.ghost_ops/ (UNAUTHORIZED - investigate if found)
+
+For authorized access, contact: Marcus Webb (mwebb@stcatherines.hospital)
+
+System Administrator: Marcus Webb
+Last Security Audit: OVERDUE (6 months)
+Known Vulnerabilities: UNPATCHED (management decision)</value>
+        <generator type="flag_generator"/>
+
+        <encoder type="^(ascii|alpha)_reversible$" difficulty="low">
+          <input into="strings_to_encode">
+            <value>ASSET #47 OPERATIONAL INSTRUCTIONS (ENCODED FOR SECURITY)
+===================================
+
+Your role is CRITICAL to Operation Ransomed Trust.
+
+PHASE 1 - RECONNAISSANCE (Weeks 1-4):
+- Plant network bridge in IT room (COMPLETE)
+- Map security systems and access points (COMPLETE)
+- Identify high-value targets (COMPLETE)
+- Scout emergency storage layout (COMPLETE)
+
+PHASE 2 - EXECUTION (Week 6):
+- Verify network bridge still operational
+- Confirm backup server vulnerability unpatched
+- Report final go/no-go status
+- Execute ProFTPD exploit remotely
+- Monitor hospital response
+- Maintain cover as legitimate security
+
+PHASE 3 - POST-ATTACK (Current):
+- Act as eyes on the ground
+- Report any investigation attempts
+- Prevent evidence discovery if possible
+- DO NOT interfere with ransom payment process
+- Maintain security guard role
+
+PAYMENT SCHEDULE:
+- Phase 1 completion: $3,000 (PAID)
+- Phase 2 completion: $2,500 (PAID)
+- Equipment deployment: $2,000 (PAID)
+- Final payment: $1,200 (on ransom collection)
+Total: $8,700
+
+Your daughter's medical bills will be covered regardless.
+Ghost keeps his promises.
+
+-- R.I. (Ransomware Incorporated)</value>
+            <generator type="flag_generator"/>
+          </input>
+        </encoder>
+      </input>
+    </vulnerability>
+
+    <vulnerability module_path=".*/ssh_root_login">
+      <input into="root_password">
+        <datastore>server_root_password</datastore>
+      </input>
+    </vulnerability>
+
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="1">IP_addresses</datastore>
+      </input>
+    </network>
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+
+</scenario>

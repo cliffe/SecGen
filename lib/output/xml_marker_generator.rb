@@ -16,6 +16,9 @@ class XmlMarkerGenerator
   # @return [Object] xml string
   def output
     @processed_hints = []
+    # Build a global list of all modules across all systems
+    all_modules = @systems.flat_map { |s| s.module_selections }
+
     ns = {
       'xmlns' => "http://www.github/cliffe/SecGen/marker",
       'xmlns:xsi' => "http://www.w3.org/2001/XMLSchema-instance",
@@ -32,27 +35,26 @@ class XmlMarkerGenerator
             xml.platform system.module_selections.first.attributes['platform'].first
 
             system.module_selections.each { |selected_module|
-
-              # start by finding a flag, and work the way back providing hints
               selected_module.output.each { |output_value|
-                # flag has to be the only thing in the parameter string (not within some text)
                 if output_value.match(/\Aflag{.*\z/)
-                  xml.challenge{
-
-                    system.module_selections.each { |search_module|
+                  xml.challenge {
+                    matched = false
+                    flag_written = false
+                    all_modules.each { |search_module|
                       if search_module.unique_id == selected_module.write_to_module_with_id
-                        # special case check for flag that's fed into a parameter that isn't defined within the receiving module
-                        if search_module.attributes["read_fact"]&.include? selected_module.write_output_variable
+                        unless flag_written
                           xml.flag(output_value)
-                        else
-                          Print.warn "Ignoring flag generated but fed into a fact that the module doesn't read: #{selected_module.write_to_module_with_id}.#{selected_module.write_output_variable} #{output_value}"
-                          Print.warn "This likely isn't an issue, especially if fed into strings_to_pre_leak which doesn't always exist"
+                          flag_written = true
                         end
-                        module_hints(search_module, xml, system.module_selections)
+                        module_hints(search_module, xml, all_modules)
+                        matched = true
                       end
                     }
-
-                    # add_hint("Remember, search for text in the format of flag{SOMETHING}, and submit it for points", "flaggyflag", "normal", xml)
+                    unless matched
+                      if selected_module.write_output_variable.nil? || selected_module.write_output_variable.empty?
+                        xml.flag(output_value)
+                      end
+                    end
                   }
                 end
               }
@@ -62,9 +64,7 @@ class XmlMarkerGenerator
       }
     end
     builder.to_xml
-
   end
-
   def module_hints(search_module, xml, all_module_selections)
 
     if search_module.write_to_module_with_id != ""

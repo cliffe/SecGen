@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>iptables_masquerade</name>
+  <author>Tom Shaw</author>
+  <module_license>GPLv3</module_license>
+  <description>Generates an iptables MASQUERADE rule string for a given source and outbound interface.</description>
+
+  <type>iptables_rule</type>
+  <platform>linux</platform>
+
+  <read_fact>source</read_fact>
+  <read_fact>out_interface</read_fact>
+
+  <default_input into="source">
+    <value>10.0.0.0/24</value>
+  </default_input>
+
+  <default_input into="out_interface">
+    <value>ens19</value>
+  </default_input>
+  <output_type>iptables_rule</output_type>
+
+</generator>

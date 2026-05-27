@@ -52,9 +52,6 @@
   <default_input into="leaked_filenames">
     <generator type="filename_generator"/>
   </default_input>
-  <default_input into="password">
-    <generator type="password_generator"/>
-  </default_input>
 
   <hint>Try reading the man page for ls with 'man ls'. Linux hidden files have names which begin with a dot. e.g.
     .file

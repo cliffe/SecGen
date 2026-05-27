@@ -8,7 +8,7 @@
     <base platform="linux" distro="Debian 7.8" type="server"/>
 
     <input into_datastore="IP_addresses">
-      <value>172.17.0.0</value>
+      <network_ip system="testing_faker"/>
     </input>
 
     <input into_datastore="faker_gems_with_parameters">
@@ -31,11 +31,7 @@
 
     </input>
 
-  <network type="private_network">
-      <input into="IP_address">
-        <datastore access="0">IP_addresses</datastore>
-      </input>
-    </network>
+  <network type="private_network"/>
   </system>
 
 </scenario>

@@ -43,6 +43,25 @@ class ModuleReader < XMLReader
     all_available_modules = all_available_bases + all_available_builds + all_available_vulnerabilties +
         all_available_services + all_available_utilities + all_available_generators + all_available_encoders + all_available_networks
 
+    # Validate and report all read_fact violations across all module types
+    violations = []
+    all_available_modules.each { |mod|
+      default_input_names = mod.default_inputs_selectors.keys + mod.default_inputs_literals.keys
+      read_facts = mod.attributes['read_fact'] || []
+      default_input_names.uniq.each { |input_name|
+        unless read_facts.include? input_name
+          violations << "  #{mod.module_path}: default_input into='#{input_name}' has no corresponding read_fact"
+        end
+      }
+    }
+
+    if violations.any?
+      Print.err "Modules found with default_input declarations missing corresponding read_fact declarations:"
+      violations.each { |v| Print.err v }
+      Print.err "#{violations.size} violation(s) found. Please fix before continuing."
+      exit
+    end
+
     all_available_modules
   end
 

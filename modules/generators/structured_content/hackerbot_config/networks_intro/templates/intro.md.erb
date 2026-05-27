@@ -1,0 +1,46 @@
+# Network Security Fundamentals: Network Design, Segmentation, NAT & DMZ
+
+## Getting started
+### VMs in this lab
+
+==Start all the VMs== (if you haven't already):
+- hackerbot_server (leave it running, you don't log into this)
+- desktop
+- gateway_server
+- web_server
+- server
+
+### Your login details for the "desktop" VM
+User: <%= $main_user %>
+Password: tiaspbiqe2r (**t**his **i**s **a** **s**ecure **p**assword **b**ut **i**s **q**uite **e**asy **2** **r**emember)
+
+### Lab environment
+
+Your environment consists of the following VMs, spread across three separate network segments:
+
+| VM             | Hostname     | Network segment | Role                               |
+|----------------|--------------|---|------------------------------------|
+| **desktop**    | `desktop`    | Internal LAN (<%= $desktop_vlan %>/24) | Your Linux desktop system          |
+| **web_server** | `web_server` | DMZ (<%= $web_server_vlan %>/24) | A public-facing web server in the DMZ |
+| **server**     | `server`     | Server zone (<%= $server_vlan %>/24) | An internal server running several services |
+| **gateway**    | `gateway`    | All three segments | A Linux router/firewall system     |
+
+The **gateway** has a network interface on each of the three segments and routes traffic between them.
+
+> **Note:** Throughout this lab, commands are prefixed with the VM you should run them on. Unless told otherwise, you should be working on the **desktop**. When you need to run commands on another VM, you will SSH into it from the desktop.
+
+## Meet Hackerbot!
+![small-right](images/skullandusb.svg)
+
+Part of this exercise involves interacting with Hackerbot, a chatbot who will set you challenges and verify your work. If you complete the challenges, Hackerbot will reveal flags to you. There are additional flags to be found on some of the systems, with directions provided throughout the labsheet.
+
+**On the desktop VM:**
+
+==Open Pidgin and send some messages to Hackerbot:==
+
+- Try asking Hackerbot some questions
+- Send "help"
+- Send "list"
+- Send "hello"
+
+Work through the below exercises, completing the Hackerbot challenges as noted.

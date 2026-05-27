@@ -1,6 +1,6 @@
 	<attack>
 <% $rand_alert5 = SecureRandom.hex(3) %>
-		<pre_shell>sshpass -p <%= $root_password %> scp -prv -oStrictHostKeyChecking=no root@<%= $ids_server_ip %>:/var/log/snort/alert /tmp/snort_alert_before; stat1=$?; curl <%= $web_server_ip %> >/dev/null; curl <%= $web_server_ip %>/contact.html >/dev/null; stat2=$?; sleep 1; sshpass -p <%= $root_password %> scp -prv -oStrictHostKeyChecking=no root@<%= $ids_server_ip %>:/var/log/snort/alert /tmp/snort_alert_after; stat3=$?; echo --$stat1$stat2$stat3; diff -n /tmp/snort_alert_before /tmp/snort_alert_after | tail -n 15</pre_shell>
+		<pre_shell>scp -i /opt/hackerbot/keys/id_rsa -prv -oStrictHostKeyChecking=no root@<%= $ids_server_ip %>:/var/log/snort/alert /tmp/snort_alert_before; stat1=$?; curl <%= $web_server_ip %> >/dev/null; curl <%= $web_server_ip %>/contact.html >/dev/null; stat2=$?; sleep 1; scp -i /opt/hackerbot/keys/id_rsa -prv -oStrictHostKeyChecking=no root@<%= $ids_server_ip %>:/var/log/snort/alert /tmp/snort_alert_after; stat3=$?; echo --$stat1$stat2$stat3; diff -n /tmp/snort_alert_before /tmp/snort_alert_after | tail -n 15</pre_shell>
 		<get_shell>false</get_shell>
 		<post_command></post_command>
 

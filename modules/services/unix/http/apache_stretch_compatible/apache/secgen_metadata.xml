@@ -1,31 +1,40 @@
 <?xml version="1.0"?>
-
 <service xmlns="http://www.github/cliffe/SecGen/service"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
   <name>Apache HTTP Server - Stretch Compatible</name>
   <author>Z. Cliffe Schreuders</author>
   <author>Connor Wilson</author>
   <author>Puppet Labs</author>
+  <author>Tom Shaw</author>
   <module_license>Apache v2</module_license>
-  <description>An installation of Apache</description>
-
+  <description>An installation of Apache. Optionally serves HTTPS with a self-signed certificate. Optionally hosts strings_to_leak content at a path extracted from a given URI.</description>
   <type>httpd</type>
   <platform>linux</platform>
 
-  <!--optional
-  details-->
+  <read_fact>domain</read_fact>
+  <read_fact>cert_bundle</read_fact>
+  <read_fact>uri</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+
+  <default_input into="domain">
+    <value>localhost</value>
+  </default_input>
+  <default_input into="uri">
+    <value>localhost</value>
+  </default_input>
+  <default_input into="strings_to_leak">
+    <generator type="flag_generator"/>
+  </default_input>
+
   <reference>https://httpd.apache.org/</reference>
   <reference>https://forge.puppet.com/puppetlabs/apache</reference>
   <software_name>apache</software_name>
   <software_license>Apache v2</software_license>
 
-  <!--Cannot
-  co-exist with other apache installations-->
   <conflict>
     <software_name>apache</software_name>
   </conflict>
-  <!-- exclude any base except bookworm and buster and stretch -->
   <conflict>
     <module_path>.*bases/(?!debian_(bookworm|buster|stretch)).*</module_path>
   </conflict>

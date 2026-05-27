@@ -335,6 +335,8 @@ Hacktivity is powered by SecGen, and provides a fully-hosted lab environment for
 *Development team:*
 - Dr Z. Cliffe Schreuders http://z.cliffe.schreuders.org
 - Tom Shaw
+- Alix Hiscock
+- Rosie Fletcher
 - James Davis
 - Sofia Markusfeld
 - Harry Hall
@@ -346,15 +348,17 @@ Hacktivity is powered by SecGen, and provides a fully-hosted lab environment for
 
 Many thanks to everyone who has contributed to the project. The above list is not complete or exhaustive, please refer to the [GitHub history](https://github.com/cliffe/SecGen/graphs/contributors).
 
-This project is supported by a Higher Education Academy (HEA) learning and teaching in cyber security grant (2015-2017).
-This project is supported by a Leeds Beckett University Teaching Excellence Fund grant (2018-2019).
-This project is supported by a Cyber Security Body of Knowledge (CyBOK) resources around CyBOK 1.0 grant (2021).
-This project is supported by a Cyber Security Body of Knowledge (CyBOK) resources around CyBOK 1.1 grant (2021-2022).
-This project is supported by a Cyber Security Body of Knowledge (CyBOK) resources around CyBOK 1.1 grant (2022-2023).
-This project is supported by a CyberASAP (Cyber Security Academic Startup Accelerator Programme) Innovate UK grant (2022-2023).
-This project is supported by a Leeds Beckett University Teaching Excellence Fund grant (2023).
-This project is supported by a Cyber Security Body of Knowledge (CyBOK) resources around CyBOK 1.1 grant (2023-2024).
-This project is supported by a Cyber Security Body of Knowledge (CyBOK) resources around CyBOK 1.1 grant (2024-2025).
+*Grant support:*
+- This project is supported by a Higher Education Academy (HEA) learning and teaching in cyber security grant (2015-2017).
+- This project is supported by a Leeds Beckett University Teaching Excellence Fund grant (2018-2019).
+- This project is supported by a Cyber Security Body of Knowledge (CyBOK) resources around CyBOK 1.0 grant (2021).
+- This project is supported by a Cyber Security Body of Knowledge (CyBOK) resources around CyBOK 1.1 grant (2021-2022).
+- This project is supported by a Cyber Security Body of Knowledge (CyBOK) resources around CyBOK 1.1 grant (2022-2023).
+- This project is supported by a CyberASAP (Cyber Security Academic Startup Accelerator Programme) Innovate UK grant (2022-2023).
+- This project is supported by a Leeds Beckett University Teaching Excellence Fund grant (2023).
+- This project is supported by a Cyber Security Body of Knowledge (CyBOK) resources around CyBOK 1.1 grant (2023-2024).
+- This project is supported by a Cyber Security Body of Knowledge (CyBOK) resources around CyBOK 1.1 grant (2024-2025).
+- This project is supported by a Cyber Security Body of Knowledge (CyBOK) resources around Security-Informed Safety grant (2025-2026).
 
 ## Contributing
 We encourage contributions to the project.

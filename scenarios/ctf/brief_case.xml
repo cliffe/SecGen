@@ -51,8 +51,8 @@
     <base distro="Debian 9" platform="linux" type="server"/>
 
     <input into_datastore="IP_addresses">
-      <value>172.10.0.2</value>
-      <value>172.10.0.3</value>
+      <network_ip system="target_server"/>
+      <network_ip system="attack_vm"/>
     </input>
 
     <input into_datastore="accounts">
@@ -469,11 +469,7 @@
       </input>
     </vulnerability>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="0">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
 
     <input into_datastore="spoiler_admin_pass">
       <generator type="strong_password_generator"/>
@@ -508,11 +504,7 @@
     </utility>
 
     <utility module_path=".*/kali_top10"/>
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="1">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
     <build type="cleanup">
       <input into="root_password">
         <datastore>spoiler_admin_pass</datastore>

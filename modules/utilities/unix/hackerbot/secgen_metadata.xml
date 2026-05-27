@@ -19,6 +19,7 @@
   <read_fact>hackerbot_configs</read_fact>
   <!--port for www hosting of lab sheets-->
   <read_fact>port</read_fact>
+  <read_fact>ssh_key_pair</read_fact>
 
   <default_input into="port">
     <value>80</value>

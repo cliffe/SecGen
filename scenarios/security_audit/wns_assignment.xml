@@ -10,8 +10,8 @@
     <base distro="Debian 12" type="desktop" name="KDE"/>
 
     <input into_datastore="IP_addresses">
-      <value>172.16.0.2</value>
-      <value>172.16.0.3</value>
+      <network_ip system="web_server"/>
+      <network_ip system="attack_vm"/>
     </input>
 
     <vulnerability type="webapp_with_db" module_path=".*/webapp.*">
@@ -20,11 +20,7 @@
       </input>
     </vulnerability>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="0">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
   </system>
 
   <system>
@@ -51,11 +47,7 @@
 
     <utility module_path=".*/kali_web"/>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="1">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
   </system>
 
 </scenario>

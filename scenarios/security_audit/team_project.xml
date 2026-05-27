@@ -23,11 +23,11 @@
     <base distro="Debian 12" type="desktop" name="KDE"/>
 
     <input into_datastore="IP_addresses">
-      <value>172.10.0.2</value>
-      <value>172.10.0.3</value>
-      <value>172.10.0.4</value>
-      <value>172.10.0.5</value>
-      <value>172.10.0.6</value>
+      <network_ip system="web_server"/>
+      <network_ip system="intranet_server"/>
+      <network_ip system="desktop"/>
+      <network_ip system="attack_vm_1_web_tools"/>
+      <network_ip system="attack_vm_2"/>
     </input>
 
     <input into_datastore="spoiler_admin_pass">
@@ -71,11 +71,7 @@
       </input>
     </build>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="next">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
     <!--<network module_path=".*/private_network_1"/>-->
     <!--<network module_path=".*/private_network_2"/>-->
   </system>
@@ -163,9 +159,6 @@
     </build>
 
     <network type="private_network">
-      <input into="IP_address">
-        <datastore access="next">IP_addresses</datastore>
-      </input>
     </network>
     <!--<network module_path=".*/private_network_2"/>-->
   </system>
@@ -225,9 +218,6 @@
     <utility module_path=".*/handy_cli_tools"/>
 
     <network type="private_network">
-      <input into="IP_address">
-        <datastore access="next">IP_addresses</datastore>
-      </input>
     </network>
     <!--<network module_path=".*/private_network_2"/>-->
 
@@ -246,9 +236,6 @@
     <utility module_path=".*/kali_web"/>
     <utility module_path=".*/kali_top10"/>
     <network type="private_network">
-      <input into="IP_address">
-        <datastore access="next">IP_addresses</datastore>
-      </input>
     </network>
   <!--<network module_path=".*/private_network_2"/>-->
   </system>
@@ -266,9 +253,6 @@
     <utility module_path=".*/kali_pwtools"/>
     <utility module_path=".*/kali_top10"/>
     <network type="private_network">
-      <input into="IP_address">
-        <datastore access="next">IP_addresses</datastore>
-      </input>
     </network>
   <!--<network module_path=".*/private_network_2"/>-->
   </system>

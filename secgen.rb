@@ -13,6 +13,7 @@ require_relative 'lib/helpers/proxmox.rb'
 require_relative 'lib/readers/system_reader.rb'
 require_relative 'lib/readers/module_reader.rb'
 require_relative 'lib/output/project_files_creator.rb'
+require_relative 'lib/helpers/network.rb'
 
 # Displays secgen usage data
 def usage
@@ -108,8 +109,18 @@ def build_config(scenario, out_dir, options)
 
   all_available_modules = ModuleReader.get_all_available_modules
 
+  Print.info 'Pre-resolving network modules...'
+  systems.each do |system|
+    system.resolve_network_modules(all_available_modules, options)
+  end
+
+  Print.info 'Configuring networks...'
+  NetworkFunctions.build_network_map(systems, options)
+
+  Print.info 'Resolving deferred network IP references...'
+  NetworkFunctions.resolve_deferred_inputs(systems, options)
+
   Print.info 'Resolving systems: randomising scenario...'
-  # update systems with module selections
   systems.map! {|system|
     system.module_selections = system.resolve_module_selection(all_available_modules, options)
     system
@@ -263,15 +274,32 @@ end
 # this includes networking and snapshots
 def proxmox_post_build(options, scenario, project_dir)
   Print.std 'Taking Proxmox post-build actions...'
-  if options[:proxmoxnetwork]
-    Print.info 'Assigning network(s) of VM(s)'
-    ProxmoxFunctions::assign_networks(project_dir, get_vm_names(scenario), options)
+
+Print.info 'Removing provisioning NIC'
+retries = 3
+begin
+  ProxmoxFunctions::teardown_provisioning_nic(project_dir, get_vm_names(scenario), options)
+rescue Proxmox::ApiError::ConnectionError => e
+  retries -= 1
+  if retries > 0
+    Print.err "Connection error during NIC teardown, retrying in 30s... (#{retries} attempts left)"
+    sleep(30)
+    retry
+  else
+    Print.err "Failed to remove provisioning NIC after retries: #{e.message}"
+    exit 1
   end
-  if options[:snapshot]
-    Print.info 'Creating a snapshot of VM(s)'
-    sleep(1) # give oVirt/Virtualbox a chance to save any VM config changes before creating the snapshot
-    ProxmoxFunctions::create_snapshot(project_dir, get_vm_names(scenario), options)
-  end
+end
+
+if options[:snapshot]
+  Print.info 'Creating a snapshot of VM(s)'
+  sleep(1)
+  ProxmoxFunctions::create_snapshot(project_dir, get_vm_names(scenario), options)
+end
+
+if options[:proxmox_post_boot]
+  ProxmoxFunctions::start_vms(project_dir, get_vm_names(scenario), options)
+end
 end
 
 # Make forensic image helper methods
@@ -505,6 +533,7 @@ opts = GetoptLong.new(
     ['--proxmox-node', GetoptLong::REQUIRED_ARGUMENT],
     ['--proxmox-network', GetoptLong::REQUIRED_ARGUMENT],
     ['--proxmox-vlan', GetoptLong::REQUIRED_ARGUMENT],
+    ['--proxmox-post-boot', GetoptLong::NO_ARGUMENT],
     ['--esxiuser', GetoptLong::REQUIRED_ARGUMENT],
     ['--esxipass', GetoptLong::REQUIRED_ARGUMENT],
     ['--esxi-hostname', GetoptLong::REQUIRED_ARGUMENT],
@@ -577,6 +606,7 @@ opts.each do |opt, arg|
     options[:shutdown] = true
   when '--network-ranges'
     Print.info 'Overriding Network Ranges'
+    Print.warn '--network-ranges is deprecated and will be ignored when using Proxmox. Network ranges are now defined in the scenario XML.'
     options[:ip_ranges] = arg.split(',')
   when '--forensic-image-type'
     Print.info "Image output type set to #{arg}"
@@ -624,7 +654,10 @@ opts.each do |opt, arg|
     options[:proxmoxnetwork] = arg
   when '--proxmox-vlan'
     Print.info "Proxmox Network VLAN : #{arg}"
-    options[:proxmoxvlan] = arg
+    options[:proxmoxvlan] = arg.to_i
+  when '--proxmox-post-boot'
+    Print.info "Proxmox start all VMs post provision"
+    options[:proxmox_post_boot] = true
   # ESXi options
   when '--esxiuser'
     Print.info "ESXi Username : #{arg}"

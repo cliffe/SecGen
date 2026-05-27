@@ -19,6 +19,8 @@
   <read_fact>victim_server_ip</read_fact>
 
   <read_fact>coconut_config</read_fact>
+  <read_fact>accounts</read_fact>
+
 
   <default_input into="accounts">
     <generator type="account">

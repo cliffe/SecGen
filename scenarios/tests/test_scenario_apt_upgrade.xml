@@ -19,16 +19,12 @@
     <base distro="Debian 7.8" platform="linux" type="server"/>
 
     <input into_datastore="IP_addresses">
-      <value>172.12.0.2</value>
+      <network_ip system="target_server"/>
     </input>
 
     <utility type="upgrade"/>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="0">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
   </system>
 
 </scenario>

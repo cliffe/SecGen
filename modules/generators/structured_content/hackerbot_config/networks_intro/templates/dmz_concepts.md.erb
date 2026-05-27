@@ -1,0 +1,28 @@
+## DMZ concepts
+
+A DMZ (Demilitarised Zone) is a network segment that sits between the internal network and the outside world. It hosts public-facing services such as web servers, mail servers, and public DNS, whilst keeping them isolated from the internal network. If a DMZ host is compromised, the attacker should not be able to pivot into the internal network.
+
+### Key DMZ traffic flow principles
+
+A properly configured DMZ enforces the following traffic policy:
+
+| Direction            | Policy | Rationale                                     |
+|----------------------|---|-----------------------------------------------|
+| External to DMZ       | Allow specific services (e.g. HTTP/HTTPS) | Public needs to reach these services          |
+| External to Internal | **Block** | Internal network must not be directly exposed |
+| Internal to DMZ      | Allow | Staff need to manage DMZ services             |
+| Internal to External | Allow (via NAT) | Users need internet access                    |
+| DMZ to Internal      | **Block** | Critical to prevent pivoting after compromise |
+| DMZ to External      | Limited | Only what the service requires                |
+
+
+The most important rule here is that the **DMZ must not be able to initiate connections to the internal network**.
+
+
+### Assessing the current configuration
+
+Based on the iptables rules you created earlier, assess whether the gateway's configuration properly implements these DMZ principles:
+
+* Can the web_server (DMZ) initiate connections to the server (Server zone)?
+* Can the desktop (Internal LAN) reach the web_server and the server?
+* Are there any rules that violate the principles in the table above?

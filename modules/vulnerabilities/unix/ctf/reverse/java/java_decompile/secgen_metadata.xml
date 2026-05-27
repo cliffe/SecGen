@@ -50,9 +50,6 @@
   <default_input into="flag">
     <generator type="flag_generator"/>
   </default_input>
-  <default_input into="password">
-    <generator type="password_generator"/>
-  </default_input>
   <default_input into="strings_to_leak">
     <value>This is a compiled Java class file. It looks like it will accept a password, but only one. Can you find the password and control the planet?</value>
   </default_input>

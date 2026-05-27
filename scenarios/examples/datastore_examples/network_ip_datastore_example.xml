@@ -12,39 +12,26 @@
          This is because the network-ranges command line argument overwrites values within this datastore before use.
          For an example of this, try running this scenario and passing in two network-ranges arguments separated by a comma. -->
     <input into_datastore="IP_addresses">
-      <value>172.10.0.1</value>
-      <value>172.12.0.1</value>
-      <value>172.10.0.2</value>
+      <network_ip system="example_server"/>
+      <network_ip system="example_server"/>
+      <network_ip system="example_server"/>
     </input>
 
-    <network type="private_network">
-      <!-- If an IP_address is passed as an input to a network module it takes priority. -->
-      <input into="IP_address">
-        <datastore access="next">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
   </system>
 
   <system>
     <system_name>example_server</system_name>
     <base platform="linux" type="server"/>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="next">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
   </system>
 
   <system>
     <system_name>example_server</system_name>
     <base platform="linux" type="server"/>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="next">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
   </system>
 
 </scenario>

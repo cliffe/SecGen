@@ -2,7 +2,7 @@
 	<attack>
 <% $file = SecureRandom.hex(2) %>
     <!--shell on the backup server-->
-		<get_shell>sshpass -p <%= $root_password %> ssh -oStrictHostKeyChecking=no root@<%= $backup_server_ip %> /bin/bash</get_shell>
+		<get_shell>ssh -i /opt/hackerbot/keys/id_rsa -oStrictHostKeyChecking=no root@<%= $backup_server_ip %> /bin/bash</get_shell>
 
 		<prompt>Use scp to copy the desktop /bin/ directory to the backup_server: <%= $backup_server_ip %>:/home/<%= $main_user %>/remote-bin-backup-<%= $file %>/, which should then include the backed up bin/ directory.</prompt>
 

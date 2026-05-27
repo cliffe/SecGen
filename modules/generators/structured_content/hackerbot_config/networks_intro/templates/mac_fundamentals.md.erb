@@ -1,0 +1,56 @@
+### MAC addresses
+A Media Access Control (MAC) address is a hardware-level address assigned to each network interface. It is used for communication within a single network segment at Layer 2.
+
+==View and make note of your desktop's MAC address:==
+
+```bash
+# On: desktop
+ip link show ens19
+```
+
+The MAC address is shown after `link/ether` and is in the format `xx:xx:xx:xx:xx:xx`. The first three octets typically identify the manufacturer (the OUI, or Organisationally Unique Identifier), and the last three are unique to the device.
+
+==To change your MAC address persistently, edit `/etc/network/interfaces`:==
+```bash
+# On: desktop
+sudo nano /etc/network/interfaces
+```
+
+Add a `hwaddress` line to your interface block. For example, to change your MAC to `00:11:22:33:44:55`:
+```
+auto ens19
+iface ens19 inet static
+    address <%= $first_2_octets %>.1.10/24
+    gateway <%= $gateway_lan_ip %>
+    hwaddress ether 00:11:22:33:44:55
+```
+
+==Then restart the networking service to apply the change:==
+```bash
+# On: desktop
+sudo service networking restart
+```
+
+==Verify the MAC address has changed:==
+```bash
+# On: desktop
+ip link show ens19
+```
+
+You should see `link/ether 00:11:22:33:44:55` in the output.
+
+==Restore your original MAC address by removing the `hwaddress` line from `/etc/network/interfaces` and restarting networking:==
+```bash
+# On: desktop
+sudo nano /etc/network/interfaces
+```
+
+Remove the `hwaddress ether 00:11:22:33:44:55` line, save the file, then restart:
+```bash
+# On: desktop
+sudo service networking restart
+```
+
+> **Security implication:** Although MAC addresses are often described as "hardware addresses" and are burned into the network interface by the manufacturer, as you have just demonstrated, they can be easily overriden at the software layer. Any security control that relies on MAC addresses for identification or access control (such as MAC filtering on a wireless network) can therefore be bypassed by an attacker who simply spoofs a known-good address. We will revisit this in later labs when we cover ARP spoofing attacks.
+
+---

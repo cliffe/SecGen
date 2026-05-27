@@ -55,9 +55,9 @@
 
         <input into_datastore="IP_addresses">
             <!-- 0 attack_vm -->
-            <value>172.16.0.2</value>
+            <network_ip system="attack_vm"/>
             <!-- 1 hackme_server -->
-            <value>172.16.0.3</value>
+            <network_ip system="server"/>
         </input>
 
         <utility module_path=".*/parameterised_accounts">
@@ -82,11 +82,7 @@
         <utility module_path=".*/handy_cli_tools" />
         <utility module_path=".*/kali_pwtools" />
 
-        <network type="private_network">
-            <input into="IP_address">
-                <datastore access="0">IP_addresses</datastore>
-            </input>
-        </network>
+        <network type="private_network"/>
     <input into_datastore="spoiler_admin_pass">
       <generator type="strong_password_generator"/>
     </input>
@@ -128,11 +124,7 @@
 
         <vulnerability module_path=".*/chkrootkit" />
 
-        <network type="private_network">
-            <input into="IP_address">
-                <datastore access="1">IP_addresses</datastore>
-            </input>
-        </network>
+        <network type="private_network"/>
     <build type="cleanup">
       <input into="root_password">
         <datastore>spoiler_admin_pass</datastore>

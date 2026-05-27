@@ -5,7 +5,6 @@ class java_decompile::install {
   $username = $account['username']
   $strings_to_leak = $secgen_params['strings_to_leak']
   $flag = $secgen_params['flag'][0]
-  $password = $secgen_params['password'][0]
 
   # Determine if storage_dir is used, if not use the account information
   if $secgen_params['storage_directory'] {

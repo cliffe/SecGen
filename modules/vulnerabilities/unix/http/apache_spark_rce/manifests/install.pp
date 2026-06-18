@@ -8,7 +8,36 @@ class apache_spark_rce::install {
 
   # Install required packages
   # NOTE: once Debian updates insert scala 2.12+ into statement
-  ensure_packages(['openjdk-11-jdk'], { ensure => 'installed'})
+
+  exec { 'download-jdk11':
+    cwd     => '/tmp',
+    command => 'wget -O jdk11.tar.gz https://download.java.net/openjdk/jdk11.0.0.2/ri/openjdk-11.0.0.2_linux-x64.tar.gz',
+    creates => '/tmp/jdk11.tar.gz',
+    timeout => 300,
+  }
+  -> exec { 'extract-jdk11':
+    cwd     => '/tmp',
+    command => 'tar -xzf jdk11.tar.gz',
+    creates => '/tmp/jdk-11.0.0.2',
+  }
+  -> file { '/usr/lib/jvm':
+    ensure => directory,
+  }
+  -> exec { 'install-jdk11':
+    cwd     => '/tmp',
+    command => 'mv jdk-11.0.0.2 /usr/lib/jvm/java-11-openjdk',
+    creates => '/usr/lib/jvm/java-11-openjdk',
+  }
+
+  # Register Java 11 as alternative and set as default for spark
+  exec { 'register-java11-alternative':
+    command => '/usr/bin/update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-11-openjdk/bin/java 1111',
+    require => Exec['install-jdk11'],
+  }
+  -> exec { 'set-java11-default':
+    command => '/usr/bin/update-alternatives --set java /usr/lib/jvm/java-11-openjdk/bin/java',
+    require => Exec['register-java11-alternative'],
+  }
 
   $scaladeb = 'scala-2.12.10.deb'
   $releasename = 'spark-3.1.2-bin-hadoop3.2.tgz'
@@ -43,7 +72,7 @@ class apache_spark_rce::install {
 
   # We run older versions of debian, for now source from local deb file
   package { 'scala':
-    ensure   => latest,
+    ensure   => present,
     provider => apt,
     source   => "/tmp/${scaladeb}",
   }

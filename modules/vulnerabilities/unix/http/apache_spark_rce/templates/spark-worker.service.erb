@@ -1,0 +1,17 @@
+[Unit]
+Description=Apache Spark Worker
+After=network.target spark-master.service
+
+[Service]
+Type=forking
+User=<%= @user %>
+Environment="PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/usr/local/spark/sbin"
+Environment="JAVA_HOME=/usr/lib/jvm/java-11-openjdk"
+WorkingDirectory=/usr/local/spark/bin/
+ExecStart=/bin/bash -c '/usr/local/spark/sbin/start-worker.sh spark://$(hostname -I | awk "{print \$1}"):7077'
+ExecStop=/usr/local/spark/sbin/stop-worker.sh
+Restart=on-abort
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target

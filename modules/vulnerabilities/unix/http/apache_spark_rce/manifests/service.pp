@@ -11,13 +11,24 @@ class apache_spark_rce::service {
   exec { 'set-port':
     command => "sed -i 's/8080/${port}/' /usr/local/spark/sbin/start-master.sh",
   }
-  -> file { '/etc/systemd/system/spark.service':
-    content => template('apache_spark_rce/spark.service.erb'),
+  -> file { '/etc/systemd/system/spark-master.service':
+    content => template('apache_spark_rce/spark-master.service.erb'),
     owner   => 'root',
     mode    => '0777',
   }
-  -> service { 'spark':
+  -> service { 'spark-master':
     ensure => running,
     enable => true,
   }
+  -> file { '/etc/systemd/system/spark-worker.service':
+    content => template('apache_spark_rce/spark-worker.service.erb'),
+    owner   => 'root',
+    mode    => '0777',
+  }
+  -> service { 'spark-worker':
+    ensure => running,
+    enable => true,
+  }
+  
+
 }

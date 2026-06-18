@@ -1,0 +1,175 @@
+---
+- hosts: template
+  gather_facts: no
+  tasks:
+
+#set hostname vagrant-<something>
+  - hostname:
+      use: debian
+      name: vagrant-debian9
+    
+#Install software packages:
+
+  - name: Install a list of packages
+    apt:
+      update_cache: yes
+      pkg:
+      - wget
+      - sudo
+      - curl
+      - rsync
+      - puppet
+      - ovirt-guest-agent
+      - psmisc
+      - vim
+      - cloud-init
+
+  - name: Add fstab entry 1
+    lineinfile:
+      dest: /etc/fstab
+      state: present
+      line: tmpfs    /tmp    tmpfs    defaults,noatime   0  0
+
+  - name: Add fstab entry 2
+    lineinfile:
+      dest: /etc/fstab
+      state: present
+      line: tmpfs    /vagrant    tmpfs    defaults,noatime   0  0
+
+  - name: Add new file for Ovirt Agent
+    file:
+      path: /etc/udev/rules.d/55-ovirt-guest-agent.rules
+      state: touch
+
+  - name: Modify file for Ovirt Agent
+    file:
+      path: /etc/udev/rules.d/55-ovirt-guest-agent.rules      
+      state: file
+
+  - name: Add ovirt agent config1 
+    lineinfile:
+      dest: /etc/udev/rules.d/55-ovirt-guest-agent.rules
+      state: present
+      line: SYMLINK=="virtio-ports/ovirt-guest-agent.0", OWNER="ovirtagent", GROUP="ovirtagent"
+  
+  - name: udev trigger
+    shell: 
+      cmd: udevadm trigger --subsystem-match="virtio-ports"
+
+  - name: Add ovirt agent config2
+    lineinfile:
+      dest: /etc/ovirt-guest-agent.conf
+      state: present
+      line: device = /dev/virtio-ports/ovirt-guest-agent.0
+
+#start and enable sshd
+  - name: Start service sshd, if not started
+    service:
+      name: sshd
+      state: started
+      enabled: yes
+
+  - name: Add the user 'vagrant' with a bash shell
+    user:
+      name: vagrant
+      shell: /bin/bash
+      create_home: yes
+      state: present
+      append: yes
+      password: $6$3VwLSj3I$OD4urPbZe/3D1kMqt7cxF9meob7.Elceg8qFaHfAyXQxq.jkun81xPnXY7nyjxQNW02615NAh1jy9PfRFBals0
+
+#modiy sudoers
+  - name: Add ssh agent line to sudoers
+    lineinfile:
+      dest: /etc/sudoers
+      state: present
+      regexp: SSH_AUTH_SOCK
+      line: Defaults env_keep += "SSH_AUTH_SOCK"
+
+  - name: Add Vagrant to sudoers
+    lineinfile: 
+      dest: /etc/sudoers
+      line: 'vagrant ALL=(ALL) NOPASSWD: ALL'
+      state: present
+
+  - name: Modify requiretty in sudoers
+    lineinfile: 
+      dest: /etc/sudoers
+      regexp: ^Defaults requiretty
+      line: 'Defaults !requiretty'
+      state: present
+ 
+
+  - name: Create a directory if it does not exist
+    file:
+      path: /home/vagrant/.ssh
+      state: directory
+      mode: '0700'
+  
+  - name: Download vagrant public key
+    get_url:
+      url: https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant.pub
+      dest: /home/vagrant/.ssh/authorized_keys
+      mode: '0600'
+
+  - name: Set ssh ownership
+    file: dest=/home/vagrant/.ssh owner=vagrant group=vagrant mode=u=rwX recurse=yes
+
+#SSH setup
+  - name: Configure SSH
+    lineinfile: 
+      dest: /etc/ssh/sshd_config 
+      regexp: '^UseDNS' 
+      line: 'UseDNS no'
+
+
+  - name: Disable and stop cloud-init service 
+    service:
+      name: cloud-init
+      state: stopped
+      enabled: no
+      
+# touch /etc/cloud/cloud-init.disabled
+  - name: Disable and stop cloud-init service 
+    file:
+      path: /etc/cloud/cloud-init.disabled
+      state: touch
+
+  - name: Start service ovirt-agent, if not started
+    service:
+      name: ovirt-guest-agent
+      state: restarted
+      enabled: yes
+
+
+#Don't fix ethX names to hw address.
+  - name: Remove file (persistent net rules)
+    file:
+      path: /etc/udev/rules.d/*persistent-net.rules
+      state: absent
+
+  - name: Remove file (net rules)
+    file:
+      path: /etc/udev/rules.d/*-net.rules
+      state: absent
+
+  - name: Remove file (dhclient)
+    file:
+      path: /var/lib/dhclient/*
+      state: absent
+
+#Do some cleanup..
+
+  - name: Remove file (delete file)
+    file:
+      path: /root/.bash_history
+      state: absent
+
+  - name: Remove file (delete file)
+    file:
+      path: /root/authorized_keys
+      state: absent
+
+  - name: Remove useless packages from the cache
+    apt:
+      autoclean: yes

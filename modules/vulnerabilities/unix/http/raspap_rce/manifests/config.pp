@@ -1,0 +1,90 @@
+# Class: raspap_rce::config
+# Configure RaspAP in its vulnerable state and set up the CTF challenge
+class raspap_rce::config {
+  Exec { path => [ '/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/' ] }
+  $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
+  $port = $secgen_parameters['port'][0]
+  $strings_to_leak = $secgen_parameters['strings_to_leak']
+  $leaked_filenames = $secgen_parameters['leaked_filenames']
+  $strings_to_pre_leak = $secgen_parameters['strings_to_pre_leak']
+  $admin_password = $secgen_parameters['admin_password'][0]
+
+  $user = 'www-data'
+  $install_dir = '/var/www/raspap'
+
+  # Configure RaspAP - config.php must be in includes/ directory
+  # The vulnerable code does: require_once '../../includes/config.php'
+  file { "${install_dir}/includes/config.php":
+    ensure  => file,
+    content => template('raspap_rce/config.php.erb'),
+    owner   => $user,
+    group   => $user,
+    mode    => '0644',
+    require => Class['raspap_rce::install'],
+  }
+
+  # Create raspap.php in config directory (required by index.php)
+  file { "${install_dir}/config/raspap.php":
+    ensure  => file,
+    content => template('raspap_rce/raspap.php.erb'),
+    owner   => $user,
+    group   => $user,
+    mode    => '0644',
+    require => Class['raspap_rce::install'],
+  }
+
+  # Create raspap.auth file with bcrypt hashed admin password
+  # RaspAP expects: line 1 = username, line 2 = bcrypt hash
+  # htpasswd outputs username:hash format, so we extract and create separate lines
+  exec { 'create-raspap-auth':
+    command => "htpasswd -bcB /tmp/raspap_auth_temp admin '${admin_password}' && awk -F: '{print $1; print $2}' /tmp/raspap_auth_temp > ${install_dir}/config/raspap.auth && rm /tmp/raspap_auth_temp",
+    require => [Class['raspap_rce::install'], Package['apache2-utils']],
+    creates => "${install_dir}/config/raspap.auth",
+  }
+  -> file { "${install_dir}/config/raspap.auth":
+    owner   => $user,
+    group   => $user,
+    mode    => '0644',
+  }
+
+  # Configure lighttpd
+  file { '/etc/lighttpd/lighttpd.conf':
+    ensure  => file,
+    content => template('raspap_rce/lighttpd.conf.erb'),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    notify  => Service['lighttpd'],
+  }
+
+  # Create vulnerable OpenVPN configuration directory
+  exec { 'create-openvpn-dir':
+    command => 'mkdir -p /etc/openvpn/client',
+    creates => '/etc/openvpn/client',
+  }
+
+  # Create a dummy OpenVPN config for realism
+  file { '/etc/openvpn/client/example.ovpn':
+    ensure  => file,
+    content => "# Dummy OpenVPN configuration for realism\n",
+    owner   => 'root',
+    mode    => '0644',
+    require => Exec['create-openvpn-dir'],
+  }
+
+  # Set log directory permissions
+  exec { 'set-log-perms':
+    command => 'chmod 755 /var/log/lighttpd',
+    require => Class['raspap_rce::install'],
+  }
+
+  # Leak flag files for students to find
+  ::secgen_functions::leak_files { 'raspap-file-leak':
+    storage_directory => '/var/www',
+    leaked_filenames  => $leaked_filenames,
+    strings_to_leak   => $strings_to_leak,
+    owner             => $user,
+    mode              => '0600',
+    leaked_from       => 'raspap_rce',
+  }
+}

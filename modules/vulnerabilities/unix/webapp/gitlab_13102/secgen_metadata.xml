@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  
+  <name>Gitlist 13.10.2 RCE</name>
+  <author>Alix Hiscock</author>
+  <module_license>MIT</module_license>
+  <description>
+    GitLab CE/EE versions 11.9 through 13.10.2 are vulnerable to an exploit where an unauthenticated attacker is able
+    to upload a malicious DjVu image file that exploits ExifTool's metadata parsing, resulting in remote code execution 
+    with full system privileges.
+  </description>
+
+  <type>webapp</type>
+  <privilege>user_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>port</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>images_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+  <read_fact>strings_to_pre_leak</read_fact>
+  <read_fact>pre_leaked_filenames</read_fact>
+  <read_fact>difficulty</read_fact>
+
+  <default_input into="strings_to_leak">
+    <generator type="random_sanitised_word">
+        <input into="wordlist">
+            <value>wordlist</value>
+        </input>
+        <input into="min_length">
+            <value>8</value>
+        </input>
+    </generator>
+    <generator type="message_generator"/>
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+  </default_input>
+
+  <default_input into="strings_to_pre_leak">
+    <generator type="message_generator"/>
+  </default_input>
+
+  <default_input into="pre_leaked_filenames">
+    <generator type="filename_generator"/>
+  </default_input>
+
+  <default_input into="difficulty">
+    <value>easy</value>
+  </default_input>
+
+  <cve>CVE-2021-22205</cve>
+
+  <cvss_base_score>9.8</cvss_base_score>
+  <cvss_vector>AV:N/AC:L/Au:N/C:P/I:P/A:P</cvss_vector>
+
+  <!--optional hints-->
+  <msf_module>exploit/multi/http/gitlab_exif_rce</msf_module>
+  <hint>Visit the webapp in a browser at: ip:80 </hint>
+  <solution>
+  Look in a common location for web crawlers to visit...
+  Investigate the gitlab repository...
+  </solution>
+
+  <conflict>
+    <type>webapp</type>
+  </conflict>
+
+</vulnerability>

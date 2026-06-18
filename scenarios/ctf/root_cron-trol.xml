@@ -1,0 +1,172 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>Root Cron-trol</name>
+  <author>Rosie Fletcher</author>
+  <description>A two-stage privilege escalation challenge. Login to the desktop as a low-privileged user (password: tiaspbiqe2r),
+    then perform horizontal privilege escalation by exploiting a writable cron script owned by another user.
+    Finally, achieve vertical privilege escalation to root through a tar wildcard injection vulnerability in a
+    root-owned cron job. Master the art of cron-based privilege escalation! Login password: tiaspbiqe2r</description>
+
+  <type>ctf</type>
+  <type>attack-ctf</type>
+  <type>pwn-ctf</type>
+  <difficulty>intermediate</difficulty>
+
+  <!-- Horizontal privilege escalation -->
+  <CyBOK KA="AAA" topic="Authorisation">
+    <keyword>Elevated privileges</keyword>
+    <keyword>Vulnerabilities and attacks on access control misconfigurations</keyword>
+    <keyword>Horizontal privilege escalation</keyword>
+  </CyBOK>
+  
+  <!-- Vertical privilege escalation -->
+  <CyBOK KA="AAA" topic="Authorisation">
+    <keyword>Vertical privilege escalation</keyword>
+  </CyBOK>
+  
+  <!-- cron and access controls -->
+  <CyBOK KA="OSV" topic="Primitives for Isolation and Mediation">
+    <keyword>Access controls and operating systems</keyword>
+    <keyword>Linux security model</keyword>
+  </CyBOK>
+  
+  <!-- kill chain -->
+  <CyBOK KA="AB" topic="Models">
+    <keyword>kill chains</keyword>
+  </CyBOK>
+  <CyBOK KA="MAT" topic="Malicious Activities by Malware">
+    <keyword>cyber kill chain</keyword>
+  </CyBOK>
+
+  <!-- Single system: Debian server with cron vulnerabilities -->
+  <system>
+    <system_name>server</system_name>
+    <base distro="Debian 12" type="desktop" name="KDE"/>
+
+    <!-- Random lowpriv user for initial access -->
+    <input into_datastore="lowpriv_user">
+      <generator type="username_generator"/>
+    </input>
+    <input into_datastore="lowpriv_pass">
+      <value>tiaspbiqe2r</value>
+    </input>
+    
+    <!-- Random target user for horizontal escalation -->
+    <input into_datastore="target_user">
+      <generator type="username_generator"/>
+    </input>
+    <input into_datastore="target_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+
+    <!-- Create both user accounts -->
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts">
+        <generator type="account">
+          <input into="username">
+            <datastore>lowpriv_user</datastore>
+          </input>
+          <input into="password">
+            <datastore>lowpriv_pass</datastore>
+          </input>
+          <input into="super_user">
+            <value>false</value>
+          </input>
+        </generator>
+        <generator type="account">
+          <input into="username">
+            <datastore>target_user</datastore>
+          </input>
+          <input into="password">
+            <datastore>target_pass</datastore>
+          </input>
+          <input into="super_user">
+            <value>false</value>
+          </input>
+        </generator>
+      </input>
+    </utility>
+
+    <utility module_path=".*/kde_minimal">
+      <input into="autologin_user">
+        <datastore>lowpriv_user</datastore>
+      </input>
+      <input into="autostart_konsole">
+        <value>true</value>
+      </input>
+    </utility>
+
+    <!-- Flags for each escalation stage -->
+    <input into_datastore="horizontal_flag">
+      <generator type="flag_generator"/>
+    </input>
+    <input into_datastore="root_flag">
+      <generator type="flag_generator"/>
+    </input>
+    
+    <!-- Random cron locations for each stage -->
+    <input into_datastore="horizontal_cron_location">
+      <generator module_path="generators/random/random_file_path">
+        <input into="username">
+          <datastore>target_user</datastore>
+        </input>
+      </generator>
+    </input>
+    <input into_datastore="vertical_cron_location">
+      <generator module_path="generators/random/random_file_path">
+        <input into="username">
+          <datastore>target_user</datastore>
+        </input>
+      </generator>
+    </input>
+
+    <!-- Horizontal escalation: writable cron script (runs as target_user) -->
+    <vulnerability module_path=".*/cron_writable_script">
+      <input into="strings_to_leak">
+        <datastore>horizontal_flag</datastore>
+      </input>
+      <input into="cron_user">
+        <datastore>target_user</datastore>
+      </input>
+      <input into="cron_location">
+        <datastore>horizontal_cron_location</datastore>
+      </input>
+    </vulnerability>
+
+    <!-- Vertical escalation: tar wildcard injection (runs as root) -->
+    <vulnerability module_path=".*/cron_tar_wildcard">
+      <input into="strings_to_leak">
+        <datastore>root_flag</datastore>
+      </input>
+      <input into="cron_user">
+        <value>root</value>
+      </input>
+      <input into="restrict_write_user">
+        <datastore>target_user</datastore>
+      </input>
+      <input into="cron_location">
+        <datastore>vertical_cron_location</datastore>
+      </input>
+      <input into="show_crontab_hint">
+        <value>true</value>
+      </input>
+    </vulnerability>
+
+<network type="private_network" range="dhcp"/>
+    
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+
+</scenario>

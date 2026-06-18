@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>Cron Writable Script Privilege Escalation</name>
+  <author>Rosie Fletcher</author>
+  <module_license>MIT</module_license>
+  <description>A cron job executes a world-writable script. By default runs as root for vertical privilege escalation.
+    Optionally configurable to run as a non-privileged user, enabling horizontal privilege escalation scenarios
+    where a lower-privileged user can escalate to another user account.</description>
+
+  <type>access_control_misconfiguration</type>
+  <type>cron_privilege_escalation</type>
+  <privilege>root_rwx</privilege>
+  <access>local</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+  <read_fact>cron_location</read_fact>
+  <read_fact>cron_message</read_fact>
+  <read_fact>cron_user</read_fact>
+
+  <default_input into="strings_to_leak">
+    <generator type="flag_generator"/>
+  </default_input>
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+  </default_input>
+  <default_input into="cron_location">
+    <generator module_path="generators/random/random_file_path"/>
+  </default_input>
+  <default_input into="cron_message">
+    <generator module_path="generators/messages/random_evil_plans"/>
+  </default_input>
+  <default_input into="cron_user">
+    <value>root</value>
+  </default_input>
+
+  <requires>
+    <module_path>utilities/unix/puppet_module/cron_new</module_path>
+  </requires>
+
+  <CyBOK KA="AAA" topic="Authorisation">
+    <keyword>access control</keyword>
+    <keyword>Elevated privileges</keyword>
+    <keyword>Vulnerabilities and attacks on access control misconfigurations</keyword>
+  </CyBOK>
+  <CyBOK KA="OSV" topic="Primitives for Isolation and Mediation">
+    <keyword>Access controls and operating systems</keyword>
+    <keyword>Linux security model</keyword>
+  </CyBOK>
+</vulnerability>

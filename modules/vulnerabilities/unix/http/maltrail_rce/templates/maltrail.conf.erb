@@ -1,0 +1,12 @@
+# [Server]
+HTTP_ADDRESS 0.0.0.0
+HTTP_PORT <%= @port %>
+USE_SSL false
+LOG_DIR /var/log/maltrail
+UPDATE_PERIOD 24
+# USERS disabled for passwordless access to web UI
+
+# [Sensor]
+MONITOR_INTERFACE any
+CAPTURE_BUFFER 1GB
+USE_MULTIPROCESSING false

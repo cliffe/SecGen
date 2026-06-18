@@ -1,0 +1,15 @@
+[Unit]
+Description=MalTrail Server v0.52 (Vulnerable to CVE-2025-34073)
+After=network.target
+
+[Service]
+Type=simple
+User=<%= @user %>
+Group=<%= @user %>
+WorkingDirectory=/opt/maltrail
+ExecStart=/usr/bin/python3 /opt/maltrail/server.py -c /opt/maltrail/maltrail.conf
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>Off the trail</name>
+  <author>Rosie Fletcher</author>
+  <description>A multi-stage penetration testing exercise where students:
+    1. Exploit CVE-2025-34073 (MalTrail RCE) for initial access
+    2. Find the first flag via file system exploration
+    3. Analyze MalTrail's web interface to discover a second hidden flag embedded in threat data
+  This lab teaches the full attack lifecycle from reconnaissance to root compromise.
+  </description>
+
+  <type>ctf</type>
+  <type>attack-ctf</type>
+  <type>pwn-ctf</type>
+  <difficulty>low</difficulty>
+
+  <!-- Command Injection / RCE -->
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION</keyword>
+    <keyword>EXPLOITATION FRAMEWORKS</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+
+  <!-- Privilege Escalation -->
+  <CyBOK KA="AAA" topic="Authorisation">
+    <keyword>Elevated privileges</keyword>
+  </CyBOK>
+
+  <!-- Attack Lifecycle -->
+  <CyBOK KA="AB" topic="Models">
+    <keyword>kill chains</keyword>
+  </CyBOK>
+  <CyBOK KA="MAT" topic="Malicious Activities by Malware">
+    <keyword>cyber kill chain</keyword>
+  </CyBOK>
+
+  <!-- Web Application Security -->
+  <CyBOK KA="WAM" topic="Web Application Security">
+    <keyword>Injection vulnerabilities</keyword>
+    <keyword>Command injection</keyword>
+  </CyBOK>
+
+  <system>
+    <system_name>attack_vm</system_name>
+    <base distro="Kali" name="MSF"/>
+
+    <input into_datastore="IP_addresses">
+      <value>172.16.0.2</value>
+      <value>172.16.0.3</value>
+    </input>
+    
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts">
+        <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
+      </input>
+    </utility>
+
+    <utility module_path=".*/iceweasel">
+      <input into="accounts">
+        <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
+      </input>
+      <input into="autostart">
+        <value>false</value>
+      </input>
+    </utility>
+
+    <utility module_path=".*/kali_top10"/>
+    <utility module_path=".*/kali_web"/>
+
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="0">IP_addresses</datastore>
+      </input>
+    </network>
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+
+  <!-- Target VM with MalTrail RCE vulnerability and SUID privilege escalation -->
+  <system>
+    <system_name>server</system_name>
+    <base distro="Debian 12" type="desktop" name="KDE"/>
+
+    <!-- MalTrail RCE vulnerability - provides initial access as maltrail user -->
+    <!-- Dual flag challenge: Flag 1 in filesystem, Flag 2 embedded in MalTrail threat data -->
+    <!-- Generate flag at scenario level so it appears in project info -->
+    <input into_datastore="maltrail_flag">
+      <generator type="flag_generator"/>
+    </input>
+
+    <vulnerability module_path=".*/maltrail_rce" access="remote" privilege="user_rwx">
+      <input into="strings_to_leak">
+        <generator type="flag_generator"/>
+      </input>
+      <input into="maltrail_data">
+        <generator type="maltrail_data">
+          <input into="embedded_flag">
+            <datastore>maltrail_flag</datastore>
+          </input>
+        </generator>
+      </input>
+    </vulnerability>
+
+    <vulnerability module_path=".*/writable_passwd|.*/writable_shadow">
+      <input into="strings_to_leak">
+        <generator type="flag_generator"/>
+      </input>
+    </vulnerability>
+
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="1">IP_addresses</datastore>
+      </input>
+    </network>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+
+</scenario>

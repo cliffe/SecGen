@@ -13,8 +13,6 @@ class lucee_rce::install {
   $user = $secgen_parameters['unix_username'][0]
   $user_home = "/home/${user}"
 
-  ensure_packages(['openjdk-11-jdk'], { ensure => 'installed'})
-
   $splits.each |String $split| {
     file { "/tmp/${split}":
       ensure => file,
@@ -27,6 +25,25 @@ class lucee_rce::install {
     ensure     => present,
     home       => $user_home,
     managehome => true,
+  }
+  exec { 'download-jdk11':
+    cwd     => '/tmp',
+    command => 'wget -O jdk11.tar.gz https://download.java.net/openjdk/jdk11.0.0.2/ri/openjdk-11.0.0.2_linux-x64.tar.gz',
+    creates => '/tmp/jdk11.tar.gz',
+    timeout => 300,
+  }
+  -> exec { 'extract-jdk11':
+    cwd     => '/tmp',
+    command => 'tar -xzf jdk11.tar.gz',
+    creates => '/tmp/jdk-11.0.0.2',
+  }
+  -> file { '/usr/lib/jvm':
+    ensure => directory,
+  }
+  -> exec { 'install-jdk11':
+    cwd     => '/tmp',
+    command => 'mv jdk-11.0.0.2 /usr/lib/jvm/java-11-openjdk',
+    creates => '/usr/lib/jvm/java-11-openjdk',
   }
 
   exec { 'rebuild-archive':

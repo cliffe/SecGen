@@ -2,12 +2,12 @@ $secgen_params = secgen_functions::get_parameters($::base64_inputs_file)
 $images = $secgen_params['images']
 
 # install
-include 'docker'
+# include 'docker'
 
 # TODO: configure proxy via secgen argument?
-#class { 'docker':
-#  proxy => "http://172.22.0.51:3128",
-#}
+class { 'docker':
+  proxy => "http://172.22.0.51:3128",
+}
 
 
 # remove proxy config (it's in the template, and this overrides)
@@ -47,11 +47,11 @@ include 'docker'
 # }
 
 # remove proxy config (it's in the template, and this overrides)
-exec { 'remove_docker_proxy_conf':
-  command => 'sudo rm /etc/systemd/system/docker.service.d/*proxy.conf',
-  path    => ['/bin', '/usr/bin', '/sbin', '/usr/sbin'],
-  onlyif  => 'test -d /etc/systemd/system/docker.service.d && ls /etc/systemd/system/docker.service.d/*proxy.conf',
-}
+# exec { 'remove_docker_proxy_conf':
+#   command => 'sudo rm /etc/systemd/system/docker.service.d/*proxy.conf',
+#   path    => ['/bin', '/usr/bin', '/sbin', '/usr/sbin'],
+#   onlyif  => 'test -d /etc/systemd/system/docker.service.d && ls /etc/systemd/system/docker.service.d/*proxy.conf',
+# }
 
 # download (pull) a set of images
 $images.each |$image| {

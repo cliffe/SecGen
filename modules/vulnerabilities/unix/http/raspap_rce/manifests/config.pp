@@ -6,7 +6,6 @@ class raspap_rce::config {
   $port = $secgen_parameters['port'][0]
   $strings_to_leak = $secgen_parameters['strings_to_leak']
   $leaked_filenames = $secgen_parameters['leaked_filenames']
-  $strings_to_pre_leak = $secgen_parameters['strings_to_pre_leak']
   $admin_password = $secgen_parameters['admin_password'][0]
 
   $user = 'www-data'

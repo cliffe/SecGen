@@ -143,9 +143,6 @@
       <input into="strings_to_leak">
         <generator type="flag_generator"/>
       </input>
-      <input into="strings_to_pre_leak">
-        <generator type="flag_generator"/>
-      </input>
     </vulnerability>
 
 

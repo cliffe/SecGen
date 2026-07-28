@@ -14,6 +14,16 @@
   <access>local</access>
   <platform>linux</platform>
 
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+
+  <default_input into="strings_to_leak">
+    <generator type="message_generator"/>
+  </default_input>
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+  </default_input>
+
   <hint>View the /etc/shadow file and try to crack an account hash.</hint>
 
   <conflict>

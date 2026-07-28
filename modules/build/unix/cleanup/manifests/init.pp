@@ -20,6 +20,10 @@ class cleanup::init {
   }
 
   if $root_password {
+    exec { 'secgen-save-etc-perms':
+      command => "/bin/bash -c 'stat -c %a /etc/passwd > /run/secgen_passwd_mode; stat -c %a /etc/shadow > /run/secgen_shadow_mode; stat -c %a /etc/group > /run/secgen_group_mode'",
+    }
+
     # Set root password
     ::accounts::user { 'root':
       ensure => present,
@@ -29,6 +33,15 @@ class cleanup::init {
       ensure => present,
       password   => pw_hash($root_password, 'SHA-512', 'mysalt'),
     }
+
+    exec { 'secgen-restore-etc-perms':
+      command => "/bin/bash -c 'chmod \$(cat /run/secgen_passwd_mode) /etc/passwd; chmod \$(cat /run/secgen_shadow_mode) /etc/shadow; chmod \$(cat /run/secgen_group_mode) /etc/group; rm -f /run/secgen_passwd_mode /run/secgen_shadow_mode /run/secgen_group_mode'",
+    }
+
+    Exec['secgen-save-etc-perms']
+    -> Accounts::User['root']
+    -> Accounts::User['vagrant']
+    -> Exec['secgen-restore-etc-perms']
   }
 
   # if kali_msf we have a default kali account setup by default

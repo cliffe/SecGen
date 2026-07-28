@@ -114,13 +114,6 @@
       </input>
     </vulnerability>
 
-    <build type="cleanup">
-      <input into="root_password">
-        <datastore>spoiler_admin_pass</datastore>
-      </input>
-    </build>
-
-    <!-- This needs to come after the above to work -->
     <vulnerability module_path=".*/writable_passwd|.*/writable_shadow">
       <input into="strings_to_leak">
         <generator type="flag_generator"/>
@@ -132,6 +125,11 @@
         <datastore access="1">IP_addresses</datastore>
       </input>
     </network>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
   </system>
 
 </scenario>

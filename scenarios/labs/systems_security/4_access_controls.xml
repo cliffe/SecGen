@@ -365,16 +365,13 @@
         <datastore>hackerbot_key</datastore>
       </input>
     </utility>
+    <vulnerability module_path=".*/writable_passwd|.*writable_shadow"/>
+
     <build type="cleanup">
       <input into="root_password">
         <datastore>spoiler_admin_pass</datastore>
       </input>
     </build>
-
-    <!-- This needs to come after the above to work -->
-    <!-- TODO: enforce order in the module metadata somehow? -->
-    <vulnerability module_path=".*/writable_passwd|.*writable_shadow"/>
-
     <network type="private_network"/>
   </system>
 

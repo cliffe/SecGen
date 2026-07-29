@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<base xmlns="http://www.github/cliffe/SecGen/base"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/base">
+  <name>Debian 12 Bookworm Desktop (unpatched kernel): PROXMOX ONLY</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>GPLv3</module_license>
+  <description>Debian 12 Bookworm Desktop KDE amd64, pinned to the pre-patch template so the kernel remains
+  vulnerable to CVE-2026-46331 (pedit COW). Intended only for training scenarios that require that
+  vulnerability. Proxmox only.</description>
+  <cpu_word_size>64-bit</cpu_word_size>
+  <type>desktop</type>
+
+  <platform>linux</platform>
+  <platform>unix</platform>
+  <distro>Debian 12 Bookworm amd64</distro>
+  <url>https://app.vagrantup.com/secgen/boxes/bookworm-base/versions/1.0.1/providers/virtualbox/amd64/download/vagrant.box</url>
+  <esxi_url>https://app.vagrantup.com/redwiz666/boxes/debian_stretch_desktop_kde/versions/1.0.0/providers/vmware.box</esxi_url>
+  <ovirt_template>buster_desktop_kde_20230615</ovirt_template>
+  <proxmox_template>bookworm-desktop-kde-20241114</proxmox_template>
+
+  <reference>https://atlas.hashicorp.com/puppetlabs</reference>
+  <software_license>various</software_license>
+
+  <!-- another base should not be added to this base -->
+  <conflict>
+    <module_path>bases/.*</module_path>
+  </conflict>
+</base>

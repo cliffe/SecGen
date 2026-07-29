@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>packet_edit</name>
+  <author>Alix Hiscock</author>
+  <module_license>GPLv2</module_license>
+  <description>Installs packet_edit_meme from github repo.</description>
+
+  <type>attack_tools</type>
+  <platform>linux</platform>
+
+  <reference>https://github.com/sgkdev/packet_edit_meme</reference>
+
+  <requires>
+    <type>update</type>
+  </requires>
+</utility>

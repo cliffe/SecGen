@@ -23,6 +23,9 @@
   <default_input into="uri">
     <value>localhost</value>
   </default_input>
+  <default_input into="cert_bundle">
+    <value></value>
+  </default_input>
   <default_input into="strings_to_leak">
     <generator type="flag_generator"/>
   </default_input>

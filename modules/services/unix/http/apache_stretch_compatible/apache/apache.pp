@@ -5,9 +5,9 @@ $strings_to_leak = $secgen_parameters['strings_to_leak']
 $uri             = $secgen_parameters['uri'][0]
 
 # Parse cert bundle JSON from self_signed_cert generator
-$raw_cert_bundle = $secgen_parameters['cert_bundle'][0]
-if $raw_cert_bundle and $raw_cert_bundle != '' {
-  $cert_bundle = parsejson($raw_cert_bundle)
+$cert_bundle_input = $secgen_parameters['cert_bundle']
+if $cert_bundle_input and $cert_bundle_input[0] and $cert_bundle_input[0] != '' {
+  $cert_bundle = parsejson($cert_bundle_input[0])
   $cert_pem    = $cert_bundle['cert_pem']
   $key_pem     = $cert_bundle['key_pem']
 } else {

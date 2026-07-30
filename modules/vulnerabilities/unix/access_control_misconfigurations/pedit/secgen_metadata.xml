@@ -17,11 +17,7 @@
   <access>local</access>
   <platform>linux</platform>
 
-  <difficulty>medium</difficulty>
-
-  <requires>
-    <module_path>.*/debian_bookworm_desktop_kde_unpatched</module_path>
-  </requires>
+  <difficulty>high</difficulty>
 
   <read_fact>strings_to_leak</read_fact>
   <read_fact>leaked_filenames</read_fact>
@@ -37,6 +33,10 @@
     vulnerable version. Gain CAP_NET_ADMIN in a user namespace and abuse the tc pedit action.</hint>
   <solution>Escalate to root via the act_pedit kernel flaw reachable through unprivileged user
     namespaces, then read the flag from /root.</solution>
+
+  <requires>
+    <module_path>.*/debian_bookworm_desktop_kde_unpatched</module_path>
+  </requires>
 
   <CyBOK KA="AAA" topic="Authorisation">
     <keyword>access control</keyword>

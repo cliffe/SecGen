@@ -7,14 +7,15 @@
   <author>Z. Cliffe Schreuders</author>
   <module_license>GPLv3</module_license>
   <description>Debian 12 Bookworm Desktop KDE amd64, pinned to the pre-patch template so the kernel remains
-  vulnerable to CVE-2026-46331 (pedit COW). Intended only for training scenarios that require that
-  vulnerability. Proxmox only.</description>
+  vulnerable to CVE-2026-46331 (pedit COW). Proxmox only. Select this base only with a base module_path
+  filter of .*/debian_bookworm_desktop_kde_unpatched -- the distro string is intentionally not "Debian 12"
+  so generic base filters never match it.</description>
   <cpu_word_size>64-bit</cpu_word_size>
   <type>desktop</type>
 
   <platform>linux</platform>
   <platform>unix</platform>
-  <distro>Debian 12 Bookworm amd64</distro>
+  <distro>Bookworm amd64 unpatched-kernel (module_path-only, PROXMOX)</distro>
   <url>https://app.vagrantup.com/secgen/boxes/bookworm-base/versions/1.0.1/providers/virtualbox/amd64/download/vagrant.box</url>
   <esxi_url>https://app.vagrantup.com/redwiz666/boxes/debian_stretch_desktop_kde/versions/1.0.0/providers/vmware.box</esxi_url>
   <ovirt_template>buster_desktop_kde_20230615</ovirt_template>

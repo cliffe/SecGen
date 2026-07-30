@@ -6,11 +6,16 @@
 
   <name>Off the trail</name>
   <author>Rosie Fletcher</author>
-  <description>A multi-stage penetration testing exercise where students:
-    1. Exploit CVE-2025-34073 (MalTrail RCE) for initial access
-    2. Find the first flag via file system exploration
-    3. Analyze MalTrail's web interface to discover a second hidden flag embedded in threat data
-  This lab teaches the full attack lifecycle from reconnaissance to root compromise.
+  <description>
+    A network traffic monitoring and threat-intelligence platform is exposed on an unusual
+    port, and a recently disclosed, unauthenticated command injection flaw in its login
+    handler lets you smuggle shell commands past its input handling - no credentials needed.
+    Fingerprint the service, target the vulnerable request parameter, and pop a shell to
+    land your first flag in a user's home directory. This is a two-flag hunt: dig through
+    the platform's own threat-detection data and web interface to uncover a second flag
+    hidden in plain sight among the logged traffic. Finally, track down a badly misconfigured
+    permission on a core system account file, exploit it to tamper with credentials, and
+    ride it all the way to root.
   </description>
 
   <type>ctf</type>

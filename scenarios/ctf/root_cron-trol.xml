@@ -6,10 +6,16 @@
 
   <name>Root Cron-trol</name>
   <author>Rosie Fletcher</author>
-  <description>A two-stage privilege escalation challenge. Login to the desktop as a low-privileged user (password: tiaspbiqe2r),
-    then perform horizontal privilege escalation by exploiting a writable cron script owned by another user.
-    Finally, achieve vertical privilege escalation to root through a tar wildcard injection vulnerability in a
-    root-owned cron job. Master the art of cron-based privilege escalation! Login password: tiaspbiqe2r</description>
+  <description>
+    Log in to the desktop as a low-privileged user (password: tiaspbiqe2r) and start hunting
+    for scheduled tasks that don't play by the rules. A cron job running under another user
+    account executes a script that's writable by anyone - hijack it to move sideways into
+    that account and grab the first flag. From there, sudo lets you peek at a root-owned
+    crontab, revealing a backup-style job that processes every file in a shared directory
+    using a wildcard pattern. Craft file names that abuse how the underlying command expands
+    and interprets that wildcard to slip your own commands into a root-run process, and
+    complete the vertical climb to root for the final flag.
+  </description>
 
   <type>ctf</type>
   <type>attack-ctf</type>

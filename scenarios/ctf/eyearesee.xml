@@ -6,7 +6,14 @@
 
   <name>Eyearesee</name>
   <author>Z. Cliffe Schreuders</author>
-  <description>Hack the server from kali.
+  <description>
+    An IRC server on the network turns out to be running a chat daemon built from a tampered
+    source release - a hidden backdoor command channel was slipped in during a past
+    supply-chain compromise, and anyone who knows the trigger can run commands on the box
+    without ever authenticating. Track down the chat service, work out how to reach its
+    secret command interface, and pop a shell to collect the first flag from a home
+    directory. Once you're in, a sudo rule meant for an everyday text-processing tool has
+    been left dangerously permissive - abuse it to spawn a root shell and grab the final flag.
   </description>
 
   <type>ctf</type>

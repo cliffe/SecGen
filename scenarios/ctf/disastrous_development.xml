@@ -6,7 +6,15 @@
 
     <name>Disastrous Development</name>
     <author>James Davis</author>
-    <description>Sometimes developers aren't always the smartest...</description>
+    <description>
+        Sometimes developers aren't always the smartest... A web application server for a
+        developer-focused platform is exposed with a dangerous flaw in its administrative
+        tooling: a way to write arbitrary files to disk that can be turned into full command
+        execution on the underlying host, no credentials required. Scan the target to identify
+        the vulnerable service, find a public exploit for the file-write bug, and use it to
+        plant and trigger a payload that runs with the privileges of the server process - enough
+        to capture the flag in one shot.
+    </description>
 
     <type>ctf</type>
     <type>attack-ctf</type>

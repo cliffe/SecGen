@@ -6,7 +6,15 @@
 
   <name>Vulnerable webapp</name>
   <author>Joshua Hickling</author>
-  <description>A web server with a (randomly) vulnerable webapp</description>
+  <description>
+    A custom web application for a small organisation - complete with a product
+    catalogue and a customer feedback page - hides a grab-bag of classic web flaws:
+    an injectable search or feedback form, a script-injection bug, and object
+    references that don't check who's asking. A weak, predictable session cookie
+    also guards an area worth breaking into. Flags are scattered across the
+    vulnerable pages, and both the site and its flaws are randomised on every
+    build, so recon each feature carefully before you start crafting payloads.
+  </description>
 
   <type>ctf</type>
   <type>attack-ctf</type>

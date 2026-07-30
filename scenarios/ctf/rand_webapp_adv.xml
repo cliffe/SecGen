@@ -6,7 +6,15 @@
 
   <name>Vulnerable webapp</name>
   <author>Joshua Hickling</author>
-  <description>A web server with a (randomly) vulnerable webapp</description>
+  <description>
+    This is the harder sibling of the classic random webapp challenge: the same
+    family of injectable queries, script-injection, and object-reference flaws
+    returns, but tuned to their least forgiving settings, with tighter filtering
+    and no easy one-line payloads. A weak session cookie scheme is also in play,
+    guarding access worth escalating into. Expect to spend real effort crafting
+    and refining payloads to get past the defences, with several flags scattered
+    across the vulnerable pages to track down.
+  </description>
 
   <type>ctf</type>
   <type>attack-ctf</type>

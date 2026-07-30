@@ -6,7 +6,15 @@
 
   <name>Nosferatu</name>
   <author>Z. Cliffe Schreuders</author>
-  <description>Hack the server from kali.
+  <description>
+    A lightweight, rarely-patched web server is listening on the target, and a directory
+    traversal bug in how it parses HTTP requests lets a crafted request break out of the web
+    root and execute commands on the underlying system - no authentication needed.
+    Fingerprint the service, build a request that escapes its intended boundaries, and pop a
+    shell to reach the first flag; along the way you'll pick up an obfuscated message that's
+    worth feeding through a decoding toolkit before you dismiss it as noise. Once inside,
+    hunt for a sudo rule around an everyday file-pager utility that was never meant to grant
+    root - abuse it to escape into a root shell and take the final flag.
   </description>
 
   <type>ctf</type>

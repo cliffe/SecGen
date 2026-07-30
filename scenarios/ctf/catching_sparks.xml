@@ -7,8 +7,14 @@
     <name>Catching Sparks</name>
     <author>James Davis</author>
     <description>
-        A web vulnerability allows access to a server remotely. Find the website
-        and gain root privilege.
+        A server is running an outdated big-data analytics platform with its web UI exposed.
+        A high-severity, unauthenticated command injection flaw lets you impersonate a user and
+        trick the service into running your own shell commands - no credentials required. Scan
+        the target, identify the vulnerable service and version, find a public exploit, and pop
+        a shell to grab the first flag from a home directory. From there, a scheduled security
+        audit job on the box is running an old rootkit-checker with a well-known local privilege
+        escalation bug: drop a payload where it will be picked up and executed as root to
+        complete the takeover.
     </description>
 
     <type>ctf</type>

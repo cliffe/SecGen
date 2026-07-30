@@ -6,7 +6,14 @@
 
   <name>Drupwned</name>
   <author>Alix Hiscock</author>
-  <description>Hack the web_server from kali.
+  <description>
+    An open-source content management system sits exposed to the world,
+    still carrying a devastating unauthenticated remote-code-execution bug that
+    made headlines when it was disclosed - a public exploit will get you a shell
+    with barely any effort. Look in a spot that web crawlers love to check for a
+    clue, decode what you find to grab an early flag, and dig through the webroot
+    for the next. Finish by abusing a sudo rule around a common text pager to pop
+    a root shell and take the whole box.
   </description>
 
   <type>ctf</type>

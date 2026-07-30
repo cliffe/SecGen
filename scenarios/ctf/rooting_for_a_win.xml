@@ -6,7 +6,13 @@
 
   <name>Rooting for a win</name>
   <author>Z. Cliffe Schreuders</author>
-  <description>Hack the server from kali.
+  <description>
+    A server exposes an old-school FTP service that turns out to hide a backdoor
+    slipped into a past release - a classic unauthenticated network exploit that
+    hands you a root shell outright once triggered. Along the way you'll spot a
+    short snippet of text scrambled with a simple reversible cipher: decode it to
+    pick up an early flag before finishing the job and rooting the box for the
+    rest.
   </description>
 
   <type>ctf</type>

@@ -6,7 +6,15 @@
 
   <name>Git dejavu</name>
   <author>Alix Hiscock</author>
-  <description>Hack the web_server from kali.
+  <description>
+    A self-hosted git collaboration platform is exposed on the network, and an outdated
+    build harbors a file-upload flaw that lets an unauthenticated attacker smuggle malicious
+    image metadata past the server's parsers - no login required. Find the vulnerable upload
+    endpoint, craft a poisoned file, and trick the platform into running your own commands to
+    land a low-privileged shell and grab the first flag from a user's home directory. From
+    there, a permissive sudo rule around an everyday package-management command opens the
+    door to a root shell: work out which trusted binary has been left dangerously accessible
+    and use it to complete your privilege escalation and capture the final flag.
   </description>
 
   <type>ctf</type>

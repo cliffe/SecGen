@@ -6,7 +6,14 @@
 
   <name>Putting it together</name>
   <author>Z. Cliffe Schreuders</author>
-  <description>Hack the server from kali. Search the server for leaked information that will help you login and then escalate from there.
+  <description>
+    A target server is leaking pieces of a login through two separate misconfigured
+    services: an over-shared network file share reveals part of the puzzle, and an
+    unusual open port hands out the rest to anyone who connects. Piece together the
+    recovered credentials, log in as a regular user, and collect a flag from their
+    home directory. From there, a permissive sudo rule lets an ordinary command break
+    out into a root shell - work out which allowed command can be abused to complete
+    the takeover.
   </description>
 
   <type>ctf</type>

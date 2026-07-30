@@ -6,7 +6,14 @@
 
   <name>Such a git</name>
   <author>Z. Cliffe Schreuders</author>
-  <description>Hack the web_server from kali.
+  <description>
+    A source-browsing web app exposing an organisation's git repositories has a
+    known flaw that lets a crafted request slip extra arguments through to the
+    server, resulting in remote code execution without any credentials. Use it to
+    hunt down a stashed username and password, then log in properly to collect a
+    flag from a home directory. Once inside, a sudo rule that lets you run a
+    package-management tool as root can be turned into a full root shell to
+    finish the job.
   </description>
 
   <type>ctf</type>

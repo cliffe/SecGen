@@ -6,8 +6,14 @@
     <name>SSH-it happens</name>
     <author>Rosie Fletcher</author>
     <description>
-        A server is running an Erlang/OTP SSH daemon vulnerable to CVE-2025-32433.
-        Exploit the pre-authentication RCE to gain root access and capture the flag.
+        A server exposes an SSH daemon built on an unusual runtime platform, listening on a
+        non-standard port - and it has a serious flaw. A specially crafted handshake message
+        lets an attacker execute commands before authentication even completes, no credentials
+        needed. Scan the target, fingerprint the SSH service and its version, and track down a
+        recently disclosed public exploit for this critical pre-authentication remote code
+        execution bug to land a shell and grab the first flag from a home directory. From there,
+        a misconfigured sudo permission on a common command-line text tool offers a well-known
+        route to a root shell and the second flag.
     </description>
 
     <type>ctf</type>

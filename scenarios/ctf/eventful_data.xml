@@ -7,8 +7,13 @@
     <name>Eventful Data</name>
     <author>James Davis</author>
     <description>
-        There is a vulnerable webserver that can be exploited.
-        Find it and then get root.
+        A backend service for ingesting and querying large volumes of event data is running on
+        the target. It ships with a scripting feature that should be locked down but isn't, and
+        because authentication isn't enabled by default, a crafted API request lets you smuggle
+        in and run your own code. Enumerate the exposed service, find the right request to
+        trigger code execution, and land a shell to collect the first flag from a service
+        account's home directory. A misconfigured sudo rule on a common pager utility then
+        offers a well-known path to a root shell and the second flag.
     </description>
 
     <type>ctf</type>

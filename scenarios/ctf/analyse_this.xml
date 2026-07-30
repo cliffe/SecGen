@@ -7,9 +7,13 @@
   <name>Analyse This!</name>
   <author>Rosie Fletcher</author>
   <author>Z. Cliffe Schreuders</author>
-  <description>Analyse the files on the server from kali.
-    Username: analyse
-    Password: this!!!
+  <description>
+    Log into a Debian server using credentials you're handed up front - this challenge isn't
+    about breaking in, it's about what you can find once you're inside. The account's files
+    hide flags behind layered, reversible encodings that will take some careful decoding (a
+    local CyberChef install is provided for exactly this). A network capture file left on the
+    box holds another flag buried in the traffic, and a classic Linux file-hiding trick conceals
+    one more. Bring your artifact-analysis and decoding skills to track down every flag.
   </description>
 
   <type>ctf</type>

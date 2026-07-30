@@ -6,7 +6,15 @@
 
   <name>Containers Escape</name>
   <author>Z. Cliffe Schreuders</author>
-  <description>An "escape room" -- you need to find a way into then escape to root a docker container and a chroot container. Hints: the flags are stored in /root/ on the two VMs but you first need to find your way in, and then escape confinement. Good luck!</description>
+  <description>
+    An "escape room" across two isolated targets. Each machine exposes an open backdoor that
+    drops you into a shell - but not the shell you actually want. On one box you land inside a
+    lightweight container runtime; on the other, an old-school chroot jail. Both are configured
+    just loosely enough to break out of. Scan for the open listener, catch the shell, then abuse
+    process and filesystem internals to escape confinement and reach genuine root on the
+    underlying host. The flags are waiting in root's home directory on each VM - find your way
+    in, then escape. Good luck!
+  </description>
 
   <type>ctf</type>
   <type>attack-ctf</type>

@@ -6,7 +6,16 @@
 
   <name>Git dejavu Advanced</name>
   <author>Alix Hiscock</author>
-  <description>Hack the web_server from kali.
+  <description>
+    The advanced sequel to the classic git-platform challenge: the same class of self-hosted
+    git collaboration service is running, but this build strips away the easy hints and
+    raises the difficulty of chaining a file-upload metadata flaw into working remote code
+    execution. Expect to dig deeper into version fingerprinting and crafting a working
+    malicious upload before you can pop a low-privileged shell and grab the first flag from
+    a home directory. Once inside, the same class of permissive sudo rule around a
+    package-management command awaits - but with less obvious signposting on the way to a
+    root shell and the final flag. A tougher rematch for anyone who found the standard
+    version too easy.
   </description>
 
   <type>ctf</type>

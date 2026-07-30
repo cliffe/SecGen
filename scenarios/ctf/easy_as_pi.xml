@@ -6,7 +6,14 @@
 
   <name>Easy as Pi</name>
   <author>Rosie Fletcher</author>
-  <description>Hack the RaspAP server from Kali. Exploit an unauthenticated command injection vulnerability to capture the flags.
+  <description>
+    A small, lightweight web interface for managing a wireless access point sits exposed on the
+    network - the kind of tool you'd find running on a low-cost single-board computer. One of
+    its backend endpoints fails to sanitise user input, letting you inject your own operating
+    system commands without ever logging in. Scan the target, find the vulnerable endpoint, and
+    turn that command injection into a shell to grab your first flag. A misconfigured sudo
+    permission on a common text-processing utility then hands you an easy road to root and the
+    second flag.
   </description>
 
   <type>ctf</type>

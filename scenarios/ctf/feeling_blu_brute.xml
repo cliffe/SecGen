@@ -6,7 +6,16 @@
 
   <name>Feeling Blu</name>
   <author>Z. Cliffe Schreuders</author>
-  <description>Hack the web_server from kali.
+  <description>
+    A small flat-file blogging platform is running on the web server, but this time nobody
+    hands you the login - you'll need to find a valid username and then brute-force your way
+    to the password, working around the platform's login-lockout protection using a known
+    bypass. Once you're authenticated, abuse a path-traversal flaw hiding behind the image
+    upload feature to plant a web shell and get remote code execution - enough for a foothold
+    and the first flag from a user's home directory. A misconfigured sudo rule around a common
+    file-pager utility then hands you a root shell and a second flag. Once you're root, you'll
+    find a password-protected zip archive sitting there waiting to be cracked - dig up what you
+    can about the organisation's staff for the clue you need to reveal one last flag.
   </description>
 
   <type>ctf</type>

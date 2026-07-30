@@ -92,8 +92,6 @@
       </input>
     </vulnerability>
 
-    <utility module_path=".*/packet_edit"></utility>
-
     <vulnerability module_path=".*/pedit">
       <input into="strings_to_leak">
         <generator type="flag_generator"/>

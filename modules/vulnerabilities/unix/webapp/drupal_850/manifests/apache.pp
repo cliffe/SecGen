@@ -12,8 +12,9 @@ class drupal_850::apache {
   } ->
   
   ::apache::vhost { 'www-drupal':
-    port    => $port,
-    docroot => $docroot,
+    port     => $port,
+    docroot  => $docroot,
+    priority => '05',
   } ->
 
   exec { 'restart-apache-drupal':

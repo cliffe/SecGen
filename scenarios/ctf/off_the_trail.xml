@@ -11,11 +11,12 @@
     port, and a recently disclosed, unauthenticated command injection flaw in its login
     handler lets you smuggle shell commands past its input handling - no credentials needed.
     Fingerprint the service, target the vulnerable request parameter, and pop a shell to
-    land your first flag in a user's home directory. This is a two-flag hunt: dig through
+    land your first flag in a user's home directory. This is a three-flag hunt: dig through
     the platform's own threat-detection data and web interface to uncover a second flag
     hidden in plain sight among the logged traffic. Finally, track down a badly misconfigured
     permission on a core system account file, exploit it to tamper with credentials, and
-    ride it all the way to root.
+    ride it all the way to root - where the third and final flag is waiting in root's home
+    directory.
   </description>
 
   <type>ctf</type>

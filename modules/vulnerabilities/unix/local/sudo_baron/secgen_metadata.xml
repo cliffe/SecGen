@@ -35,9 +35,9 @@
     <software_name>Sudo</software_name>
     <software_license>Misc</software_license>
 
-    <!-- only known to be compatible with debian bases -->
+    <!-- only compatible with the Debian 10 Buster base; conflicts with every other base, effectively disables it since most use bookworm -->
     <conflict>
-      <module_path>(?!.+debian)</name>
+      <module_path>.*bases/(?!debian_buster).*</module_path>
     </conflict>
 
     <CyBOK KA="MAT" topic="Attacks and exploitation">

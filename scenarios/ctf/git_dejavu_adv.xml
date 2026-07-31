@@ -10,11 +10,15 @@
     The advanced sequel to the classic git-platform challenge: the same class of self-hosted
     git collaboration service is running, but this build strips away the easy hints and
     raises the difficulty of chaining a file-upload metadata flaw into working remote code
-    execution. Expect to dig deeper into version fingerprinting and crafting a working
-    malicious upload before you can pop a low-privileged shell and grab the first flag from
-    a home directory. Once inside, the same class of permissive sudo rule around a
-    package-management command awaits - but with less obvious signposting on the way to a
-    root shell and the final flag. A tougher rematch for anyone who found the standard
+    execution. This is a three-flag hunt. Start with the unauthenticated surface - what the
+    site asks crawlers to leave alone is worth a look of your own. Then expect to dig deeper
+    into version fingerprinting and crafting a working malicious upload before you can pop a
+    low-privileged shell. This time the home directory guards no
+    flag of its own, only a key to somewhere else - and the place it opens has a longer
+    memory than its owner intended. Something deleted is not always something gone; recover
+    what was left behind for the second flag. Finally, the same class of permissive sudo rule
+    around a package-management command awaits - but with less obvious signposting on the way
+    to a root shell and the final flag. A tougher rematch for anyone who found the standard
     version too easy.
   </description>
 

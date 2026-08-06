@@ -1,0 +1,161 @@
+#!/usr/bin/env sh
+# Detects which OS and if it is Linux then it will detect which Linux Distribution.
+
+OS=$(uname -s)
+REV=$(uname -r)
+#MACH=$(uname -m)
+
+if [ "${OS}" = "SunOS" ] ; then
+  OS=Solaris
+  ARCH=$(uname -p)
+  OSSTR="${OS} ${REV}(${ARCH} $(uname -v))"
+
+elif [ "${OS}" = "AIX" ] ; then
+  OSSTR="${OS} $(oslevel) ($(oslevel -r))"
+
+elif [ "${OS}" = "Linux" ] ; then
+  #KERNEL=$(uname -r)
+
+  if [ -f /etc/fedora-release ]; then
+    DIST=$(cat /etc/fedora-release | awk '{print $1}')
+    REV=$(cat /etc/fedora-release | sed s/.*release\ // | sed s/\ .*//)
+
+  elif [ -f /etc/redhat-release ] ; then
+    DIST=$(cat /etc/redhat-release | awk '{print $1}')
+    if [ "${DIST}" = "CentOS" ]; then
+      DIST="CentOS"
+      IGNORE_OS_RELEASE=1 # https://bugs.centos.org/view.php?id=8359
+    elif [ "${DIST}" = "CloudLinux" ]; then
+      DIST="CloudLinux"
+    elif [ "${DIST}" = "Mandriva" ]; then
+      DIST="Mandriva"
+      #PSEUDONAME=$(cat /etc/mandriva-release | sed s/.*\(// | sed s/\)//)
+      REV=$(cat /etc/mandriva-release | sed s/.*release\ // | sed s/\ .*//)
+    elif [ -f /etc/oracle-release ]; then
+      DIST="Oracle"
+    elif [ -f /etc/rockstor-release ]; then
+      DIST="Rockstor"
+    elif [ -f /etc/rocky-release ]; then
+      DIST="Rocky"
+    else
+      DIST="RedHat"
+    fi
+
+    #PSEUDONAME=$(cat /etc/redhat-release | sed s/.*\(// | sed s/\)//)
+    REV=$(cat /etc/redhat-release | sed s/.*release\ // | sed s/\ .*//)
+
+  elif [ -f /etc/almalinux-release ] ; then
+    DIST='AlmaLinux'
+    #PSEUDONAME=$(cat /etc/almalinux-release | sed s/.*\(// | sed s/\)//)
+    REV=$(cat /etc/almalinux-release | sed s/.*release\ // | sed s/\ .*//)
+
+  elif [ -f /etc/mandrake-release ] ; then
+    DIST='Mandrake'
+    #PSEUDONAME=$(cat /etc/mandrake-release | sed s/.*\(// | sed s/\)//)
+    REV=$(cat /etc/mandrake-release | sed s/.*release\ // | sed s/\ .*//)
+
+  elif [ -f /etc/devuan_version ] ; then
+    DIST="Devuan $(cat /etc/devuan_version)"
+    REV=""
+
+  elif [ -f /etc/debian_version ] ; then
+    DIST="Debian $(cat /etc/debian_version)"
+    REV=""
+    IGNORE_OS_RELEASE=1
+    if [ -f /usr/bin/lsb_release ] ; then
+      ID=$(lsb_release -i | awk -F ':' '{print $2}' | sed 's/\s//g')
+    fi
+    if [ "${ID}" = "Raspbian" ] ; then
+      DIST="Raspbian $(cat /etc/debian_version)"
+    fi
+    if [ -f /usr/bin/pveversion ]; then
+      DIST="${DIST}/PVE $(/usr/bin/pveversion | cut -d '/' -f 2)"
+    fi
+    if [ -f /usr/bin/pmgversion ]; then
+      # pmgversion requires root permissions to run, please add NOPASSWD setting to visudo.
+      DIST="${DIST}/PMG $(sudo /usr/bin/pmgversion | cut -d '/' -f 2)"
+    fi
+    if [ -f /etc/dogtag ]; then
+      DIST=$(cat /etc/dogtag)
+    fi
+
+  elif [ -f /etc/gentoo-release ] ; then
+    DIST="Gentoo"
+    REV=$(tr -d '[[:alpha:]]' </etc/gentoo-release | tr -d " ")
+
+  elif [ -f /etc/arch-release ] ; then
+    DIST="Arch Linux"
+    REV="" # Omit version since Arch Linux uses rolling releases
+    IGNORE_LSB=1 # /etc/lsb-release would overwrite $REV with "rolling"
+
+  elif [ -f /etc/photon-release ] ; then
+    DIST=$(head -1 < /etc/photon-release)
+    REV=$(sed -n -e 's/^.*PHOTON_BUILD_NUMBER=//p' /etc/photon-release)
+    IGNORE_LSB=1 # photon os does not have /etc/lsb-release nor lsb_release
+
+  elif [ -f /etc/openwrt_version ] ; then
+    DIST="OpenWrt"
+    REV=$(cat /etc/openwrt_version)
+
+  elif [ -f /etc/pld-release ] ; then
+    DIST=$(cat /etc/pld-release)
+    REV=""
+
+  elif [ -f /etc/SuSE-release ] ; then
+    DIST=$(echo SLES "$(grep VERSION /etc/SuSE-release | cut -d = -f 2 | tr -d " ")")
+    REV=$(echo SP"$(grep PATCHLEVEL /etc/SuSE-release | cut -d = -f 2 | tr -d " ")")
+  fi
+
+  if [ -x "$(command -v  awk)" ];  then # some distros do not ship with awk
+    if [ "$(uname -a | awk '{print $(NF)}')" = "DD-WRT" ] ; then
+      DIST="dd-wrt"
+    fi
+    if [ "$(uname -a | awk '{print $(NF)}')" = "ASUSWRT-Merlin" ] ; then
+      DIST="ASUSWRT-Merlin"
+      REV=$(nvram show | grep buildno= | egrep -o '[0-9].[0-9].[0-9]') > /dev/null 2>&1
+    fi
+  fi
+
+  # try standardized os version methods
+  if [ -f /etc/os-release ] && [ "${IGNORE_OS_RELEASE}" != 1 ] ; then
+    . /etc/os-release
+    STD_DIST="$NAME"
+    STD_REV="$VERSION_ID"
+  elif [ -f /etc/lsb-release ] && [ "${IGNORE_LSB}" != 1 ] ; then
+    STD_DIST=$(lsb_release -si)
+    STD_REV=$(lsb_release -sr)
+  fi
+  if [ -n "${STD_DIST}" ]; then
+    DIST="${STD_DIST}"
+  fi
+  if [ -n "${STD_REV}" ]; then
+    REV="${STD_REV}"
+  fi
+
+  if [ -n "${REV}" ]; then
+    OSSTR="${DIST} ${REV}"
+  else
+    OSSTR="${DIST}"
+  fi
+
+elif [ "${OS}" = "Darwin" ] ; then
+  if [ -f /usr/bin/sw_vers ] ; then
+    OSSTR=$(/usr/bin/sw_vers|grep -v Build|sed 's/^.*:.//'| tr "\n" ' ')
+  fi
+
+elif [ "${OS}" = "FreeBSD" ] ; then
+  if [ -f /etc/version ] ; then
+    DIST=$(cat /etc/version | cut -d'-' -f 1)
+    if [ "${DIST}" = "FreeNAS" ]; then
+      OSSTR=$(cat /etc/version | cut -d' ' -f 1)
+    fi
+  else
+    OSSTR=$(/usr/bin/uname -mior)
+  fi
+fi
+
+if [ -f /etc/vpp/startup.conf ]; then
+  OSSTR="VPP ${OSSTR}"
+fi
+
+echo "${OSSTR}"

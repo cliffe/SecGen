@@ -1,0 +1,38 @@
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+<name>Hadoop YARN ResourceManager Unauthenticated Command Execution /name>
+  <author>Sofia Markusfeld</author>
+  <module_license>Apache</module_license>
+  
+    
+     <!--  fix -->
+  <description>"This module uses built-in functionality to execute arbitrary commands on an unsecured Hadoop server which is not configured for strong
+          authentication, via Hadoop's standard ResourceManager REST API."
+  </description>
+ <!--  cleanup/add -->
+ <type>remote</type>
+  <type></type>
+  <type></type>
+  <privilege></privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  
+     <!--  cleanup/add -->
+   <read_fact></read_fact>
+   <read_fact></read_fact>
+   <read_fact></read_fact>
+   
+   <!-- flags or other secrets exposed after exploitation -->
+  <default_input into="strings_to_leak">
+    <generator type="message_generator"/>
+  </default_input>
+  
+    <!-- these details need to be known or bruteforced to successful exploit the service -->
+  
+    <!--optional vulnerability details-->
+  <!-- rce vuln -->
+  <cve>CVE-2022-24706</cve>
+  <!-- bruteforce vuln -->
+  <cve></cve>

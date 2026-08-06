@@ -14,7 +14,7 @@
   <platform>linux</platform>
   <platform>unix</platform>
   <distro>Debian 10 Buster amd64</distro>
-  <url>https://app.vagrantup.com/secgen/boxes/debian_stretch_desktop_kde/versions/1.2/providers/virtualbox.box</url>
+  <url>https://app.vagrantup.com/secgen/boxes/debian_stretch_desktop_kde/versions/1.0/providers/virtualbox.box</url>
   <esxi_url>https://app.vagrantup.com/redwiz666/boxes/debian_stretch_desktop_kde/versions/1.0.0/providers/vmware.box</esxi_url>
   <ovirt_template>buster_desktop_kde_20230615</ovirt_template>
   <proxmox_template>buster-desktop-kde-20240703</proxmox_template>

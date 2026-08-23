@@ -1,0 +1,322 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>Break Escape SAFETYNET: Mission 5 — Insider Trading</name>
+  <author>Z. Cliffe Schreuders</author>
+  <description>
+# Break Escape SAFETYNET Mission 5: Insider Trading
+
+Virtual machines for the Break Escape SAFETYNET mission 5 narrative experience. Quantum Dynamics Corporation (QDC) is developing "Project Heisenberg" — quantum-safe key material intended to protect the rollout of the National Emergency-Services Dispatch Network (999 call routing). QDC's Cryptography Lead, David Torres, has been exfiltrating that material to ENTROPY's Insider Threat Initiative cell. ENTROPY is not selling the capability on — it intends to acquire and hold it directly. Operatives must penetrate QDC's research server to trace the leak, recover the exfiltrated package, and expose the chain of command that authorised it.
+
+## Included Systems
+
+**qdc_research_server** (172.16.0.2)
+- Debian 12 desktop system
+- Hosts QDC's Bludit-based research portal, with a mismanaged admin account and a vulnerable authenticated image-upload path
+- Contains a manager account used as Torres's exfiltration staging point, and a root-level cache of the operation's authorisation paperwork
+- Intelligence: leaked admin credentials, a manager-level data package manifest, and The Architect's signed deployment authorisation with a casualty projection
+
+**attack_vm** (172.16.0.3)
+- Kali Linux penetration testing platform
+- Used for reconnaissance and exploitation against qdc_research_server
+
+## Integration with Break Escape
+
+These VMs are provisioned by the Break Escape game engine via SecGen integration. Players interact with these systems through the game's narrative and task system, with guided hints delivered via SAFETYNET field guides. The four primary flags map directly onto the mission's four aims: reconnaissance, web exploitation, user access, and root/Architect's comms.
+
+## CyBOK Coverage
+
+- Authentication and brute-force attacks
+- Server-side vulnerabilities and file upload
+- Exploitation frameworks
+- Sudo misconfiguration and access control
+  </description>
+  <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/safetynet/bludit-cms-exploitation/</lab_sheet_url>
+
+  <type>ctf-lab</type>
+  <type>attack-ctf</type>
+  <type>pwn-ctf</type>
+  <difficulty>medium</difficulty>
+
+  <!-- bludit -->
+  <CyBOK KA="WAM" topic="Fundamental Concepts and Approaches">
+    <keyword>authentication</keyword>
+    <keyword>passwords and alternatives</keyword>
+  </CyBOK>
+  <CyBOK KA="AAA" topic="Authentication">
+    <keyword>user authentication</keyword>
+    <keyword>BRUTEFORCE</keyword>
+  </CyBOK>
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>server-side misconfiguration and vulnerable components</keyword>
+    <keyword>FILE UPLOAD VULNERABILITY</keyword>
+  </CyBOK>
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION</keyword>
+    <keyword>EXPLOITATION FRAMEWORKS</keyword>
+  </CyBOK>
+  <CyBOK KA="SS" topic="Categories of Vulnerabilities">
+    <keyword>CVEs and CWEs</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+
+  <!-- escalate to user and to root via sudo -->
+  <CyBOK KA="AAA" topic="Authorisation">
+    <keyword>access control</keyword>
+    <keyword>Elevated privileges</keyword>
+    <keyword>Vulnerabilities and attacks on access control misconfigurations</keyword>
+  </CyBOK>
+  <CyBOK KA="OSV" topic="Primitives for Isolation and Mediation">
+    <keyword>Access controls and operating systems</keyword>
+    <keyword>Linux security model</keyword>
+    <keyword>Attacks against SUDO</keyword>
+  </CyBOK>
+
+  <system>
+    <system_name>attack_vm</system_name>
+    <base distro="Kali" name="MSF"/>
+
+    <input into_datastore="IP_addresses">
+      <!-- 0 attack_vm -->
+      <network_ip system="attack_vm"/>
+      <!-- 1 qdc_research_server -->
+      <network_ip system="qdc_research_server"/>
+    </input>
+
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts">
+        <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
+      </input>
+    </utility>
+
+    <utility module_path=".*/iceweasel">
+      <input into="accounts">
+        <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
+      </input>
+      <input into="autostart">
+        <value>true</value>
+      </input>
+      <input into="start_page">
+        <datastore access="1">IP_addresses</datastore>
+      </input>
+    </utility>
+
+    <utility module_path=".*/kali_top10"/>
+    <utility module_path=".*/kali_web"/>
+
+    <network type="private_network"/>
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+
+  <system>
+    <system_name>qdc_research_server</system_name>
+    <base distro="Debian 12" type="desktop" name="KDE"/>
+
+    <input into_datastore="organisation">
+      <encoder type="line_selector">
+        <input into="file_path">
+          <value>lib/resources/structured_content/organisations/json_organisations</value>
+        </input>
+      </encoder>
+    </input>
+
+    <!-- bludit requires a password >= 6 characters long -->
+    <input into_datastore="password">
+        <generator type="random_sanitised_word">
+        <input into="wordlist">
+          <value>wordlist</value>
+        </input>
+        <input into="min_length">
+          <value>6</value>
+        </input>
+      </generator>
+    </input>
+
+    <!--Create the user-->
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts">
+        <generator type="account">
+          <input into="username">
+            <datastore access_json="['manager']['username']">organisation</datastore>
+          </input>
+          <input into="password">
+            <datastore>password</datastore>
+          </input>
+          <input into="super_user">
+            <value>false</value>
+          </input>
+          <input into="leaked_filenames">
+            <value>flag</value> <!-- flag3: Torres's exfiltration staging manifest -->
+          </input>
+          <input into="strings_to_leak">
+            <!-- flag3: USER ACCESS - Torres's exfiltration staging directory -->
+            <encoder module_path="modules/encoders/selector/concatenate">
+              <input into="strings_to_encode">
+                <value>QUANTUM DYNAMICS CORPORATION -- INTERNAL RESEARCH SHARE
+DATA PACKAGE MANIFEST
+Staged by: D. Torres (Cryptography Lead)
+Classification: PROJECT HEISENBERG -- RESTRICTED
+
+Package contents staged for external transfer:
+
+1. quantum-safe_key_material_v3.tar.gpg
+   - Lattice-based key exchange parameters, production candidate set
+   - Source: Heisenberg key-generation cluster, rack 4
+
+2. dispatch_network_rollout_schedule.xlsx
+   - National Emergency-Services Dispatch Network (999 call routing)
+   - Phased cutover dates by region, including key-rotation windows
+   - Marked: DO NOT DISTRIBUTE OUTSIDE QDC / HOME OFFICE LIAISON
+
+3. handover_note.txt
+   - Sloppy admin credential note left on the research portal (already recovered)
+
+Transfer method: staged locally, then pushed via encrypted channel to
+external contact "The Recruiter" (TalentStack Executive Recruiting -- cover entity).
+
+Torres's own notes, found alongside the manifest:
+
+"Elena's bills are $380,000 and climbing. The insurer won't cover the
+trial. Two kids. I keep telling myself this is a one-time thing, that
+nobody gets hurt, that it's just data. I don't fully believe that
+anymore. Sofia is eleven. Miguel is eight. I don't know how to stop."
+
+-- staged for pickup, do not disturb</value>
+                <generator type="flag_generator"/>
+              </input>
+            </encoder>
+          </input>
+        </generator>
+      </input>
+    </utility>
+
+    <vulnerability module_path=".*/bludit_upload_images_exec">
+      <!-- flag2: WEB EXPLOITATION - authenticated image-upload RCE -->
+      <input into="strings_to_leak">
+        <generator type="flag_generator"/>
+      </input>
+      <input into="organisation">
+        <datastore>organisation</datastore>
+      </input>
+      <input into="known_username">
+        <datastore access_json="['manager']['username']">organisation</datastore>
+      </input>
+      <input into="known_password">
+        <datastore>password</datastore>
+      </input>
+      <!-- flag1: RECON - sloppy QDC handover note exposing the Bludit admin credentials -->
+      <input into="strings_to_pre_leak">
+        <value>QDC RESEARCH PORTAL -- HANDOVER NOTE
+From: IT Support (temp cover, night shift)
+To: Next on-call
+
+Sorry, rushed this. Portal login still on defaults from the migration,
+nobody's rotated it. Ticket open for months, keeps getting deprioritised.
+
+Creds:</value>
+        <datastore access_json="['manager']['username']">organisation</datastore>
+        <datastore>password</datastore>
+        <generator type="flag_generator"/>
+      </input>
+    </vulnerability>
+
+    <vulnerability module_path=".*/sudo_root_less">
+      <!-- flag4: ROOT - The Architect's authorisation, most important narrative payload -->
+      <input into="strings_to_leak">
+        <encoder module_path="modules/encoders/base/base64">
+          <input into="strings_to_encode">
+            <value>PROJECT HEISENBERG -- ACQUISITION AUTHORISATION
+Classification: ENTROPY EYES ONLY -- INSIDER THREAT INITIATIVE
+
+Subject: Quantum-safe key material, National Emergency-Services
+Dispatch Network (999 call routing) rollout schedule
+Source: D. Torres, Cryptography Lead, Quantum Dynamics Corporation (recruited asset)
+Handler: The Recruiter (cover: TalentStack Executive Recruiting)
+
+DISPOSITION: This capability is not for resale. ENTROPY retains and
+integrates directly. No foreign buyer has been, or will be, offered
+this package.
+
+RECRUITER'S ASSESSMENT OF SOURCE:
+Torres was identified via financial distress screening. Wife's
+medical debt ($380,000, non-negotiable, insurer denied trial coverage)
+made him a high-probability convert. Two dependents (ages 11 and 8)
+increase compliance and reduce flight risk. Our operating philosophy
+holds: every person has a price. Torres's was cheaper than most --
+debt relief and a standing consultancy retainer. He is a line item,
+not a partner. Expect him to be unusable within 18 months; plan
+disposal accordingly.
+
+OPERATIONAL IMPACT -- CASUALTY PROJECTION:
+Deployment of the compromised key material during the scheduled
+key-rotation window will require the dispatch network to fail over
+to a degraded routing path for an estimated 40-70 minutes per
+affected region. During this window, ambulance, fire, and police
+dispatch latency increases by an average of 6-11 minutes per call.
+
+Modelled outcome across the twelve regions in the first rollout
+wave: projected 30-45 excess civilian deaths attributable to delayed
+emergency response during the degraded-routing interval, concentrated
+among cardiac, stroke, and structure-fire incidents where minutes
+are decisive.
+
+This figure has been reviewed and is filed as an acceptable cost of
+acquiring the capability. No mitigation is authorised that would
+also alert QDC or the Home Office liaison to the intrusion.
+
+AUTHORISATION: Proceed with acquisition and integration as staged.
+-- The Architect</value>
+            <generator type="flag_generator"/>
+          </input>
+        </encoder>
+      </input>
+      <input into="strings_to_pre_leak">
+        <generator type="flag_generator"/>
+      </input>
+    </vulnerability>
+
+    <!-- Bonus flag, declared after the four primary flags so numbering is undisturbed -->
+    <vulnerability type="zip_file">
+      <input into="base64_file">
+        <generator type="zip_file_generator">
+          <input into="password">
+            <datastore access_json="['manager']['name']">organisation</datastore>
+          </input>
+          <input into="strings_to_leak">
+            <generator type="flag_generator"/>
+            <value>
+              Congratulations, you have cracked the protected archive. Bonus flag for your troubles.
+            </value>
+          </input>
+        </generator>
+      </input>
+      <input into="leaked_filename">
+        <value>heisenberg_backup.zip</value>
+      </input>
+      <input into="storage_directory">
+        <value>/root</value>
+      </input>
+    </vulnerability>
+
+    <network type="private_network"/>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+
+</scenario>

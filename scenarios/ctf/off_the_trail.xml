@@ -101,7 +101,7 @@
     <base distro="Debian 12" type="desktop" name="KDE"/>
 
     <!-- MalTrail RCE vulnerability - provides initial access as maltrail user -->
-    <!-- Dual flag challenge: Flag 1 in filesystem, Flag 2 embedded in MalTrail threat data -->
+    <!-- Three flag challenge: Flag 1 in filesystem, Flag 2 embedded in MalTrail threat data, Flag 3 on root via writable passwd/shadow -->
     <!-- Generate flag at scenario level so it appears in project info -->
     <input into_datastore="maltrail_flag">
       <generator type="flag_generator"/>

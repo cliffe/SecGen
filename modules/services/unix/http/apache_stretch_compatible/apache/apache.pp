@@ -96,6 +96,8 @@ if $cert_pem and $key_pem {
 
 # Host strings_to_leak content at the path extracted from uri
 # Content is written as-is — plain text, HTML, whatever was passed in
+# Requires BOTH a path-bearing uri and a non-empty strings_to_leak: a uri with no
+# path (the "localhost" default) leaves $uri_path undef and nothing is hosted
 if $uri_path and $strings_to_leak and $strings_to_leak[0] {
   file { "${docroot}/${uri_path}":
     ensure  => directory,

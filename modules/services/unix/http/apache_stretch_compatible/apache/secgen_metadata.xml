@@ -8,7 +8,7 @@
   <author>Puppet Labs</author>
   <author>Tom Shaw</author>
   <module_license>Apache v2</module_license>
-  <description>An installation of Apache. Optionally serves HTTPS with a self-signed certificate. Optionally hosts strings_to_leak content at a path extracted from a given URI.</description>
+  <description>An installation of Apache. Optionally serves HTTPS with a self-signed certificate. Optionally hosts strings_to_leak content at a path extracted from a given URI: set BOTH uri (to a URI containing a path, such as http://example.com/a3f9bc72de1408f5/) and strings_to_leak, and the first leaked string is written to that path as index.html. Setting strings_to_leak without a path-bearing uri leaks nothing.</description>
   <type>httpd</type>
   <platform>linux</platform>
 
@@ -26,8 +26,9 @@
   <default_input into="cert_bundle">
     <value></value>
   </default_input>
+  <!-- To leak content, also set uri to a URI containing a path -->
   <default_input into="strings_to_leak">
-    <generator type="flag_generator"/>
+    <value></value>
   </default_input>
 
   <reference>https://httpd.apache.org/</reference>

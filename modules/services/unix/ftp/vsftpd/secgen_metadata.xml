@@ -28,7 +28,7 @@
   </conflict>
   <!--Cannot co-exist with other ftp servers (default to same ports)-->
   <conflict>
-    <type>$ftp^</software_name>
+    <type>^ftp$</type>
   </conflict>
 
 

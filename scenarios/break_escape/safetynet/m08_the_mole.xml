@@ -1,0 +1,276 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>Break Escape SAFETYNET: Mission 8 — The Mole VMs</name>
+  <author>Z. Cliffe Schreuders</author>
+  <description>
+# Break Escape SAFETYNET Mission 8: The Mole
+
+Virtual machines for the Break Escape SAFETYNET mission 8 narrative experience. After the Mission 7 leak that got two SAFETYNET field agents killed, an internal investigation traces the breach to SAFETYNET's own headquarters. The agency's internal source-code server — an unpatched GitList instance nobody ever hardened — is hosting far more than source: the mole committed working credentials into a repository, corresponded with ENTROPY from the box, and left the access logs that place them on the Mission 7 plan. Operatives must exploit SAFETYNET's own repository server to prove the mole's identity: Agent 0x47 "Nightshade", a placed insider of ENTROPY's Insider Threat Initiative.
+
+## Included Systems
+
+**safetynet_gitlist_server** (172.16.0.2)
+- Debian 12 desktop system
+- Hosts SAFETYNET's internal GitList repository browser, vulnerable to an argument-injection remote-code-execution flaw that requires no authentication (GitList 0.4.0, CVE-2018-1000533)
+- Contains the mole's operations account, credentials committed into repository history, encrypted ENTROPY correspondence staged in a home directory, and a root-level cache of The Architect's authorisation confirming the Mission 7 database exfiltration
+- Intelligence: the exposed repository (recon), the stashed credentials, the ENTROPY correspondence, and The Architect's signed authorisation with a casualty acknowledgement
+
+**attack_vm** (172.16.0.3)
+- Kali Linux penetration testing platform
+- Used for reconnaissance and exploitation against safetynet_gitlist_server
+
+## Integration with Break Escape
+
+These VMs are provisioned by the Break Escape game engine via SecGen integration. Players interact with these systems through the game's narrative and task system, with guided hints delivered via SAFETYNET field guides. The four primary flags map directly onto the mission's investigation aims: repository exposure (recon), stashed credentials (web/exploitation), proper login and the ENTROPY correspondence (user access), and root plus the access logs and The Architect's authorisation (root).
+
+## CyBOK Coverage
+
+- Version-control security and credential leakage in repositories
+- Argument-injection / remote code execution without authentication
+- Authentication and secure shell access
+- Sudo misconfiguration and privilege escalation
+- Audit-log analysis and insider-threat investigation
+  </description>
+  <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/safetynet/scanning-and-exploitation/</lab_sheet_url>
+
+  <type>ctf-lab</type>
+  <type>attack-ctf</type>
+  <type>pwn-ctf</type>
+  <difficulty>medium</difficulty>
+
+  <!-- exploiting GitList gives credentials to log in -->
+  <CyBOK KA="AAA" topic="Authentication">
+    <keyword>user authentication</keyword>
+  </CyBOK>
+  <CyBOK KA="NS" topic="PENETRATION TESTING">
+    <keyword>SECURE SHELL (SSH)</keyword>
+  </CyBOK>
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION</keyword>
+    <keyword>EXPLOITATION FRAMEWORKS</keyword>
+  </CyBOK>
+  <CyBOK KA="SS" topic="Categories of Vulnerabilities">
+    <keyword>CVEs and CWEs</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+
+  <!-- escalate to user and to root via sudo -->
+  <CyBOK KA="AAA" topic="Authorisation">
+    <keyword>access control</keyword>
+    <keyword>Elevated privileges</keyword>
+    <keyword>Vulnerabilities and attacks on access control misconfigurations</keyword>
+  </CyBOK>
+  <CyBOK KA="OSV" topic="Primitives for Isolation and Mediation">
+    <keyword>Access controls and operating systems</keyword>
+    <keyword>Linux security model</keyword>
+    <keyword>Attacks against SUDO</keyword>
+  </CyBOK>
+
+  <CyBOK KA="AB" topic="Models">
+    <keyword>kill chains</keyword>
+  </CyBOK>
+  <CyBOK KA="MAT" topic="Malicious Activities by Malware">
+    <keyword>cyber kill chain</keyword>
+  </CyBOK>
+
+  <system>
+    <system_name>attack_vm</system_name>
+    <base distro="Kali" name="MSF"/>
+
+    <input into_datastore="IP_addresses">
+      <!-- 0 attack_vm -->
+      <network_ip system="attack_vm"/>
+      <!-- 1 safetynet_gitlist_server -->
+      <network_ip system="safetynet_gitlist_server"/>
+    </input>
+
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts">
+        <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
+      </input>
+    </utility>
+
+    <utility module_path=".*/iceweasel">
+      <input into="accounts">
+        <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
+      </input>
+      <input into="autostart">
+        <value>true</value>
+      </input>
+      <input into="start_page">
+        <datastore access="1">IP_addresses</datastore>
+      </input>
+    </utility>
+
+    <utility module_path=".*/kali_top10"/>
+    <utility module_path=".*/kali_web"/>
+
+    <network type="private_network"/>
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+
+  <system>
+    <system_name>safetynet_gitlist_server</system_name>
+    <base distro="Debian 12" type="desktop" name="KDE"/>
+
+    <input into_datastore="organisation">
+      <encoder type="line_selector">
+        <input into="file_path">
+          <value>lib/resources/structured_content/organisations/json_organisations</value>
+        </input>
+      </encoder>
+    </input>
+
+    <!-- generate a password >= 6 characters long (the mole's committed credential) -->
+    <input into_datastore="password">
+        <generator type="random_sanitised_word">
+        <input into="wordlist">
+          <value>wordlist</value>
+        </input>
+        <input into="min_length">
+          <value>6</value>
+        </input>
+      </generator>
+    </input>
+
+    <!-- Create the mole's operations account; SSH login with the recovered
+         credentials lands here, where the ENTROPY correspondence is staged. -->
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts">
+        <generator type="account">
+          <input into="username">
+            <datastore access_json="['manager']['username']">organisation</datastore>
+          </input>
+          <input into="password">
+            <datastore>password</datastore>
+          </input>
+          <input into="super_user">
+            <value>false</value>
+          </input>
+          <input into="leaked_filenames">
+            <value>flag</value> <!-- flag3: USER ACCESS - the ENTROPY correspondence in the mole's home directory -->
+          </input>
+          <input into="strings_to_leak">
+            <!-- flag3: USER ACCESS - decoded ENTROPY correspondence, staged on the box -->
+            <encoder module_path="modules/encoders/selector/concatenate">
+              <input into="strings_to_encode">
+                <value>SAFETYNET INTERNAL -- RECOVERED FROM ~/.local/share/mail/sent
+
+To:      architect@entropy.onion
+From:    nightshade_deep_state
+Subject: M7 package -- delivered
+
+Package delivered: team assignments, response timeline, and the agent's
+identity, all confirmed before the tasking order was issued. Your
+coordination of the four simultaneous operations proceeded as modelled.
+
+I know what the two unanswered sites cost. You do not need to send me the
+number. I made the trade with my eyes open. Order is a candle in a
+hurricane; I would rather help the wind than keep relighting the wick.
+
+The real objective completed cleanly during the noise -- see the
+authorisation cached under root once you get there. They spent the night
+choosing which fire to fight and never noticed the vault open behind them.
+
+Awaiting next tasking.
+-- N (Insider Threat Initiative)</value>
+                <generator type="flag_generator"/>
+              </input>
+            </encoder>
+          </input>
+        </generator>
+      </input>
+    </utility>
+
+    <!-- GitList 0.4.0 argument-injection RCE (CVE-2018-1000533): no credentials
+         required. Exposes the repository (recon) and the credentials the mole
+         committed into history. -->
+    <vulnerability module_path=".*/gitlist_040">
+      <!-- flag2: STASHED CREDENTIALS - the mole's password, committed and never scrubbed -->
+      <input into="strings_to_leak">
+        <value>Password</value>
+        <datastore>password</datastore>
+        <generator type="flag_generator"/>
+      </input>
+      <input into="organisation">
+        <datastore>organisation</datastore>
+      </input>
+      <!-- flag1: REPOSITORY EXPOSURE (recon) - the exploit reads config outside the
+           web root, exposing SAFETYNET's own repo setup and the ops-account username -->
+      <input into="strings_to_pre_leak">
+        <value>SAFETYNET INTERNAL SOURCE -- ops-config committed in error
+Repo: internal/mission-tooling  (GitList browser exposed, no auth required)
+Note in commit message: "temp creds for the planning sync job, will rotate"  -- never rotated
+Service account (ops):</value>
+        <datastore access_json="['manager']['username']">organisation</datastore>
+        <generator type="flag_generator"/>
+      </input>
+    </vulnerability>
+
+    <!-- Sudo misconfiguration: the ops account may run a package tool as root,
+         which is trivially turned into a root shell. Root holds the access logs
+         and The Architect's authorisation. -->
+    <vulnerability module_path=".*/sudo_root_apt_get">
+      <!-- flag4: ROOT - access logs + The Architect's authorisation, the mission's key payload -->
+      <input into="strings_to_leak">
+        <encoder module_path="modules/encoders/base/base64">
+          <input into="strings_to_encode">
+            <value>SAFETYNET GLOBAL THREAT DATABASE -- EXFILTRATION AUTHORISATION
+Classification: ENTROPY EYES ONLY -- INSIDER THREAT INITIATIVE
+
+Subject: SAFETYNET Global Threat Database (complete vulnerability catalogue)
+Source: internal placement, codename NIGHTSHADE (Agent 0x47), recruited during
+        SAFETYNET training, dormant ~15 years, activated for Mission 7.
+Handler: The Architect (direct)
+
+DISPOSITION: The four Mission 7 operations were cover. The objective was the
+database. During the response window, the complete catalogue -- every zero-day,
+unpatched critical, infrastructure weakness and supply-chain vector SAFETYNET
+has ever recorded -- was exfiltrated through a channel Nightshade held open.
+Retain and integrate. Destination: Tomb Gamma.
+
+ACCESS-LOG CORRELATION (recovered from /var/log, root only):
+  user nightshade_ops  T-48h before M7  OPEN mission_planning/m07_operations.enc
+  duration 00:47:00  source: Cryptography Lab terminal 03
+  -- the plan was not read in forty-seven minutes. It was copied.
+
+OPERATIONAL IMPACT -- ACKNOWLEDGED COST:
+Two SAFETYNET field agents were killed at the two crisis sites the tactical
+team could not reach, because the enemy knew, in advance, where the gaps would
+be. This was reviewed and filed as an acceptable cost of acquiring the database.
+The source was aware of the projected loss before delivery and proceeded.
+
+AUTHORISATION: Proceed. Deliver the catalogue to Tomb Gamma.
+-- The Architect</value>
+            <generator type="flag_generator"/>
+          </input>
+        </encoder>
+      </input>
+      <input into="strings_to_pre_leak">
+        <generator type="flag_generator"/>
+      </input>
+    </vulnerability>
+
+    <network type="private_network"/>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+
+</scenario>

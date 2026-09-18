@@ -7,6 +7,14 @@ class hackerbot::config{
   $private_key   = $ssh_key_pair['private']
 
 
+  # True when this lab's sheet is published outside the VMs (Hacktivity); the
+  # locally hosted copy is then replaced with a short placeholder.
+  $externally_hosted_raw = $secgen_parameters['externally_hosted_lab_sheet'] ? {
+    undef   => 'false',
+    default => $secgen_parameters['externally_hosted_lab_sheet'][0],
+  }
+  $externally_hosted_lab_sheet = str2bool($externally_hosted_raw)
+
   $hackerbot_xml_configs = []
   $hackerbot_lab_sheets = []
 
@@ -30,9 +38,19 @@ class hackerbot::config{
       $htmlfilename = "lab_part_$counter.html"
     }
 
-    file { "/var/www/labs/$htmlfilename":
-      ensure => present,
-      content => $parsed_pair['html_lab_sheet'],
+    # The generated sheet is still built (it is embedded in the same JSON as the
+    # bot config); for converted labs we simply do not publish it, so there is
+    # only one lab sheet a student can find.
+    if $externally_hosted_lab_sheet {
+      file { "/var/www/labs/$htmlfilename":
+        ensure  => present,
+        content => template('hackerbot/lab_sheet_moved.html.erb'),
+      }
+    } else {
+      file { "/var/www/labs/$htmlfilename":
+        ensure  => present,
+        content => $parsed_pair['html_lab_sheet'],
+      }
     }
 
   }

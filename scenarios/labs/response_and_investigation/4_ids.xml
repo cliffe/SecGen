@@ -12,8 +12,10 @@
 
     During this hands-on lab, you will learn how to set up network monitoring tools like Tcpdump and Wireshark to observe live network traffic. You will use these tools to detect specific strings in network packets and identify port scanning attempts on a web server. Additionally, you will configure Snort, a popular IDS, to monitor network traffic to detect network activities of interest. As part of your practical exercises, you will trigger Snort alerts by sending ICMP pings and monitor the alerts generated. Throughout the lab, you will also interact with Hackerbot, which will simulate network attacks, and you will need to use the tools you've learned to detect and respond to these simulated attacks. By completing these tasks, you will develop practical skills in network monitoring and intrusion detection.
 
-    This is a Hackerbot lab. The labsheet is available once you claim a set of VMs. Work through the labsheet, then when prompted interact with Hackerbot.
+    This is a Hackerbot lab. Work through the lab sheet, then when prompted interact with Hackerbot.
   </description>
+
+  <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/response_and_investigation/4-ids/</lab_sheet_url>
 
   <type>ctf-lab</type>
   <type>hackerbot-lab</type>
@@ -214,7 +216,7 @@
         <value>true</value>
       </input>
       <input into="start_page">
-        <datastore access="3">IP_addresses</datastore>
+        <datastore access="2">IP_addresses</datastore>
       </input>
     </utility>
 
@@ -347,10 +349,13 @@
     <service type="httpd" module_path=".*/apache.*"/>
 
     <utility module_path=".*/hackerbot">
+      <input into="externally_hosted_lab_sheet">
+        <value>true</value>
+      </input>
       <input into="ssh_key_pair">
         <datastore>hackerbot_key</datastore>
       </input>
-      <input into="hackerbot_configs" into_datastore="hackerbot_instructions">
+      <input into="hackerbot_configs">
         <generator module_path=".*/ids">
           <input into="accounts">
             <datastore>accounts</datastore>

@@ -12,8 +12,10 @@
 
     Throughout this hands-on lab, you will learn essential techniques for live system analysis, such as collecting information about running processes, network connections, kernel modules, and system state. You will also explore the use of static binaries to avoid potential tampering with dynamically linked executables. Additionally, you will employ tools like Chkrootkit to detect rootkits and perform offline analysis to uncover any suspicious activity or security breaches. By completing tasks such as creating a list of suspicious open ports, identifying unreported processes, and analyzing the output of data collection scripts, you will gain practical experience in investigating compromised systems, a crucial skill for cybersecurity professionals and digital forensics experts.
 
-    This is a Hackerbot lab. The labsheet is available once you claim a set of VMs. Work through the labsheet, then when prompted interact with Hackerbot.
+    This is a Hackerbot lab. Work through the lab sheet, then interact with Hackerbot to complete the challenges.
   </description>
+
+  <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/response_and_investigation/7-live-analysis/</lab_sheet_url>
 
   <type>ctf-lab</type>
   <type>hackerbot-lab</type>
@@ -165,18 +167,6 @@
     <utility module_path=".*/binary_tools"/>
     <utility module_path=".*/nmap"/>
 
-    <utility module_path=".*/iceweasel">
-      <input into="accounts">
-        <datastore>accounts</datastore>
-      </input>
-      <input into="autostart">
-        <value>true</value>
-      </input>
-      <input into="start_page">
-        <datastore access="1">IP_addresses</datastore>
-      </input>
-    </utility>
-
     <utility module_path=".*/pidgin">
       <input into="server_ip">
         <datastore access="1">IP_addresses</datastore>
@@ -214,10 +204,13 @@
     <service type="httpd"/>
 
     <utility module_path=".*/hackerbot">
+      <input into="externally_hosted_lab_sheet">
+        <value>true</value>
+      </input>
       <input into="ssh_key_pair">
         <datastore>hackerbot_key</datastore>
       </input>
-      <input into="hackerbot_configs" into_datastore="hackerbot_instructions">
+      <input into="hackerbot_configs">
         <generator module_path=".*/live_analysis_v2">
           <input into="accounts">
             <datastore>accounts</datastore>

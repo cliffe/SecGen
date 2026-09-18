@@ -12,8 +12,10 @@
 
     You will learn how to mount a disk image read-only, analyze file integrity using MD5 hashes, use Autopsy on Kali to examine file types and check for trojanized executables, conduct timeline analysis to reconstruct the sequence of events, and examine deleted files for hidden clues. You will also investigate log files, identify attempted SSH and Telnet logins, and recover email addresses used in communication. By the end of the lab, you will have gained valuable practical experience in forensic analysis and incident response, equipping you with skills to identify and understand security breaches in real-world scenarios.
 
-    This is a Hackerbot lab. The labsheet is available once you claim a set of VMs. Work through the labsheet, then when prompted interact with Hackerbot.
+    This is a Hackerbot lab. Work through the lab sheet, then when prompted interact with Hackerbot.
   </description>
+
+  <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/response_and_investigation/8-dead-analysis/</lab_sheet_url>
 
   <type>ctf-lab</type>
   <type>hackerbot-lab</type>
@@ -82,15 +84,13 @@
     <utility module_path=".*/dead_image"/>
 
 
+    <!-- Firefox/Iceweasel is needed in this lab to view Autopsy (http://localhost:9999/autopsy) and browse file:// evidence -->
     <utility module_path=".*/iceweasel">
       <input into="accounts">
         <datastore>kali_account</datastore>
       </input>
       <input into="autostart">
         <value>true</value>
-      </input>
-      <input into="start_page">
-        <datastore access="1">IP_addresses</datastore>
       </input>
     </utility>
 
@@ -132,10 +132,13 @@
     <service type="httpd"/>
 
     <utility module_path=".*/hackerbot">
+      <input into="externally_hosted_lab_sheet">
+        <value>true</value>
+      </input>
       <input into="ssh_key_pair">
         <datastore>hackerbot_key</datastore>
       </input>
-      <input into="hackerbot_configs" into_datastore="hackerbot_instructions">
+      <input into="hackerbot_configs">
         <generator module_path=".*/dead_analysis_v2">
           <input into="accounts">
             <datastore>kali_account</datastore>

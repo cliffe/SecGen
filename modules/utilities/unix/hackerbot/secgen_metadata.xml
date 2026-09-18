@@ -20,6 +20,9 @@
   <!--port for www hosting of lab sheets-->
   <read_fact>port</read_fact>
   <read_fact>ssh_key_pair</read_fact>
+  <!--true when this lab's sheet is published outside the VMs (Hacktivity); the
+      locally hosted copy is then replaced with a short placeholder-->
+  <read_fact>externally_hosted_lab_sheet</read_fact>
 
   <default_input into="port">
     <value>80</value>
@@ -31,6 +34,11 @@
 
   <default_input into="hackerbot_configs">
     <value>localhost</value>
+  </default_input>
+
+  <!--false: serve the generated lab sheet locally, as before-->
+  <default_input into="externally_hosted_lab_sheet">
+    <value>false</value>
   </default_input>
 
   <requires>

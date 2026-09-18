@@ -12,8 +12,10 @@
 
     Throughout this lab, you will gain hands-on experience in configuring Snort to monitor network traffic. You will learn how to create custom Snort rules to detect specific network activities, and use Wireshark to capture and analyze network packets. The lab will also present you with a series of Hackerbot challenges, where you will apply your knowledge to detect and respond to various network attacks. For example, you will create Snort rules to detect attempts to access specific ports, monitor unencrypted email authentication, and more. By the end of this lab, you will have a solid understanding of intrusion detection and prevention systems, as well as practical experience in configuring and monitoring them to safeguard your network from potential threats.
 
-    This is a Hackerbot lab. The labsheet is available once you claim a set of VMs. Work through the labsheet, then when prompted interact with Hackerbot.
+    This is a Hackerbot lab. Work through the lab sheet, then when prompted interact with Hackerbot.
   </description>
+
+  <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/response_and_investigation/5-ids-rules/</lab_sheet_url>
 
   <type>ctf-lab</type>
   <type>hackerbot-lab</type>
@@ -202,7 +204,7 @@
         <value>true</value>
       </input>
       <input into="start_page">
-        <datastore access="3">IP_addresses</datastore>
+        <datastore access="2">IP_addresses</datastore>
       </input>
     </utility>
 
@@ -332,10 +334,13 @@
     <service type="httpd"/>
 
     <utility module_path=".*/hackerbot">
+      <input into="externally_hosted_lab_sheet">
+        <value>true</value>
+      </input>
       <input into="ssh_key_pair">
         <datastore>hackerbot_key</datastore>
       </input>
-      <input into="hackerbot_configs" into_datastore="hackerbot_instructions">
+      <input into="hackerbot_configs">
         <generator module_path=".*/ids_rules">
           <input into="accounts">
             <datastore>accounts</datastore>

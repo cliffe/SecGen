@@ -12,7 +12,7 @@
 
     In this lab, you will learn how to utilize SSH/SCP for secure file transfer, create full, differential, and incremental backups using the rsync tool, and employ backups for efficient data protection. You will also explore the concept of snapshot backups, which allow for efficient storage of data by using hard links to unchanged files. Throughout the lab, you will engage in hands-on tasks such as copying directories, performing backups, restoring files, and setting up remote backups. By completing these exercises, you will gain valuable skills in contingency planning and data backup strategies, which are essential for maintaining the availability and security of critical systems and data.
 
-    This is a Hackerbot lab. The labsheet is available once you claim a set of VMs. Work through the labsheet, then when prompted interact with Hackerbot.
+    This is a Hackerbot lab. Work through the lab sheet, then when prompted interact with Hackerbot.
 
     # Tips for the lab
 
@@ -28,6 +28,8 @@
 
   </description>
 
+  <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/response_and_investigation/3-backups-and-recovery/</lab_sheet_url>
+
   <type>ctf-lab</type>
   <type>hackerbot-lab</type>
   <type>lab-sheet</type>
@@ -36,7 +38,7 @@
   <CyBOK KA="SOIM" topic="Execute: Mitigation and Countermeasures">
     <keyword>Recover data and services after an incident</keyword>
     <keyword>BACKUP - DIFFERENTIAL</keyword>
-    <keyword>BACKUP - INFERENTIAL</keyword>
+    <keyword>BACKUP - INCREMENTAL</keyword>
   </CyBOK>
 
   <video>
@@ -70,7 +72,7 @@
     <CyBOK KA="SOIM" topic="Execute: Mitigation and Countermeasures">
       <keyword>Recover data and services after an incident</keyword>
       <keyword>BACKUP - DIFFERENTIAL</keyword>
-      <keyword>BACKUP - INFERENTIAL</keyword>
+      <keyword>BACKUP - INCREMENTAL</keyword>
     </CyBOK>
     <CyBOK KA="OSV" topic="Human Factors: Incident Management">
       <keyword>prepare: incident management planning</keyword>
@@ -204,18 +206,6 @@
     <utility module_path=".*/handy_cli_tools"/>
     <utility module_path=".*/hash_tools"/>
 
-    <utility module_path=".*/iceweasel">
-      <input into="accounts">
-        <datastore>accounts</datastore>
-      </input>
-      <input into="autostart">
-        <value>true</value>
-      </input>
-      <input into="start_page">
-        <datastore access="2">IP_addresses</datastore>
-      </input>
-    </utility>
-
     <utility module_path=".*/pidgin">
       <input into="server_ip">
         <datastore access="2">IP_addresses</datastore>
@@ -279,10 +269,13 @@
     <service type="httpd"/>
 
     <utility module_path=".*/hackerbot">
+      <input into="externally_hosted_lab_sheet">
+        <value>true</value>
+      </input>
       <input into="ssh_key_pair">
         <datastore>hackerbot_key</datastore>
       </input>
-      <input into="hackerbot_configs" into_datastore="hackerbot_instructions">
+      <input into="hackerbot_configs">
         <generator module_path=".*/backups">
           <input into="accounts">
             <datastore>accounts</datastore>

@@ -12,8 +12,10 @@
 
     In this lab, you will learn how to configure Snort to detect unauthorized data transfers and exfiltration. By editing Snort configuration files, you will set up monitoring rules that trigger alerts when sensitive data, like credit card details and national insurance numbers, are being transported over the network. You will also extend your rule to detect the transfer of a fake data file so that your rules are effective without revealing the actual sensitive content. To accomplish this, you'll explore various Snort rule techniques, such as text-based, regular expression-based, and hash-based matching, gaining an in-depth understanding of data loss prevention strategies. By the end of the lab, you'll have practical experience in setting up DLP measures using Snort, a valuable skill for protecting an organization's sensitive data assets.
 
-    This is a Hackerbot lab. The labsheet is available once you claim a set of VMs. Work through the labsheet, then when prompted interact with Hackerbot.
+    This is a Hackerbot lab. Work through the lab sheet, then when prompted interact with Hackerbot.
   </description>
+
+  <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/response_and_investigation/6-exfiltration-detection/</lab_sheet_url>
 
   <type>ctf-lab</type>
   <type>hackerbot-lab</type>
@@ -202,18 +204,6 @@
     <utility module_path=".*/handy_cli_tools"/>
     <utility module_path=".*/nmap"/>
 
-    <utility module_path=".*/iceweasel">
-      <input into="accounts">
-        <datastore>accounts</datastore>
-      </input>
-      <input into="autostart">
-        <value>true</value>
-      </input>
-      <input into="start_page">
-        <datastore access="3">IP_addresses</datastore>
-      </input>
-    </utility>
-
     <utility module_path=".*/pidgin">
       <input into="server_ip">
         <datastore access="3">IP_addresses</datastore>
@@ -338,10 +328,13 @@
     <service type="httpd"/>
 
     <utility module_path=".*/hackerbot">
+      <input into="externally_hosted_lab_sheet">
+        <value>true</value>
+      </input>
       <input into="ssh_key_pair">
         <datastore>hackerbot_key</datastore>
       </input>
-      <input into="hackerbot_configs" into_datastore="hackerbot_instructions">
+      <input into="hackerbot_configs">
         <generator module_path=".*/ids_exfiltration">
           <input into="accounts">
             <datastore>accounts</datastore>

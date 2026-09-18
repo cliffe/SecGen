@@ -15,7 +15,7 @@
   <CyBOK KA="SOIM" topic="Execute: Mitigation and Countermeasures">
     <keyword>Recover data and services after an incident</keyword>
     <keyword>BACKUP - DIFFERENTIAL</keyword>
-    <keyword>BACKUP - INFERENTIAL</keyword>
+    <keyword>BACKUP - INCREMENTAL</keyword>
   </CyBOK>
   <CyBOK KA="SOIM" topic="INCIDENT RESPONSE">
     <keyword>RECOVERY - BACKUPS</keyword>

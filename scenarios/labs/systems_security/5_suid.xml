@@ -13,7 +13,7 @@
     Throughout this lab, you will learn about the concepts of Real UID (RUID) and Effective UID (EUID), explore SUID and SGID permissions in detail, and analyze their significance in managing system security. You will inspect processes to identify cases where RUID and EUID differ, discover SUID and SGID programs on your system, and understand why they require these special permissions. Additionally, you will compile a SUID C program, assess its security implications, and modify it to rectify vulnerabilities. By the end of this lab, you will have a comprehensive understanding of SUID and SGID, their importance in Unix system security, and practical experience in working with SUID programs.
 
     # Hackerbot and CTF challenges
-    This is a Hackerbot lab. The labsheet is available once you claim a set of VMs. Work through the labsheet, then when prompted interact with Hackerbot.
+    This is a Hackerbot lab. The labsheet is hosted on Hacktivity. Work through the labsheet, then when prompted interact with Hackerbot.
 
     In the Hackerbot tasks, you'll use SUID to mediate access to a file (accessible exclusively by a specific user through a SUID executable). There are also some problem-based challenges involving hardlinks, relative paths, and combining shell programs with SGID and SUID permissions.
 
@@ -23,6 +23,8 @@
     # Reading
     [Chapter 6 "Filesystems and Security": Garfinkel, S. Spafford, G. and Schwartz, A. (2003), Practical Unix and Internet Security, O'Reilly. (ISBN-10: 0596003234)](https://www-dawsonera-com.ezproxy.leedsbeckett.ac.uk/abstract/9781449310325)
   </description>
+
+  <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/systems_security/5-suid/</lab_sheet_url>
 
   <type>ctf-lab</type>
   <type>hackerbot-lab</type>
@@ -220,18 +222,6 @@ int main()
     <utility module_path=".*/handy_cli_tools"/>
     <utility module_path=".*/gcc"/>
 
-    <utility module_path=".*/iceweasel">
-      <input into="accounts">
-        <datastore>user_accounts_desktop</datastore>
-      </input>
-      <input into="autostart">
-        <value>true</value>
-      </input>
-      <input into="start_page">
-        <datastore access="2">IP_addresses</datastore>
-      </input>
-    </utility>
-
     <utility module_path=".*/pidgin">
       <input into="server_ip">
         <datastore access="2">IP_addresses</datastore>
@@ -374,7 +364,10 @@ int main()
       <input into="ssh_key_pair">
         <datastore>hackerbot_key</datastore>
       </input>
-      <input into="hackerbot_configs" into_datastore="hackerbot_instructions">
+      <input into="externally_hosted_lab_sheet">
+        <value>true</value>
+      </input>
+      <input into="hackerbot_configs">
         <generator module_path=".*/hb_suid_acls">
           <input into="accounts">
             <datastore>user_accounts_desktop</datastore>

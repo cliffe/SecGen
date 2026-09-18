@@ -13,7 +13,7 @@
     Throughout this lab, you will learn how to view and manipulate file permissions in a Unix-like operating system. You will explore the concept of inodes, examine file permissions using the ls command, create and manage hard and symbolic links to files, and understand how directory-level permissions affect file access. Additionally, you will work with the chmod command to change file permissions and discover the significance of the umask command in setting default permissions for new files. By the end of this lab, you will have an understanding of access control, file permissions, and practical skills in managing access rights on a Linux system.
 
     # Hackerbot and CTF challenges
-    This is a Hackerbot lab. The labsheet is available once you claim a set of VMs. Work through the labsheet, then when prompted interact with Hackerbot.
+    This is a Hackerbot lab. Work through the lab sheet, then when prompted interact with Hackerbot.
 
     The Hackerbot tasks are designed to provide hands-on experience in managing user access, group permissions, and file ownership, and will enhance your understanding of access control mechanisms. You will create files with specific permissions, ownership, and group assignments while ensuring that other users are appropriately restricted from accessing these files.
 
@@ -23,6 +23,8 @@
     # Reading
     [Chapter 1 "Foundations of Security and Access Control in Computing": Benantar, M. (2006), Access Control Systems: Security, Identity Management and Trust Models, Springer. (ISBN-10: 0387004459)](https://www-dawsonera-com.ezproxy.leedsbeckett.ac.uk/readonline/9780387277165)
   </description>
+
+  <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/systems_security/4-access-controls/</lab_sheet_url>
 
   <type>ctf-lab</type>
   <type>hackerbot-lab</type>
@@ -230,18 +232,6 @@
     <utility module_path=".*/hash_tools"/>
     <utility module_path=".*/pam_modules"/>
 
-    <utility module_path=".*/iceweasel">
-      <input into="accounts">
-        <datastore>user_accounts_desktop</datastore>
-      </input>
-      <input into="autostart">
-        <value>true</value>
-      </input>
-      <input into="start_page">
-        <datastore access="2">IP_addresses</datastore>
-      </input>
-    </utility>
-
     <utility module_path=".*/pidgin">
       <input into="server_ip">
         <datastore access="2">IP_addresses</datastore>
@@ -391,7 +381,10 @@
       <input into="ssh_key_pair">
         <datastore>hackerbot_key</datastore>
       </input>
-      <input into="hackerbot_configs" into_datastore="hackerbot_instructions">
+      <input into="externally_hosted_lab_sheet">
+        <value>true</value>
+      </input>
+      <input into="hackerbot_configs">
         <generator module_path=".*/hb_access_controls">
           <input into="accounts">
             <datastore>user_accounts_desktop</datastore>

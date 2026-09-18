@@ -13,7 +13,7 @@
     First, you will delve into the concept of Capabilities, a coarse-grained approach to control privileges in Linux. You will learn how capabilities can be used to grant specific permissions to programs without having them run as the all-powerful root user. You will also explore AppArmor, a rule-based, fine-grained access control system for Linux. You will examine how AppArmor profiles are used to specify the resources and permissions that a program can access, effectively creating a whitelist of allowed actions. You will create rules and experience the learning mode of AppArmor, which helps construct rules based on actual program behavior and understand the advantages and disadvantages of a blacklist (deny) versus a whitelist (ignore) approach to writing AppArmor rules. By the end of this lab, you will have a deep understanding of how capabilities and AppArmor can enhance the security of your Linux system by controlling what programs can do and which resources they can access.
 
     # Hackerbot and CTF challenges
-    This is a Hackerbot lab. The labsheet is available once you claim a set of VMs. Work through the labsheet, then when prompted interact with Hackerbot.
+    This is a Hackerbot lab. Work through the lab sheet, then when prompted interact with Hackerbot.
 
     Hackerbot will challenge you to use AppArmor to provide a shell to attackers, with only limitted access to specific resources.
 
@@ -27,6 +27,9 @@
 
     [Slides](http://z.cliffe.schreuders.org/presentations/slides/slides_secure_design/ADS_PDS_Lectures_3_Secure_Software_Development_and_Bug_Hunting.html)
   </description>
+
+  <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/systems_security/8-apparmor/</lab_sheet_url>
+
   <type>ctf-lab</type>
   <type>hackerbot-lab</type>
   <type>lab-sheet</type>
@@ -185,18 +188,6 @@
     <utility module_path=".*/handy_cli_tools"/>
     <utility module_path=".*/nmap"/>
 
-    <utility module_path=".*/iceweasel">
-      <input into="accounts">
-        <datastore>accounts</datastore>
-      </input>
-      <input into="autostart">
-        <value>true</value>
-      </input>
-      <input into="start_page">
-        <datastore access="1">IP_addresses</datastore>
-      </input>
-    </utility>
-
     <utility module_path=".*/pidgin">
       <input into="server_ip">
         <datastore access="1">IP_addresses</datastore>
@@ -241,7 +232,10 @@
       <input into="ssh_key_pair">
         <datastore>hackerbot_key</datastore>
       </input>
-      <input into="hackerbot_configs" into_datastore="hackerbot_instructions">
+      <input into="externally_hosted_lab_sheet">
+        <value>true</value>
+      </input>
+      <input into="hackerbot_configs">
         <generator module_path=".*/hb_apparmor">
           <input into="accounts">
             <datastore>accounts</datastore>

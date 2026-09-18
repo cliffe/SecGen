@@ -15,7 +15,7 @@
     By the end of this lab, you will have a solid grasp of PAM's role in authentication, the benefits of SSH key-based authentication, and the practical skills to enhance the security and usability of authentication mechanisms in Linux systems.
 
     # Hackerbot and CTF challenges
-    This is a Hackerbot lab. The labsheet is available once you claim a set of VMs. Work through the labsheet, then when prompted interact with Hackerbot.
+    This is a Hackerbot lab. Work through the lab sheet, then when prompted interact with Hackerbot.
 
     The Hackerbot tasks involve configuring password policies, testing your ability to use PAM to enhance authentication security.
 
@@ -26,6 +26,7 @@
     [Chapter 4 "Users, Passwords, and Authentication": Garfinkel, S. Spafford, G. and Schwartz, A. (2003), Practical Unix and Internet Security, O'Reilly. (ISBN-10: 0596003234)](https://www-dawsonera-com.ezproxy.leedsbeckett.ac.uk/abstract/9781449310325)
 
   </description>
+  <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/systems_security/2-pam/</lab_sheet_url>
 
   <type>ctf-lab</type>
   <type>hackerbot-lab</type>
@@ -291,18 +292,6 @@
     <utility module_path=".*/hash_tools"/>
     <utility module_path=".*/pam_modules"/>
 
-    <utility module_path=".*/iceweasel">
-      <input into="accounts">
-        <datastore>user_accounts_desktop</datastore>
-      </input>
-      <input into="autostart">
-        <value>true</value>
-      </input>
-      <input into="start_page">
-        <datastore access="2">IP_addresses</datastore>
-      </input>
-    </utility>
-
     <utility module_path=".*/pidgin">
       <input into="server_ip">
         <datastore access="2">IP_addresses</datastore>
@@ -419,7 +408,10 @@
       <input into="ssh_key_pair">
         <datastore>hackerbot_key</datastore>
       </input>
-      <input into="hackerbot_configs" into_datastore="hackerbot_instructions">
+      <input into="externally_hosted_lab_sheet">
+        <value>true</value>
+      </input>
+      <input into="hackerbot_configs">
         <generator module_path=".*/hbpam">
           <input into="accounts">
             <datastore>user_accounts_desktop</datastore>

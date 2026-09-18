@@ -13,7 +13,7 @@
     You will learn about the fundamental concepts of Full ACLs, their syntax and usage on Linux systems, and how they differ from traditional Unix file permissions. Through hands-on tasks, you will set ACLs on files, manipulate permissions for specific users, explore the mask entry's role in determining maximum permissions, and understand the behavior of access checks in ACLs. Additionally, you will discover the concept of default ACLs and their impact on newly created files within a directory. By comparing Linux ACLs to Windows ACLs, you'll gain insights into the unique features and nuances of each system, such as inheritance logic and the use of global security identifiers. This lab will equip you with practical skills and knowledge to manage access control effectively in a diverse range of computing environments.
 
     # Hackerbot and CTF challenges
-    This is a Hackerbot lab. The labsheet is available once you claim a set of VMs. Work through the labsheet, then when prompted interact with Hackerbot.
+    This is a Hackerbot lab. Work through the lab sheet, then when prompted interact with Hackerbot.
 
     The Hackerbot tasks involve creating and managing files and directories using Linux ACLs to control access, allowing specific users to read and write while denying access to others. There is also a file permissions challenge on a server where you take what you've learned over the last few topics to find and exploit a permissions weakness.
 
@@ -23,6 +23,8 @@
     # Reading
     [Grunbacher, Andreas. "POSIX Access Control Lists on Linux." *USENIX Annual Technical Conference*, FREENIX Track. 2003.](https://www.usenix.org/legacy/events/usenix03/tech/freenix03/full_papers/gruenbacher/gruenbacher.pdf)
   </description>
+
+  <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/systems_security/6-facls/</lab_sheet_url>
 
   <type>ctf-lab</type>
   <type>hackerbot-lab</type>
@@ -229,18 +231,6 @@
     <utility module_path=".*/hash_tools"/>
     <utility module_path=".*/pam_modules"/>
 
-    <utility module_path=".*/iceweasel">
-      <input into="accounts">
-        <datastore>user_accounts_desktop</datastore>
-      </input>
-      <input into="autostart">
-        <value>true</value>
-      </input>
-      <input into="start_page">
-        <datastore access="2">IP_addresses</datastore>
-      </input>
-    </utility>
-
     <utility module_path=".*/pidgin">
       <input into="server_ip">
         <datastore access="2">IP_addresses</datastore>
@@ -389,7 +379,10 @@
       <input into="ssh_key_pair">
         <datastore>hackerbot_key</datastore>
       </input>
-      <input into="hackerbot_configs" into_datastore="hackerbot_instructions">
+      <input into="externally_hosted_lab_sheet">
+        <value>true</value>
+      </input>
+      <input into="hackerbot_configs">
         <generator module_path=".*/hb_facls">
           <input into="accounts">
             <datastore>user_accounts_desktop</datastore>

@@ -11,7 +11,7 @@
     Sandboxing involves restricting the capabilities of individual programs or groups of programs, minimizing the potential damage a rogue program can inflict on a system. This lab focuses on container-based sandboxes and the use of chroot. You will learn how to create a chroot environment, effectively isolating a set of programs within a directory, and run commands inside this sandbox. Furthermore, the lab introduces you to Docker, a popular tool that builds upon the principles of chroot and adds features to automate the creation and deployment of containerized operating systems and applications. You will explore the concept of Docker images as reusable base environments and containers as instances of these images. You will create and manage containers, observe the speed and efficiency of containerization compared to traditional chroot, and analyze the level of isolation Docker provides. This lab equips you with practical knowledge of sandboxing and isolation.
 
     # Hackerbot and CTF challenges
-    This is a Hackerbot lab. The labsheet is available once you claim a set of VMs. Work through the labsheet, then when prompted interact with Hackerbot.
+    This is a Hackerbot lab. Work through the lab sheet, then when prompted interact with Hackerbot.
 
     You need to find a way into then escape to root a docker container and a chroot container. The flags are stored in /root/ on the two VMs but you first need to find your way in (try a port scan and try connecting to open ports), and then escape confinement.
 
@@ -22,8 +22,10 @@
     [Z. C. Schreuders, T. McGill, and C. Payne, "The State of the Art of Application Restrictions and Sandboxes: A Survey of Application-oriented Access Controls and their Shortfalls," Computers and Security, Volume 32, Elsevier B.V., 2013. DOI: 10.1016/j.cose.2012.09.007](http://z.cliffe.schreuders.org/publications/Computers&amp;Security%20-%20The%20State%20of%20the%20Art%20of%20Application%20Restrictions%20and%20Sandboxes%20-%20Author%20Version.pdf)
 
     # Lab
-    This is a Hackerbot lab. The labsheet is available once you claim a set of VMs. Work through the labsheet, then when prompted interact with Hackerbot.
+    This is a Hackerbot lab. Work through the lab sheet, then when prompted interact with Hackerbot.
   </description>
+
+  <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/systems_security/7-containers/</lab_sheet_url>
 
   <type>ctf-lab</type>
   <type>hackerbot-lab</type>
@@ -191,18 +193,6 @@
     <utility module_path=".*/handy_cli_tools"/>
     <utility module_path=".*/nmap"/>
 
-    <utility module_path=".*/iceweasel">
-      <input into="accounts">
-        <datastore>accounts</datastore>
-      </input>
-      <input into="autostart">
-        <value>true</value>
-      </input>
-      <input into="start_page">
-        <datastore access="1">IP_addresses</datastore>
-      </input>
-    </utility>
-
     <utility module_path=".*/pidgin">
       <input into="server_ip">
         <datastore access="1">IP_addresses</datastore>
@@ -254,10 +244,13 @@
     <service type="httpd"/>
 
     <utility module_path=".*/hackerbot">
+      <input into="externally_hosted_lab_sheet">
+        <value>true</value>
+      </input>
       <input into="ssh_key_pair">
         <datastore>hackerbot_key</datastore>
       </input>
-      <input into="hackerbot_configs" into_datastore="hackerbot_instructions">
+      <input into="hackerbot_configs">
         <generator module_path=".*/hb_containers">
           <input into="accounts">
             <datastore>accounts</datastore>

@@ -13,7 +13,7 @@
     Throughout this lab, you will learn about user accounts, their attributes, and their association with user and group IDs. You'll also explore the concept of salts in password hashing, understand the strengths and weaknesses of different passwords, and attempt to crack passwords using tools like John the Ripper. Practical tasks include examining the system's /etc/passwd and /etc/group files, changing user identities, and analyzing the /etc/shadow file to understand password storage. By actively engaging in these activities, you will gain a comprehensive understanding of authentication processes and the key factors that contribute to securing user identities in Unix/Linux systems.
 
     # Hackerbot and CTF challenges
-    This is a Hackerbot lab. The labsheet is available once you claim a set of VMs. Work through the labsheet, then when prompted interact with Hackerbot.
+    This is a Hackerbot lab. Work through the lab sheet, then when prompted interact with Hackerbot.
 
     The Hackerbot tasks in this lab involve configuring new users and group membership. Then you will attempt to crack the passwords of users on the desktop VM whose user IDs (UIDs) are higher than 1001. After successfully cracking passwords, you will use these credentials to SSH into the separate server VM, where you will discover flags. This task showcases the practical implications of password security and cracking.
 
@@ -23,6 +23,8 @@
     # Reading
     [Chapter 11 "Authentication": Bishop, M. (2004), Introduction to Computer Security, Addison-Wesley. (ISBN-10:  0321247442)](https://my.leedsbeckett.ac.uk/bbcswebdav/pid-2221598-dt-content-rid-4451698_1/institution/Online%20Learning/AET/CT/MSc%20Computer%20Security/Principles%20of%20Digital%20Security/Readings/Week%205/DCS-85139%20%281%29.pdf)
   </description>
+
+  <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/systems_security/1-authentication/</lab_sheet_url>
 
   <type>ctf-lab</type>
   <type>hackerbot-lab</type>
@@ -242,18 +244,6 @@
     <utility module_path=".*/handy_cli_tools"/>
     <utility module_path=".*/hash_tools"/>
 
-    <utility module_path=".*/iceweasel">
-      <input into="accounts">
-        <datastore>user_accounts_desktop</datastore>
-      </input>
-      <input into="autostart">
-        <value>true</value>
-      </input>
-      <input into="start_page">
-        <datastore access="2">IP_addresses</datastore>
-      </input>
-    </utility>
-
     <utility module_path=".*/pidgin">
       <input into="server_ip">
         <datastore access="2">IP_addresses</datastore>
@@ -394,7 +384,10 @@
       <input into="ssh_key_pair">
         <datastore>hackerbot_key</datastore>
       </input>
-      <input into="hackerbot_configs" into_datastore="hackerbot_instructions">
+      <input into="externally_hosted_lab_sheet">
+        <value>true</value>
+      </input>
+      <input into="hackerbot_configs">
         <generator module_path=".*/hbauthentication">
           <input into="accounts">
             <datastore>user_accounts_desktop</datastore>
@@ -429,18 +422,6 @@
     <utility module_path=".*/metasploit_framework"/>
     <utility module_path=".*/handy_cli_tools"/>
     <utility module_path=".*/nmap"/>
-
-    <utility module_path=".*/iceweasel">
-      <input into="accounts">
-        <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
-      </input>
-      <input into="autostart">
-        <value>true</value>
-      </input>
-      <input into="start_page">
-        <datastore access="2">IP_addresses</datastore>
-      </input>
-    </utility>
 
     <utility module_path=".*/hackerbot_client">
       <input into="ssh_key_pair">

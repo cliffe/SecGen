@@ -11,8 +11,10 @@
 
     Throughout this lab, you will have the opportunity to complete a series of tasks and challenges. These practical exercises will not only help you understand the underlying principles of AES but also equip you with the skills to apply this encryption technique to real-world scenarios, ensuring the security and confidentiality of your data.
 
-    This is a Hackerbot lab. The labsheet is available once you claim a set of VMs. Work through the labsheet, then when prompted interact with Hackerbot.
+    This is a Hackerbot lab. Work through the labsheet, then when prompted interact with Hackerbot.
   </description>
+
+  <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/cyber_security_landscape/6-symmetric-enc-aes/</lab_sheet_url>
 
   <type>ctf-lab</type>
   <type>hackerbot-lab</type>
@@ -90,18 +92,6 @@
     <utility module_path=".*/hash_tools"/>
     <utility module_path=".*/python_crypto_libs"/>
 
-    <utility module_path=".*/iceweasel">
-      <input into="accounts">
-        <datastore>accounts</datastore>
-      </input>
-      <input into="autostart">
-        <value>true</value>
-      </input>
-      <input into="start_page">
-        <datastore access="1">IP_addresses</datastore>
-      </input>
-    </utility>
-
     <utility module_path=".*/pidgin">
       <input into="server_ip">
         <datastore access="1">IP_addresses</datastore>
@@ -137,7 +127,10 @@
       <input into="ssh_key_pair">
         <datastore>hackerbot_key</datastore>
       </input>
-      <input into="hackerbot_configs" into_datastore="hackerbot_instructions">
+      <input into="externally_hosted_lab_sheet">
+        <value>true</value>
+      </input>
+      <input into="hackerbot_configs">
         <generator module_path=".*/symmetric_enc_aes">
           <input into="accounts">
             <datastore>accounts</datastore>

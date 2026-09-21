@@ -11,8 +11,9 @@
 
     Throughout this lab, you will learn the key concepts and procedures related to RSA encryption. You will start by generating RSA key pairs and performing encryption and decryption operations using both OpenSSL and Python. You will pick prime numbers, calculate modulus and phi(N), select encryption and decryption keys, and apply these concepts to encrypt and decrypt messages. The lab includes various Hackerbot challenges that you will complete, such as creating key pairs, encrypting and decrypting messages, and solving encryption-related quizzes. These practical exercises will deepen your understanding of RSA encryption and help you gain hands-on experience in using this cryptographic technique to secure information and communication.
 
-    This is a Hackerbot lab. The labsheet is available once you claim a set of VMs. Work through the labsheet, then when prompted interact with Hackerbot.
+    This is a Hackerbot lab. Work through the lab sheet, then when prompted interact with Hackerbot.
   </description>
+  <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/cyber_security_landscape/7-asymmetric-enc-rsa/</lab_sheet_url>
 
   <type>ctf-lab</type>
   <type>hackerbot-lab</type>
@@ -95,18 +96,6 @@
     <utility module_path=".*/hash_tools"/>
     <utility module_path=".*/python_crypto_libs"/>
 
-    <utility module_path=".*/iceweasel">
-      <input into="accounts">
-        <datastore>accounts</datastore>
-      </input>
-      <input into="autostart">
-        <value>true</value>
-      </input>
-      <input into="start_page">
-        <datastore access="1">IP_addresses</datastore>
-      </input>
-    </utility>
-
     <utility module_path=".*/pidgin">
       <input into="server_ip">
         <datastore access="1">IP_addresses</datastore>
@@ -142,7 +131,10 @@
       <input into="ssh_key_pair">
         <datastore>hackerbot_key</datastore>
       </input>
-      <input into="hackerbot_configs" into_datastore="hackerbot_instructions">
+      <input into="externally_hosted_lab_sheet">
+        <value>true</value>
+      </input>
+      <input into="hackerbot_configs">
         <generator module_path=".*/asymmetric_enc_rsa">
           <input into="accounts">
             <datastore>accounts</datastore>

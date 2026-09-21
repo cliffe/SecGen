@@ -16,7 +16,6 @@ class REMACoconut < HackerbotConfigGenerator
     self.local_dir = File.expand_path('../../', __FILE__)
     self.templates_path = "#{self.local_dir}/templates/"
     self.config_template_path = "#{self.local_dir}/templates/rema_coconut.xml.erb"
-    self.html_template_path = "#{self.local_dir}/templates/labsheet.html.erb"
     self.desktop_ip = ''
     self.hackerbot_server_ip = ''
     self.victim_server_ip = ''

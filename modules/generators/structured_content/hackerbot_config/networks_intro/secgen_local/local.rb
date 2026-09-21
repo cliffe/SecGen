@@ -12,7 +12,6 @@ class NetworksIntro < HackerbotConfigGenerator
     self.local_dir = File.expand_path('../../',__FILE__)
     self.templates_path = "#{self.local_dir}/templates/"
     self.config_template_path = "#{self.local_dir}/templates/lab.xml.erb"
-    self.html_template_path = "#{self.local_dir}/templates/labsheet.html.erb"
 
     self.ip_addresses = []
   end

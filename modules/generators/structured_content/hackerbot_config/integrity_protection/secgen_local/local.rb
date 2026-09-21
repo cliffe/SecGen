@@ -11,7 +11,6 @@ class Integrity1 < HackerbotConfigGenerator
     self.local_dir = File.expand_path('../../',__FILE__)
     self.templates_path = "#{self.local_dir}/templates/"
     self.config_template_path = "#{self.local_dir}/templates/integrity_lab.xml.erb"
-    self.html_template_path = "#{self.local_dir}/templates/labsheet.html.erb"
   end
 
 end

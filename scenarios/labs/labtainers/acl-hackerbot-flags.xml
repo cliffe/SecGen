@@ -7,6 +7,7 @@
   <name>Labtainers lab: acl</name>
   <author>Z. Cliffe Schreuders</author>
   <description>A Labtainers lab.</description>
+  <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/systems_security/9-labtainers-acl/</lab_sheet_url>
 
   <type>ctf-lab</type>
   <type>lab-sheet</type>
@@ -107,18 +108,6 @@
     </utility>
     <utility module_path=".*/handy_cli_tools"/>
 
-		<utility module_path=".*/iceweasel">
-			<input into="accounts">
-				<datastore>accounts</datastore>
-			</input>
-			<input into="autostart">
-				<value>true</value>
-			</input>
-			<input into="start_page">
-				<datastore access="1">IP_addresses</datastore>
-			</input>
-		</utility>
-
 		<utility module_path=".*/pidgin">
 			<input into="server_ip">
 				<datastore access="1">IP_addresses</datastore>
@@ -170,7 +159,10 @@
 		<service type="httpd"/>
 
 		<utility module_path=".*/hackerbot">
-			<input into="hackerbot_configs" into_datastore="hackerbot_instructions">
+			<input into="externally_hosted_lab_sheet">
+				<value>true</value>
+			</input>
+			<input into="hackerbot_configs">
 				<generator module_path=".*/hb_labtainer">
 					<input into="accounts">
 						<datastore>accounts</datastore>

@@ -12,6 +12,8 @@
     into the internal network. Builds on the network topology from the Network Security Fundamentals lab.
   </description>
 
+  <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/network_security/2-dns-tls-vpns/</lab_sheet_url>
+
   <type>ctf-lab</type>
   <type>lab-sheet</type>
   <difficulty>intermediate</difficulty>
@@ -142,18 +144,6 @@
       <!--    Disable NTP to minimise noise in pcap       -->
       <input into="disable_ntp">
         <value>true</value>
-      </input>
-    </utility>
-
-    <utility module_path=".*/iceweasel">
-      <input into="accounts">
-        <datastore>account</datastore>
-      </input>
-      <input into="autostart">
-        <value>true</value>
-      </input>
-      <input into="start_page">
-        <datastore access="6">IP_addresses</datastore>
       </input>
     </utility>
 
@@ -681,7 +671,10 @@
       <input into="ssh_key_pair">
         <datastore>hackerbot_key</datastore>
       </input>
-      <input into="hackerbot_configs" into_datastore="hackerbot_instructions">
+      <input into="externally_hosted_lab_sheet">
+        <value>true</value>
+      </input>
+      <input into="hackerbot_configs">
         <generator module_path=".*/networks_dns_tls_vpn">
           <input into="accounts">
             <datastore>account</datastore>

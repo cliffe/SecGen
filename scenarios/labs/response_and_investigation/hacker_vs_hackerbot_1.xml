@@ -7,6 +7,7 @@
   <name>Hacker vs Hackerbot 1</name>
   <author>Z. Cliffe Schreuders</author>
   <description>A Hackerbot test.</description>
+  <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/response_and_investigation/10-hacker-vs-hackerbot-1/</lab_sheet_url>
 
   <type>ctf-test</type>
   <type>hackerbot-test</type>
@@ -145,18 +146,6 @@
     <utility module_path=".*/nmap"/>
     <utility module_path=".*/wireshark"/>
 
-    <utility module_path=".*/iceweasel">
-      <input into="accounts">
-        <datastore>accounts</datastore>
-      </input>
-      <input into="autostart">
-        <value>true</value>
-      </input>
-      <input into="start_page">
-        <datastore access="2">IP_addresses</datastore>
-      </input>
-    </utility>
-
     <utility module_path=".*/pidgin">
       <input into="server_ip">
         <datastore access="2">IP_addresses</datastore>
@@ -219,10 +208,13 @@
     <service type="httpd"/>
 
     <utility module_path=".*/hackerbot">
+      <input into="externally_hosted_lab_sheet">
+        <value>true</value>
+      </input>
       <input into="ssh_key_pair">
         <datastore>hackerbot_key</datastore>
       </input>
-      <input into="hackerbot_configs" into_datastore="hackerbot_instructions">
+      <input into="hackerbot_configs">
         <generator module_path=".*/hacker_vs_hackerbot_1">
           <input into="accounts">
             <datastore>accounts</datastore>

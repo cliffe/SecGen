@@ -198,7 +198,7 @@
     <utility module_path=".*/nmap"/>
 
     <service type="ftp"/>
-    <!-- <service type="ircd"/> -->
+    <!-- <service module_path=".*/ergochat"/> -->
     <service type="httpd"/>
 
     <vulnerability module_path=".*/ssh_root_login">

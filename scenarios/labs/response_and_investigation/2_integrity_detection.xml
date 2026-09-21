@@ -224,7 +224,7 @@ Diner's Club  3000 0000 0000 04</value>
     <system_name>hackerbot_server</system_name>
     <base distro="Kali" name="MSF"/>
 
-    <service type="ircd"/>
+    <service module_path=".*/ergochat"/>
 
     <utility module_path=".*/metasploit_framework"/>
     <utility module_path=".*/nmap"/>

@@ -1,6 +1,6 @@
 ---
 name: convert_hackerbot_to_hacktivity_lab_sheets
-description: Convert a SecGen Hackerbot lab sheet (a hackerbot_config generator's ERB templates, rendered and hosted by the hackerbot module's Apache) into a static, GitHub-hosted Hacktivity lab sheet under HacktivityLabSheets/_labs/. Use when asked to "convert this hackerbot lab", "move the lab sheet to Hacktivity", "de-parameterise a lab sheet", or when a scenario of type hackerbot-lab needs its sheet published outside the VM.
+description: Convert a SecGen Hackerbot lab sheet (a hackerbot_config generator's ERB templates, historically rendered and hosted locally by Apache on the hackerbot_server VM) into a static, GitHub-hosted Hacktivity lab sheet under HacktivityLabSheets/_labs/. Use when asked to "convert this hackerbot lab", "move the lab sheet to Hacktivity", "de-parameterise a lab sheet", or when a scenario of type hackerbot-lab needs its sheet published outside the VM. As of this writing every existing hackerbot_config generator has been converted and Apache has been retired from the module entirely; this skill now applies to any newly authored hackerbot lab.
 ---
 
 # Converting a Hackerbot lab sheet to a Hacktivity lab sheet
@@ -91,14 +91,6 @@ the bot-facing text that the synthesised blocks quote.
 The footer (`tutorial_info/footer`) is emitted after **all** attacks. Keep it
 there — it is easy to slip a footer section in next to thematically-related
 content and split it across the last attack.
-
-> Optional cross-check: `scripts/render_labsheet.rb <generator dir>` renders the
-> sheet to markdown with sentinel values (`MAINUSER`, `SECONDUSER`, …) if you
-> want to read it as a student would, or to confirm you have not missed a
-> section. It needs `RBENV_VERSION=2.7.8` — the generators use the three-argument
-> `ERB.new(str, 0, '<>-')` removed in Ruby 3.1, and `redcarpet` is absent from
-> the 3.2 rbenv shim, so the default Ruby fails on both counts. The conversion
-> does not depend on this step.
 
 ## Step 2 — de-parameterise
 
@@ -279,60 +271,29 @@ students at the VM-hosted copy:
   scenario tables link the sheet automatically once it is set.
 - Update the `<description>`'s "The labsheet is available once you claim a set
   of VMs" sentence, which is no longer true.
-- **Stop the scenario emitting `instructions.html`.** Delete the
-  `into_datastore="hackerbot_instructions"` attribute, keeping `into=`:
+- If the `hackerbot_configs` input still carries `into_datastore="hackerbot_instructions"`
+  from before the Apache retirement, drop that attribute, keeping `into=`:
 
   ```xml
   <input into="hackerbot_configs">
   ```
 
-  That datastore has exactly one consumer
-  (`lib/output/project_files_creator.rb:182`), which writes the generated sheet
-  to the project directory as `instructions.html`. Hacktivity globs for that
-  file after provisioning (`app/jobs/read_secgen_flags_job.rb`), stores it on
-  `vm_set.instructions`, and renders it as an **auto-opening** iframe next to
-  the VM set. Leave the attribute in place and a converted lab shows two
-  "Instructions" buttons — the Hacktivity sheet and the stale generated one —
-  with the stale one opening by default. Removing the attribute does not affect
-  the bot: the config still reaches the module through `into=`.
-
-  Note this only affects newly provisioned VM sets. `vm_set.instructions` is
-  persisted on first read, so VM sets already built keep their copy until the
-  row is cleared.
-- **Tell the hackerbot module the sheet has moved.** Add the
-  `externally_hosted_lab_sheet` input to the
-  `<utility module_path=".*/hackerbot">` block:
-
-  ```xml
-  <utility module_path=".*/hackerbot">
-    <input into="externally_hosted_lab_sheet">
-      <value>true</value>
-    </input>
-    ...
-  ```
-
-  Apache keeps running (other labs still need it), but for this lab it serves a
-  short placeholder instead of a full second copy of the sheet — see
-  `modules/utilities/unix/hackerbot/templates/lab_sheet_moved.html.erb`. The
-  placeholder deliberately carries no URL: almost nobody reaches it, since a
-  converted scenario no longer points a browser at the hackerbot_server, and a
-  URL there would be a second copy to keep in step for no real benefit. It says
-  the sheet is on Hacktivity and that Hackerbot still works.
-
-  The input defaults to `false`, so unconverted scenarios are unaffected.
+  Nothing consumes that datastore any more — Apache, `html_lab_sheet`, and the
+  `instructions.html` project file it used to produce have all been retired
+  from the hackerbot module. The attribute is inert either way, but a new
+  conversion shouldn't add it.
+- Do **not** add an `externally_hosted_lab_sheet` input. That flag existed to
+  choose between a full locally-hosted copy of the sheet and a short
+  placeholder page; both code paths, and the flag itself, have been removed
+  from the hackerbot module along with Apache. `<service type="httpd"/>` is no
+  longer part of the hackerbot module's requirements either.
 - Leave the bot config alone. Only the sheet moves; attacks, conditions and
   flags stay in SecGen.
-- Do **not** remove `<service type="httpd"/>` or the hackerbot module's
-  `/var/www/labs` wiring for a single converted lab — other labs still use it.
-  That cleanup only becomes safe once every `hackerbot_config` generator has
-  been converted. When that day comes, the whole lab-sheet apparatus retires
-  together: the Apache vhost in `hackerbot/manifests/config.pp`, the
-  `html_lab_sheet` half of the generator output, `generate_lab_sheet` and
-  redcarpet in `lib/objects/local_hackerbot_config_generator.rb`, and the
-  `tutorial`/`tutorial_info` elements in the ERB templates. The bot itself
-  never reads any of them — `hackerbot.rb` has no reference to `tutorial`, and
-  its schema validation is commented out — so they are lab-sheet scaffolding
-  only.
+- The `tutorial`/`tutorial_info` elements in the ERB templates are unused
+  scaffolding now (the bot never read them — `hackerbot.rb` has no reference
+  to `tutorial`, and its schema validation is commented out) but were left in
+  place across the ~28 generators; removing them per-generator is a separate,
+  optional cleanup, not part of converting a single lab.
 
 ## Report at the end
 

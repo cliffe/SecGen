@@ -1,3 +1,0 @@
-Options +Indexes
-IndexIgnore css js
-IndexOptions FancyIndexing HTMLTable

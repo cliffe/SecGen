@@ -179,13 +179,6 @@ class ProjectFilesCreator
       write_data_to_file(pass_notes, pfile)
     end
 
-    if $datastore.has_key? "hackerbot_instructions"
-      jfile = "#{@out_dir}/instructions.html"
-      Print.std "Saving instructions: #{jfile}"
-      html = JSON.parse($datastore["hackerbot_instructions"][0])["html_lab_sheet"]
-      write_data_to_file(html, jfile)
-    end
-
     # Create the CTFd zip file for import
     ctfdfile = "#{@out_dir}/CTFd_importable.zip"
     Print.std "Creating CTFd configuration: #{ctfdfile}"

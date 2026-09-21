@@ -15,15 +15,6 @@ class hackerbot::install {
     group   => 'root',
   }
 
-  file { '/var/www/labs':
-    ensure  => directory,
-    recurse => true,
-    source  => 'puppet:///modules/hackerbot/www',
-    mode    => '0666',
-    owner   => 'root',
-    group   => 'root',
-  }
-
   # System dependencies required for nokogiri and other gems
   $system_packages = [
     'zlibc',

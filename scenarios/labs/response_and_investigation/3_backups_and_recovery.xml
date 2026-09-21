@@ -269,9 +269,6 @@
     <service type="httpd"/>
 
     <utility module_path=".*/hackerbot">
-      <input into="externally_hosted_lab_sheet">
-        <value>true</value>
-      </input>
       <input into="ssh_key_pair">
         <datastore>hackerbot_key</datastore>
       </input>

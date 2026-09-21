@@ -2,18 +2,8 @@ class hackerbot::config{
   require hackerbot::install
 
   $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
-  $port = $secgen_parameters['port'][0]
   $ssh_key_pair  = parsejson($secgen_parameters['ssh_key_pair'][0])
   $private_key   = $ssh_key_pair['private']
-
-
-  # True when this lab's sheet is published outside the VMs (Hacktivity); the
-  # locally hosted copy is then replaced with a short placeholder.
-  $externally_hosted_raw = $secgen_parameters['externally_hosted_lab_sheet'] ? {
-    undef   => 'false',
-    default => $secgen_parameters['externally_hosted_lab_sheet'][0],
-  }
-  $externally_hosted_lab_sheet = str2bool($externally_hosted_raw)
 
   $hackerbot_xml_configs = []
   $hackerbot_lab_sheets = []
@@ -30,27 +20,6 @@ class hackerbot::config{
       mode   => '0600',
       owner => 'root',
       group => 'root',
-    }
-
-    if $secgen_parameters['hackerbot_configs'].length == 1 {
-      $htmlfilename = "index.html"
-    } else {
-      $htmlfilename = "lab_part_$counter.html"
-    }
-
-    # The generated sheet is still built (it is embedded in the same JSON as the
-    # bot config); for converted labs we simply do not publish it, so there is
-    # only one lab sheet a student can find.
-    if $externally_hosted_lab_sheet {
-      file { "/var/www/labs/$htmlfilename":
-        ensure  => present,
-        content => template('hackerbot/lab_sheet_moved.html.erb'),
-      }
-    } else {
-      file { "/var/www/labs/$htmlfilename":
-        ensure  => present,
-        content => $parsed_pair['html_lab_sheet'],
-      }
     }
 
   }
@@ -72,23 +41,4 @@ class hackerbot::config{
       content => $private_key,
       require => File['/opt/hackerbot/keys'],
     }
-
-
-  class { '::apache':
-    default_vhost => false,
-    # overwrite_ports => false,
-  }
-  apache::vhost { 'vhost.labs.com':
-    port    => "$port",
-    docroot => '/var/www/labs',
-    notify => Tidy['hb remove default site']
-  }
-
-  ensure_resource('tidy','hb remove default site', {'path'=>'/etc/apache2/sites-enabled/000-default.conf'})
-
-  # not sure why the new kali apache module doesn't start on boot, this fixes it
-  exec { 'hackerbot-apache2-systemd-reload':
-    command     => 'systemctl daemon-reload; systemctl enable apache2',
-    path        => [ '/usr/bin', '/bin', '/usr/sbin' ],
-  }
 }

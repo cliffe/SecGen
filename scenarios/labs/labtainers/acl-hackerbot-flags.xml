@@ -159,9 +159,6 @@
 		<service type="httpd"/>
 
 		<utility module_path=".*/hackerbot">
-			<input into="externally_hosted_lab_sheet">
-				<value>true</value>
-			</input>
 			<input into="hackerbot_configs">
 				<generator module_path=".*/hb_labtainer">
 					<input into="accounts">

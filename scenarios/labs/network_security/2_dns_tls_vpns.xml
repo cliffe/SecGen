@@ -671,9 +671,6 @@
       <input into="ssh_key_pair">
         <datastore>hackerbot_key</datastore>
       </input>
-      <input into="externally_hosted_lab_sheet">
-        <value>true</value>
-      </input>
       <input into="hackerbot_configs">
         <generator module_path=".*/networks_dns_tls_vpn">
           <input into="accounts">

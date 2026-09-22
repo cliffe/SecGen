@@ -222,12 +222,21 @@ int main()
     <utility module_path=".*/handy_cli_tools"/>
     <utility module_path=".*/gcc"/>
 
-    <utility module_path=".*/pidgin">
-      <input into="server_ip">
+    <utility module_path=".*/hosts">
+      <input into="hosts">
+        <value>hackerbot</value>
+      </input>
+      <input into="IP_addresses">
         <datastore access="2">IP_addresses</datastore>
       </input>
+    </utility>
+
+    <utility module_path=".*/iceweasel">
       <input into="accounts">
         <datastore access="0">user_accounts_desktop</datastore>
+      </input>
+      <input into="start_page">
+        <value>hackerbot:8080</value>
       </input>
     </utility>
 
@@ -353,6 +362,15 @@ int main()
     <base distro="Kali" name="MSF"/>
 
     <service module_path=".*/ergochat"/>
+
+    <utility module_path=".*/hackerbot_webclient">
+      <input into="username">
+        <datastore access="0">usernames</datastore>
+      </input>
+      <input into="irc_server_ip">
+        <value>hackerbot</value>
+      </input>
+    </utility>
 
     <utility module_path=".*/metasploit_framework"/>
     <utility module_path=".*/nmap"/>

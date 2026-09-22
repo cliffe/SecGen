@@ -84,7 +84,18 @@
     <utility module_path=".*/dead_image"/>
 
 
-    <!-- Firefox/Iceweasel is needed in this lab to view Autopsy (http://localhost:9999/autopsy) and browse file:// evidence -->
+    <!-- TODO: get it to all run on Kali without the need for the desktop vm just to hold the evidence files -->
+    <!-- This does get HB and the hackerbot web client working, but HB doesn't have the creds to access any evidence files stored on the kali vm -->
+    <utility module_path=".*/hosts">
+      <input into="hosts">
+        <value>hackerbot</value>
+      </input>
+      <input into="IP_addresses">
+        <datastore access="1">IP_addresses</datastore>
+      </input>
+    </utility>
+
+    <!-- Firefox/Iceweasel is needed in this lab to view Autopsy (http://localhost:9999/autopsy) and browse file:// evidence, plus hackerbot chat -->
     <utility module_path=".*/iceweasel">
       <input into="accounts">
         <datastore>kali_account</datastore>
@@ -92,16 +103,8 @@
       <input into="autostart">
         <value>true</value>
       </input>
-    </utility>
-
-    <!-- TODO: get it to all run on Kali without the need for the desktop vm just to hold the evidence files -->
-    <!-- This does get HB and pidgin working, but HB doesn't have the creds to access any evidence files stored on the kali vm -->
-    <utility module_path=".*/pidgin">
-      <input into="server_ip">
-        <datastore access="1">IP_addresses</datastore>
-      </input>
-      <input into="accounts">
-        <datastore>kali_account</datastore>
+      <input into="start_page">
+        <value>hackerbot:8080</value>
       </input>
     </utility>
 
@@ -124,6 +127,15 @@
     <base distro="Kali" name="MSF"/>
 
     <service module_path=".*/ergochat"/>
+
+    <utility module_path=".*/hackerbot_webclient">
+      <input into="username">
+        <datastore access_json="['username']">kali_account</datastore>
+      </input>
+      <input into="irc_server_ip">
+        <value>hackerbot</value>
+      </input>
+    </utility>
 
     <utility module_path=".*/metasploit_framework"/>
     <utility module_path=".*/handy_cli_tools"/>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>Hackerbot</title>
 <style>
-  body { font-family: sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; background: #1e1e1e; color: #ddd; }
+  body { font-family: sans-serif, "Noto Color Emoji"; margin: 0; display: flex; flex-direction: column; height: 100vh; background: #1e1e1e; color: #ddd; }
   #main { flex: 1; display: flex; min-height: 0; }
   #chatarea { flex: 1; display: flex; flex-direction: column; min-width: 0; }
   #log { flex: 1; overflow-y: auto; padding: 1em; }
@@ -28,9 +28,12 @@
   #cmdPopup button { text-align: left; background: none; border: none; color: #ddd; padding: 0.5em 1em; cursor: pointer; }
   #cmdPopup button:hover { background: #3f3f3f; }
 
-  .flagspan { background: #3a3a1e; border-radius: 3px; padding: 0 0.2em; }
-  .copybtn { background: none; border: none; cursor: pointer; opacity: 0; padding: 0 0.2em; font-size: 0.9em; }
-  .flagspan:hover .copybtn { opacity: 1; }
+  .flagspan { background: #3a3a1e; border-radius: 3px; padding: 0 0.2em; cursor: pointer; }
+  .copybtn { background: none; border: none; cursor: pointer; padding: 0 0.2em; font-size: 0.9em; }
+  .copybtn::before { content: '🏳️'; }
+  .flagspan:hover .copybtn::before { content: '📋'; }
+  .copybtn.copied { color: #4caf50; font-weight: bold; }
+  .copybtn.copied::before, .flagspan:hover .copybtn.copied::before { content: '✓'; }
 </style>
 </head>
 <body>

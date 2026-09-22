@@ -6,6 +6,24 @@
   var FLAG_RE = /(flag\{[^}]*\})/g;
   var FLAG_TEST_RE = /^flag\{[^}]*\}$/;
 
+  // Longest/most specific patterns first, so e.g. :-) is matched before :).
+  var EMOTICONS = [
+    [/:-\)/g, '🙂'], [/:\)/g, '🙂'],
+    [/:-\(/g, '☹️'], [/:\(/g, '☹️'],
+    [/:-D/g, '😀'], [/:D/g, '😀'],
+    [/:-P/gi, '😛'], [/:P/gi, '😛'],
+    [/;-\)/g, '😉'], [/;\)/g, '😉'],
+    [/B\)/g, '😎'], [/8\)/g, '😎'],
+    [/:-O/gi, '😮'], [/:O/gi, '😮'],
+    [/<3/g, '❤️']
+  ];
+
+  function applyEmoticons(text) {
+    return EMOTICONS.reduce(function (s, pair) {
+      return s.replace(pair[0], pair[1]);
+    }, text);
+  }
+
   var logEl = document.getElementById('log');
   var sidebarEl = document.getElementById('sidebar');
   var msgInput = document.getElementById('msg');
@@ -63,11 +81,36 @@
     });
   }
 
+  // navigator.clipboard needs a secure context (https or localhost); this
+  // page is served over plain http on a lab IP, so it's undefined there.
+  // Fall back to a hidden textarea + execCommand('copy') in that case.
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.top = '-1000px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try {
+        document.execCommand('copy') ? resolve() : reject();
+      } catch (e) {
+        reject(e);
+      } finally {
+        document.body.removeChild(ta);
+      }
+    });
+  }
+
   // Renders message text as text nodes, except for flag{...} matches, which
   // get their own span with a hover-to-copy button. Never uses innerHTML
   // with message content, since that content comes from other IRC users.
   function appendFlaggedText(el, text) {
-    var parts = text.split(FLAG_RE);
+    var parts = applyEmoticons(text).split(FLAG_RE);
     parts.forEach(function (part) {
       if (!part) {
         return;
@@ -84,15 +127,17 @@
         copyBtn.type = 'button';
         copyBtn.className = 'copybtn';
         copyBtn.title = 'Copy flag';
-        copyBtn.textContent = '📋';
-        copyBtn.addEventListener('click', function (e) {
+        span.appendChild(copyBtn);
+
+        span.addEventListener('click', function (e) {
           e.stopPropagation();
-          navigator.clipboard.writeText(part).then(function () {
-            copyBtn.textContent = '✓';
-            setTimeout(function () { copyBtn.textContent = '📋'; }, 1200);
+          copyText(part).then(function () {
+            copyBtn.classList.add('copied');
+            setTimeout(function () {
+              copyBtn.classList.remove('copied');
+            }, 1200);
           });
         });
-        span.appendChild(copyBtn);
 
         el.appendChild(span);
       } else {

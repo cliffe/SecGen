@@ -244,12 +244,12 @@
     <utility module_path=".*/handy_cli_tools"/>
     <utility module_path=".*/hash_tools"/>
 
-    <utility module_path=".*/pidgin">
-      <input into="server_ip">
-        <datastore access="2">IP_addresses</datastore>
+    <utility module_path=".*/hackerbot_webclient">
+      <input into="username">
+        <datastore access="0">usernames</datastore>
       </input>
-      <input into="accounts">
-        <datastore access="0">user_accounts_desktop</datastore>
+      <input into="irc_server_ip">
+        <datastore access="2">IP_addresses</datastore>
       </input>
     </utility>
 

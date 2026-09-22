@@ -38,6 +38,13 @@ server:
         # isolated lab network, not the public Internet, so the usual
         # loopback-only recommendation doesn't apply here.
         ":6667":
+
+        # SecGen hackerbot lab: plaintext WebSocket listener, for the
+        # browser-based hackerbot DM client (IRC-over-WebSocket, IRCv3
+        # text.ircv3.net subprotocol). Same isolated-network reasoning as
+        # the plaintext listener above.
+        ":8097":
+            websocket: true
         # Alternately, if you have a TLS certificate issued by a recognized CA,
         # you can configure port 6667 as an STS-only listener that only serves
         # "redirects" to the TLS port, but doesn't allow chat. See the manual

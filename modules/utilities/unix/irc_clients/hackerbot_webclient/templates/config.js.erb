@@ -1,0 +1,3 @@
+var NICK = <%= @username.to_json %>;
+var TARGET = <%= @hackerbot_nick.to_json %>;
+var WS_URL = "ws://" + <%= @irc_server_ip.to_json %> + ":8097/";

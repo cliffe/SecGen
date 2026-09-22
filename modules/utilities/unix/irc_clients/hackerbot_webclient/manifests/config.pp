@@ -8,7 +8,27 @@ class hackerbot_webclient::config {
 
   file { '/opt/hackerbot_webclient/index.html':
     ensure  => file,
-    content => template('hackerbot_webclient/index.html.erb'),
+    source  => 'puppet:///modules/hackerbot_webclient/index.html',
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    require => File['/opt/hackerbot_webclient'],
+  }
+
+  file { '/opt/hackerbot_webclient/app.js':
+    ensure  => file,
+    source  => 'puppet:///modules/hackerbot_webclient/app.js',
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    require => File['/opt/hackerbot_webclient'],
+  }
+
+  # The only templated file: bakes in the per-lab nick/target/server values.
+  # index.html and app.js are static and identical across every deployment.
+  file { '/opt/hackerbot_webclient/config.js':
+    ensure  => file,
+    content => template('hackerbot_webclient/config.js.erb'),
     owner   => 'root',
     group   => 'root',
     mode    => '0644',

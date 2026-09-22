@@ -6,11 +6,12 @@
   <name>Hackerbot Web Client</name>
   <author>Z. Cliffe Schreuders</author>
   <module_license>MIT</module_license>
-  <description>Installs a minimal browser-based IRC client, served locally on the desktop,
-    that connects directly to a private message conversation with hackerbot over ergochat's
-    built-in WebSocket listener. The client's IRC nick is set to the local user's username,
-    and it sends "hello" to the bot automatically as soon as it connects, so the hackerbot
-    conversation starts without the user having to know any IRC commands.
+  <description>Installs a minimal browser-based IRC client, served over HTTP (typically from
+    the hackerbot server itself), that connects directly to a private message conversation
+    with hackerbot over ergochat's built-in WebSocket listener. The client's IRC nick is set
+    to the local user's username, and it sends "hello" to the bot automatically as soon as
+    it connects, so the hackerbot conversation starts without the user having to know any
+    IRC commands.
   </description>
 
   <type>hackerbot_webclient</type>

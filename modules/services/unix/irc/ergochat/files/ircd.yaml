@@ -344,7 +344,16 @@ server:
     # If you disable this, you should probably enable lookup-hostnames in its place.
     ip-cloaking:
         # whether to enable IP cloaking
-        enabled: true
+        #
+        # SecGen hackerbot lab: disabled. hackerbot's get_shell SSHes to
+        # {{chat_ip_address}}, which it fills in from the connecting user's
+        # host as reported by the ircd (m.user.host, via cinch). With cloaking
+        # on, that's a fake pwbs2ui4377257x8.irc-style hostname instead of the
+        # real IP, so hackerbot can never reach the client to get a shell.
+        # This is a closed isolated lab network, so there's no one to hide
+        # IPs from. lookup-hostnames is already disabled above, so clients
+        # are seen by their real numeric IP (mode 2 in the comment above).
+        enabled: false
 
         # whether to use these cloak settings (specifically, `netname` and `num-bits`)
         # to produce unique hostnames for always-on clients. you can enable this even if

@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>act_pedit Kernel Privilege Escalation (pedit_cow)</name>
+  <author>Alix Hiscock</author>
+  <module_license>MIT</module_license>
+  <description>Prepares a host for local privilege escalation through the kernel net/sched act_pedit
+    action. Unprivileged user namespaces are enabled so a local user can gain CAP_NET_ADMIN in a
+    namespace, the act_pedit module is left loadable (not blacklisted), and the vulnerable kernel is
+    held back from being upgraded. A root-owned flag is leaked so the intended escalation can be
+    demonstrated end to end.</description>
+
+  <type>access_control_misconfiguration</type>
+  <privilege>root_rwx</privilege>
+  <access>local</access>
+  <platform>linux</platform>
+
+  <difficulty>high</difficulty>
+
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+
+  <default_input into="strings_to_leak">
+    <generator type="flag_generator"/>
+  </default_input>
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+  </default_input>
+
+  <hint>The kernel exposes act_pedit to unprivileged user namespaces and has been pinned to a
+    vulnerable version. Gain CAP_NET_ADMIN in a user namespace and abuse the tc pedit action.</hint>
+  <solution>Escalate to root via the act_pedit kernel flaw reachable through unprivileged user
+    namespaces, then read the flag from /root.</solution>
+
+  <requires>
+    <module_path>.*/debian_bookworm_desktop_kde_unpatched</module_path>
+  </requires>
+
+  <CyBOK KA="AAA" topic="Authorisation">
+    <keyword>access control</keyword>
+    <keyword>Elevated privileges</keyword>
+    <keyword>Vulnerabilities and attacks on access control misconfigurations</keyword>
+  </CyBOK>
+  <CyBOK KA="OSV" topic="Primitives for Isolation and Mediation">
+    <keyword>Access controls and operating systems</keyword>
+    <keyword>Linux security model</keyword>
+  </CyBOK>
+  <CyBOK KA="SS" topic="Categories of Vulnerabilities">
+    <keyword>CVEs and CWEs</keyword>
+  </CyBOK>
+
+</vulnerability>

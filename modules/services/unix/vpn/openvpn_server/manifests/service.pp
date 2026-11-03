@@ -6,13 +6,13 @@ class openvpn_server::service {
     service { 'openvpn-server@server':
       ensure  => running,
       enable  => true,
-      require => File['/etc/openvpn/server/server.conf'],
+      require => [File['/etc/openvpn/server/server.conf'], Exec['openvpn-server-daemon-reload'], Exec['openvpn-server-sysctl']],
     }
   } else {
     service { 'openvpn-server@server':
       ensure  => stopped,
       enable  => false,
-      require => File['/etc/openvpn/server/server.conf'],
+      require => [File['/etc/openvpn/server/server.conf'], Exec['openvpn-server-daemon-reload'], Exec['openvpn-server-sysctl']],
     }
   }
 }

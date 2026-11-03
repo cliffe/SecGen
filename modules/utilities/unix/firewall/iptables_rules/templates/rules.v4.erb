@@ -1,13 +1,56 @@
-*filter
--P INPUT ACCEPT
--P OUTPUT ACCEPT
-<% @filter_rules.each do |rule| -%>
-  <%= rule %>
+<%
+  # Rules arrive as iptables command arguments (the iptables_rule generators'
+  # output), e.g. '-P FORWARD DROP', '-A FORWARD -s 10.0.1.0/24 -j ACCEPT',
+  # '-t nat -A POSTROUTING -s 10.0.1.0/24 -o ens20 -j MASQUERADE'.
+  # A leading '-t <table>' picks the table (default filter). iptables-restore
+  # does not accept '-P': a policy becomes the chain declaration ':CHAIN POLICY [0:0]'.
+  builtin_chains = {
+    'filter' => %w[INPUT FORWARD OUTPUT],
+    'nat'    => %w[PREROUTING INPUT OUTPUT POSTROUTING],
+    'mangle' => %w[PREROUTING INPUT FORWARD OUTPUT POSTROUTING],
+    'raw'    => %w[PREROUTING OUTPUT],
+  }
+  tables = {}
+  table_for = lambda do |name|
+    tables[name] ||= {
+      'policies' => Hash[(builtin_chains[name] || []).map { |c| [c, 'ACCEPT'] }],
+      'chains'   => [],
+      'rules'    => [],
+    }
+  end
+  # filter and nat are always written, so rules.v4 has the same shape as before
+  table_for.call('filter')
+  table_for.call('nat')
+
+  @rules.each do |raw|
+    rule = raw.to_s.strip
+    next if rule.empty?
+    table_name = 'filter'
+    if rule =~ /\A-t\s+(\S+)\s+(.*)\z/
+      table_name = $1
+      rule = $2
+    end
+    table = table_for.call(table_name)
+    if rule =~ /\A-P\s+(\S+)\s+(\S+)\z/
+      table['policies'][$1] = $2
+    elsif rule =~ /\A-N\s+(\S+)\z/
+      table['chains'] << $1 unless table['chains'].include?($1)
+    else
+      table['rules'] << rule
+    end
+  end
+-%>
+<% tables.each do |name, table| -%>
+*<%= name %>
+<% table['policies'].each do |chain, policy| -%>
+:<%= chain %> <%= policy %> [0:0]
+<% end -%>
+<% table['chains'].each do |chain| -%>
+:<%= chain %> - [0:0]
+<% end -%>
+<% table['rules'].each do |rule| -%>
+<%= rule %>
 <% end -%>
 COMMIT
 
-*nat
-<% @nat_rules_clean.each do |rule| -%>
-  <%= rule %>
 <% end -%>
-COMMIT

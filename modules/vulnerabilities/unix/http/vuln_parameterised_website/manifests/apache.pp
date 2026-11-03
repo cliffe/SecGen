@@ -14,6 +14,7 @@ class vuln_parameterised_website::apache {
 
 
   apache::vhost { 'parameterised.website':
+    priority => '05', # ahead of the apache module's own vhost on the same port
     port    => $port,
     docroot => '/var/www/vuln_parameterised_website',
     notify => Tidy['pws remove default site'],

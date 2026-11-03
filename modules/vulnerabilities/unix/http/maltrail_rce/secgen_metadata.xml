@@ -64,6 +64,10 @@
 
     <!-- Cybersecurity Body of Knowledge mapping -->
     <msf_module>exploit/unix/http/maltrail_rce</msf_module>
+    <!-- python3-pcapy is not packaged for Buster -->
+    <conflict>
+      <name>.*Buster.*</name>
+    </conflict>
     <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
       <keyword>server-side misconfiguration and vulnerable components</keyword>
     </CyBOK>

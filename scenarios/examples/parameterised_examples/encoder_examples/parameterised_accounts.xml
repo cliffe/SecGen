@@ -6,7 +6,7 @@
 	<!-- an example remote storage system with an account generated using the parameterised_accounts module -->
 	<system>
 		<system_name>storage_server</system_name>
-		<base platform="linux" distro="Debian 7.8"/>
+		<base platform="linux" type="server"/>
 
 		<utility module_path=".*/parameterised_accounts">
 			<input into="accounts">

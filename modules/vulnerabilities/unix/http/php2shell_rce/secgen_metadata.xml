@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>php2shell PHP RCE practice target</name>
+  <author>Thomas Shaw</author>
+  <module_license>Apache v2</module_license>
+  <description>
+    A deliberately minimal PHP web page served by an end-of-life PHP 7.4 that
+    is unpatched against php2shell (CVE-2026-109618 / CVE-2026-109619), the
+    unauthenticated PHP remote code execution flaw fixed upstream on 21 October
+    2026. The flaw is in the PHP interpreter's request handling, not in the page,
+    so the page itself is trivial; the target exists so the php2shell vector can
+    be practised against a known-vulnerable runtime on an isolated lab network.
+    The vulnerable PHP is built from a source tarball bundled in the
+    php7_vulnerable utility, so the target does not depend on a package manager
+    (which would supply a fixed build). A flag is left on the box to capture
+    once code execution is achieved.
+  </description>
+
+  <type>http</type>
+  <privilege>user_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>port</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+
+  <default_input into="port">
+    <value>80</value>
+  </default_input>
+  <default_input into="strings_to_leak">
+    <generator type="message_generator"/>
+  </default_input>
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+  </default_input>
+
+  <cve>CVE-2026-109618</cve>
+  <cve>CVE-2026-109619</cve>
+  <cvss_base_score>9.2</cvss_base_score>
+  <reference>https://www.php.net/archive/2026.php#2026-10-21-1</reference>
+  <reference>https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w</reference>
+  <reference>https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp</reference>
+
+  <!-- Deliberately not "php*": php7_vulnerable conflicts on a software_name
+       regex of "php", and this app is a target, not a php provider. -->
+  <software_name>p2s-rce-target</software_name>
+  <software_license>Apache v2</software_license>
+
+  <requires>
+    <type>update</type>
+  </requires>
+  <!-- The unpatched PHP 7.4 that carries the php2shell flaw (source build). -->
+  <requires>
+    <module_path>.*utilities/unix/languages/php7_vulnerable.*</module_path>
+  </requires>
+
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>server-side misconfiguration and vulnerable components</keyword>
+    <keyword>Remote code execution</keyword>
+  </CyBOK>
+</vulnerability>

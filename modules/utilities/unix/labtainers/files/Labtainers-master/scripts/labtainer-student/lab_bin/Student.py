@@ -81,7 +81,9 @@ def otherUsers(start_time, zipoutput, studentHomeDir, skip_list, dt_skip_list, s
     udir = '/home'
     os.chdir('/home')
     for rootdir, subdirs, files in os.walk(udir):
-            if rootdir == studentHomeDir:
+            # the primary user's tree is archived by main(); walking into it here duplicated every
+            # deliverable under other_users/<primary user>/ (os.walk descends past the top match)
+            if rootdir == studentHomeDir or rootdir.startswith(studentHomeDir + '/'):
                 continue
             newdir = rootdir.replace(udir, '.')
             # TBD FIX this

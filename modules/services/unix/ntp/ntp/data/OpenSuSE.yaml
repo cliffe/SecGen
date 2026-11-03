@@ -1,0 +1,2 @@
+ntp::service_name: ntpd
+ntp::service_provider: systemd

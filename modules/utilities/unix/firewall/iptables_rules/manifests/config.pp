@@ -8,12 +8,8 @@ class iptables_rules::config {
     fail('iptables_rules: no rules provided, at least one rule is required.')
   }
 
-  # Split rules into filter and nat tables
-  $nat_rules    = $rules.filter |$r| { $r =~ /^-t nat / }
-  $filter_rules = $rules.filter |$r| { $r !~ /^-t nat / }
-
-  # Strip the '-t nat ' prefix from nat rules for placement inside *nat section
-  $nat_rules_clean = $nat_rules.map |$r| { regsubst($r, '^-t nat ', '') }
+  # rules.v4.erb sorts the rules into tables ('-t <table>' prefix, default filter)
+  # and turns '-P CHAIN POLICY' into the chain's policy declaration.
 
   file { '/etc/iptables':
     ensure => directory,
@@ -23,6 +19,12 @@ class iptables_rules::config {
     ensure  => present,
     content => template('iptables_rules/rules.v4.erb'),
     require => [File['/etc/iptables'], Package['iptables-persistent']],
+  }
+
+  # netfilter-persistent restores rules.v4 at boot; make sure it is enabled
+  service { 'netfilter-persistent':
+    enable  => true,
+    require => Package['iptables-persistent'],
   }
 
   if $ip_forwarding == 'true' {

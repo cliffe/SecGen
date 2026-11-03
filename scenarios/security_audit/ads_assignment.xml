@@ -9,7 +9,7 @@
    username: user, password: toor -->
   <system>
     <system_name>access_control_misconfigurations</system_name>
-    <base platform="linux" type="server" module_path=".*/stretch.*"/>
+    <base platform="linux" type="server"/>
 
     <input into_datastore="IP_addresses">
       <network_ip system="access_control_misconfigurations"/>

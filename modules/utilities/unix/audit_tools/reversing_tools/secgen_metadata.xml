@@ -6,7 +6,7 @@
   <name>Reversing tools</name>
   <author>Thomas Shaw</author>
   <module_license>Apache v2</module_license>
-  <description>Installs gdb with GEF, radare2, pwntools, upx (static binary), and assorted binary analysis tools for reverse engineering challenges.</description>
+  <description>Installs gdb with GEF, radare2, Cutter (AppImage), pwntools, upx (static binary), and assorted binary analysis tools for reverse engineering challenges.</description>
 
   <type>reversing_tools</type>
   <platform>linux</platform>

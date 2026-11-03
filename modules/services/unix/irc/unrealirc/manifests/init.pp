@@ -39,7 +39,13 @@ class unrealirc(
       hiddenhost_prefix   => "+x",
       cloak_keys_1        => "NGDJMSKFLa24",
       cloak_keys_2        => "ax9d2ujrjRQA",
-      cloak_keys_3        => "ax9d25524ZSx"
+      cloak_keys_3        => "ax9d25524ZSx",
+      # SecGen VLANs have no DNS server and often no identd: UnrealIRCd holds
+      # registration until the reverse lookup and ident check time out, so
+      # clients get no welcome (001) for many seconds. Skip DNS and keep ident short.
+      options_dont_resolve  => "yes",
+      ident_connect_timeout => "2",
+      ident_read_timeout    => "2"
     }
 
     unrealirc::config::listen { 'default_6667':

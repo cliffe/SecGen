@@ -17,12 +17,19 @@ class unrealirc::service {
         require => File['/etc/init.d/unreal'],
       }
 
+      # make systemd generate the unit from the new init script
+      exec { 'unrealirc_daemon_reload':
+        command => 'systemctl daemon-reload',
+        onlyif  => 'which systemctl',
+        require => Exec['unrealirc_autoload'],
+      }
+
       service { 'unreal':
         ensure      => running,
         enable      => true,
         hasrestart  => true,
         hasstatus   => true,
-        require     => File['/etc/init.d/unreal'],
+        require     => [File['/etc/init.d/unreal'], Exec['unrealirc_daemon_reload']],
         notify => Exec['initial_run'],
       }
 

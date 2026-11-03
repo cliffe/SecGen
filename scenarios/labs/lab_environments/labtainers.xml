@@ -14,7 +14,7 @@
 
   <system>
     <system_name>desktop</system_name>
-    <base distro="Debian 9" type="desktop" name="KDE"/>
+    <base platform="linux" type="server"/>
 
     <input into_datastore="IP_addresses">
       <network_ip system="desktop"/>

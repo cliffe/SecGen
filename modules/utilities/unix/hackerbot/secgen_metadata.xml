@@ -27,6 +27,10 @@
     <value>localhost</value>
   </default_input>
 
+  <default_input into="ssh_key_pair">
+    <generator type="ssh_key_pair"/>
+  </default_input>
+
   <requires>
     <type>update</type>
   </requires>

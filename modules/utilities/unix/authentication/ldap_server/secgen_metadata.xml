@@ -32,7 +32,7 @@
   </conflict>
 
   <requires>
-    <module_path>.*apache.*compatible.*</module_path>
+    <software_name>apache</software_name>
   </requires>
 
   <requires>

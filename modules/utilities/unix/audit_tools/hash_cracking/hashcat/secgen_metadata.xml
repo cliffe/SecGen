@@ -11,4 +11,8 @@
   <type>hash_cracking_tools</type>
   <platform>linux</platform>
 
+  <requires>
+    <type>update</type>
+  </requires>
+
 </utility>

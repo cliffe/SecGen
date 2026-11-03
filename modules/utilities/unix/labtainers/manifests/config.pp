@@ -54,11 +54,11 @@ class labtainers::config{
         target => '/opt/labtainer/scripts/labtainer-student',
       } ->
 
-      file_line { 'patch_path_labtainers':
+      file_line { "patch_path_labtainers_${username}":
         path  => "$home_dir/.profile",
         line  => 'export PATH=/opt/labtainer/scripts/labtainer-student/bin:/opt/labtainer/scripts/labtainer-instructor/bin:/opt/labtainer/scripts/labtainer-student/lab-bin/:/opt/labtainer/setup_scripts/trunk/scripts/designer/bin:/opt/labflags/:$PATH',
       } ->
-      file_line { 'patch_path_labtainers_dir':
+      file_line { "patch_path_labtainers_dir_${username}":
         path  => "$home_dir/.bashrc",
         line  => 'export LABTAINER_DIR="/opt/labtainer/"',
       } ->
@@ -94,10 +94,12 @@ class labtainers::config{
       #   provider => shell,
       # } ->
 
-      exec { 'activate_virtualenv_and_start_lab':
+      exec { "activate_virtualenv_and_start_lab_${username}":
         command  => "sudo -u $username bash -c 'source ~/.profile; source /opt/labtainer/venv/bin/activate; echo -e \"email@addre.ss\\n\\n\" | $env /opt/labtainer/scripts/labtainer-student/bin/labtainer $lab -q'",
         cwd => "/opt/labtainer/scripts/labtainer-student/",
         provider => shell,
+        # starting the lab builds/starts containers; allow more than the default 300s
+        timeout => 3600,
       } 
       # ->
 

@@ -77,7 +77,7 @@ banned_email_file=<%= scope.lookupvar('vsftpd::banned_email_file') %>
 chroot_local_user=<%= scope.lookupvar('vsftpd::real_chroot_local_user') %>
 <% if scope.lookupvar('vsftpd::real_chroot_list_enable') != '' -%>
 chroot_list_enable=<%= scope.lookupvar('vsftpd::real_chroot_list_enable') %>
-chroot_list_file=<%= scope.lookupvar('vsftpd::chroot_list_file') -%>
+chroot_list_file=<%= scope.lookupvar('vsftpd::chroot_list_file') %>
 <% end -%>
 
 ##### Other parameters

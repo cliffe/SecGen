@@ -1,5 +1,5 @@
 class wireshark::install{
-  package { ['wireshark', 'tcpdump']:
+  package { ['wireshark', 'tshark', 'tcpdump']:
     ensure => 'installed',
   }
 }

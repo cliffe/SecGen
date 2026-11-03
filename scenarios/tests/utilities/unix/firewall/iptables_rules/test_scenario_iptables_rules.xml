@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>Test: iptables_rules</name>
+  <author>Thomas Shaw</author>
+  <description>Single-VM test scenario for the iptables_rules utility module, fed by the iptables_rule generators (policy, FORWARD accept/drop/established, nat MASQUERADE), used to exercise its secgen_test via the Proxmox QEMU Guest Agent testing pipeline.</description>
+
+  <type>test</type>
+
+  <system>
+    <system_name>iptables_rules_testing</system_name>
+    <base platform="linux" distro="Debian 12" type="desktop"/>
+
+    <!-- the same generator chain the network security lab's gateway uses
+         (scenarios/labs/network_security/2_dns_tls_vpns.xml), plus an nat rule
+         and a filter-table policy, so every rule shape the module handles is built -->
+    <utility module_path=".*/iptables_rules">
+      <input into="ip_forwarding">
+        <value>true</value>
+      </input>
+      <input into="rules">
+        <generator module_path=".*/iptables_policy">
+          <input into="chain">
+            <value>FORWARD</value>
+          </input>
+          <input into="policy">
+            <value>DROP</value>
+          </input>
+        </generator>
+        <generator module_path=".*/iptables_forward_accept">
+          <input into="source">
+            <value>10.0.1.0/24</value>
+          </input>
+          <input into="destination">
+            <value>10.0.2.0/24</value>
+          </input>
+        </generator>
+        <generator module_path=".*/iptables_forward_established"/>
+        <generator module_path=".*/iptables_forward_drop">
+          <input into="source">
+            <value>10.0.4.0/24</value>
+          </input>
+          <input into="destination">
+            <value>10.0.3.10</value>
+          </input>
+        </generator>
+        <generator module_path=".*/iptables_masquerade">
+          <input into="source">
+            <value>10.0.1.0/24</value>
+          </input>
+          <input into="out_interface">
+            <value>ens19</value>
+          </input>
+        </generator>
+        <value>-A INPUT -i lo -j ACCEPT</value>
+      </input>
+    </utility>
+
+    <network type="private_network"/>
+
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+
+</scenario>

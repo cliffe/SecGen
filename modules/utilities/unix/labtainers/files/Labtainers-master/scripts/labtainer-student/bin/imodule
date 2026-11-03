@@ -116,7 +116,7 @@ if __name__ == '__main__':
             print('No IModules to delete.')
     elif args.path is not None and args.path != 'NONE':
         try:
-            os.makedirs(os.dirname(imodule_path))
+            os.makedirs(os.path.dirname(imodule_path), exist_ok=True)
         except:
             pass
         with open(imodule_path, 'a') as fh:

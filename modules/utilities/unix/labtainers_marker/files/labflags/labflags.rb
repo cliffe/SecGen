@@ -17,7 +17,7 @@ Dir["/opt/labflags/labtainer_xfer/**/*.grades.json"].each { |grade_file|
     grade_data[lab]["grades"].each { |task, grade|
       puts task
       if grade == true
-        puts "       [Well done!] :) #{flag_data.dig("email_at_addre.ss.shellbasics","flags", task) || "N/A"}"
+        puts "       [Well done!] :) #{flag_data.dig("email_at_addre.ss.#{labname}", "flags", task) || "N/A"}"
       else
         puts "       [No]"
       end

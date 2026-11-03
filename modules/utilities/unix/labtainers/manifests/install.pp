@@ -146,10 +146,25 @@ class labtainers::install{
   } ->
 
   # activate and pull lab (pull_lab.py labname)
+  #
+  # pull_lab.py resolves its registry via registry.getBranchRegistry(). Under
+  # /opt/labtainer (a plain copy, not a git checkout) and with no
+  # LABTAINER_BRANCH set, that falls through to the *test* registry
+  # (testregistry:5000), so `docker pull` fails and pull_lab.py swallows the
+  # error (os.system ignores the exit code) - the lab image is never fetched.
+  # Setting LABTAINER_BRANCH to a branch absent from config/registry.config
+  # makes getBranchRegistry() return the default registry (labtainers on Docker
+  # Hub), where the lab images live. pull-all.py already uses the default
+  # registry, so only pull_lab.py needs this. The trailing docker-images check
+  # makes the build fail loudly if the lab image is still missing, rather than
+  # leaving a silently broken VM.
   exec { 'activate_virtualenv_and_pull_lab':
-    command => "source /opt/labtainer/venv/bin/activate && $env /opt/labtainer/setup_scripts/pull-all.py && $env /opt/labtainer/setup_scripts/pull_lab.py $lab",
+    command => "source /opt/labtainer/venv/bin/activate && $env /opt/labtainer/setup_scripts/pull-all.py && $env LABTAINER_BRANCH=master /opt/labtainer/setup_scripts/pull_lab.py $lab && docker images --format '{{.Repository}}' | grep -q '${lab}\\.'",
     provider => shell,
     cwd => "/opt/labtainer/setup_scripts",
+    # pull-all.py fetches ~13 large base images plus the lab's images; the
+    # default 300s exec timeout is far too short
+    timeout => 7200,
   }
   
 

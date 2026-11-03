@@ -50,7 +50,11 @@
 
 
     <service module_path=".*/phish_me_website"/>
-    <service module_path=".*/mailserver"/>
+    <service module_path=".*/mailserver">
+      <input into="server_ip">
+        <value>accountingnow.com</value>
+      </input>
+    </service>
     <vulnerability module_path=".*/phish_victim_bot">
       <input into="usernames">
         <value>s.lord</value>

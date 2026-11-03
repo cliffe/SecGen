@@ -1,0 +1,63 @@
+---
+default:
+  provisioner: docker_exp
+  images:
+  - litmusimage/centos:7
+vagrant:
+  provisioner: vagrant
+  images:
+  - centos/7
+  - generic/ubuntu1804
+travis_deb:
+  provisioner: docker_exp
+  images:
+  - litmusimage/debian:8
+  - litmusimage/debian:9
+  - litmusimage/debian:10
+travis_ub_6:
+  provisioner: docker
+  images:
+  - litmusimage/ubuntu:14.04
+  - litmusimage/ubuntu:16.04
+  - litmusimage/ubuntu:18.04
+  - litmusimage/ubuntu:20.04
+travis_el7:
+  provisioner: docker_exp
+  images:
+  - litmusimage/centos:7
+  - litmusimage/oraclelinux:7
+  - litmusimage/scientificlinux:7
+release_checks_6:
+  provisioner: abs
+  images:
+  - redhat-6-x86_64
+  - redhat-7-x86_64
+  - centos-6-x86_64
+  - centos-7-x86_64
+  - oracle-5-x86_64
+  - oracle-6-x86_64
+  - oracle-7-x86_64
+  - scientific-6-x86_64
+  - scientific-7-x86_64
+  - debian-8-x86_64
+  - debian-9-x86_64
+  - debian-10-x86_64
+  - sles-12-x86_64
+  - sles-15-x86_64
+  - ubuntu-1404-x86_64
+  - ubuntu-1604-x86_64
+  - ubuntu-1804-x86_64
+  - ubuntu-2004-x86_64
+release_checks_7:
+  provisioner: abs
+  images:
+  - redhat-7-x86_64
+  - centos-7-x86_64
+  - oracle-7-x86_64
+  - scientific-7-x86_64
+  - sles-12-x86_64
+  - sles-15-x86_64
+  - debian-9-x86_64
+  - debian-10-x86_64
+  - ubuntu-1804-x86_64
+  - ubuntu-2004-x86_64

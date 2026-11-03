@@ -1,0 +1,12 @@
+ntp::package_name: [ 'net-misc/ntp' ]
+ntp::restrict:
+  - 'default kod nomodify notrap nopeer noquery'
+  - '-6 default kod nomodify notrap nopeer noquery'
+  - '127.0.0.1'
+  - '-6 ::1'
+ntp::iburst_enable: false
+ntp::servers:
+  - '0.gentoo.pool.ntp.org'
+  - '1.gentoo.pool.ntp.org'
+  - '2.gentoo.pool.ntp.org'
+  - '3.gentoo.pool.ntp.org'

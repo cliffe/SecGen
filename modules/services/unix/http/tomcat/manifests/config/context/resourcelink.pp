@@ -1,33 +1,38 @@
-# Definition: tomcat::config::server::resourcelink
+# @summary Configure a ResourceLink element in the designated xml config.
 #
-# Configure a ResourceLink element in the designated xml config.
+# @param ensure
+#   specifies whether you are trying to add or remove the ResourceLink element.
+# @param catalina_base
+#   Specifies the root of the Tomcat installation. `$tomcat::catalina_home`.
+# @param resourcelink_name
+#   The name of the ResourceLink to be created, relative to the `java:comp/env` context. `$name`.
+# @param name
+#   `$resourcelink_name`
+# @param resourcelink_type
+#   The fully qualified Java class name expected by the web application when it performs a lookup for this resource link.
+# @param additional_attributes
+#   Specifies any additional attributes to add to the Valve. Should be a hash of the format 'attribute' => 'value'. Optional
+# @param attributes_to_remove
+#   Specifies an array of attributes to remove from the element. Valid options: an array of strings. `[]`.
+# @param show_diff
+#   Specifies display differences when augeas changes files, defaulting to true. Valid options: true or false.
 #
-# Parameters:
-# - $ensure specifies whether you are trying to add or remove the
-#   ResourceLink element. Valid values are 'true', 'false', 'present', and
-#   'absent'. Defaults to 'present'.
-# - $catalina_base is the base directory for the Tomcat instance.
-# - $resourcelink_name is the name of the resource link to be created, relative
-#   to the java:comp/env context. Defaults to $name
-# - $resourcelink_type is the fully qualified Java class name expected by the web
-#   application when it performs a lookup for this resource link. Required
 define tomcat::config::context::resourcelink (
-  $ensure                = 'present',
-  $catalina_base         = $::tomcat::catalina_home,
-  $resourcelink_name     = $name,
-  $resourcelink_type     = undef,
-  $additional_attributes = {},
-  $attributes_to_remove  = [],
+  Enum['present','absent'] $ensure                = 'present',
+  Stdlib::Absolutepath     $catalina_base         = $tomcat::catalina_home,
+  String[1]                $resourcelink_name     = $name,
+  Optional[String[1]]      $resourcelink_type     = undef,
+  Hash                     $additional_attributes = {},
+  Array                    $attributes_to_remove  = [],
+  Boolean                  $show_diff             = true,
 ) {
-  if versioncmp($::augeasversion, '1.0.0') < 0 {
+  if versioncmp($facts['augeas']['version'], '1.0.0') < 0 {
     fail('Context configurations require Augeas >= 1.0.0')
   }
 
-  validate_re($ensure, '^(present|absent|true|false)$')
-
   $base_path = "Context/ResourceLink[#attribute/name='${resourcelink_name}']"
 
-  if $ensure =~ /^(absent|false)$/ {
+  if $ensure == 'absent' {
     $augeaschanges = "rm ${base_path}"
   } else {
     $set_name = "set ${base_path}/#attribute/name ${resourcelink_name}"
@@ -49,16 +54,17 @@ define tomcat::config::context::resourcelink (
     }
 
     $augeaschanges = delete_undef_values(flatten([
-      $set_name,
-      $set_type,
-      $set_additional_attributes,
-      $rm_attributes_to_remove,
+          $set_name,
+          $set_type,
+          $set_additional_attributes,
+          $rm_attributes_to_remove,
     ]))
   }
 
   augeas { "context-${catalina_base}-resourcelink-${name}":
-    lens    => 'Xml.lns',
-    incl    => "${catalina_base}/conf/context.xml",
-    changes => $augeaschanges,
+    lens      => 'Xml.lns',
+    incl      => "${catalina_base}/conf/context.xml",
+    changes   => $augeaschanges,
+    show_diff => $show_diff,
   }
 }

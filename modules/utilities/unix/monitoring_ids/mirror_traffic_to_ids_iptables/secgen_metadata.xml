@@ -14,6 +14,12 @@
     all the traffic.
     Snort needs checksums set to none.
     Uses IPtables TEE feature.
+
+    Testing note: the secgen_test includes cross-VM checks that only run when the
+    scenario contains a system named exactly 'ids_monitor' (the name used in all
+    IDS labs: 4_ids.xml, 5_ids_rules.xml, 6_exfiltration_detection.xml,
+    hacker_vs_hackerbot_2.xml). Those checks verify that the configured TEE target
+    matches ids_monitor's actual IP and that Snort is installed there.
   </description>
 
   <type>ids_tools</type>
@@ -21,6 +27,10 @@
 
   <!-- required: where should we send the copied packets? -->
   <read_fact>ids_IP_address</read_fact>
+
+  <default_input into="ids_IP_address">
+    <value>192.0.2.1</value>
+  </default_input>
 
   <requires>
     <type>update</type>

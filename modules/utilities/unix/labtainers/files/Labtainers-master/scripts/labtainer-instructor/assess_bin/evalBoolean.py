@@ -36,6 +36,8 @@ POSSIBILITY OF SUCH DAMAGE.
               the_dict is a dictionary of boolean values, e.g., the_dict['goal1'] = True.
        See test cases in __main__
 '''
+import re
+
 str_to_token = {'True':True,
                 'False':False,
                 'and':lambda left, right: left and right,
@@ -72,8 +74,11 @@ def parens(token_lst):
 
     left = left_lst[-1]
 
-    #can not occur earlier, hence there are args and op.
-    right = find(token_lst, ')', left + 4)[0]
+    # 'left' is the last '(' in the list, so no '(' lies between it and its
+    # matching ')': the first ')' after it is the match. Search from left+1,
+    # not left+4 -- a group need not have the shape '( A op B )'. '( X )' and
+    # '( not X )' are valid and used to raise IndexError here.
+    right = find(token_lst, ')', left + 1)[0]
 
     return True, left, right
 
@@ -83,6 +88,9 @@ def bool_eval(token_lst):
         operator(left_arg, right_arg) is returned
         but optionally first token is not, which negates the result 
         if more than one operator are provided, we iterate through them'''
+    if len(token_lst) == 1:
+        ''' a lone value: a single-operand goal, or a reduced '( X )' group '''
+        return token_lst[0]
     is_not = None
     if token_lst[0] == 'not':
         #print('is not, will pop!!!!')
@@ -154,17 +162,22 @@ def evaluate_boolean_expression(s, the_dict, logger, goals):
             #print('s %s item %s value %s' % (s, item, value))
             s = s.replace(item, value)
 
-    tokens = ['(',')',' and_not ', ' AND_NOT ', ' or_not ', ' OR_NOT ', ' not ',' NOT ','not ','NOT ',' and ',' AND ',
-              ' or ',' OR ',' True ',' False ', 'True ', ' True', 'False ', ' False'] 
-    remains = s
-    for t in tokens:
-        remains = remains.replace(t,' ')
+    # Strip operators, parens and the substituted True/False so that only
+    # unknown or not-yet-valued identifiers remain. Match on word boundaries:
+    # the previous space-padded token list could not match a value standing
+    # alone (a single-operand goal reduces to exactly 'True'), so every such
+    # goal fell through to None and silently graded False.
+    remains = re.sub(r'\b(?:and_not|AND_NOT|or_not|OR_NOT|not|NOT|and|AND|or|OR|True|False)\b',
+                     ' ', s)
+    remains = remains.replace('(', ' ').replace(')', ' ')
     #print('goals is %s' % str(goals))
     if len(remains.strip()) > 0:
         got_unknown = False
         for rem in remains.split():
            if rem not in goals: 
-               logger.debug('***  unknown token <%s>' % rem)
+               # an identifier that is no known goal or result is a
+               # goals.config error -- say so instead of failing silently
+               logger.error('***  unknown token <%s> in boolean expression <%s>' % (rem, s))
                got_unknown = True
         if not got_unknown:
             #logger.debug('goal values not set for this timestamp %s' % (remains))
@@ -174,27 +187,43 @@ def evaluate_boolean_expression(s, the_dict, logger, goals):
     return nested_bool_eval(s) 
 
 if __name__ == "__main__":
-    t_dict = {}
-    t_dict['goal1'] = True
-    t_dict['goal2'] = False
-    t_dict['goal3'] = True
-    t_dict['goal4'] = True
+    ''' Self-test.  Run:  python3 evalBoolean.py   (exit status 0 on success) '''
+    import logging
+    import sys
+    logging.basicConfig(level=logging.ERROR)
+    log = logging.getLogger('evalBoolean-test')
+    t_dict = {'goal1': True, 'goal2': False, 'goal3': True, 'goal4': True}
+    # goal7 is a known goal that has no value in this timestamped set
+    goals = list(t_dict.keys()) + ['goal7']
 
-    t_string = 'goal1 and goal4 and_not goal2'
-    print('%s evaluates to %r' % (t_string,  evaluate_boolean_expression(t_string, t_dict)))
-    exit(1)
-    t_string = 'goal1 and (not goal2 and goal3)'
-    print('%s evaluates to %r' % (t_string,  evaluate_boolean_expression(t_string, t_dict)))
-    exit(1)
-    t_string = 'goal1 and (goal2 or goal3) and goal4'
-    print('%s evaluates to %r' % (t_string,  evaluate_boolean_expression(t_string, t_dict)))
-
-    t_string = 'goal1 or ((goal2 or goal3) and goal4)'
-    print('%s evaluates to %r' % (t_string,  evaluate_boolean_expression(t_string, t_dict)))
-    t_string = 'goal1 and_not ((goal2 or goal3) and goal4)'
-    print('%s evaluates to %r' % (t_string,  evaluate_boolean_expression(t_string, t_dict)))
-
-    t_string = 'goal1 and (goal2 or goal3) or goal7'
-    print('%s evaluates to %r' % (t_string,  evaluate_boolean_expression(t_string, t_dict)))
+    cases = [
+        # multi-operand expressions (pre-existing behaviour, must not change)
+        ('goal1 and goal4 and_not goal2',              True),
+        ('goal1 and (not goal2 and goal3)',            True),
+        ('goal1 and (goal2 or goal3) and goal4',       True),
+        ('goal1 or ((goal2 or goal3) and goal4)',      True),
+        ('goal1 and_not ((goal2 or goal3) and goal4)', False),
+        # single-operand goals: previously returned None (bare form) or raised
+        # IndexError (parenthesised form); both must now evaluate.
+        ('goal1',                 True),
+        ('goal2',                 False),
+        ('(goal1)',               True),
+        ('(goal2)',               False),
+        ('not goal2',             True),
+        ('(not goal2)',           True),
+        ('(goal1) and (goal3)',   True),
+        # a known goal with no value in this timestamped set -> None (unchanged)
+        ('goal1 and (goal2 or goal3) or goal7', None),
+    ]
+    failed = 0
+    for expr, want in cases:
+        got = evaluate_boolean_expression(expr, t_dict, log, goals)
+        if got != want:
+            failed += 1
+        print('%s  %-45s -> %r (want %r)' % ('ok ' if got == want else 'FAIL', expr, got, want))
+    # an identifier that is not a goal at all is a configuration error -> None
+    assert evaluate_boolean_expression('goal1 and nosuch', t_dict, log, goals) is None
+    print('%d case(s) failed' % failed)
+    sys.exit(1 if failed else 0)
 
 

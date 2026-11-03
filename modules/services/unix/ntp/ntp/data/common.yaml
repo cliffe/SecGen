@@ -1,0 +1,74 @@
+---
+ntp::authprov: ~
+ntp::broadcastclient: false
+ntp::burst: false
+ntp::config_dir: ~
+ntp::config_file_mode: '0644'
+ntp::config: '/etc/ntp.conf'
+ntp::config_template: ~
+ntp::config_epp: ~
+ntp::daemon_extra_opts: ~
+ntp::disable_auth: false
+ntp::disable_dhclient: false
+ntp::disable_kernel: false
+ntp::disable_monitor: true
+ntp::driftfile: '/var/lib/ntp/drift'
+ntp::enable_mode7: false
+ntp::fudge: []
+ntp::iburst_enable: true
+ntp::interfaces_ignore: []
+ntp::interfaces: []
+ntp::keys_controlkey: ~
+ntp::keys_enable: false
+ntp::keys_file: '/etc/ntp.keys'
+ntp::keys_requestkey: ~
+ntp::keys_trusted: []
+ntp::keys: []
+ntp::leapfile: ~
+ntp::logfile: ~
+ntp::logfile_user: 'ntp'
+ntp::logfile_mode: '0664'
+ntp::logfile_group: 'ntp'
+ntp::logconfig: ~
+ntp::ntpsigndsocket: ~
+ntp::maxpoll: ~
+ntp::minpoll: ~
+ntp::package_ensure: present
+ntp::package_manage: true
+ntp::package_name: [ 'ntp' ]
+ntp::panic: ~
+ntp::peers: []
+ntp::pool: []
+ntp::preferred_servers: []
+ntp::noselect_servers: []
+ntp::servers:
+  - '0.pool.ntp.org'
+  - '1.pool.ntp.org'
+  - '2.pool.ntp.org'
+  - '3.pool.ntp.org'
+ntp::service_enable: true
+ntp::service_ensure: running
+ntp::service_manage: true
+ntp::service_name: ntpd
+ntp::service_provider: ~
+ntp::service_hasstatus: true
+ntp::service_hasrestart: true
+ntp::slewalways: ~
+ntp::statistics: []
+ntp::statsdir: '/var/log/ntpstats'
+ntp::stepout: ~
+ntp::step_tickers_file: ~
+ntp::step_tickers_template: ~
+ntp::step_tickers_epp: ~
+ntp::tinker: ~
+ntp::tos_ceiling: 15
+ntp::tos_cohort: 0
+ntp::tos_floor: 1
+ntp::tos_maxclock: 6
+ntp::tos_minclock: 3
+ntp::tos_minsane: 1
+ntp::tos_orphan: ~
+ntp::tos: false
+ntp::udlc_stratum: 10
+ntp::udlc: false
+ntp::user: ~

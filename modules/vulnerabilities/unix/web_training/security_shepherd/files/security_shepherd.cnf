@@ -1,0 +1,7 @@
+# Security Shepherd's MariaDB settings. Installed as
+# /etc/mysql/conf.d/security_shepherd.cnf, which the mysql module's my.cnf
+# includes last, so these override its defaults without replacing its file.
+[mysqld]
+skip-host-cache
+ssl=0
+bind-address=*

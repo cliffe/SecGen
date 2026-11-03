@@ -2,7 +2,8 @@ class nc_message::install {
   $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
   $port = $secgen_parameters['port'][0]
 
-  ensure_packages("nmap")
+  # the cron type comes from the required cron puppet_module; crontab itself needs the cron package
+  ensure_packages(["nmap", "cron"])
   case $operatingsystemrelease {
     /^(1[0-9]).*/: { # do buster stuff
       ensure_packages("ncat")
@@ -21,8 +22,9 @@ class nc_message::install {
 
   # run on each boot via cron
   cron { "cronncatmsg$port":
-    command     => "sleep 60 && ncat -l -p $port -c 'cat /root/cronncatmsg$port' -k &",
+    command     => "sleep 10 && ncat -l -p $port -c 'cat /root/cronncatmsg$port' -k &",
     special     => 'reboot',
+    require     => Package['cron'],
   }
 
 }

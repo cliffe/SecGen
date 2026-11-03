@@ -12,6 +12,12 @@
   <type>ircd</type>
   <platform>linux</platform>
 
+  <read_fact>motd</read_fact>
+
+  <default_input into="motd">
+    <value>Welcome! :)</value>
+  </default_input>
+
   <!--optional details-->
   <software_name>ircd-irc2</software_name>
   <software_license>MIT</software_license>

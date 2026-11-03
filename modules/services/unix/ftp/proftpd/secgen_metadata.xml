@@ -3,7 +3,7 @@
 <service xmlns="http://www.github/cliffe/SecGen/service"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
-  <name>vsftpd Server</name>
+  <name>ProFTPD Server</name>
   <author>Thomas Shaw</author>
   <author>Adam J. Low</author>
   <module_license>Apache v2</module_license>
@@ -19,7 +19,7 @@
   </default_input>
 
   <!--optional details-->
-  <reference>https://security.appspot.com/vsftpd.html</reference>
+  <reference>http://www.proftpd.org/</reference>
   <reference>https://forge.puppet.com/adamjlow/proftpd</reference>
   <software_name>proftpd</software_name>
   <software_license>Apache v2</software_license>

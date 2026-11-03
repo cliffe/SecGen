@@ -8,7 +8,7 @@
   REQUIRED_FLAGS = 10
   while $flags.length < REQUIRED_FLAGS
     $flags << "flag{#{SecureRandom.hex}}"
-    Print.err "Warning: Not enough flags provided to hackerbot_config generator, some flags won't be tracked/marked!"
+    warn "Warning: Not enough flags provided to labtainers_marker module, some flags won't be tracked/marked!"
   end
 
   def get_binding

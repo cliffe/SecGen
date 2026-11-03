@@ -22,6 +22,11 @@ UseIPv6				off
 # If set on you can experience a longer connection delay in many cases.
 IdentLookups			off
 
+# nonroot variant: pid and scoreboard under a directory the ftp service user
+# owns, so the daemon can write them while running as ftp (not root).
+PidFile				/var/run/proftpd/proftpd.pid
+ScoreboardFile			/var/run/proftpd/proftpd.scoreboard
+
 ServerName			"<%=$server_name%>"
 ServerType			standalone
 DeferWelcome			off

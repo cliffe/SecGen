@@ -11,6 +11,7 @@ define leak_to_file::leak_file($leaked_filename, $storage_directory, $base64_fil
 
     # Create file.
     file { $path_to_leak:
+        require  => Exec["$leaked_from-$path_to_leak-mkdir"],
         ensure   => present,
         owner    => $owner,
         group    => $group,

@@ -81,8 +81,6 @@
 			</input>
 		</utility>
 
-		<utility module_path=".*/elastalert.*"/>
-
 		<network type="private_network"/>
 		<build type="cleanup">
 			<input into="root_password">

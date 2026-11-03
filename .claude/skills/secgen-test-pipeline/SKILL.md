@@ -117,7 +117,7 @@ API (all in `lib/objects/post_provision_test.rb`):
 | Helper | Passes when |
 |---|---|
 | `test_service_up(port: self.port)` | port is listening (SKIP if there's no port input) |
-| `test_local_command(label, cmd, substr, user: nil)` | `substr` in stdout **or** stderr |
+| `test_local_command(label, cmd, substr, user: nil)` | `substr` in stdout (add `2>&1` to match stderr, but then never match the program's own name: `x: command not found` would match; use `test_command_succeeds` for "x runs") |
 | `test_command_succeeds(label, cmd, user: nil)` | exit status 0 |
 | `test_banner(match, port:, send: nil)` | what the port sends (after `send` + CRLF) contains `match` |
 | `test_http(path, match: nil, status: nil, port:, scheme: 'http')` | status matches (default 2xx/3xx) and body contains `match` |
@@ -129,6 +129,9 @@ API (all in `lib/objects/post_provision_test.rb`):
 | `test_msf_exploit(module, rhost:, rport:, attacker:, payload:, collect:, force:, options:, sentinel_wait:, tier: 3)` | a Metasploit exploit run from the attacker VM gets RCE on the target (see below). `sentinel_wait: <s>` polls the sentinel for up to s seconds for deferred-execution exploits (default 0 = read once) |
 | `test_http_exploit(path, method:, data:, headers:, expect:, expect_status:, sentinel:, include_headers:, collect:, tier: 3)` | a non-Metasploit web exploit run as HTTP request(s) from the attacker VM: PASSes when the response matches `expect` and/or a target-side `sentinel` proves command execution (see below) |
 | `http_from_attacker(path, attacker:, rhost:, method:, data:, headers:, include_headers:)` | raw: one `curl` request from the attacker VM → `{status, body, error, curl}` |
+| `test_smb_share_listed(share, comment:)` / `test_smb_anonymous_write(share, dir, expect_writable:)` | an anonymous `smbclient` from the attacker VM lists the share (with `comment`) / puts a file that lands in `dir` on the target (or is refused) |
+| `test_smb_share_setting(share, param, value)` | the target's `testparm` gives `value` for that share parameter (defaults included) |
+| `smbclient_from_attacker(attacker:, rhost:, share:, commands:)` / `samba_share_name` | raw: one anonymous `smbclient` from the attacker VM → `{stdout, exit_status, cmd}` / the `[share]` name and comment the samba module's `smb_share.conf.erb` renders (follows `organisation`) |
 | `run_on_system(name, cmd)` / `other_system_ip(name)` | run a command on / get the IP of **another** VM in the project (Proxmox, over its own guest agent) |
 | `system_present?(name)` / `attack_system` | a sibling VM by name exists / the sibling whose base is `<type>attack</type>` (nil if none) |
 
@@ -298,9 +301,12 @@ passed. The format is the results contract in `README-Testing.md`.
 scenario holding just that module on `modules/bases/debian_bookworm_desktop_kde`;
 `-- --test-base <name>` picks another base from `modules/bases/`) runs
 `secgen.rb test-scenario` / `test-module`. The test-module scenario is built by
-`lib/test/module_test_scenario.rb` and regenerated on every run; if the module
-declares a `<conflict>` with the chosen base, SecGen fails to resolve it before
-any VM is built:
+`lib/test/module_test_scenario.rb` and regenerated on every run. If the module's
+`secgen_metadata.xml` contains `<msf_module>exploit/...`, the generated scenario
+automatically includes a `kali_light_msf` attacker system — no per-module
+configuration needed; tier 3 uses the attack VM that is already there. If the
+module declares a `<conflict>` with the chosen base, SecGen fails to resolve it
+before any VM is built:
 
 build (with `--retries 1`) → `net0` teardown → snapshot if `--snapshot` →
 start (the one full reboot: static IPs up, reboot-dependent modules settle) →
@@ -341,13 +347,36 @@ A FAIL/SKIP is never rolled back: the VMs keep the evidence.
   providers' in-build runner does the same now (so on VirtualBox a system
   whose network test SKIPs, e.g. DHCP, is destroyed).
 
+### A build that never finishes
+
+`vagrant up` can hang indefinitely: blocked in `poll()` on an ESTABLISHED SSH
+connection to a guest that has gone (rebooted onto its VLAN, torn down or
+destroyed) without the connection closing. SecGen runs vagrant under a PTY in
+its own session, and its 30-minute command timeout kills only the process it
+spawned, so the Ruby `vagrant` child can outlive `secgen.rb`, the build and
+even the project directory. Signs:
+
+- the build log has stopped growing while `secgen-dev-run` is still running;
+- `ss -tnp | grep ruby` shows connections to `172.33.x.x:22` for a guest that
+  `scripts/pve-check --list` no longer lists, or that refuses a fresh
+  `nc -z <ip> 22`;
+- `readlink /proc/<vagrant pid>/cwd` ends in `(deleted)`.
+
+Kill the `vagrant up` process group (`kill -- -<pgid>`, from
+`ps -o pgid= -p <pid>`) and the build's own group, then destroy the project's
+VMs with `scripts/secgen-dev-destroy projects/<id>`. Look the PIDs up first:
+`pkill -f` with a pattern from your own command line kills your shell. A
+pipeline that drives many builds should watch each build for output and
+connection traffic rather than relying on a fixed timer; a rebuild after an
+error can legitimately take a long time.
+
 ### Step by step (to iterate on one VM)
 
 1. Make a minimal test scenario in `scenarios/tests/` (one `<system>`, the module,
    a `parameterised_accounts` user if required, a `<network>`, and the **required**
    `build type="cleanup"` root-password reset). Pick a base whose Proxmox template
-   exists (`scripts/pve-check`). Debian 12 provisions reliably; Debian 9 server has a flaky
-   provisioning net. See the `review-secgen-scenario` skill for scenario rules.
+   exists (`scripts/pve-check`). Debian 12 provisions reliably. See the
+   `review-secgen-scenario` skill for scenario rules.
 2. Validate + resolve cheaply first (see CLAUDE.md "Check cheaply"): XSD validate,
    then `build-project` (no VMs).
 3. Build: `scripts/secgen-dev-run -p <name> -s scenarios/tests/<scn>.xml`

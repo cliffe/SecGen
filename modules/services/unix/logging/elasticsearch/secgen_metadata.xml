@@ -34,8 +34,4 @@
     <type>update</type>
   </requires>
 
-  <requires>
-    <software_name>java</software_name>
-  </requires>
-
 </service>

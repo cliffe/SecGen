@@ -88,11 +88,14 @@ class ldap_server::install {
   }
   ->
   
-  # Configure phpLDAPadmin base DN to match LDAP domain
+  # Configure phpLDAPadmin base DN to match LDAP domain.
+  # Replaces whatever value the package postinst wrote (dc=example,dc=com by default).
+  # \$ is needed: a bare $servers in a double-quoted string is a Puppet variable.
   exec { 'configure-phpldapadmin-base-dn':
-    command => "/bin/sed -i \"s/\\$servers->setValue('server','base',array('dc=example,dc=com'));/\\$servers->setValue('server','base',array('${base_dn}'));/\" /etc/phpldapadmin/config.php",
-    onlyif  => "/bin/grep -q \"dc=example,dc=com\" /etc/phpldapadmin/config.php",
-    path    => ['/bin', '/usr/bin'],
+    command  => "sed -i \"s|^\\\$servers->setValue('server','base',array([^)]*));|\\\$servers->setValue('server','base',array('${base_dn}'));|\" /etc/phpldapadmin/config.php",
+    unless   => "grep -qF \"setValue('server','base',array('${base_dn}'))\" /etc/phpldapadmin/config.php",
+    provider => shell,
+    path     => ['/bin', '/usr/bin'],
   }
   ->
   # Configure phpLDAPadmin to start auto-incrementing UIDs at 10000 and GIDs at 5000

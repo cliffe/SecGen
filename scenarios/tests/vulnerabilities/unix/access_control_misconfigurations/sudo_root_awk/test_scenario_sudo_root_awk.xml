@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>Test: sudo_root_awk</name>
+  <author>Thomas Shaw</author>
+  <description>Auto-generated test scenario for the sudo_root_awk module.</description>
+
+  <type>test</type>
+
+  <system>
+    <system_name>sudo_root_awk_target</system_name>
+    <base platform="linux" distro="Debian 12" type="desktop"/>
+<input into_datastore="IP_addresses">
+  <network_ip system="sudo_root_awk_target"/>
+  <network_ip system="attacker"/>
+</input>
+    <vulnerability module_path=".*/sudo_root_awk"/>
+
+    <network type="private_network"/>
+
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+
+<system>
+  <system_name>attacker</system_name>
+  <base distro="Kali" name="MSF"/>
+  <network type="private_network"/>
+  <input into_datastore="spoiler_admin_pass_attacker">
+    <generator type="strong_password_generator"/>
+  </input>
+  <build type="cleanup">
+    <input into="root_password">
+      <datastore>spoiler_admin_pass_attacker</datastore>
+    </input>
+  </build>
+</system>
+</scenario>

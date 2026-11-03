@@ -7,7 +7,7 @@
   <author>Thomas Shaw</author>
   <author>Elastic</author>
   <module_license>Apache v2</module_license>
-  <description>TODO</description>
+  <description>Installs Elastic Auditbeat from the Elastic apt repository and configures its auditd module to read rules from /etc/auditbeat/audit.rules.d, shipping events to Logstash (logstash_ip:logstash_port).</description>
 
   <type>log_tool</type>
   <platform>linux</platform>

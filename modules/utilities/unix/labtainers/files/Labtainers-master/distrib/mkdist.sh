@@ -103,11 +103,6 @@ if [ $result -ne 0 ]; then
     exit
 fi
 cd $ldir
-if [[ -z $myshare ]]; then
-    myshare=/media/sf_SEED/
-    mkdir -p $myshare
-fi
-
 mv trunk/setup_scripts/install-labtainer.sh .
 ln -s trunk/setup_scripts/update-labtainer.sh .
 ln -s trunk/setup_scripts/update-designer.sh .
@@ -130,9 +125,5 @@ else
     zip -qq -r $release_dir/distrib/artifacts/labtainer_pdf.zip labtainer_pdf
 fi
 cd $here
-if [[ "$1" != "-r" ]]; then
-    cp labtainer.tar $myshare
-    cp labtainer_pdf.zip $myshare
-fi
 rm -fr $ddir
 echo "DONE"

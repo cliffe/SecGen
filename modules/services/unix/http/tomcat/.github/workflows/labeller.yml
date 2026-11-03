@@ -1,0 +1,22 @@
+name: community-labeller
+
+on:
+  issues:
+    types:
+      - opened
+  pull_request_target:
+    types:
+      - opened
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: puppetlabs/community-labeller@v0
+        name: Label issues or pull requests
+        with:
+          label_name: community
+          label_color: '5319e7'
+          org_membership: puppetlabs
+          token: ${{ secrets.IAC_COMMUNITY_LABELER }}

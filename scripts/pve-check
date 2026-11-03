@@ -3,12 +3,19 @@
 # Credentials come from the SecGen options file and are never printed.
 #
 # Usage: scripts/pve-check [--all]   (--all also lists non-template VMs)
+#        scripts/pve-check --list    (one API call: "VMID NODE NAME STATUS" per
+#                                     non-template VM, no version or agent columns;
+#                                     cheap enough to run after every build)
+#        scripts/pve-check --nodes   (one API call: "NODE STATUS MEM_PCT CPU_PCT" per
+#                                     cluster node, for choosing where to build)
 
 set -euo pipefail
 source "$(dirname "$(readlink -f "$0")")/lib/common.sh"
 
-SHOW_ALL=0
+SHOW_ALL=0; LIST_ONLY=0; NODES_ONLY=0
 [[ "${1:-}" == "--all" ]] && SHOW_ALL=1
+[[ "${1:-}" == "--list" ]] && LIST_ONLY=1
+[[ "${1:-}" == "--nodes" ]] && NODES_ONLY=1
 require_conf
 
 USER_=$(conf_get --proxmoxuser)
@@ -33,6 +40,24 @@ open(sys.argv[2], "w").write("PVEAuthCookie=" + d["ticket"])
 PY
 
 api() { "${CURL[@]}" -b "$(cat "$TMP/cookie")" "$URL$1"; }
+
+if [[ $LIST_ONLY -eq 1 ]]; then
+  api "/cluster/resources?type=vm" | python3 -I -c '
+import json, sys
+for v in sorted(json.load(sys.stdin)["data"], key=lambda v: v["vmid"]):
+    if v.get("type") == "qemu" and not v.get("template"):
+        print(v["vmid"], v["node"], v.get("name", "?"), v.get("status", "?"))'
+  exit 0
+fi
+
+if [[ $NODES_ONLY -eq 1 ]]; then
+  api "/cluster/resources?type=node" | python3 -I -c '
+import json, sys
+for n in sorted(json.load(sys.stdin)["data"], key=lambda n: n["node"]):
+    mem = 100 * n.get("mem", 0) / n["maxmem"] if n.get("maxmem") else 0
+    print(n["node"], n.get("status", "?"), round(mem), round(100 * n.get("cpu", 0)))'
+  exit 0
+fi
 
 echo "== PVE version"
 api /version | python3 -I -c 'import json,sys; d=json.load(sys.stdin)["data"]; print("  version", d.get("version"), "release", d.get("release"), "repoid", d.get("repoid"))'

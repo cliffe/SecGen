@@ -18,7 +18,7 @@
   <read_fact>binary_base64_to_leak</read_fact>
   <read_fact>leaked_filenames</read_fact>
   <read_fact>strings_to_leak</read_fact>
-  <read_fact>accounts</read_fact>
+  <read_fact>account</read_fact>
   <read_fact>leaked_base64_filenames</read_fact>
 
   <default_input into="leaked_filenames">
@@ -40,14 +40,32 @@
     </encoder>
   </default_input>
 
-  <!-- must be passed an existing account on the system, no default input for account -->
+  <!-- The account whose Trash is populated. Scenarios should pass the same account datastore that
+       parameterised_accounts creates; the default below only generates a spec and does not create the user. -->
+  <default_input into="account">
+    <generator type="account">
+      <input into="username">
+        <generator type="random_sanitised_word">
+          <input into="wordlist">
+            <value>mythical_creatures</value>
+          </input>
+        </generator>
+      </input>
+      <input into="password">
+        <generator type="strong_password_generator"/>
+      </input>
+      <input into="super_user">
+        <value>false</value>
+      </input>
+    </generator>
+  </default_input>
 
 
   <hint>Look for deleted files</hint>
   <solution>Deleted files are stored in ~/.local/share/Trash</solution>
 
   <requires>
-    <module_path>utilities/unix/system/.*/accounts</module_path>
+    <module_path>utilities/unix/system/parameterised_accounts</module_path>
   </requires>
 
   <CyBOK KA="F" topic="Operating System Analysis">

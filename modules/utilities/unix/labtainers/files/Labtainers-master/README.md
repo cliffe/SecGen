@@ -22,9 +22,9 @@ The Labtainers website, and downloads (including VM appliances with Labtainers p
 [designer-guide]: docs/labdesigner/labdesigner.pdf
 [Papers]: https://nps.edu/web/c3o/labtainers#papers
 
-Distribution created: 11/22/2024 09:42 </br>
-Revision: v1.4.4e </br>
-Commit: a3a40d0e </br>
+Distribution created: 09/11/2026 11:33 </br>
+Revision: v1.4.4n </br>
+Commit: 9f1012dc </br>
 Branch: master </br>
 
 ## Content
@@ -88,6 +88,18 @@ of new labs.  For those, run ./update-designer.sh from the labtainer/trunk/setup
 The installation script and the update-designer.sh script set environment variables,
 so you may want to logout/login, or start a new bash shell before using Labtainers the
 first time.
+
+Jauary 6, 2026
+- Fixed bug introduced into installation script due to indents.
+
+December 30, 2025
+- Modified checkwork report format to be vertical; video guide for headless; convenience paths
+
+October 15, 2025
+- Revised packet-introspection lab to update link for maxmind geo location database and note use of legacy database.
+
+April 24, 2025
+- Fixed imodule to properly create missing directories per pull request #96
 
 November 22, 2024
 - Replaced google cloud VM, this time due to a failure of systemd within containers.
@@ -371,7 +383,7 @@ December 21, 2020
 
 December 4, 2020
 - Transition distribution of tar to GitHub releaese artifacts
-- Eliminate seperate designer tar file, use git repo tarball.
+- Eliminate separate designer tar file, use git repo tarball.
 - Testing of grader web functions for analysis of student lab artifacts
 - Clear logs from full smoketest and delete grader container in removelab command.
 
@@ -548,7 +560,7 @@ June 6, 2019
 - Introduce a Centos6 base, but not support for automated assessment yet
 
 May 23, 2019
-- Automated assessment of setuid-env failed due to typos in field seperators.
+- Automated assessment of setuid-env failed due to typos in field separators.
 
 May 8, 2019
 - Corrections to Capabilities lab manual
@@ -821,7 +833,7 @@ May 7, 2018
 - Use C-based capinout program instead of the old capinout.sh to capture stdin and
 stdout. See trunk/src-tool/capinout.  Removes limitations associated with use ctrl-C 
 to break monitored programs and the display of passwords in telnet and ssh.
-- Include support for saki bulk\_download zip processing to extract seperatly submitted
+- Include support for saki bulk\_download zip processing to extract separately submitted
 reports, and summarizes missing submits.
 - Add checks to user-provided email to ensure they are printable characters.
 - While grading, if user-supplied email does not match zip file name, proceed to grade

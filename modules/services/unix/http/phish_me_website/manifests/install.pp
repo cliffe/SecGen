@@ -15,5 +15,11 @@ class phish_me_website::install {
     # require => File[$docroot],
   }
 
-
+  # apply.php stores uploaded CVs here
+  file { "$docroot/Action/uploads":
+    ensure  => directory,
+    owner   => 'www-data',
+    mode    => '0775',
+    require => File["$docroot/"],
+  }
 }

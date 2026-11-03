@@ -1,1 +1,0 @@
-include ruby_challenge_example::install

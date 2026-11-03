@@ -188,7 +188,7 @@ Sanity-check `<default_input>` generator choices:
 ### R9 — Metadata attribute sanity (lower priority)
 
 - `privilege`, `access`, `platform`, `type` are present and consistent with what the module does (e.g. a remotely exploitable service is `access=remote`).
-- `conflict`/`requires` are minimal (conflicts reduce randomisation — flag unnecessary ones). Also check `requires` names what the Puppet actually uses — e.g. a module requiring `.*apache.*compatible.*` while its manifests install and configure nginx is inconsistent.
+- `conflict`/`requires` are minimal (conflicts reduce randomisation — flag unnecessary ones). Also check `requires` names what the Puppet actually uses — e.g. a module requiring `<software_name>apache</software_name>` while its manifests install and configure nginx is inconsistent.
 - Description, references, and (if real) CVE/CVSS are present. `<cve>` values must not have trailing/leading whitespace (it breaks the XSD pattern).
 - **Metadata can be copy-paste boilerplate from another module — don't trust it at face value.** Check `<msf_module>`, `software_name`, `hint`, `solution` and reference URLs actually describe *this* module's software. A real example (PR #257 "librenms") declared LibreNMS CVEs but its `<msf_module>` was `exploit/linux/http/bludit_upload_images_exec` and its software_name/hints all said "bludit" — left over from a bludit module and never updated, which would misdirect anyone trusting it. Cross-check the msf module/software name against the package or archive the Puppet installs.
 

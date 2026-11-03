@@ -13,11 +13,18 @@ class linuxki_rce::apache {
 
   class { '::apache':
     default_vhost   => false,
-    default_mods    => ['rewrite'], # php5 via separate module
+    default_mods    => ['rewrite'], # PHP via separate module, enabled below
     overwrite_ports => false,
     mpm_module      => 'prefork',
   }
+  # The php7 utility module (a <requires> dependency) installs PHP 7.4 but
+  # deliberately never touches Apache, since apache2 doesn't exist at that
+  # point in provisioning - so enabling it in Apache is this module's job.
+  -> exec { 'enable-apache-php7-linuxki':
+    command => 'a2enmod php7.4',
+  }
   -> ::apache::vhost { 'linuxki':
+    priority => '05', # ahead of the apache module's own vhost on the same port
     port        => $port,
     options     => 'FollowSymLinks',
     override    => 'All',

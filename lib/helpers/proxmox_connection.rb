@@ -255,6 +255,7 @@ module Proxmox
         # PVE versions differ on whether flags are 1 or true
         if truthy?(status[:exited])
           return { exitcode: status[:exitcode],
+                   signal: status[:signal],
                    stdout: status[:'out-data'].to_s,
                    stderr: status[:'err-data'].to_s,
                    truncated: truthy?(status[:'out-truncated']) || truthy?(status[:'err-truncated']) }

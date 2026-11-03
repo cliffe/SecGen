@@ -8,7 +8,7 @@ unless defined('analysis_alert_action_client') {
       {
         'module'  => 'auditd',
         'enabled' => true,
-        'audit_rule_files' => '${path.config}/audit.rules.d/*.conf',
+        'audit_rule_files' => ['${path.config}/audit.rules.d/*.conf'],
       },
     ],
     outputs => {

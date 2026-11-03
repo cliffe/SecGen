@@ -39,9 +39,9 @@ import docgoals
 import docwork
 import collections
 try:
-   from collections import OrderedDict
+    from collections import OrderedDict
 except:
-   OrderedDict = dict
+    OrderedDict = dict
 
 fifteenequal = "="*15
 twentyequal = "="*20
@@ -134,8 +134,8 @@ def ReportCheater(gradestxtoutput, watermark_source, email, keyvalue, found_chea
         sourceline = cheateremailprintformat % source_email[:20]
         curline = curline + sourceline
         gradestxtoutput.write(curline + "\n")
-    #print keyvalue['expectedwatermark']
-    #print keyvalue['actualwatermark']
+        #print keyvalue['expectedwatermark']
+        #print keyvalue['actualwatermark']
     elif keyvalue['expectedwatermark'] != keyvalue['actualwatermark']: 
         found_source_email = "Unknown"
         for source_email, source_watermark in watermark_source.items():
@@ -153,51 +153,93 @@ def ReportCheater(gradestxtoutput, watermark_source, email, keyvalue, found_chea
 def PrintHeaderGrades(gradestxtfile, labgrades, labname, goalsline, barline, check_watermark, checkwork):
 
     gradestxtoutput = open(gradestxtfile, "w")
-    headerline = emailprintformat % 'Student' + goalsline
-    barline = emailprintformat % twentyequal + barline
+
+    # Determine how many valid (non-cheater) students there are
+    valid_students = []
+    for emaillabname, keyvalue in labgrades.items():
+        if Check_Email_Watermark_OK(keyvalue):
+            valid_students.append((emaillabname, keyvalue))
+
+    # Always print labname
     gradestxtoutput.write("Labname %s" % labname)
-    gradestxtoutput.write("\n\n" + headerline + "\n" + barline + "\n")
+
     checkwork_failures = []
     if checkwork:
         checkwork_feedback = docwork.getCheckworkFeedback('.local/instr_config')
-    for emaillabname, keyvalue in sorted(labgrades.items()):
-        email, labname = emaillabname.rsplit('.', 1)
-        #print "emaillabname is (%s) email is (%s) labname is (%s)" % (emaillabname, email, labname)
-        # Get the first 20 characters of the student's e-mail only
-        curline = emailprintformat % email[:20]
 
-        #print "keyvalue is (%s)" % keyvalue
+        # Vertical format for a single valid student
+        emaillabname, keyvalue = valid_students[0]
+        email, labname = emaillabname.rsplit('.', 1)
+        gradestxtoutput.write("\n\nStudent: %s\n" % email)
+
+        display_goals = []
+
+        # Build list of (goalid, display_value) while still tracking checkwork failures
         for key, value in keyvalue.items():
-            #print "key is (%s)" % key
             if key == 'grades':
-                # Do 'grades' portion - skip 'parameter' portion for now
-                #print "value is (%s)" % value
                 for goalid, goalresult in value.items():
                     if goalid.startswith('_'):
                         continue
-                    if goalid.startswith('cw_'): 
+                    if goalid.startswith('cw_'):
                         if checkwork:
                             if goalid not in checkwork_feedback:
                                 print('%s has no feedback defined.' % goalid)
                                 continue
                             expect = checkwork_feedback[goalid].expected
                             if type(goalresult) is bool:
-                               if goalresult != expect:
-                                   checkwork_failures.append(goalid)
-      
+                                if goalresult != expect:
+                                    checkwork_failures.append(goalid)
                     else:
-                        #print "goalid is (%s)" % goalid
-                        #print "goalresult is (%s)" % goalresult
                         if type(goalresult) is bool:
-                            if goalresult:
-                                curline = curline + goalprintformat % 'Y'
+                            display_value = ' Y - ' if goalresult else ' N - '
+                        elif type(goalresult) is int:
+                            display_value = str(goalresult)
+                        else:
+                            display_value = ''
+                        display_goals.append((goalid, display_value))
+
+        # Print vertical list: value on left, goal name on right
+        for goalid, display_value in display_goals:
+            gradestxtoutput.write("%2s %s\n" % (display_value, goalid))
+
+    else:
+        # Original horizontal table format for multiple students
+        headerline = emailprintformat % 'Student' + goalsline
+        barline_full = emailprintformat % twentyequal + barline
+        gradestxtoutput.write("\n\n" + headerline + "\n" + barline_full + "\n")
+
+        for emaillabname, keyvalue in sorted(labgrades.items()):
+            email, labname = emaillabname.rsplit('.', 1)
+            # Get the first 20 characters of the student's e-mail only
+            curline = emailprintformat % email[:20]
+
+            for key, value in keyvalue.items():
+                if key == 'grades':
+                    for goalid, goalresult in value.items():
+                        if goalid.startswith('_'):
+                            continue
+                        if goalid.startswith('cw_'): 
+                            if checkwork:
+                                if goalid not in checkwork_feedback:
+                                    print('%s has no feedback defined.' % goalid)
+                                    continue
+                                expect = checkwork_feedback[goalid].expected
+                                if type(goalresult) is bool:
+                                    if goalresult != expect:
+                                        checkwork_failures.append(goalid)
+
+                        else:
+                            if type(goalresult) is bool:
+                                if goalresult:
+                                    curline = curline + goalprintformat % 'Y'
+                                else:
+                                    curline = curline + goalprintformat % ''
+                            elif type(goalresult) is int:
+                                curline = curline + goalprintformat_int % goalresult 
                             else:
                                 curline = curline + goalprintformat % ''
-                        elif type(goalresult) is int:
-                            curline = curline + goalprintformat_int % goalresult 
-                        else:
-                            curline = curline + goalprintformat % ''
-        gradestxtoutput.write(curline + "\n")
+            gradestxtoutput.write(curline + "\n")
+
     summary = docgoals.getGoalInfo('.local/instr_config')
     gradestxtoutput.write(summary)
     if checkwork:
@@ -211,7 +253,7 @@ def PrintHeaderGrades(gradestxtfile, labgrades, labname, goalsline, barline, che
                         gradestxtoutput.write('\n==> '+checkwork_feedback[gid].message + "\n")
             elif 'CHECK_OK' in checkwork_feedback:
                 gradestxtoutput.write('\n\n%s\n' % checkwork_feedback['CHECK_OK'].message)
-        
+
 
     if check_watermark:
         # Create 'Source' watermark
@@ -224,8 +266,6 @@ def PrintHeaderGrades(gradestxtfile, labgrades, labname, goalsline, barline, che
                     if email not in watermark_source:
                         watermark_source[email] = {}
                     watermark_source[email] = keyvalue['expectedwatermark']
-
-        #print watermark_source
 
         # Report 'cheaters'
         found_cheater = False
@@ -254,9 +294,6 @@ def CreateReport(gradesjsonfile, gradestxtfile, check_watermark, checkwork):
     labgrades = json.load(labgradesjson, object_pairs_hook=OrderedDict)
     labgradesjson.close()
 
-    #print "Lab Grades JSON is"
-    #print labgrades
-
     labname, goalsline, barline = ValidateLabGrades(labgrades)
 
     PrintHeaderGrades(gradestxtfile, labgrades, labname, goalsline, barline, check_watermark, checkwork)
@@ -273,23 +310,16 @@ def UniqueReport(uniquejsonfile, gradestxtfile):
     labunique = json.load(labuniquejson)
     labuniquejson.close()
 
-    #print "Lab Unique JSON is"
-    #print labunique
-
     gradestxtoutput = open(gradestxtfile, "a")
     unique_header_printed = False
     for emaillabname, keyvalue in labunique.items():
-        #print "emaillabname is (%s)" % emaillabname
         for filename, checksum in keyvalue['unique'].items():
-            #print "filename is (%s)" % filename
-            #print "checksum is (%s)" % checksum
             filename_not_printed = True
             print_string = ""
             # Skip no checksum
             if checksum == "NONE":
                 continue
             for emaillabname2, keyvalue2 in labunique.items():
-                #print "emaillabname2 is (%s)" % emaillabname2
                 if emaillabname == emaillabname2:
                     continue
                 for filename2, checksum2 in keyvalue2['unique'].items():
@@ -305,10 +335,10 @@ def UniqueReport(uniquejsonfile, gradestxtfile):
                         keyvalue2['unique'][filename2] = "NONE"
             if print_string != "":
                 if unique_header_printed == False:
-                     gradestxtoutput.write("\n\nFound non-unique files:\n")
-                     unique_header_printed == True
+                    gradestxtoutput.write("\n\nFound non-unique files:\n")
+                    unique_header_printed == True
                 gradestxtoutput.write("%s\n" % print_string)
-        
+
     gradestxtoutput.close()
 
 # Usage: GenReport.py <gradesjsonfile> <gradestxtfile>
@@ -328,4 +358,3 @@ def main():
 
 if __name__ == '__main__':
     sys.exit(main())
-

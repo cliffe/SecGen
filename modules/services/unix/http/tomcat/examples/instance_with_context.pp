@@ -1,11 +1,11 @@
-# This code fragment downloads tomcat 7.0.53, creates an instance and adds a context to localhost
+# This code fragment downloads tomcat 8.0.53, creates an instance and adds a context to localhost
 #
 class { 'tomcat': }
 class { 'java': }
 
 tomcat::instance { 'mycat':
   catalina_base => '/opt/apache-tomcat/mycat',
-  source_url    => 'http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.53/bin/apache-tomcat-7.0.53.tar.gz',
+  source_url    => 'https://downloads.apache.org/tomcat/tomcat-8/v8.0.53/bin/apache-tomcat-8.0.53-deployer.tar.gz',
 }
 -> tomcat::config::server::context { 'mycat-test':
   catalina_base         => '/opt/apache-tomcat/mycat',

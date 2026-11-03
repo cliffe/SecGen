@@ -1,0 +1,10 @@
+name: "Auto release"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release_prep:
+    name: "Release Prep"
+    uses: "puppetlabs/cat-github-actions/.github/workflows/module_release_prep.yml@main"
+    secrets: "inherit"

@@ -29,7 +29,8 @@
   <requires>
     <type>update</type>
   </requires>
+  <!-- utilities/unix/languages/java (formerly java_buster_compatible) handles Debian 12 -->
   <requires>
-    <type>java</type>
+    <module_path>utilities/unix/languages/java</module_path>
   </requires>
 </service>

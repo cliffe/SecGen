@@ -40,7 +40,19 @@ class proftpd_133c_backdoor_nonroot::install {
     require     => Exec['install_proftpd-1.3.3c'],
     cwd         => '/usr/local/src/backdoored_proftpd-1.3.3c/',
     command     => '/usr/bin/make install',
-    notify      => File['/etc/init.d/proftpd'],
+    notify      => Exec['proftpd-setcap'],
+  }
+
+  # nonroot variant: the daemon starts as the ftp service user (see
+  # files/proftpd.init.d --chuid), so grant the binary the capability to bind the
+  # privileged FTP port without being root. The pre-auth backdoor shell is then
+  # non-root, matching <privilege>user_rwx.
+  ensure_packages('libcap2-bin')
+  exec { 'proftpd-setcap':
+    command => 'setcap cap_net_bind_service=+ep /usr/local/sbin/proftpd',
+    path    => [ '/bin/', '/sbin/', '/usr/bin/', '/usr/sbin/' ],
+    require => [ Exec['make_install_proftpd-1.3.3c'], Package['libcap2-bin'] ],
+    notify  => File['/etc/init.d/proftpd'],
   }
 
   # ProFTPd init.d service installation

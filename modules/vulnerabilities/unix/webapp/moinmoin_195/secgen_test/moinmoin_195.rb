@@ -11,6 +11,9 @@ class MoinMoin195Test < PostProvisionTest
     super
     test_service_up
     test_html_returned_content('/index.html','<script type="text/javascript" src="/moin_static195/common/js/common.js"></script>')
+    test_msf_exploit('exploit/unix/webapp/moinmoin_twikidraw',
+                     rport: self.port,
+                     tier: 3)
   end
 end
 

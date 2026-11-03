@@ -6,7 +6,7 @@
   <name>Readable Shadow File</name>
   <author>Thomas Shaw</author>
   <module_license>MIT</module_license>
-  <description>Changes permissions on shadow file to 0611, reveals password hashes to local users.
+  <description>Changes permissions on shadow file to 0644, reveals password hashes to local users.
     This is not a common misconfiguration, and not particularly subtle.</description>
 
   <type>access_control_misconfiguration</type>

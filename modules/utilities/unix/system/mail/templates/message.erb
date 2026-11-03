@@ -1,6 +1,6 @@
 From <%= @sender %> <%= @sent_datetime %>
 Return-path: <%= @sender %>
-Envelope-to: <% @recipient%>
+Envelope-to: <%= @recipient %>
 Delivery-date: <%= @sent_datetime %>
 Received: from <%= @sender_user %> by <%= @sender_domain%> with local (Exim 4.80)
 	(envelope-from <%= @sender %>)

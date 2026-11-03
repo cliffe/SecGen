@@ -7,7 +7,7 @@
   <author>Jason Keighley</author>
   <author>Alessandro Franceschi</author>
   <module_license>Apache v2</module_license>
-  <description>An installation of vsftpd</description>
+  <description>An installation of the vsftpd FTP server, with local user logins enabled, anonymous access disabled and a configurable listen port.</description>
 
   <type>ftp</type>
   <platform>linux</platform>

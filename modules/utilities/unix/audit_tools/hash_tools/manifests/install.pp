@@ -1,13 +1,8 @@
 class hash_tools::install{
-  # kali-rolling dropped the md5deep transitional package; hashdeep provides the md5deep/sha*deep commands
-  if $operatingsystem == 'Kali' {
-    package { ['hashdeep']:
-      ensure => 'installed',
-    }
-  } else {
-    package { ['md5deep']:
-      ensure => 'installed',
-    }
+  # hashdeep ships the md5deep/sha*deep commands on every base. md5deep is only a
+  # transitional package (dropped from kali-rolling), so install the real package everywhere.
+  package { ['hashdeep']:
+    ensure => 'installed',
   }
   case $operatingsystem {
     'Debian': {

@@ -2203,6 +2203,9 @@ due to limitations in product such as box.com which fails to provide file modifi
 bigexternal.txt file is used to control rebuilds.  Thus, if you update one of the large files, you will want to make a gratuitous change
 to the bigexternal.txt file to force a rebuild (for you and others who may extend your lab.)
 
+Also note the Labtainer rebuild system maintains a cache in \$HOME/.local/share/labtainer/big\_cache to speed up rebuilds without
+needing to pull the big files each time.  You must manually delete from this cache when files change.
+
 \subsubsection{Reuse of large file sets}
 \label{manifest}
 The use of ``sys\_tar'' and ``home\_tar'' described in \ref{large files} facilitates sharing of common

@@ -221,6 +221,8 @@
   </system>
 
 
+  <!-- system_name must be 'ids_monitor': mirror_traffic_to_ids_iptables secgen_test
+       cross-VM checks (Snort installed, TEE target IP match) rely on this name. -->
   <system>
     <system_name>ids_monitor</system_name>
     <base distro="Debian 10" type="desktop" name="KDE"/>

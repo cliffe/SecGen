@@ -77,7 +77,7 @@
 
   <system>
     <system_name>siem_management</system_name>
-    <base distro="Debian 10" type="desktop" name="KDE"/>
+    <base distro="Debian 12" type="desktop" name="KDE"/>
 
     <input into_datastore="IP_addresses">
       <!-- 0 siem_management -->
@@ -272,8 +272,6 @@
         <datastore access="0">logstash_port</datastore>
       </input>
     </utility>
-
-    <utility module_path=".*/elastalert.*"/>
 
     <utility module_path=".*/hackerbot_client">
       <input into="ssh_key_pair">

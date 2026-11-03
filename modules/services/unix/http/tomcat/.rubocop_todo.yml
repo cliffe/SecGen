@@ -1,0 +1,23 @@
+# Offense count: 231
+# Configuration parameters: Prefixes, AllowedPatterns.
+# Prefixes: when, with, without
+RSpec/ContextWording:
+  Enabled: false
+
+# Offense count: 32
+# Configuration parameters: IgnoredMetadata.
+RSpec/DescribeClass:
+  Enabled: false
+
+# Offense count: 16
+# Configuration parameters: CountAsOne.
+RSpec/ExampleLength:
+  Max: 86
+
+RSpec/NamedSubject:
+  Enabled: false
+
+# Offense count: 4
+RSpec/RepeatedExampleGroupBody:
+  Exclude:
+    - 'spec/defines/config/server/realm_spec.rb'

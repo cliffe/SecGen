@@ -61,6 +61,7 @@ class GemExec
           Print.err 'Non-zero exit status...'
         elsif ex.class == ProcessHelper::TimeoutError
           Print.err 'Timeout: Killing process...'
+          kill_processes_in(working_dir)
           sleep(30)
           output_hash[:output] = ex.to_s.split('Command output prior to timeout: ')[1]
         else
@@ -69,5 +70,29 @@ class GemExec
       end
     end
     output_hash
+  end
+
+  # On a timeout ProcessHelper raises but leaves the command running: PTY.spawn
+  # starts it in its own session, so a `vagrant up` and its children outlive
+  # SecGen and hold its output pipe open, and whatever reads SecGen's output
+  # (secgen-dev-run, a pipeline driver) waits for ever. Kill everything still
+  # running in the working directory (the project), TERM then KILL. Linux only
+  # (/proc); elsewhere this does nothing.
+  def self.kill_processes_in(working_dir)
+    return unless File.directory?('/proc')
+    dir = File.expand_path(working_dir)
+    find = lambda do
+      Dir.glob('/proc/[0-9]*').map { |p| File.basename(p).to_i }.select do |pid|
+        next false if pid == Process.pid
+        cwd = File.readlink("/proc/#{pid}/cwd") rescue nil
+        cwd == dir || cwd == "#{dir} (deleted)"
+      end
+    end
+    pids = find.call
+    return if pids.empty?
+    Print.err "Killing #{pids.size} process(es) left running in #{dir}: #{pids.join(' ')}"
+    pids.each { |pid| Process.kill('TERM', pid) rescue nil }
+    10.times { break if find.call.empty?; sleep(1) }
+    find.call.each { |pid| Process.kill('KILL', pid) rescue nil }
   end
 end

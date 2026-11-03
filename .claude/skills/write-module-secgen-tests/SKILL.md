@@ -122,7 +122,7 @@ All defined in `lib/objects/post_provision_test.rb`. Default tiers in brackets.
 
 | Helper | Passes when |
 |---|---|
-| `test_local_command(label, cmd, substr, user: nil)` **[1]** | `substr` appears in stdout **or** stderr |
+| `test_local_command(label, cmd, substr, user: nil)` **[1]** | `substr` appears in stdout (add `2>&1` to match stderr, but then never match the program's own name: `x: command not found` would match; use `test_command_succeeds` for "x runs") |
 | `test_service_up(port: self.port)` **[2]** | the port is listening (SKIP if the module has no port input) |
 | `test_banner(match, port:, send: nil)` **[2]** | what the port sends (after optional `send` + CRLF) contains `match` |
 | `test_http(path, match: nil, status: nil, port:, scheme: 'http')` **[2]** | status matches (default 2xx/3xx) and body contains `match` |
@@ -130,6 +130,9 @@ All defined in `lib/objects/post_provision_test.rb`. Default tiers in brackets.
 | `test_html_returned_content(page, match, hide=false)` | legacy: body contains `match` |
 | `test_msf_exploit(module, rhost:, rport: self.port, attacker:, payload:, collect:, force:, options:, tier: 3)` **[3]** | a Metasploit exploit from the attacker VM gets RCE on the target. Use `rport: self.port` (not a hardcoded number) so the test respects scenarios that override the port. |
 | `test_http_exploit(path, method:, data:, headers:, expect:, expect_status:, sentinel:, include_headers:, collect:, tier: 3)` **[3]** | a crafted web exploit from the attacker VM matches `expect` and/or proves execution via a target-side `sentinel` |
+| `test_smb_share_listed(share, comment:)` / `test_smb_anonymous_write(share, dir, expect_writable:)` **[2]** | an anonymous `smbclient` from the attacker VM lists the share / puts a file that lands in `dir` on the target (or is refused). Don't make a module install smbclient for its test; add `utilities/unix/smb/smbclient` to the attacker in the test scenario if the base lacks it |
+| `test_smb_share_setting(share, param, value)` **[2]** | the target's `testparm` gives `value` for that share parameter (defaults included). `samba_share_name` returns the `[share]` name and comment the samba module renders, following `organisation` |
+| `run_msf_module(module, rhost:, attacker:, options:, tier: 3, label:, timeout: 120)` **[3]** | run any MSF module (auxiliary/scanner/gather) on the attacker VM and return `{attacker:, attacker_ip:, rhost:, stdout:, stderr:, exit_status:, msf_output:}` (nil + SKIP if no attacker). Records no PASS/FAIL — the caller asserts on the output or a follow-up command. For non-RCE modules where `test_msf_exploit` doesn't apply. |
 | `pass_check` / `fail_check` / `skip_check(name, detail=nil, tier:, evidence:)` | record your own result |
 | `skip!(reason)` | stop now and report SKIP (a prerequisite is missing) |
 | `add_evidence(name, cmd)` | register an extra command whose output is saved **if the test FAILs** |
@@ -279,11 +282,16 @@ things have to line up:
      assert with `run_command`.
 
 **Rule: if a Metasploit module exists for the vulnerability, tier 3 must use
-`test_msf_exploit`.** A bespoke `curl`/HTTP exploit should only appear when
-there is genuinely no MSF module. If the module can't be driven with
-`test_msf_exploit` after trying the correct payload type (standard, fetch, or
-CmdStager — see below), do not reimplement the exploit in test code. Instead,
-record a `skip_check` and leave a comment so a human can resolve it later:
+it.** For an **exploit** module (gives RCE), use `test_msf_exploit`. For an
+**auxiliary/scanner/gather** module (no RCE — file read, traversal, info leak,
+credential dump), use `run_msf_module` to run it on the attacker and then
+assert on its output or on a follow-up command that proves the effect (see the
+samba_symlink_traversal precedent below). A bespoke `curl`/HTTP exploit should
+only appear when there is genuinely no MSF module. If an exploit module can't
+be driven with `test_msf_exploit` after trying the correct payload type
+(standard, fetch, or CmdStager — see below), do not reimplement the exploit in
+test code. Instead, record a `skip_check` and leave a comment so a human can
+resolve it later:
 
 ```ruby
 # TODO: human needed — exploit/linux/http/example_rce uses CmdStager but
@@ -292,6 +300,17 @@ skip_check('msf exploit (exploit/linux/http/example_rce)',
            'CmdStager LHOST unresolved; cannot automate without manual check',
            tier: 3, evidence: nil)
 ```
+
+**Assert the privilege level — it is driven by `<privilege>`.** `test_msf_exploit`
+takes `expect_privilege:`, and `generate-t3-test` sets it automatically from the
+module's `<privilege>`: `root_rwx` requires the exploited shell to be root or a
+sudoer; `user_rwx` requires a non-root, non-sudoer shell (judged from the
+sentinel's `id` and `sudo -n -l`). A plain `test_msf_exploit` passes on *any*
+`uid=`, so without this a `user_rwx` module that actually lands root — or a
+`root_rwx` one that lands a mere user — would pass wrongly. Keep `<privilege>`
+honest with what the module gives, and if you hand-write a tier-3 (or a non-MSF
+one) assert the same level yourself. A mismatch is a module bug to fix, never a
+check to drop.
 
 **CmdStager modules** use `execute_cmdstager` rather than `execute_command` (look
 for `include Msf::Exploit::CmdStager` in the module source; `show info` in
@@ -374,6 +393,12 @@ a weaker test.
   container execution.
 - **Vulnerability, tier 3 (web, no msf):** `vuln_parameterised_website` — SQLi
   auth-bypass via `test_http_exploit` (`expect: /location:\s*index\.php/i`).
+- **Vulnerability, tier 3 (MSF auxiliary, no RCE):**
+  `modules/vulnerabilities/unix/smb/samba_symlink_traversal/secgen_test/samba_symlink_traversal.rb`
+  with `scenarios/tests/vulnerabilities/unix/smb/samba_symlink_traversal/test_scenario_samba_symlink_traversal.xml`
+  — `run_msf_module` drives the MSF auxiliary to plant a symlink, then
+  `smbclient` on the attacker reads `/etc/passwd` through it to prove traversal.
+  The pattern for any auxiliary/scanner/gather module that doesn't give RCE.
 
 ## Then
 

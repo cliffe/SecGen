@@ -10,6 +10,9 @@ class Proftpd133cBackdoorTest < PostProvisionTest
   def test_module
     super
     test_service_up
+    test_msf_exploit('exploit/unix/ftp/proftpd_133c_backdoor',
+                     rport: self.port,
+                     tier: 3)
   end
 end
 

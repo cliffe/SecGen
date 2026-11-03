@@ -28,5 +28,10 @@
     <type>httpd</type>
   </requires>
 
+  <requires>
+    <module_path>.*utilities/unix/languages/php82_patched</module_path>
+    <type>php</type>
+  </requires>
+
 <!-- TODO: accept organisation/email addresses as parameters, and use randomisation -->
 </service>

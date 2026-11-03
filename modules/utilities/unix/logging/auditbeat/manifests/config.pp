@@ -7,7 +7,7 @@ class auditbeat::config {
 
   $validate_cmd = $auditbeat::disable_configtest ? {
     true    => undef,
-    default => "${auditbeat_bin} test config -c %",
+    default => "${auditbeat_bin} test config -c % --path.home /usr/share/auditbeat",
   }
 
   $auditbeat_config = delete_undef_values({

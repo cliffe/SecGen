@@ -1,0 +1,98 @@
+name: "Integration Testing"
+
+on: [pull_request]
+
+jobs:
+  setup_matrix:
+    name: "Setup Test Matrix"
+    runs-on: ubuntu-20.04
+    outputs:
+      matrix: ${{ steps.get-matrix.outputs.matrix }}
+
+    steps:
+    - name: Checkout Source
+      uses: actions/checkout@v2
+      if: ${{ github.repository_owner == 'puppetlabs' }}
+
+    - name: Activate Ruby 2.7
+      uses: ruby/setup-ruby@v1
+      if: ${{ github.repository_owner == 'puppetlabs' }}
+      with:
+        ruby-version: "2.7"
+        bundler-cache: true
+
+    - name: Print bundle environment
+      if: ${{ github.repository_owner == 'puppetlabs' }}
+      run: |
+        echo ::group::bundler environment
+        bundle env
+        echo ::endgroup::
+
+    - name: Setup Integration Test Matrix
+      id: get-matrix
+      run: |
+        if [ '${{ github.repository_owner }}' == 'puppetlabs' ]; then
+          echo  "matrix={'platform':['centos-7'],'collection':['puppet6-nightly']}" >> $GITHUB_OUTPUT
+        else
+          echo  "matrix={}"  >> $GITHUB_OUTPUT
+        fi
+
+  Integration:
+    needs:
+      - setup_matrix
+    if: ${{ needs.setup_matrix.outputs.matrix != '{}' }}
+
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJson(needs.setup_matrix.outputs.matrix)}}
+
+    steps:
+
+    - name: Checkout Source
+      uses: actions/checkout@v2
+
+    - name: Activate Ruby 2.7
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: "2.7"
+        bundler-cache: true
+
+    - name: Print bundle environment
+      run: |
+        echo ::group::bundler environment
+        bundle env
+        echo ::endgroup::
+
+    - name: Create the fixtures directory
+      run: |
+        bundle exec rake spec_prep
+
+    - name: Provision test environment
+      run: |
+        bundle exec bolt --modulepath spec/fixtures/modules plan run ntp::acceptance::provision_integration image=${{ matrix.platform }}
+        # Redact password
+        FILE='spec/fixtures/litmus_inventory.yaml'
+        sed -e 's/password: .*/password: "[redacted]"/' < $FILE || true
+
+    - name: Install PE
+      run: |
+        bundle exec bolt --modulepath spec/fixtures/modules -i ./spec/fixtures/litmus_inventory.yaml plan run ntp::acceptance::pe_server
+
+    - name: Install Agents
+      run: |
+        bundle exec bolt --modulepath spec/fixtures/modules -i ./spec/fixtures/litmus_inventory.yaml plan run ntp::acceptance::pe_agent
+
+    - name: Install module
+      run: |
+        bundle exec rake 'litmus:install_module'
+
+    - name: Run integration tests
+      run: |
+        bundle exec rake ntp:integration
+
+    - name: Remove test environment
+      if: ${{ always() }}
+      continue-on-error: true
+      run: |
+        bundle exec rake 'litmus:tear_down'

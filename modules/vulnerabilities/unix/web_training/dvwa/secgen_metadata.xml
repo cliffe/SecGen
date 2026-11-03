@@ -39,10 +39,10 @@
   </conflict> -->
 
   <requires>
-    <module_path>.*unix/http/.*/apache.*</module_path>
+    <software_name>apache</software_name>
   </requires>
   <requires>
-    <module_path>.*/mysql$</module_path>
+    <software_name>mysql</software_name>
   </requires>
 
   <!-- comprehensive web training framework -->

@@ -7,7 +7,7 @@
 	<!-- an example system with a setgid binary. -->
 	<system>
 		<system_name>group_challenges</system_name>
-		<base platform="linux" type="server" distro="Stretch"/>
+		<base platform="linux" type="server"/>
 
       <utility module_path=".*/parameterised_accounts">
           <input into="accounts" into_datastore="account">

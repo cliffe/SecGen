@@ -41,6 +41,11 @@
   <conflict>
     <software_name>erlang</software_name>
   </conflict>
+
+  <!-- the prebuilt erlang-otp .deb is built for Bookworm; dpkg -i fails on Buster -->
+  <conflict>
+    <name>.*Buster.*</name>
+  </conflict>
   <requires>
     <type>update</type>
   </requires>

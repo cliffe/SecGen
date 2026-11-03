@@ -9,13 +9,14 @@ class forensic_trash_deleted_files::init {
   $base64_files = $secgen_parameters['binary_base64_to_leak']
   $deletion_date = strftime('%Y-%m-%dT%H:%M:%S')
 
-  $account = parsejson($secgen_parameters['account'][0])
+  $account_params = $secgen_parameters['account']
 
-  if $account and $account != '' {
+  if $account_params and $account_params[0] and $account_params[0] != '' {
+    $account = parsejson($account_params[0])
     $username = $account['username']
     $storage_directory = "/home/$username/.local/share/Trash/"
   } else {
-    fail('The "accounts" parameter is required for forensic_trash_deleted_files.')
+    fail('The "account" parameter is required for forensic_trash_deleted_files.')
   }
 
   # create the directory tree

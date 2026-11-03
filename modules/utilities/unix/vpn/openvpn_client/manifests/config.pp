@@ -11,10 +11,11 @@ class openvpn_client::config {
   $client_key     = $client['client_key']
 
   file { '/etc/openvpn/client':
-    ensure => directory,
+    ensure  => directory,
     owner  => 'root',
     group  => 'root',
-    mode   => '0750',
+    mode    => '0750',
+    require => Package['openvpn'],
   }
 
   file { '/etc/openvpn/client/client.ovpn':
@@ -24,5 +25,12 @@ class openvpn_client::config {
     mode    => '0640',
     content => template('openvpn_client/client.ovpn.erb'),
     require => File['/etc/openvpn/client'],
+  }
+
+  # openvpn-client@client.service reads /etc/openvpn/client/client.conf
+  file { '/etc/openvpn/client/client.conf':
+    ensure  => link,
+    target  => '/etc/openvpn/client/client.ovpn',
+    require => File['/etc/openvpn/client/client.ovpn'],
   }
 }

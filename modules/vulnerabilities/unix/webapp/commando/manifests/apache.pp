@@ -15,6 +15,7 @@ class commando::apache {
   } ->
 
   apache::vhost { 'commando':
+    priority => '05', # ahead of the apache module's own vhost on the same port
     port    => $port,
     docroot => '/var/www/commando',
   } ->

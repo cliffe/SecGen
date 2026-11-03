@@ -31,7 +31,7 @@ define accounts::manage_keys (
   }
   else {
     if (! empty($key_def[0])) {
-      $key_options = accounts_ssh_options_parser($key_def[0])
+      $key_options = accounts_ssh_options_parser($key_def[0]) # validates the options
     } else {
       $key_options = undef
     }
@@ -42,17 +42,18 @@ define accounts::manage_keys (
 
     $key_title = "${user}_${key_type}_${key_name}"
 
-    if $ensure == 'absent' {
-      Ssh_authorized_key[$key_title] -> User[$user]
-    }
-
-    ssh_authorized_key { $key_title:
-      ensure  => $ensure,
-      user    => $key_owner,
-      key     => $key_content,
-      type    => $key_type,
-      options => $key_options,
-      target  => $key_file,
+    # ssh_authorized_key is no longer part of Puppet's core types (it moved to the
+    # sshkeys_core module), and the Puppet on SecGen's bookworm base doesn't ship it
+    # ("Unknown resource type: 'ssh_authorized_key'"), so write the key line with
+    # stdlib's file_line. key_management creates key_file with the right owner and
+    # mode when keys are present, and removes the whole file when they are absent.
+    if $ensure == 'present' {
+      file_line { $key_title:
+        ensure  => present,
+        path    => $key_file,
+        line    => strip($keyspec),
+        require => File[$key_file],
+      }
     }
   }
 }

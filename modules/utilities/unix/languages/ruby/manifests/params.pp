@@ -71,7 +71,15 @@ class ruby::params {
         default: {
           $bundler_ensure   = 'installed'
           $ruby_package     = 'ruby'
-          $rubygems_package = 'rubygems'
+          # The separate 'rubygems' package no longer exists from Debian 11 /
+          # Ubuntu 20.04: gem ships with the ruby package, so installing
+          # 'rubygems' fails with "Unable to locate package" on bookworm.
+          if ($::operatingsystem == 'Debian' and $::operatingsystemmajrelease and versioncmp("${::operatingsystemmajrelease}", '11') >= 0) or
+             ($::operatingsystem == 'Ubuntu' and versioncmp("${::operatingsystemrelease}", '20.04') >= 0) {
+            $rubygems_package = undef
+          } else {
+            $rubygems_package = 'rubygems'
+          }
         }
       }
     }

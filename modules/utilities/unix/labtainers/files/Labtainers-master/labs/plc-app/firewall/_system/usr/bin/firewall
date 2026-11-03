@@ -237,7 +237,7 @@ def main():
     parser.add_argument('-a', '--add', action='store', metavar=('digest'), help='Add a MD5 digest to the whitelist')
     parser.add_argument('-r', '--remove', action='store', metavar=('digest'), help='Remove a digest from the whitelist')
     parser.add_argument('-f', '--filter', action='store', nargs=2, metavar=('IP address, command list'), help='Filter PLC commands based on their source IP. \
-                         The command list consists of authorized PLC commands, seperated by commas, with no spaces. \
+                         The command list consists of authorized PLC commands, separated by commas, with no spaces. \
                          The initial state of the firewall has no filters, which results in all commands from all sources being permitted. \
                          When there is at least one defined filter, then only commands that match a filter will be permitted. \
                          And command list value of "delete" will delete the filter entry for the given IP address. \

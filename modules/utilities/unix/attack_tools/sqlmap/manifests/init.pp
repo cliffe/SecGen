@@ -5,8 +5,9 @@ class sqlmap (
   $revision = 'HEAD',
 ) {
 
-  # Install Git package
-  ensure_packages(['git'])
+  # git to clone; sqlmap.py's shebang is '#!/usr/bin/env python', which bookworm
+  # only provides via python-is-python3
+  ensure_packages(['git', 'python3', 'python-is-python3'])
 
   # Create directory to install into
   file { $installdir:
@@ -16,6 +17,7 @@ class sqlmap (
   # Clone sqlmap from Github using 'exec' resource
   exec { 'clone_sqlmap':
     command => "git clone ${source} ${installdir}",
+    path    => ['/usr/bin', '/bin', '/usr/local/bin'],
     creates => "${installdir}/sqlmap.py",
     require => [File[$installdir], Package['git']],
   }

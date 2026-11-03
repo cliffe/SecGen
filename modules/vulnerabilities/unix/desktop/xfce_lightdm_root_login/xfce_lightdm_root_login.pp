@@ -1,1 +1,0 @@
-include xfce_lightdm_root_login::configure

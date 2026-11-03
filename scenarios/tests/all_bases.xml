@@ -4,24 +4,16 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
   <system>
-    <system_name>wheezy_server</system_name>
-    <base name="Debian 7 Wheezy Server"/>
+    <system_name>bookworm</system_name>
+    <base name="Debian 12 Bookworm Desktop KDE"/>
   </system>
   <system>
-    <system_name>stretch_server</system_name>
-    <base name="Debian 9 Stretch Server"/>
-  </system>
-  <system>
-    <system_name>wheezy_desktop</system_name>
-    <base name="Debian 7 Wheezy Desktop KDE"/>
-  </system>
-  <system>
-    <system_name>stretch_desktop</system_name>
-    <base name="Debian 9 Stretch Desktop KDE"/>
+    <system_name>buster</system_name>
+    <base name="Debian 10 Buster Desktop KDE"/>
   </system>
   <system>
     <system_name>kali_light</system_name>
-    <base name="Kali Light and Puppet"/>
+    <base distro="Kali" name="MSF"/>
   </system>
   <system>
     <system_name>kali_msf</system_name>

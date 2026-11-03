@@ -4,8 +4,13 @@ class setuid_root_nmap::init {
   $strings_to_leak = $secgen_parameters['strings_to_leak']
 
 
+  # Each module is applied in its own puppet run, so Package['nmap'] from the
+  # nmap utility module is not in this catalogue: declare it here (idempotent).
+  ensure_packages(['nmap'], { 'ensure' => 'installed' })
+
   file { '/usr/bin/nmap':
-    mode => '4755',
+    mode    => '4755',
+    require => Package['nmap'],
   }
 
   # Leak a file containing a string/flag to /root/

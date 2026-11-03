@@ -1,8 +1,318 @@
-## Supported Release 1.7.0
+# Change log
+
+All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
+
+## [v7.0.0](https://github.com/puppetlabs/puppetlabs-tomcat/tree/v7.0.0) (2023-04-17)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-tomcat/compare/v6.4.1...v7.0.0)
+
+### Changed
+
+- \(CONT-802\) - add puppet 8/drop puppet 6 [\#523](https://github.com/puppetlabs/puppetlabs-tomcat/pull/523) ([jordanbreen28](https://github.com/jordanbreen28))
+
+## [v6.4.1](https://github.com/puppetlabs/puppetlabs-tomcat/tree/v6.4.1) (2023-03-23)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-tomcat/compare/v6.4.0...v6.4.1)
+
+### Fixed
+
+- \(CONT-817\) Fix wrong package\_ensure parameter type [\#516](https://github.com/puppetlabs/puppetlabs-tomcat/pull/516) ([LukasAud](https://github.com/LukasAud))
+
+## [v6.4.0](https://github.com/puppetlabs/puppetlabs-tomcat/tree/v6.4.0) (2023-03-23)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-tomcat/compare/v6.3.0...v6.4.0)
+
+### Added
+
+- \(CONT-366\) Syntax update [\#507](https://github.com/puppetlabs/puppetlabs-tomcat/pull/507) ([LukasAud](https://github.com/LukasAud))
+
+### Fixed
+
+- Update commons-daemon-native version to match Tomcat bundled version [\#510](https://github.com/puppetlabs/puppetlabs-tomcat/pull/510) ([uoe-pjackson](https://github.com/uoe-pjackson))
+- Allow adding and removing attributes  in Context \(\#502\) [\#503](https://github.com/puppetlabs/puppetlabs-tomcat/pull/503) ([uoe-pjackson](https://github.com/uoe-pjackson))
+- Exclude name in resources [\#501](https://github.com/puppetlabs/puppetlabs-tomcat/pull/501) ([kobybr](https://github.com/kobybr))
+- pdksync - \(CONT-189\) Remove support for RedHat6 / OracleLinux6 / Scientific6 [\#500](https://github.com/puppetlabs/puppetlabs-tomcat/pull/500) ([david22swan](https://github.com/david22swan))
+
+## [v6.3.0](https://github.com/puppetlabs/puppetlabs-tomcat/tree/v6.3.0) (2022-09-12)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-tomcat/compare/v6.2.0...v6.3.0)
+
+### Added
+
+- pdksync - \(GH-cat-11\) Certify Support for Ubuntu 22.04 [\#493](https://github.com/puppetlabs/puppetlabs-tomcat/pull/493) ([david22swan](https://github.com/david22swan))
+- pdksync - \(GH-cat-12\) Add Support for Redhat 9 [\#492](https://github.com/puppetlabs/puppetlabs-tomcat/pull/492) ([david22swan](https://github.com/david22swan))
+- Allow usage of Context/Resources [\#491](https://github.com/puppetlabs/puppetlabs-tomcat/pull/491) ([tuxmea](https://github.com/tuxmea))
+
+## [v6.2.0](https://github.com/puppetlabs/puppetlabs-tomcat/tree/v6.2.0) (2022-05-16)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-tomcat/compare/v6.1.0...v6.2.0)
+
+### Added
+
+- Update puppet-archive dependency [\#477](https://github.com/puppetlabs/puppetlabs-tomcat/pull/477) ([h4l](https://github.com/h4l))
+- pdksync - \(IAC-1753\) - Add Support for AlmaLinux 8 [\#476](https://github.com/puppetlabs/puppetlabs-tomcat/pull/476) ([david22swan](https://github.com/david22swan))
+- pdksync - \(IAC-1751\) - Add Support for Rocky 8 [\#475](https://github.com/puppetlabs/puppetlabs-tomcat/pull/475) ([david22swan](https://github.com/david22swan))
+
+### Fixed
+
+- pdksync - \(GH-iac-334\) Remove Support for Ubuntu 14.04/16.04 [\#480](https://github.com/puppetlabs/puppetlabs-tomcat/pull/480) ([david22swan](https://github.com/david22swan))
+- pdksync - \(IAC-1787\) Remove Support for CentOS 6 [\#478](https://github.com/puppetlabs/puppetlabs-tomcat/pull/478) ([david22swan](https://github.com/david22swan))
+- pdksync - \(IAC-1598\) - Remove Support for Debian 8 [\#474](https://github.com/puppetlabs/puppetlabs-tomcat/pull/474) ([david22swan](https://github.com/david22swan))
+
+## [v6.1.0](https://github.com/puppetlabs/puppetlabs-tomcat/tree/v6.1.0) (2021-08-31)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-tomcat/compare/v6.0.0...v6.1.0)
+
+### Added
+
+- pdksync - \(IAC-1709\) - Add Support for Debian 11 [\#468](https://github.com/puppetlabs/puppetlabs-tomcat/pull/468) ([david22swan](https://github.com/david22swan))
+
+### Fixed
+
+- \(IAC-1741\) Allow stdlib v8.0.0 [\#469](https://github.com/puppetlabs/puppetlabs-tomcat/pull/469) ([david22swan](https://github.com/david22swan))
+
+## [v6.0.0](https://github.com/puppetlabs/puppetlabs-tomcat/tree/v6.0.0) (2021-07-26)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-tomcat/compare/v5.1.0...v6.0.0)
+
+### Changed
+
+- \[IAC-1690\] - Remove tomcat7 as is EOL [\#459](https://github.com/puppetlabs/puppetlabs-tomcat/pull/459) ([daianamezdrea](https://github.com/daianamezdrea))
+
+### Added
+
+- \(MODULES-9520\) Allow removal of webapps [\#456](https://github.com/puppetlabs/puppetlabs-tomcat/pull/456) ([daianamezdrea](https://github.com/daianamezdrea))
+- Accept Datatype Sensitive for Secrets [\#454](https://github.com/puppetlabs/puppetlabs-tomcat/pull/454) ([cocker-cc](https://github.com/cocker-cc))
+
+### Fixed
+
+- \[MODULES-9781\] - Add examples for catalina attributes and properties [\#453](https://github.com/puppetlabs/puppetlabs-tomcat/pull/453) ([daianamezdrea](https://github.com/daianamezdrea))
+
+## [v5.1.0](https://github.com/puppetlabs/puppetlabs-tomcat/tree/v5.1.0) (2021-05-24)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-tomcat/compare/v5.0.0...v5.1.0)
+
+### Added
+
+- Add service\_name parameter to tomcat::instance [\#446](https://github.com/puppetlabs/puppetlabs-tomcat/pull/446) ([treydock](https://github.com/treydock))
+
+### Fixed
+
+- \(MODULES-10644\) Document source upgrade process [\#443](https://github.com/puppetlabs/puppetlabs-tomcat/pull/443) ([binford2k](https://github.com/binford2k))
+
+## [v5.0.0](https://github.com/puppetlabs/puppetlabs-tomcat/tree/v5.0.0) (2021-02-27)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-tomcat/compare/v4.3.0...v5.0.0)
+
+### Changed
+
+- pdksync - Remove Puppet 5 from testing and bump minimal version to 6.0.0 [\#431](https://github.com/puppetlabs/puppetlabs-tomcat/pull/431) ([carabasdaniel](https://github.com/carabasdaniel))
+
+## [v4.3.0](https://github.com/puppetlabs/puppetlabs-tomcat/tree/v4.3.0) (2020-12-14)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-tomcat/compare/v4.2.0...v4.3.0)
+
+### Added
+
+- pdksync - \(feat\) - Add support for Puppet 7 [\#422](https://github.com/puppetlabs/puppetlabs-tomcat/pull/422) ([daianamezdrea](https://github.com/daianamezdrea))
+- Refactor valve types [\#415](https://github.com/puppetlabs/puppetlabs-tomcat/pull/415) ([h-haaks](https://github.com/h-haaks))
+
+### Fixed
+
+- \(IAC-1236\) Adding SLES OSs for release\_checks [\#417](https://github.com/puppetlabs/puppetlabs-tomcat/pull/417) ([pmcmaw](https://github.com/pmcmaw))
+- \(IAC-1214\) - Move SKIP\_GCC to test file [\#416](https://github.com/puppetlabs/puppetlabs-tomcat/pull/416) ([pmcmaw](https://github.com/pmcmaw))
+
+## [v4.2.0](https://github.com/puppetlabs/puppetlabs-tomcat/tree/v4.2.0) (2020-08-24)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-tomcat/compare/v4.1.0...v4.2.0)
+
+### Added
+
+- pdksync - \(IAC-973\) - Update travis/appveyor to run on new default branch `main` [\#405](https://github.com/puppetlabs/puppetlabs-tomcat/pull/405) ([david22swan](https://github.com/david22swan))
+
+### Fixed
+
+- Increase puppetlabs/concat lower bound [\#404](https://github.com/puppetlabs/puppetlabs-tomcat/pull/404) ([bFekete](https://github.com/bFekete))
+
+## [v4.1.0](https://github.com/puppetlabs/puppetlabs-tomcat/tree/v4.1.0) (2020-07-07)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-tomcat/compare/v4.0.0...v4.1.0)
+
+### Added
+
+- \(IAC-746\) - Add ubuntu 20.04 support [\#399](https://github.com/puppetlabs/puppetlabs-tomcat/pull/399) ([david22swan](https://github.com/david22swan))
+
+### Fixed
+
+- Allow override status\_command in case of use\_init [\#400](https://github.com/puppetlabs/puppetlabs-tomcat/pull/400) ([leroyguillaume](https://github.com/leroyguillaume))
+
+## [v4.0.0](https://github.com/puppetlabs/puppetlabs-tomcat/tree/v4.0.0) (2019-12-11)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-tomcat/compare/v3.1.0...v4.0.0)
+
+### Changed
+
+- \(MAINT\) Make ensurable enums consistent [\#367](https://github.com/puppetlabs/puppetlabs-tomcat/pull/367) ([smortex](https://github.com/smortex))
+
+### Added
+
+- \(FM-8699\) - Addition of Support for CentOS 8 [\#374](https://github.com/puppetlabs/puppetlabs-tomcat/pull/374) ([david22swan](https://github.com/david22swan))
+- Add Resources support [\#368](https://github.com/puppetlabs/puppetlabs-tomcat/pull/368) ([smortex](https://github.com/smortex))
+
+### Fixed
+
+- Completely remove tomcat::install\_from\_source [\#366](https://github.com/puppetlabs/puppetlabs-tomcat/pull/366) ([smortex](https://github.com/smortex))
+
+## [v3.1.0](https://github.com/puppetlabs/puppetlabs-tomcat/tree/v3.1.0) (2019-09-13)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-tomcat/compare/v3.0.0...v3.1.0)
+
+### Added
+
+- FM-8413 add support on Debian10 [\#361](https://github.com/puppetlabs/puppetlabs-tomcat/pull/361) ([lionce](https://github.com/lionce))
+- \(FM-8232\) Convert to litmus [\#360](https://github.com/puppetlabs/puppetlabs-tomcat/pull/360) ([tphoney](https://github.com/tphoney))
+- FM-8050 - add redhat8 support [\#354](https://github.com/puppetlabs/puppetlabs-tomcat/pull/354) ([lionce](https://github.com/lionce))
+
+### Fixed
+
+- add show diff to all augeas calls [\#322](https://github.com/puppetlabs/puppetlabs-tomcat/pull/322) ([johmicd](https://github.com/johmicd))
+
+## [v3.0.0](https://github.com/puppetlabs/puppetlabs-tomcat/tree/v3.0.0) (2019-05-17)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-tomcat/compare/2.5.0...v3.0.0)
+
+### Changed
+
+- pdksync - \(MODULES-8444\) - Raise lower Puppet bound [\#347](https://github.com/puppetlabs/puppetlabs-tomcat/pull/347) ([david22swan](https://github.com/david22swan))
+
+### Fixed
+
+- \(MODULES-8817\) - Update to account for loss of SVN Tomcat archive [\#344](https://github.com/puppetlabs/puppetlabs-tomcat/pull/344) ([david22swan](https://github.com/david22swan))
+
+## [2.5.0](https://github.com/puppetlabs/puppetlabs-tomcat/tree/2.5.0) (2019-01-29)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-tomcat/compare/2.4.0...2.5.0)
+
+### Added
+
+- \(MODULES-8147\) - Add SLES 15 support [\#328](https://github.com/puppetlabs/puppetlabs-tomcat/pull/328) ([eimlav](https://github.com/eimlav))
+- Add context parameter type \(re-submit \#205\) [\#317](https://github.com/puppetlabs/puppetlabs-tomcat/pull/317) ([joshbeard](https://github.com/joshbeard))
+
+### Fixed
+
+- \(maint\) - Ubuntu 18.04 issues fix [\#333](https://github.com/puppetlabs/puppetlabs-tomcat/pull/333) ([david22swan](https://github.com/david22swan))
+- pdksync - \(FM-7655\) Fix rubygems-update for ruby \< 2.3 [\#330](https://github.com/puppetlabs/puppetlabs-tomcat/pull/330) ([tphoney](https://github.com/tphoney))
+- \[MODULES-7547\] Update globalnamingresource class, and add tests [\#305](https://github.com/puppetlabs/puppetlabs-tomcat/pull/305) ([jplindquist](https://github.com/jplindquist))
+
+## [2.4.0](https://github.com/puppetlabs/puppetlabs-tomcat/tree/2.4.0) (2018-10-03)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-tomcat/compare/2.3.0...2.4.0)
+
+### Added
+
+- pdksync - \(FM-7392\) - Puppet 6 Testing Changes [\#321](https://github.com/puppetlabs/puppetlabs-tomcat/pull/321) ([pmcmaw](https://github.com/pmcmaw))
+- pdksync - \(MODULES-7658\) use beaker4 in puppet-module-gems [\#315](https://github.com/puppetlabs/puppetlabs-tomcat/pull/315) ([tphoney](https://github.com/tphoney))
+- \(FM-7239\) - Addition of support for Ubuntu 18.04 [\#306](https://github.com/puppetlabs/puppetlabs-tomcat/pull/306) ([david22swan](https://github.com/david22swan))
+- adding wait\_timeout var for init [\#303](https://github.com/puppetlabs/puppetlabs-tomcat/pull/303) ([ackiejoe](https://github.com/ackiejoe))
+- \[FM-7050\] Addition of support for Debian 9 on Tomcat [\#300](https://github.com/puppetlabs/puppetlabs-tomcat/pull/300) ([david22swan](https://github.com/david22swan))
+
+### Fixed
+
+- pdksync - \(MODULES-6805\) metadata.json shows support for puppet 6 [\#319](https://github.com/puppetlabs/puppetlabs-tomcat/pull/319) ([tphoney](https://github.com/tphoney))
+- pdksync - \(MODULES-7705\) - Bumping stdlib dependency from \< 5.0.0 to \< 6.0.0 [\#314](https://github.com/puppetlabs/puppetlabs-tomcat/pull/314) ([pmcmaw](https://github.com/pmcmaw))
+- \(MODULES-7633\) - Update README Limitations section [\#307](https://github.com/puppetlabs/puppetlabs-tomcat/pull/307) ([eimlav](https://github.com/eimlav))
+- \(maint\) Double retry count to workaround slow startups [\#301](https://github.com/puppetlabs/puppetlabs-tomcat/pull/301) ([hunner](https://github.com/hunner))
+- \[FM-6967\] Removal of unsupported OS from tomcat [\#299](https://github.com/puppetlabs/puppetlabs-tomcat/pull/299) ([david22swan](https://github.com/david22swan))
+- Add rspec retry gem to sync file [\#295](https://github.com/puppetlabs/puppetlabs-tomcat/pull/295) ([HelenCampbell](https://github.com/HelenCampbell))
+- \#puppethack work if resource title contains spaces [\#287](https://github.com/puppetlabs/puppetlabs-tomcat/pull/287) ([rheijkoop](https://github.com/rheijkoop))
+
+## 2.3.0
+### Summary
+A release that introduced the module to the PDK through conversion. Also a dependancy bump on the archive module along with a small fix.
+
+### Changed
+- puppet/archive compatibility version bumped from 2.0.0 to 3.0.0.
+- Module is now converted with PDK 1.3.2.
+
+### Fixed
+- (MODULES-6626) Fixed the generated shell when using addto.
+
+## Supported Release [2.2.0]
+### Summary
+A clean release made in order to Rubocop the module.
+
+### Changed
+- Gemfile updates.
+- Module sync updates.
+- All ruby files altered to match the current rubocop standards.
+
+### Added
+- Flexibility added to directory management in tomcat::instance.
+- flexibility added to copy_from_home.
+- Can now set status_command.
+
+### Fixed
+- Spaces now accounted for in context elements.
+- tomcat::war now copies the war as root user and not as tomcat.
+- Syntax error in $addto parameter in tomcat::setenv::entry fixed.
+- Test fix for Tomcat 8.
+- Fix added to the travis/sync file via modulesync.
+
+### Removed
+- Unsupported Debian 6.
+
+## Supported Release [2.1.0]
+### Summary
+Addition of user and group to tomcat war file, along with a couple of docs updates and some old Ubuntu support dropped.
+
+### Added
+- User/group to tomcat war file.
+
+### Fixed
+- Update to README around SSL configuration.
+- A couple of other simple readme fixes.
+- Lint warnings.
+
+### Removed
+- Unsupported versions of Ubuntu 10.04, 12.04.
+
+## Supported Release [2.0.0]
+### Summary
+This major release drops puppet 3, changes dependencies from staging to archive, and adds various "real world" configuration abilities.
+
+### Changed
+- Dependency puppet-staging (which is deprecated) removed in favor of puppet-archive
+- Dropped compatibility with puppet 3.x series
+- Remove `true`/`false` as valid values for all ensure attributes as they are ambiguous.
+
+### Removed
+- Deprecated `tomcat::setenv::entry` attribute `base_path`. Use `config_file` instead.
+- Base `tomcat` class `install_from_source` parameter now does nothing. Use `tomcat::install` attribute `install_from_source` directly instead.
+- No longer testing tomcat 6 as it is EOL and removed from the mirrors.
+- `tomcat::install` attribute `environment` previously used for proxy settings. Use `proxy_server` and `proxy_type` instead.
+
+### Deprecated
+- `tomcat::instance` define parameters `install_from_source`, `source_url`, `source_strip_first_dir`, `package_ensure`, `package_name`, and `package_options` have been unofficially deprecated since 1.5.0 and are now formally deprecated. Please use `tomcat::install` instead and point any `tomcat::instance::catalina_home` there. See the readme for further examples.
+
+### Added
+- Compatibility with puppet 5.x series
+- Puppet 4.x data type parameter validation.
+- `tomcat::config::server::realm` Can manage multiple realms of identical class names.
+- `tomcat::config::server::tomcat_users` Can be declared multiple times for the same element name.
+- `tomcat::config::context::value` defined type.
+- `tomcat::install` attributes `proxy_server` and `proxy_type` for installing behind a proxy.
+- `tomcat::install` attribute `allow_insecure` for disabling https verification.
+- `tomcat::war` ability to use context paths and versions with `war_name` attribute.
+- `tomcat::war` ability to ignore HTTPS errors with `allow_insecure` attribute.
+
+### Fixed
+- Corrected documentation for all `attributes_to_remove` attributes.
+
+## Supported Release [1.7.0]
 ### Summary
 This release adds support for internationalization of the module. It also contains Japanese translations for the README, summary and description of the metadata.json and major cleanups in the README. Additional folders have been introduced called locales and readmes where translation files can be found. A number of features and bug fixes are also included in this release.
 
-#### Features
+### Added
 - Addition of POT file for metadata translation for i18n.
 - Readme update and edit in preparation for localization.
 - Environment can now be passed through to staging, so we can set a proxy to download tomcat.
@@ -12,10 +322,10 @@ This release adds support for internationalization of the module. It also contai
 - Bump in puppet-staging module dependancy for allowing newer versions.
 - Ability to not manage catalina.properties.
 
-#### Bugfixes
+### Fixed
 - (MODULES-4003) Adds a 'require => Tomcat::Install[$name]' to the ensure_resource function.
 - (MODULES-4003) Removes logic that checks to see if catalina_base and catalina_home are the same.
-- (MODULES-1986) Added newline to the inline template assigned to $_content.
+- (MODULES-1986) Added newline to the inline template assigned to $\_content.
 - (MODULES-3224) Added mode attribute to concat resource that sets the executable bit for all permission levels.
 - Fix for fixtures.yml, was pointing to nanliu-staging instead of puppet-staging.
 - Fix duplicate resources in host/realm/valve.
@@ -33,14 +343,14 @@ umasks. The previous change caused duplicate resource declarations when
 downloading a tomcat tarball from `puppet://` or local paths. The umask bug
 remains (it is actually present in staging, not tomcat).
 
-#### Bugfixes
+### Fixed
 - Fix duplicate resource declarations when using local source paths
 
 ## Supported Release 1.6.0
 ### Summary
 This release adds two new defines for managing environment variables and manager elements, enhances multi-instance multi-user support, allows valves to be nested in contexts, fixes an issue with installing directly to NFS mounted directories, fixes installation on systems with a strict root umask,
 
-#### Features
+### Added
 - Add `tomcat::config::context::environment` define
 - Add `tomcat::config::context::manager` define
 - Add `owner` and `group` to `tomcat::config::server::tomcat_users`
@@ -52,7 +362,7 @@ This release adds two new defines for managing environment variables and manager
 - Change from `nanliu/staging` to `puppet/staging`
 - Allow `role` to be set for user elements in `tomcat::config::server::tomcat_users`
 
-#### Bugfixes
+### Fixed
 - Fix globalresource missing (MODULES-3353)
 - Fix strict vars for `tomcat::config::server::service` (MODULES-3742)
 - Work around duplicate user resources (PUP-5971)
@@ -73,7 +383,7 @@ create an init script for service management of source-based installs. And
 `tomcat::instance` can declare a `tomcat::service` resource for your instance to
 make life easier.
 
-#### Features
+### Added
 - Added `tomcat::config::properties::property` define
 - Added `tomcat::config::server::globalnamingresource` define
 - Added `tomcat::config::context` define
@@ -96,7 +406,7 @@ make life easier.
   - `use_init`
 - Added Debian 8 compatibility
 
-#### Bugfixes
+### Fixed
 - Fixed conflating `CATALINA_BASE` with `CATALINA_HOME`
 - Made `tomcat::config::server::connector` protocol default to `$name`
 - Lots of additional validation
@@ -108,12 +418,12 @@ make life easier.
 
 Small release for bug with multiple Realms in the same parent path.
 
-#### Features
+### Added
 - Improved documentation for purging connectors.
 - Improved documentation for purging realms.
 - Added package_options to tomcat::instance
 
-#### Bugfixes
+### Fixed
 - Fixed bug where multiple Realms in the same parent would corrupt data.
 - Added work-around for Augeas bug when purging Realms.
 
@@ -126,7 +436,7 @@ Small release for support of newer PE versions. This increments the version of P
 ### Summary
 This release fixes username quoting and metadata.
 
-#### Bugfixes
+### Fixed
 - Allow username values that contain non-string characters like whitespace
 - Validate $catalina\_base
 - Correct pe/puppet compatibility metadata
@@ -140,7 +450,7 @@ This release fixes metadata because it supports puppet 4.
 
 This is a feature release, with a couple of bugfixes and readme changes.
 
-#### Features
+### Added
 - Update additional_attributes to support values with spaces
 - Documentation changes
 - Add a manifest for Context Containers in Tomcat configuration
@@ -152,7 +462,7 @@ This is a feature release, with a couple of bugfixes and readme changes.
 - Add ability to specify server_config location
 - Allow configuration of location of server.xml
 
-#### Bugfixes
+### Fixed
 - Make sure setenv entries have export
 - Test improvements
 - version pinning for acceptance tests
@@ -162,11 +472,11 @@ This is a feature release, with a couple of bugfixes and readme changes.
 
 This is primarily a feature release, with a couple of bugfixes for tests and metadata.
 
-#### Features
+### Added
 - Add `install_from_source` parameter to class `tomcat`
 - Add `purge_connectors` parameter to class `tomcat` and define `tomcat::server::connector`
 
-#### Bugfixes
+### Fixed
 - Fix dependencies to remove missing dependency warnings with the PMT
 - Use `curl -k` in the tests
 
@@ -175,13 +485,13 @@ This is primarily a feature release, with a couple of bugfixes for tests and met
 
 This release includes documentation and test updates, strict variable support, metadata bugs, and added support for multiple connectors with the same protocol.
 
-### Features
+### Added
 - Strict variable support
 - Support multiple connectors with the same protocol
 - Update tests to not break when tomcat releases happen
 - Update README based on QA feedback
 
-### Bugfixes
+### Fixed
 - Update stdlib requirement to 4.2.0
 - Fix illegal version range in metadata.json
 - Fix typo in README
@@ -191,7 +501,7 @@ This release includes documentation and test updates, strict variable support, m
 
 This is a bugfix release.
 
-### Bugfixes
+### Fixed
 - Fix typo in tomcat::instance
 - Update acceptance tests for new tomcat releases
 
@@ -200,14 +510,14 @@ This is a bugfix release.
 
 This release has added support for installation from packages, improved WAR management, and updates to testing and documentation.
 
-### Features
+### Added
 - Updated tomcat::setenv::entry to better support installations from package
 - Added the ability to purge auto-exploded WAR directories when removing WARs. Defaults to purging these directories
 - Added warnings for unused variables when installing from package
 - Updated acceptance tests and nodesets
 - Updated README
 
-### Deprecations
+### Deprecated
 - $tomcat::setenv::entry::base_path is being deprecated in favor of $tomcat::setenv::entry::config_file
 
 ## 2014-08-20 - Release 0.1.2
@@ -220,7 +530,7 @@ This release adds compatibility information and updates the README with informat
 
 This is a bugfix release.
 
-### Bugfixes
+### Fixed
 - Update 'warn' to correct 'warning' function.
 - Update README for use_init.
 - Test updates and fixes.
@@ -229,3 +539,10 @@ This is a bugfix release.
 ### Summary
 
 Initial release of the tomcat module.
+
+[2.2.0]: https://github.com/puppetlabs/puppetlabs-tomcat/compare/2.1.0...2.2.0
+[2.1.0]: https://github.com/puppetlabs/puppetlabs-tomcat/compare/2.0.0...2.1.0
+[2.0.0]: https://github.com/puppetlabs/puppetlabs-tomcat/compare/1.7.0...2.0.0
+[1.7.0]: https://github.com/puppetlabs/puppetlabs-tomcat/compare/1.6.1...1.7.0
+
+\* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator)*

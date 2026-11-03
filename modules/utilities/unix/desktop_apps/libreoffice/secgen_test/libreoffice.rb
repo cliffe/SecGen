@@ -32,7 +32,7 @@ class LibreofficeTest < PostProvisionTest
           "--convert-to #{target} in.#{ext} >/dev/null 2>&1; test -s #{dir}/in.#{target}"
     name = "#{app} converts #{ext} to #{target} headless"
     out = run_vagrant_ssh(cmd, timeout: 120)
-    if out[:exit_status].to_i == 0
+    if out[:exit_status] == 0
       pass_check(name, nil, tier: 2)
     else
       fail_check(name, "#{name} failed on #{get_system_name}", tier: 2,

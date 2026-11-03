@@ -31,8 +31,8 @@ int main(int argc, char **argv)
     an_id, num_rows_to_receive, avg_rows_per_process, 
     sender, num_rows_received, start_row, end_row, num_rows_to_send;
 
-  /* Now replicte this process to create parallel processes.
-   * From this point on, every process executes a seperate copy
+  /* Now replicate this process to create parallel processes.
+   * From this point on, every process executes a separate copy
    * of this program */
 
   ierr = MPI_Init(&argc, &argv);

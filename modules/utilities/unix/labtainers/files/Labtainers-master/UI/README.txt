@@ -63,7 +63,7 @@ NOTES AND CONCERNS TO ADDRESS:
   that an artifact line is referencing. Does the Results visual
   interface have continuity?   
 
-- The project was 3 main functions from 3 seperate packages, 
+- The project was 3 main functions from 3 separate packages, 
   so the current build script may not work
 
 - When user updates the LABTAINERS DIR path, what happens if the new set path is a 

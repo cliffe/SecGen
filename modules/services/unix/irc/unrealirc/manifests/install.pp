@@ -12,7 +12,7 @@ class unrealirc::install {
   group { $unrealirc::group:
     ensure  => present,
   }
-  user { $unrealirc::group:
+  user { $unrealirc::user:
     ensure  => present,
     gid     => $unrealirc::group,
     require => Group[$unrealirc::group],
@@ -37,7 +37,7 @@ class unrealirc::install {
 
   # Move extracted directory to install path
   exec { 'unrealirc-dir':
-    command => "mv `ls -d /tmp/*/ | grep -i unreal | awk '{ print $1 }'` ${unrealirc::install_path}",
+    command => "mv `ls -d /tmp/*/ | grep -i unreal | awk '{ print \$1 }'` ${unrealirc::install_path}",
     creates => "${unrealirc::install_path}",
     require => Exec['extract-unrealirc'],
   }
@@ -50,7 +50,7 @@ class unrealirc::install {
     'zlib1g-dev',
     'libssl-dev',
     'libpcre2-dev',
-    'libargon2-0-dev',
+    'libargon2-dev',
     'libsodium-dev',
     'libc-ares-dev',
     'libcurl4-openssl-dev'
@@ -90,7 +90,9 @@ class unrealirc::install {
   }
 
   exec { 'remove-archive':
-    command => "rm /tmp/${archive}"
+    command => "rm -f /tmp/${archive}",
+    onlyif  => "test -f /tmp/${archive}",
+    require => Exec['make-unrealirc'],
   }
 
 }

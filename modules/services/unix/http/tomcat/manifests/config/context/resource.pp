@@ -1,32 +1,34 @@
-# Definition: tomcat::config::context::resource
+# @summary Configure Resource elements in $CATALINA_BASE/conf/context.xml
 #
-# Configure Resource elements in $CATALINA_BASE/conf/context.xml
+# @param ensure
+#   Specifies whether you are trying to add or remove the Resource element.
+# @param resource_name
+#   The name of the Resource to be created, relative to the `java:comp/env` context. `$name`.
+# @param name
+#   `$resource_name`
+# @param resource_type
+#   The fully qualified Java class name expected by the web application when it performs a lookup for this resource. Required to create the resource.
+# @param catalina_base
+#   Specifies the root of the Tomcat installation. 
+# @param additional_attributes
+#   Specifies any additional attributes to add to the Valve. Should be a hash of the format 'attribute' => 'value'. Optional
+# @param attributes_to_remove
+#   Specifies an array of attributes to remove from the element. Valid options: an array of strings. `[]`.
+# @param show_diff
+#   Specifies display differences when augeas changes files, defaulting to true. Valid options: true or false.
 #
-# Parameters:
-# - $catalina_base is the base directory for the Tomcat installation.
-# - $ensure specifies whether you are trying to add or remove the
-#   Resource element. Valid values are 'true', 'false', 'present', and
-#   'absent'. Defaults to 'present'.
-# - $resource_name is the name of the Resource to be created, relative to
-#   the java:comp/env context.
-# - $type is the fully qualified Java class name expected by the web application
-#   when it performs a lookup for this resource
-# - An optional hash of $additional_attributes to add to the Resource. Should
-#   be of the format 'attribute' => 'value'.
-# - An optional array of $attributes_to_remove from the Connector.
 define tomcat::config::context::resource (
-  $ensure                = 'present',
-  $resource_name         = $name,
-  $resource_type         = undef,
-  $catalina_base         = $::tomcat::catalina_home,
-  $additional_attributes = {},
-  $attributes_to_remove  = [],
+  Enum['present','absent'] $ensure    = 'present',
+  String[1] $resource_name            = $name,
+  Optional[String[1]] $resource_type  = undef,
+  Stdlib::Absolutepath $catalina_base = $tomcat::catalina_home,
+  Hash $additional_attributes         = {},
+  Array $attributes_to_remove         = [],
+  Boolean $show_diff                  = true,
 ) {
-  if versioncmp($::augeasversion, '1.0.0') < 0 {
+  if versioncmp($facts['augeas']['version'], '1.0.0') < 0 {
     fail('Server configurations require Augeas >= 1.0.0')
   }
-
-  validate_re($ensure, '^(present|absent|true|false)$')
 
   if $resource_name {
     $_resource_name = $resource_name
@@ -36,7 +38,7 @@ define tomcat::config::context::resource (
 
   $base_path = "Context/Resource[#attribute/name='${_resource_name}']"
 
-  if $ensure =~ /^(absent|false)$/ {
+  if $ensure == 'absent' {
     $changes = "rm ${base_path}"
   } else {
     # (MODULES-3353) does this need to be quoted?
@@ -58,18 +60,18 @@ define tomcat::config::context::resource (
       $rm_attributes_to_remove = undef
     }
 
-
     $changes = delete_undef_values(flatten([
-      $set_name,
-      $set_type,
-      $set_additional_attributes,
-      $rm_attributes_to_remove,
+          $set_name,
+          $set_type,
+          $set_additional_attributes,
+          $rm_attributes_to_remove,
     ]))
   }
 
   augeas { "context-${catalina_base}-resource-${name}":
-    lens    => 'Xml.lns',
-    incl    => "${catalina_base}/conf/context.xml",
-    changes => $changes,
+    lens      => 'Xml.lns',
+    incl      => "${catalina_base}/conf/context.xml",
+    changes   => $changes,
+    show_diff => $show_diff,
   }
 }

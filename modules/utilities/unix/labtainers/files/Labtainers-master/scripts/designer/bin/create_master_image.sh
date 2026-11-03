@@ -11,8 +11,8 @@ if [[ "$1" != -f ]]; then
    read -p "Continue? (y/n)"
    if [[ ! $REPLY =~ ^[Yy]$ ]]
    then
-       echo exiting
-       exit
+      echo exiting
+      exit
    fi
 else
    echo "registry is $LABTAINER_REGISTRY"
@@ -25,10 +25,17 @@ cd workspace_master
 cp $LABTAINER_DIR/distrib/labtainer.tar ./
 
 cat <<EOT >bashrc.labtainer.master
-   if [[ ":\$PATH:" != *":./bin:"* ]]; then 
-       export PATH="\${PATH}:./bin:/home/labtainer/labtainer/trunk/scripts/designer/bin"
-       export LABTAINER_DIR=/home/labtainer/labtainer/trunk
-   fi
+if [[ ":\$PATH:" != *":./bin:"* ]]; then 
+   export PATH="\${PATH}:./bin:/home/labtainer/labtainer/trunk/scripts/designer/bin"
+   export LABTAINER_DIR=/home/labtainer/labtainer/trunk
+fi
+#
+# Labtainer Aliases
+alias vncstart="vncserver -local :1"
+alias vncstop="vncserver -kill :1"
+alias vncrestart="vncstop && vncstart"
+alias dex="sudo docker exec -it"
+alias cdlab="cd $LABTAINER_DIR/scripts/labtainer-student/"
 EOT
 
 cp $LABTAINER_DIR/scripts/labtainer-student/bin/labutils.py ./

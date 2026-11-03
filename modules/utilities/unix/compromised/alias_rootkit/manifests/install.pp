@@ -15,7 +15,7 @@ class alias_rootkit::install {
     path => '/root/.bashrc',
     line => $aliases,
   }
-  file_line { 'Remove a line from /root/.bashrc':
+  file_line { 'Remove the non-interactive early return from /etc/skel/.bashrc':
     path => '/etc/skel/.bashrc',
     line => $skip_non_interactive,
     ensure => absent,

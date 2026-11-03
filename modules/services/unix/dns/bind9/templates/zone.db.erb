@@ -6,12 +6,28 @@ $TTL 604800
 2419200         ; Expire
 604800 )        ; Negative Cache TTL
 @       IN  NS  <%= @ns_hostname %>.
+<%# glue: NS host inside the zone needs an address record, or the zone fails to load -%>
+<% ns_label = @ns_hostname.to_s.end_with?(".#{@domain}") ? @ns_hostname.to_s.chomp(".#{@domain}") : nil -%>
+<% ns_has_addr = (@dns_records || []).any? { |r| h, t = (r.include?('|') ? r.split('|') : [r.split('=')[0], 'A']); h == ns_label && %w[A AAAA].include?(t.to_s.upcase) } -%>
+<% if ns_label && !ns_label.empty? && !ns_has_addr -%>
+<%= ns_label %>  IN  A  <%= @ns_ip %>
+<% end -%>
 <% (@dns_records || []).each do |r| -%>
-<%   parts = r.split('|') -%>
-<%   hostname = parts[0] -%>
-<%   type = parts[1].upcase -%>
-<%   value = parts[2] -%>
-<%   priority = parts[3] -%>
+<%   if r.include?('|') -%>
+<%     parts = r.split('|') -%>
+<%     hostname = parts[0] -%>
+<%     type = parts[1].to_s.upcase -%>
+<%     value = parts[2] -%>
+<%     priority = parts[3] -%>
+<%   else -%>
+<%     # legacy "hostname=ip" format: an A record -%>
+<%     parts = r.split('=') -%>
+<%     hostname = parts[0] -%>
+<%     type = 'A' -%>
+<%     value = parts[1] -%>
+<%     priority = nil -%>
+<%   end -%>
+<%   next if hostname.nil? || value.nil? -%>
 <%   if type == 'A' || type == 'AAAA' -%>
 <%= hostname %>  IN  <%= type %>  <%= value %>
 <%   elsif type == 'CNAME' -%>

@@ -1,4 +1,4 @@
 class { "golang":
-  arch => 'linux-386',
+  arch => 'linux-amd64',
   version => '1.9',
 }

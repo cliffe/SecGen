@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>Test: php2shell_rce</name>
+  <author>Thomas Shaw</author>
+  <description>Single-VM test scenario for the php2shell_rce practice target (a trivial PHP page on an unpatched source-built PHP 7.4), used to exercise its secgen_test via the Proxmox QEMU Guest Agent testing pipeline. The exploit is left to the student, so no attacker VM is included.</description>
+
+  <type>test</type>
+
+  <system>
+    <system_name>php2shell_rce_target</system_name>
+    <base platform="linux" distro="Debian 10" type="desktop"/>
+
+    <vulnerability module_path=".*/php2shell_rce"/>
+
+    <network type="private_network"/>
+
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+
+</scenario>

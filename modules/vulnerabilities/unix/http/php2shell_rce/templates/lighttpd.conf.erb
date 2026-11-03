@@ -1,0 +1,35 @@
+# Minimal lighttpd serving the php2shell practice target via the vulnerable
+# PHP 7.4 php-cgi binary (php7_vulnerable). The fastcgi block mirrors the
+# known-good raspap_rce config (PHP_FCGI_CHILDREN and broken-scriptfilename are
+# needed or php-cgi hangs under lighttpd).
+server.modules = (
+    "mod_alias",
+    "mod_fastcgi",
+    "mod_accesslog",
+)
+
+server.document-root = "/var/www/html"
+server.errorlog      = "/var/log/lighttpd/error.log"
+server.pid-file      = "/var/run/lighttpd.pid"
+server.username      = "www-data"
+server.groupname     = "www-data"
+server.port          = <%= @port %>
+server.bind          = "0.0.0.0"
+
+index-file.names = ( "index.php", "index.html" )
+
+fastcgi.server = (
+    ".php" => ((
+        "bin-path"   => "/opt/php-7.4-vulnerable/bin/php-cgi",
+        "socket"     => "/tmp/php2shell.socket",
+        "max-procs"  => 1,
+        "bin-environment" => (
+            "PHP_FCGI_CHILDREN"     => "4",
+            "PHP_FCGI_MAX_REQUESTS" => "10000"
+        ),
+        "bin-copy-environment" => (
+            "PATH", "SHELL", "USER"
+        ),
+        "broken-scriptfilename" => "enable"
+    ))
+)

@@ -7,7 +7,7 @@
   <author>Thomas Shaw</author>
   <author>Elastic</author>
   <module_license>Apache v2</module_license>
-  <description>TODO</description>
+  <description>Kibana 7.x from Elastic's apt repository, configured with a listen address and port and the Elasticsearch endpoint it reads from.</description>
 
   <type>log_tool</type>
   <platform>linux</platform>

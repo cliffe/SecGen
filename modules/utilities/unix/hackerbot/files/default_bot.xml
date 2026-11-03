@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<hackerbot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/hackerbot">
+  <name>Hackerbot</name>
+  <AIML_chatbot_rules>config/AIML</AIML_chatbot_rules>
+  <get_shell>false</get_shell>
+  <messages>
+    <greeting>Hello. This is the default Hackerbot configuration, with no attacks configured.</greeting>
+    <say_ready>Say 'ready' when you are ready.</say_ready>
+    <next>Moving on...</next>
+    <previous>Backing up...</previous>
+    <goto>Skipping along.</goto>
+    <last_attack>That was the last attack.</last_attack>
+    <first_attack>This is the first attack.</first_attack>
+    <getting_shell>Attack underway...</getting_shell>
+    <got_shell>We have shell.</got_shell>
+    <repeat>Say 'ready' when you are ready.</repeat>
+    <help>No attacks are configured.</help>
+  </messages>
+  <attack>
+    <prompt>No attacks are configured.</prompt>
+  </attack>
+</hackerbot>

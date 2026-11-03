@@ -40,7 +40,7 @@ class PamModulesTest < PostProvisionTest
                          'pamtester secgen-test-service root authenticate 2>&1; rm -f /etc/pam.d/secgen-test-service',
                          'successfully authenticated')
       # google-authenticator prints usage on --help (exit status varies by version)
-      test_local_command('google-authenticator runs', 'google-authenticator --help 2>&1', 'google-authenticator')
+      test_local_command('google-authenticator runs', 'command -v google-authenticator >/dev/null && google-authenticator --help 2>&1', 'google-authenticator')
       # every PAM module loads: no unresolved shared libraries
       PAM_SOS.each do |so|
         test_command_succeeds("#{so} links cleanly",

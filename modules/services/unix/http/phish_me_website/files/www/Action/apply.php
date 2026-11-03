@@ -1,6 +1,6 @@
 <?php
 
-  $target_dir = "/var/www/html/Action/uploads/";
+  $target_dir = "/var/www/accountingnow/Action/uploads/";
   $target_file = $target_dir . basename($_FILES["cv"]["name"]);
   $FileType = pathinfo($target_file,PATHINFO_EXTENSION);
   $uploadOk = 1;
@@ -8,7 +8,7 @@
   $name = $_POST['name'];
   $job = $_POST['job'];
 
-  require_once("/var/www/html/Action/PHPMailer-master/class.phpmailer.php");
+  require_once("/var/www/accountingnow/Action/PHPMailer-master/class.phpmailer.php");
 
   // Allow certain file formats
   if($FileType != "odt") {

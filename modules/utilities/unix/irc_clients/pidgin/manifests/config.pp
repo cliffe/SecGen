@@ -34,31 +34,43 @@ class pidgin::config {
         ensure  => file,
         content => template('pidgin/accounts.xml.erb'),
         require => File[$conf_dir],
+        owner   => $username,
+        group   => $username,
       }
       file { "$conf_dir/blist.xml":
         ensure  => file,
         content => template('pidgin/blist.xml.erb'),
         require => File[$conf_dir],
+        owner   => $username,
+        group   => $username,
       }
       file { "$conf_dir/pounces.xml":
         ensure  => file,
         content => template('pidgin/pounces.xml.erb'),
         require => File[$conf_dir],
+        owner   => $username,
+        group   => $username,
       }
       file { "$conf_dir/prefs.xml":
         ensure  => file,
         source  => 'puppet:///modules/pidgin/prefs.xml',
         require => File[$conf_dir],
+        owner   => $username,
+        group   => $username,
       }
       file { "$conf_dir/status.xml":
         ensure  => file,
         source  => 'puppet:///modules/pidgin/status.xml',
         require => File[$conf_dir],
+        owner   => $username,
+        group   => $username,
       }
       file { "$conf_dir/icons/skullandusb.svg":
         ensure  => file,
         source  => 'puppet:///modules/pidgin/skullandusb.svg',
         require => File[$conf_dir],
+        owner   => $username,
+        group   => $username,
       }
 
       # autostart script
@@ -71,9 +83,10 @@ class pidgin::config {
 
         file { "$home_dir/.config/autostart/pidgin.desktop":
           ensure => file,
-          source => 'puppet:///modules/pidgin/pidgin.desktop',
-          owner  => $username,
-          group  => $username,
+          source  => 'puppet:///modules/pidgin/pidgin.desktop',
+          require => File["$home_dir/.config/autostart/"],
+          owner   => $username,
+          group   => $username,
         }
       }
     }

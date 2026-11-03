@@ -55,6 +55,7 @@ CATALINA_BASE=<%= @_catalina_base %>
 CATALINA_HOME=<%= @_catalina_home %>
 JAVA_HOME=<%= @java_home %>
 TOMCAT_USER=<%= @_user %>
+WAIT_TIMEOUT=<%= @wait_timeout %>
 
 # Use the maximum available, or set MAX_FD != -1 to use that
 test ".$MAX_FD" = . && MAX_FD="maximum"
@@ -150,7 +151,7 @@ do_start()
     -java-home "$JAVA_HOME" \
     -user "$TOMCAT_USER" \
     -pidfile "$CATALINA_PID" \
-    -wait 10 \
+    -wait $WAIT_TIMEOUT \
     -outfile "SYSLOG" \
     -errfile "SYSLOG" \
     -classpath "$CLASSPATH" \
@@ -166,7 +167,7 @@ do_status()
 {
   if [ -f $CATALINA_PID ];then
         ps -p `cat $CATALINA_PID` >/dev/null 2>&1
-        if [[ "$?" == "0" ]];then
+        if [ "$?" -eq 0 ];then
             echo "tomcat alive (pid `cat $CATALINA_PID`)..."
             exit 0
         else
@@ -202,7 +203,7 @@ do_version()
      -version \
      -check \
      $CATALINA_MAIN
-  if [ "$?" = 0 ]; then
+  if [ "$?" -eq 0 ]; then
     "$JAVA_BIN" \
       -classpath "$CATALINA_HOME/lib/catalina.jar" \
       org.apache.catalina.util.ServerInfo
@@ -219,7 +220,7 @@ case "$1" in
       -java-home "$JAVA_HOME" \
       -user "$TOMCAT_USER" \
       -pidfile "$CATALINA_PID" \
-      -wait 10 \
+      -wait $WAIT_TIMEOUT \
       -nodetach \
       -outfile "&1" \
       -errfile "&2" \

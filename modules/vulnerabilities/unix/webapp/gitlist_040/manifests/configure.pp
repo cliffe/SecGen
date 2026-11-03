@@ -66,13 +66,18 @@ class gitlist_040::configure {
   # tracked file whose content matches that pattern. The randomly generated leak
   # files are sometimes an ASCII-art image with no 'c', which leaves the repo
   # unsearchable and the exploit inert; this committed README always matches.
-  file { "${leaked_files_path}/README.md":
-    ensure  => file,
-    owner   => 'www-data',
-    mode    => '0640',
-    content => "Internal service repository.\nContains source code and configuration notes.\n",
-    require => Exec['create-repo-file_leak'],
-    before  => Exec['initial_commit_leaked_files_repo'],
+  # Skipped when the scenario leaks its own README.md into the repo (m08 does):
+  # leak_file would otherwise append the scenario's text to this one.
+  $pre_names = $pre_leaked_filenames ? { undef => [], default => $pre_leaked_filenames }
+  unless 'README.md' in $pre_names {
+    file { "${leaked_files_path}/README.md":
+      ensure  => file,
+      owner   => 'www-data',
+      mode    => '0640',
+      content => "Internal service repository.\nContains source code and configuration notes.\n",
+      require => Exec['create-repo-file_leak'],
+      before  => Exec['initial_commit_leaked_files_repo'],
+    }
   }
 
   if $has_loose_leak {

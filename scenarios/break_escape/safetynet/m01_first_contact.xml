@@ -158,8 +158,19 @@ T-72 hours to launch.
         </input>
         <input into="strings_to_leak">
           <generator type="flag_generator" /> <!-- flag3: launch authorization code -->
+          <!-- flag4: encoded deployment intel. The configuration text and flag4 are first
+               CONCATENATED into one string, then base64-encoded as one blob, so leak_files places a
+               single base64 value in shatter_configuration (the narrated path: sudo-read it, base64
+               -d it, read the flag). A bare base64 encoder emits one output per input string, so the
+               config text and flag4 would become TWO separate strings_to_leak: three leak strings for
+               two filenames, and leak_files' zip (secgen_functions::leak_files) would append the
+               surplus flag4 value to the FIRST file (launch_flag) instead of shatter_configuration,
+               breaking the narrated route. See the note in Hacktivity
+               lib/playtest/solves/m01_first_contact.rb. -->
           <encoder module_path="modules/encoders/base/base64"> <!-- shatter_configuration -->
             <input into="strings_to_encode">
+              <encoder module_path="modules/encoders/selector/concatenate">
+                <input into="strings_to_encode">
               <value>OPERATION SHATTER -- DEPLOYMENT CONFIGURATION
 Classification: ENTROPY EYES ONLY
 
@@ -201,11 +212,11 @@ DEPLOYMENT: SUNDAY 06:00 UTC
 AUTHORISED BY: The Architect
 
 This operation will not be stopped.</value>
-              <generator type="flag_generator" /> <!-- flag4: encoded deployment intel -->
-
+                  <generator type="flag_generator" /> <!-- flag4: encoded deployment intel -->
+                </input>
+              </encoder>
             </input>
           </encoder>
-          
         </input>
       </generator>
     </input>

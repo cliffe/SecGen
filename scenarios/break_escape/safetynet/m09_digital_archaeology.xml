@@ -106,15 +106,6 @@ These VMs are provisioned by the Break Escape game engine via SecGen integration
     <system_name>attack_vm</system_name>
     <base distro="Kali" name="MSF"/>
 
-    <input into_datastore="IP_addresses">
-      <!-- 0 attack_vm -->
-      <network_ip system="attack_vm"/>
-      <!-- 1 catalogue_server -->
-      <network_ip system="catalogue_server"/>
-      <!-- 2 tomb_beta_server -->
-      <network_ip system="tomb_beta_server"/>
-    </input>
-
     <utility module_path=".*/parameterised_accounts">
       <input into="accounts">
         <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
@@ -205,11 +196,7 @@ Source file: HL2015-0477
       </input>
     </vulnerability>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="1">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
     <build type="cleanup">
       <input into="root_password">
         <datastore>spoiler_admin_pass</datastore>
@@ -316,11 +303,7 @@ Defences: list built from the stolen database, grouped by sector, with the weakn
       </input>
     </vulnerability>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="2">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
     <build type="cleanup">
       <input into="root_password">
         <datastore>spoiler_admin_pass</datastore>

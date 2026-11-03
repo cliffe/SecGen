@@ -59,6 +59,22 @@ class gitlist_040::configure {
     owner => 'www-data'
   }
 
+  # Guarantee the repository holds searchable text. GitList's search runs
+  # `git grep -I --line-number <query> c` (exploit/multi/http/gitlist_arg_injection
+  # posts its injection to .../tree/c/search, so 'c' becomes the grep pattern), and
+  # the injected --open-files-in-pager payload only executes when git grep finds a
+  # tracked file whose content matches that pattern. The randomly generated leak
+  # files are sometimes an ASCII-art image with no 'c', which leaves the repo
+  # unsearchable and the exploit inert; this committed README always matches.
+  file { "${leaked_files_path}/README.md":
+    ensure  => file,
+    owner   => 'www-data',
+    mode    => '0640',
+    content => "Internal service repository.\nContains source code and configuration notes.\n",
+    require => Exec['create-repo-file_leak'],
+    before  => Exec['initial_commit_leaked_files_repo'],
+  }
+
   if $has_loose_leak {
     ::secgen_functions::leak_files { 'gitlist_040-flag-leak':
       storage_directory => '/home/git',

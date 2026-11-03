@@ -1,15 +1,20 @@
 require_relative '../../../../../lib/post_provision_test'
 
-# Gitlist 0.4.0 RCE (CVE-2018-1000533) on patched PHP 7.4 (php7_patched).
+# Gitlist 0.4.0 RCE (primary CVE-2014-4511) on patched PHP 7.4 (php7_patched).
 # tier 2 proves GitList serves via Apache -> php-fpm and that the php2shell fix
-# is present, so only the app's own argument-injection CVE is exploitable.
-# tier 3 runs exploit/multi/http/gitlist_arg_injection from an attacker VM and
-# proves unauthenticated RCE via the argument-injection sink in GitList's search
-# (git log --grep is called with user-supplied input, escapeshellarg-bypassed).
-# The leaked flag is in /home/git/ (owner www-data, mode 0750), readable by the
-# exploit process (www-data). TARGETURI '/gitlist/' because Apache serves
-# GitList from that subdirectory (Alias to /var/www/gitlist, RewriteBase
-# /gitlist/), whose prefixed repository links the exploit's discovery needs.
+# is present, so only GitList's own application-level RCE is exploitable, not a
+# generic PHP shell.
+# tier 3 runs two Metasploit modules from the attacker VM, both unauthenticated
+# and both working against this 0.4.0 build:
+#   - exploit/linux/http/gitlist_exec (CVE-2014-4511): command injection through
+#     a crafted filename in the blame/file-browser endpoint (the primary vuln).
+#   - exploit/multi/http/gitlist_arg_injection (CVE-2018-1000533): argument
+#     injection into git log --grep (escapeshellarg-bypassed) in the search path.
+# Both run the injected command as the web server user (www-data) and read the
+# leaked flag from /home/git/ (owner www-data, mode 0750, readable by www-data).
+# TARGETURI '/gitlist/' because Apache serves GitList from that subdirectory
+# (Alias to /var/www/gitlist, RewriteBase /gitlist/), whose prefixed repository
+# links both exploits' repository discovery needs.
 # No credentials are required.
 # Tier 3 SKIPs cleanly when there is no attacker sibling (single-VM run).
 class Gitlist040Test < PostProvisionTest
@@ -38,6 +43,22 @@ class Gitlist040Test < PostProvisionTest
       test_local_command('php2shell fix present (CVE-2026-109618/109619)',
                          'cat /opt/php-7.4-patched/PHP2SHELL_FIX_COMMIT', FIX_COMMIT)
     end
+    # Tier 3 (primary): blame/file-browser command injection from the attacker
+    # VM (CVE-2014-4511, exploit/linux/http/gitlist_exec). cmd/unix/generic is a
+    # compatible payload (the module's RequiredCmd list includes 'generic') and
+    # the module runs on the unix/ARCH_CMD platform, unlike the PHP-platform
+    # arg_injection module below. The module declares space a bad char, so
+    # Metasploit encodes the injected command for the ${IFS} sink itself.
+    # TARGETURI '/gitlist/' matches the Apache Alias; the module's repository
+    # discovery keys off the /gitlist/-prefixed links on that page. collect reads
+    # the same leaked flag from /home/git/ as www-data.
+    test_msf_exploit('exploit/linux/http/gitlist_exec',
+                     rport: self.port,
+                     payload: 'cmd/unix/generic',
+                     collect: 'cat /home/git/*',
+                     options: { 'TARGETURI' => '/gitlist/' },
+                     tier: 3)
+
     # Tier 3: argument-injection RCE from the attacker VM (CVE-2018-1000533).
     # php/unix/cmd/generic: the module is PHP-platform (cmd/unix/generic is
     # incompatible). The argument injection runs the CMD via the PHP exec call

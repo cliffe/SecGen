@@ -79,7 +79,7 @@
 
   <system>
     <system_name>server</system_name>
-    <base distro="Debian 7.8" type="desktop"/>
+    <base platform="linux" type="server"/>
     <input into_datastore="accounts">
       <generator type="account">
         <input into="username">

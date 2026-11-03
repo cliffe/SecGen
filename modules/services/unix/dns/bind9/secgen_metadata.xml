@@ -17,19 +17,12 @@
   <read_fact>dns_records</read_fact>
   <read_fact>allow_transfer</read_fact>
 
-  <!-- Defaults let the module provision standalone (test-module, bare scenarios).
-       Scenarios that pass domain/ns_hostname/dns_records override these. -->
   <default_input into="domain">
-    <value>secgen.test</value>
+    <value>secgen.local</value>
   </default_input>
 
   <default_input into="ns_hostname">
-    <value>ns1.secgen.test</value>
-  </default_input>
-
-  <default_input into="dns_records">
-    <value>ns1|A|192.0.2.1</value>
-    <value>www|A|192.0.2.10</value>
+    <value>ns1.secgen.local</value>
   </default_input>
 
   <default_input into="serial">

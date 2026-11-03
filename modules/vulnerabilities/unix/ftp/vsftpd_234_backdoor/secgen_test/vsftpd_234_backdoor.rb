@@ -30,13 +30,16 @@ class Vsftpd234BackdoorTest < PostProvisionTest
     # Tier 1 — the self-compiled backdoored binary is in place.
     test_command_succeeds('vsftpd 2.3.4 installed', 'test -x /usr/local/sbin/vsftpd', tier: 1)
 
-    # Tier 2 — FTP daemon listening on the target.
+    # Tier 2 — FTP daemon listening; verify the configured banner if one was supplied.
     test_service_up(tier: 2)
+    if (banner = self.json_inputs['ftpd_banner']&.first)
+      test_banner(banner, tier: 2)
+    end
 
     # Tier 3 — exploit from the attacker VM (default cmd/unix/generic payload;
     # force: because this module's automatic check is inconclusive).
     test_msf_exploit('exploit/unix/ftp/vsftpd_234_backdoor',
-                     rport: 21,
+                     rport: self.port,
                      force: true,
                      tier: 3)
   end

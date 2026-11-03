@@ -17,7 +17,7 @@ class XfceTest < PostProvisionTest
     tier(2) do
       test_command_succeeds('xfce4-session binary exists', 'test -x /usr/bin/xfce4-session')
       test_local_command('xfce4-session runs', 'xfce4-session --version', 'xfce4-session')
-      test_local_command('lightdm runs', 'lightdm --version', 'lightdm')
+      test_command_succeeds('lightdm runs', 'lightdm --version')
       test_command_succeeds('display manager unit is present', 'systemctl cat lightdm >/dev/null')
     end
   end

@@ -17,7 +17,10 @@ class HandyNetworkingToolsTest < PostProvisionTest
       test_local_command('tcpdump installed', 'which tcpdump', 'tcpdump')
       test_local_command('openssl installed', 'which openssl', 'openssl')
       # every package the Puppet installs, and the binary it provides
-      { 'dnsutils' => 'dig', 'openvpn' => 'openvpn', 'traceroute' => 'traceroute', 'whois' => 'whois',
+      # dnsutils was renamed to bind9-dnsutils on Kali rolling; check either name
+      test_local_command('dnsutils package installed', "dpkg -l dnsutils bind9-dnsutils 2>/dev/null | grep -E '^ii'", 'dnsutils')
+      test_local_command('dig on PATH', 'PATH=$PATH:/sbin:/usr/sbin command -v dig', 'dig')
+      { 'openvpn' => 'openvpn', 'traceroute' => 'traceroute', 'whois' => 'whois',
         'net-tools' => 'netstat', 'resolvconf' => 'resolvconf' }.each do |pkg, bin|
         test_local_command("#{pkg} package installed", "dpkg -l #{pkg} | grep -E '^ii'", pkg)
         test_local_command("#{bin} on PATH", "PATH=$PATH:/sbin:/usr/sbin command -v #{bin}", bin)
@@ -31,10 +34,10 @@ class HandyNetworkingToolsTest < PostProvisionTest
       test_local_command('traceroute available', 'which traceroute', 'traceroute')
       test_local_command('tcpdump runs', 'tcpdump --version 2>&1', 'tcpdump version')
       test_local_command('dig runs', 'dig -v 2>&1', 'DiG')
-      test_local_command('nslookup runs', 'nslookup -version 2>&1', 'nslookup')
+      test_local_command('nslookup runs', 'command -v nslookup >/dev/null && nslookup -version 2>&1', 'nslookup')
       test_local_command('openvpn runs', 'openvpn --version', 'OpenVPN')
-      test_local_command('traceroute runs', 'traceroute --version 2>&1', 'traceroute')
-      test_local_command('whois runs', 'whois --version 2>&1', 'whois')
+      test_local_command('traceroute runs', 'command -v traceroute >/dev/null && traceroute --version 2>&1', 'traceroute')
+      test_local_command('whois runs', 'command -v whois >/dev/null && whois --version 2>&1', 'whois')
       test_local_command('netstat runs', 'netstat --version 2>&1', 'net-tools')
       test_local_command('ifconfig lists loopback', 'PATH=$PATH:/sbin ifconfig lo', 'lo')
       test_command_succeeds('resolvconf lists state', 'PATH=$PATH:/sbin resolvconf -l')

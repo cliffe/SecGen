@@ -14,6 +14,13 @@
 
   <read_fact>groups</read_fact>
 
+  <!-- default so the module provisions when a scenario supplies no groups;
+       a scenario's own groups input overrides these -->
+  <default_input into="groups">
+    <value>secgen_staff</value>
+    <value>secgen_students</value>
+  </default_input>
+
   <requires>
     <module_path>utilities/unix/system/.*/accounts</module_path>
   </requires>

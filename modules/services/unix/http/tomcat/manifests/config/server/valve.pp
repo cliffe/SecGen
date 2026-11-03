@@ -1,45 +1,52 @@
-# Definition tomcat::config::server::valve
+# @summary Configure a Valve element in $CATALINA_BASE/conf/server.xml
 #
-# Configure a Valve element in $CATALINA_BASE/conf/server.xml
+# @param catalina_base
+#   Specifies the base directory of the Tomcat installation. Valid options: a string containing an absolute path. `$::tomcat::catalina_home`.
+# @param class_name
+#   Specifies the Java class name of a server implementation to use. Maps to the [className XML attribute](http://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Access_Logging/Attributes). Valid options: a string containing a Java class name.
+# @param parent_host
+#   Specifies which virtual host the Valve should nest under. Valid options: a string containing the name of a Host element.
+# @param parent_service
+#   Specifies which Service element the Valve should nest under. Valid options: a string containing the name of a Service element.
+# @param parent_context
+#   Specifies which Context element the Valve should nest under. Valid options: a string containing the name of a Context element (matching the docbase attribute).
+# @param valve_ensure
+#   Specifies whether the Valve should exist in the configuration file. Maps to the  [Valve XML element](http://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Introduction).
+# @param additional_attributes
+#   Specifies any further attributes to add to the Valve. Valid options: a hash of '< attribute >' => '< value >' pairs.
+# @param attributes_to_remove
+#   Specifies an array of attributes to remove from the element. Valid options: an array of strings.
+# @param uniqueness_attributes
+#   Specifies an array of attribute names that Pupet use to uniquely idetify valves. Valid options: an array of strings. `['className']`.
+# @param server_config
+#   Specifies a server.xml file to manage. Valid options: a string containing an absolute path.
+# @param show_diff
+#   Specifies display differences when augeas changes files, defaulting to true. Valid options: true or false.
 #
-# Parameters:
-# - $catalina_base is the root of the Tomcat installation
-# - $class_name is the className attribute. If not specified, defaults to $name.
-# - $parent_host is the Host element this Valve should be nested beneath. If not
-#   specified, the Valve will be nested beneath the Engine under
-#   $parent_service.
-# - $parent_context is the Context element this Valve should be nested beneath 
-#   under the host element. If not specified, the Valve will be nested beneath
-#   the parent host
-# - $parent_service is the Service element this Valve should be nested beneath.
-#   Defaults to 'Catalina'.
-# - $valve_ensure specifies whether you are trying to add or remove the Vavle
-#   element. Valid values are 'true', 'false', 'present', or 'absent'. Defaults
-#   to 'present'.
-# - An optional hash of $additional_attributes to add to the Valve. Should be of
-#   the format 'attribute' => 'value'.
-# - An optional array of $attributes_to_remove from the Valve.
 define tomcat::config::server::valve (
-  $catalina_base         = undef,
-  $class_name            = undef,
-  $parent_host           = undef,
-  $parent_service        = 'Catalina',
-  $parent_context        = undef,
-  $valve_ensure          = 'present',
-  $additional_attributes = {},
-  $attributes_to_remove  = [],
-  $server_config         = undef,
+  Optional[Stdlib::Absolutepath] $catalina_base         = undef,
+  Optional[String[1]]            $class_name            = undef,
+  Optional[String[1]]            $parent_host           = undef,
+  String                         $parent_service        = 'Catalina',
+  Optional[String[1]]            $parent_context        = undef,
+  Enum['present','absent']       $valve_ensure          = 'present',
+  Hash                           $additional_attributes = {},
+  Array                          $attributes_to_remove  = [],
+  Array                          $uniqueness_attributes = [],
+  Optional[String[1]]            $server_config         = undef,
+  Boolean                        $show_diff             = true,
 ) {
   include tomcat
-  $_catalina_base = pick($catalina_base, $::tomcat::catalina_home)
+  $_catalina_base = pick($catalina_base, $tomcat::catalina_home)
   tag(sha1($_catalina_base))
 
-  if versioncmp($::augeasversion, '1.0.0') < 0 {
-    fail('Server configurations require Augeas >= 1.0.0')
+  if versioncmp($facts['augeas']['version'], '1.0.0') < 0 {
+    fail('Valve configurations require Augeas >= 1.0.0')
   }
 
-  validate_re($valve_ensure, '^(present|absent|true|false)$')
-  validate_hash($additional_attributes)
+  if member($additional_attributes.keys, 'className') {
+    fail('\'additional_attributes\' contains \'className\'. Please use parameter \'class_name\'')
+  }
 
   if $class_name {
     $_class_name = $class_name
@@ -47,15 +54,29 @@ define tomcat::config::server::valve (
     $_class_name = $name
   }
 
+  if !member($uniqueness_attributes, 'className') {
+    $_uniqueness_attributes = ['className'] + $uniqueness_attributes
+  } else {
+    $_uniqueness_attributes = $uniqueness_attributes
+  }
+
+  $attributes = { 'className' => $_class_name } + $additional_attributes
+
+  $augeas_filter = $_uniqueness_attributes.map |$attr| {
+    "[#attribute/${attr}='${attributes[$attr]}']"
+  }
+
+  # lint:ignore:140chars
   if $parent_host {
     if $parent_context {
-      $base_path = "Server/Service[#attribute/name='${parent_service}']/Engine/Host[#attribute/name='${parent_host}']/Context[#attribute/docBase='${parent_context}']/Valve[#attribute/className='${_class_name}']"
+      $base_path = "Server/Service[#attribute/name='${parent_service}']/Engine/Host[#attribute/name='${parent_host}']/Context[#attribute/docBase='${parent_context}']/Valve${join($augeas_filter)}"
     } else {
-      $base_path = "Server/Service[#attribute/name='${parent_service}']/Engine/Host[#attribute/name='${parent_host}']/Valve[#attribute/className='${_class_name}']"
+      $base_path = "Server/Service[#attribute/name='${parent_service}']/Engine/Host[#attribute/name='${parent_host}']/Valve${join($augeas_filter)}"
     }
   } else {
-    $base_path = "Server/Service[#attribute/name='${parent_service}']/Engine/Valve[#attribute/className='${_class_name}']"
+    $base_path = "Server/Service[#attribute/name='${parent_service}']/Engine/Valve${join($augeas_filter)}"
   }
+  # lint:endignore
 
   if $server_config {
     $_server_config = $server_config
@@ -63,27 +84,32 @@ define tomcat::config::server::valve (
     $_server_config = "${_catalina_base}/conf/server.xml"
   }
 
-  if $valve_ensure =~ /^(absent|false)$/ {
+  if $valve_ensure == 'absent' {
     $changes = "rm ${base_path}"
   } else {
-    $_class_name_change = "set ${base_path}/#attribute/className ${_class_name}"
-    if ! empty($additional_attributes) {
-      $_additional_attributes = suffix(prefix(join_keys_to_values($additional_attributes, " '"), "set ${base_path}/#attribute/"), "'")
-    } else {
-      $_additional_attributes = undef
+    $defnode_valve = "defnode valve ${base_path} ''"
+    $set_attributes = join_keys_to_values($attributes, " '").map |$attr| {
+      "set \$valve/#attribute/${attr}'"
     }
     if ! empty(any2array($attributes_to_remove)) {
-      $_attributes_to_remove = prefix(any2array($attributes_to_remove), "rm ${base_path}/#attribute/")
+      $rm_attributes = any2array($attributes_to_remove).map |$attr| {
+        "rm \$valve/#attribute/${attr}"
+      }
     } else {
-      $_attributes_to_remove = undef
+      $rm_attributes = undef
     }
 
-    $changes = delete_undef_values(flatten([$_class_name_change, $_additional_attributes, $_attributes_to_remove]))
+    $changes = delete_undef_values(flatten([
+          $defnode_valve,
+          $set_attributes,
+          $rm_attributes,
+    ]))
   }
 
   augeas { "${_catalina_base}-${parent_service}-${parent_host}-valve-${name}":
-    lens    => 'Xml.lns',
-    incl    => $_server_config,
-    changes => $changes,
+    lens      => 'Xml.lns',
+    incl      => $_server_config,
+    changes   => $changes,
+    show_diff => $show_diff,
   }
 }

@@ -36,7 +36,7 @@ while ! grep -m1 'active (running)' < /tmp/mysqllog.txt || x < 10
 do
     checkMsqlService
     x=$(( x+1))
-    #post command to run seperate script here
+    #post command to run separate script here
     
 done
 

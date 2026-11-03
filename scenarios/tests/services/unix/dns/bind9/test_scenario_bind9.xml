@@ -19,7 +19,57 @@
       <network_ip system="attacker"/>
     </input>
 
-    <service module_path=".*/bind9"/>
+    <service module_path=".*/bind9">
+      <input into="dns_records">
+        <generator module_path=".*/dns_record">
+          <input into="hostname">
+            <value>www</value>
+          </input>
+          <input into="type">
+            <value>a</value>
+          </input>
+          <input into="value">
+            <value>192.168.99.10</value>
+          </input>
+        </generator>
+        <generator module_path=".*/dns_record">
+          <input into="hostname">
+            <value>alias</value>
+          </input>
+          <input into="type">
+            <value>cname</value>
+          </input>
+          <input into="value">
+            <value>www.secgen.local</value>
+          </input>
+        </generator>
+        <generator module_path=".*/dns_record">
+          <input into="hostname">
+            <value>info</value>
+          </input>
+          <input into="type">
+            <value>txt</value>
+          </input>
+          <input into="value">
+            <value>v=secgen-test</value>
+          </input>
+        </generator>
+        <generator module_path=".*/dns_record">
+          <input into="hostname">
+            <value>@</value>
+          </input>
+          <input into="type">
+            <value>mx</value>
+          </input>
+          <input into="value">
+            <value>mail.secgen.local</value>
+          </input>
+          <input into="priority">
+            <value>10</value>
+          </input>
+        </generator>
+      </input>
+    </service>
 
     <network type="private_network"/>
 

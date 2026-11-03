@@ -373,9 +373,9 @@ private static java.util.HashMap<String, String> labnotes = new java.util.HashMa
         
         keywords.setFocusTraversalKeysEnabled(true);
         lablist.setFocusTraversalKeysEnabled(true);
-        notes_box.setFocusTraversalKeys(java.awt.KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, null);// I dont want tabbing within the textpane notes
+        notes_box.setFocusTraversalKeys(java.awt.KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, null);// I don't want tabbing within the textpane notes
         notes_box.setFocusTraversalKeys(java.awt.KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, null);
-        description_box.setFocusTraversalKeys(java.awt.KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, null);// I dont want tabbing within the textpane description
+        description_box.setFocusTraversalKeys(java.awt.KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, null);// I don't want tabbing within the textpane description
         description_box.setFocusTraversalKeys(java.awt.KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, null);
         //for dialog text boxes
         TextDescription.setFocusTraversalKeys(java.awt.KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, null);

@@ -15,6 +15,6 @@ tomcat::instance { 'tomcat8':
   realm_ensure          => 'present',
   parent_realm          => 'org.apache.catalina.realm.LockOutRealm',
   additional_attributes => {
-    'connectionURL' => 'ldap://localhost'
+    'connectionURL' => 'ldap://localhost',
   },
 }

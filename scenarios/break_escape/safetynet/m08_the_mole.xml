@@ -125,7 +125,7 @@ These VMs are provisioned by the Break Escape game engine via SecGen integration
 
   <system>
     <system_name>safetynet_gitlist_server</system_name>
-    <base distro="Debian 12" type="desktop" name="KDE"/>
+    <base distro="Debian 10" type="desktop" name="KDE"/>
 
     <input into_datastore="organisation">
       <encoder type="line_selector">
@@ -175,15 +175,27 @@ These VMs are provisioned by the Break Escape game engine via SecGen integration
              is svc-planning (the "planning sync job" in the commit message); the same
              name owns the leaked login (flag 3) and appears in the root access log
              (flag 4), so the box backs Nightshade's "my account, my terminal, my mail". -->
-        <value>SAFETYNET INTERNAL SOURCE -- mission-tooling
+        <!-- One string per file: leak_files pairs strings_to_pre_leak with
+             pre_leaked_filenames by position, so the text and its flag are
+             concatenated into README.md rather than spilling the flag into
+             planning_sync.py (see cbb180dbb). All three strings_to_pre_leak go
+             through an encoder: encoder output resolves after plain values, so
+             mixing the two would put the files out of document order. -->
+        <encoder module_path="modules/encoders/selector/concatenate">
+          <input into="strings_to_encode">
+            <value>SAFETYNET INTERNAL SOURCE -- mission-tooling
 Repo: internal/mission-tooling  (GitList browser exposed, no auth required)
 The planning sync job authenticates as the ops service account: svc-planning
 Its credential was committed to planning_sync.env for "testing" and later removed --
 check the history, it was never actually rotated.</value>
-        <generator type="flag_generator"/>
+            <generator type="flag_generator"/>
+          </input>
+        </encoder>
       </input>
       <input into="strings_to_pre_leak">
-        <value>#!/usr/bin/env python3
+        <encoder module_path="modules/encoders/selector/concatenate">
+          <input into="strings_to_encode">
+            <value>#!/usr/bin/env python3
 # planning sync job -- pushes mission planning artefacts to the ops share.
 # Reads SYNC_USER / SYNC_PASSWORD from planning_sync.env (see planning_sync.env.example).
 import os
@@ -195,11 +207,17 @@ def main():
 
 if __name__ == "__main__":
     main()</value>
+          </input>
+        </encoder>
       </input>
       <input into="strings_to_pre_leak">
-        <value># Copy to planning_sync.env and fill in. Do NOT commit the real file.
+        <encoder module_path="modules/encoders/selector/concatenate">
+          <input into="strings_to_encode">
+            <value># Copy to planning_sync.env and fill in. Do NOT commit the real file.
 SYNC_USER=svc-planning
 SYNC_PASSWORD=changeme</value>
+          </input>
+        </encoder>
       </input>
 
       <!-- flag2: STASHED CREDENTIALS - the mole's password, committed into

@@ -7,8 +7,6 @@
   "source": "https://github.com/dcoxall/dcoxall-golang",
   "project_page": "https://github.com/dcoxall/dcoxall-golang",
   "issues_url": "https://github.com/dcoxall/dcoxall-golang/issues",
-  "dependencies": [
-    {"name":"puppetlabs/stdlib","version_requirement":">= 4.1.0 < 5.0.0"}
-  ],
+  "dependencies": [],
   "data_provider": null
 }

@@ -116,7 +116,7 @@ This CTF (Capture The Flag) challenge is designed to build on your knowledge of 
 
   <system>
     <system_name>web_server</system_name>
-    <base distro="Debian 12" type="desktop" name="KDE"/>
+    <base distro="Debian 10" type="desktop" name="KDE"/>
 
     <input into_datastore="organisation">
       <encoder type="line_selector">

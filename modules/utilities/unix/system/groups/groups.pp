@@ -1,1 +1,1 @@
-require groups::init
+include groups::init

@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<service xmlns="http://www.github/cliffe/SecGen/service"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
+  <name>Apache HTTP Server</name>
+  <author>Z. Cliffe Schreuders</author>
+  <author>Connor Wilson</author>
+  <author>Puppet Labs</author>
+  <author>Tom Shaw</author>
+  <module_license>Apache v2</module_license>
+  <description>An installation of Apache. Optionally serves HTTPS with a self-signed certificate. Optionally hosts strings_to_leak content at a path extracted from a given URI: set BOTH uri (to a URI containing a path, such as http://example.com/a3f9bc72de1408f5/) and strings_to_leak, and the first leaked string is written to that path as index.html. Setting strings_to_leak without a path-bearing uri leaks nothing.</description>
+  <type>httpd</type>
+  <platform>linux</platform>
+
+  <read_fact>domain</read_fact>
+  <read_fact>cert_bundle</read_fact>
+  <read_fact>uri</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+
+  <default_input into="domain">
+    <value>localhost</value>
+  </default_input>
+  <default_input into="uri">
+    <value>localhost</value>
+  </default_input>
+  <default_input into="cert_bundle">
+    <value></value>
+  </default_input>
+  <!-- To leak content, also set uri to a URI containing a path -->
+  <default_input into="strings_to_leak">
+    <value></value>
+  </default_input>
+
+  <reference>https://httpd.apache.org/</reference>
+  <reference>https://forge.puppet.com/puppetlabs/apache</reference>
+  <software_name>apache</software_name>
+  <software_license>Apache v2</software_license>
+
+  <conflict>
+    <software_name>apache</software_name>
+  </conflict>
+  <conflict>
+    <module_path>.*bases/(?!debian_(bookworm|buster)).*</module_path>
+  </conflict>
+  <requires>
+    <type>update</type>
+  </requires>
+</service>

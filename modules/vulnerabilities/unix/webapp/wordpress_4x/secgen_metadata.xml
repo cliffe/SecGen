@@ -56,6 +56,11 @@
     <generator type="username_generator"/>
   </default_input>
 
+  <!-- its PHP comes from packages.sury.org, which no longer serves Buster -->
+  <conflict>
+    <name>.*Buster.*</name>
+  </conflict>
+
   <requires>
     <module_path>.*/puppet_module/cron.*</module_path>
   </requires>
@@ -69,15 +74,15 @@
   </requires>
 
   <requires>
-    <module_path>.*apache.*compatible.*</module_path>
+    <software_name>apache</software_name>
   </requires>
 
   <requires>
-    <module_path>.*mysql.*compatible.*</module_path>
+    <software_name>mysql</software_name>
   </requires>
 
   <requires>
-    <module_path>.*php_5.*compatible.*</module_path>
+    <module_path>.*/php_5/php</module_path>
   </requires>
 
 <!-- TODO: rework wordpress modules to target specific vulns/CVEs -->

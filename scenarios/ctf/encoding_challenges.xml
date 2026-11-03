@@ -49,7 +49,7 @@
 
   <system>
     <system_name>system</system_name>
-    <base platform="linux" type="desktop" distro="Stretch"/>
+    <base platform="linux" type="server"/>
 
     <input into_datastore="IP_addresses">
       <network_ip system="system"/>

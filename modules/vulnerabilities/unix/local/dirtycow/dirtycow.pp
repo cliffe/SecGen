@@ -1,1 +1,0 @@
-include dirtycow::config

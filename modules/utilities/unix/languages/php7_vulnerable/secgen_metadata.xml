@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>PHP 7.4 unpatched against php2shell (deliberately vulnerable, source build, Debian 10 Buster)</name>
+  <author>Thomas Shaw</author>
+  <module_license>Apache v2</module_license>
+  <description>Builds PHP 7.4 from a source tarball bundled in this module (the
+          php-src tree at commit 004cb827501d1ddaf98daacb185a53e0816f78a7, the
+          commit immediately before the php2shell mitigation) and makes it the
+          default `php`. This is the deliberately vulnerable counterpart of
+          php7_patched: the same 7.4.31-dev tree without the php2shell fix
+          (CVE-2026-109618 / CVE-2026-109619), for use as a practice target on
+          an isolated lab network. The source is bundled rather than fetched
+          from apt or upstream so the build does not depend on a package
+          manager (which would supply a fixed build) or on the source staying
+          available. Built on Debian 10 Buster (OpenSSL 1.1.1, contemporary
+          toolchain). The build reports 7.4.31-dev, the same version string as
+          the patched build, so whether the fix is present can only be told from
+          the source: the install records the pinned source commit in
+          /opt/php-7.4-vulnerable/PHP2SHELL_VULN_COMMIT and leaves the built
+          source tree on the box for a check to inspect.
+  </description>
+
+  <type>language</type>
+  <type>php</type>
+  <platform>linux</platform>
+
+  <reference>https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w</reference>
+  <reference>https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp</reference>
+
+  <software_name>php</software_name>
+  <software_license>PHP License v3.01</software_license>
+
+  <conflict>
+    <software_name>php</software_name>
+  </conflict>
+  <conflict>
+    <module_path>.*services/unix/http/lamp.*</module_path>
+  </conflict>
+
+  <requires>
+    <type>update</type>
+  </requires>
+  <requires>
+    <module_path>.*bases/debian_buster.*</module_path>
+  </requires>
+</utility>

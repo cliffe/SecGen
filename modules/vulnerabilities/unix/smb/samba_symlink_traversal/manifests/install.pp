@@ -1,6 +1,10 @@
 class samba_symlink_traversal::install {
   include samba
 
+  # smbclient lets an attacker (or this module's own test) enumerate the
+  # share anonymously from the command line.
+  ensure_packages(['smbclient'])
+
   $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
   $storage_directory = $secgen_parameters['storage_directory'][0]
   $leaked_filenames = $secgen_parameters['leaked_filenames']

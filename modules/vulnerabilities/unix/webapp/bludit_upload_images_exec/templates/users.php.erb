@@ -1,0 +1,30 @@
+<%-
+  require 'digest'
+  require 'securerandom'
+  salt          = SecureRandom.hex(8)
+  password_hash = Digest::SHA1.hexdigest(@known_password.to_s + salt)
+  token_auth    = Digest::MD5.hexdigest(SecureRandom.hex + Time.now.to_i.to_s)
+-%>
+<?php defined('BLUDIT') or die('Bludit CMS.'); ?>
+{
+   "admin": {
+      "nickname": "Admin",
+      "firstName": "Administrator",
+      "lastName": "",
+      "role": "admin",
+      "password": "<%= password_hash %>",
+      "salt": "<%= salt %>",
+      "email": "",
+      "registered": "2019-01-01 00:00:00",
+      "tokenRemember": "",
+      "tokenAuth": "<%= token_auth %>",
+      "tokenAuthTTL": "2009-03-15 14:00",
+      "twitter": "",
+      "facebook": "",
+      "instagram": "",
+      "codepen": "",
+      "linkedin": "",
+      "github": "",
+      "gitlab": ""
+   }
+}

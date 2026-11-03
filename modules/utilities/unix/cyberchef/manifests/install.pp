@@ -1,4 +1,5 @@
 class cyberchef::install {
+  # cyberchef_www includes modules/*.js, which the app's worker loads at runtime
   file {
    '/opt/cyberchef':
     ensure => 'directory',

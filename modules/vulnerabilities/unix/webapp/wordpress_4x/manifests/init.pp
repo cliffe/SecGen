@@ -21,6 +21,7 @@ class wordpress_4x {
 
   if $https {
     ::apache::vhost { 'wordpress':
+      priority => '05', # ahead of the apache module's own vhost on the same port
       docroot => '/var/www/wordpress',
       port    => '80',
       redirect_status => 'permanent',
@@ -28,12 +29,14 @@ class wordpress_4x {
     }
 
     ::apache::vhost { 'wordpress-ssl':
+      priority => '05', # ahead of the apache module's own vhost on the same port
       docroot => '/var/www/wordpress',
       port    => '443',
       ssl     => true,
     }
   } else {
     ::apache::vhost { 'wordpress':
+      priority => '05', # ahead of the apache module's own vhost on the same port
       docroot => '/var/www/wordpress',
       port    => $port,
     }

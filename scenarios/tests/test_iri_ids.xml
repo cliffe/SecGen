@@ -181,6 +181,9 @@
     <input into_datastore="spoiler_admin_pass">
       <generator type="strong_password_generator"/>
     </input>
+    <input into_datastore="hackerbot_key">
+      <generator type="ssh_key_pair"/>
+    </input>
 
     <!--Create the users-->
     <utility module_path=".*/parameterised_accounts">
@@ -203,6 +206,15 @@
     <utility module_path=".*/handy_cli_tools"/>
     <utility module_path=".*/nmap"/>
 
+    <utility module_path=".*/hosts">
+      <input into="hosts">
+        <value>hackerbot</value>
+      </input>
+      <input into="IP_addresses">
+        <datastore access="3">IP_addresses</datastore>
+      </input>
+    </utility>
+
     <utility module_path=".*/iceweasel">
       <input into="accounts">
         <datastore>accounts</datastore>
@@ -211,26 +223,24 @@
         <value>true</value>
       </input>
       <input into="start_page">
-        <datastore access="3">IP_addresses</datastore>
+        <datastore access="2">IP_addresses</datastore>
+      </input>
+      <input into="start_page">
+        <value>hackerbot:8080</value>
       </input>
     </utility>
 
-    <utility module_path=".*/pidgin">
-      <input into="server_ip">
-        <datastore access="3">IP_addresses</datastore>
-      </input>
-      <input into="accounts">
-        <datastore access="0">accounts</datastore>
-      </input>
-    </utility>
-
-    <utility module_path=".*/handy_cli_tools"/>
     <utility module_path=".*/wireshark"/>
-    <utility module_path=".*/nmap"/>
 
     <utility module_path=".*/mirror_traffic_to_ids_iptables">
       <input into="ids_IP_address">
         <datastore access="1">IP_addresses</datastore>
+      </input>
+    </utility>
+
+    <utility module_path=".*/hackerbot_client">
+      <input into="ssh_key_pair">
+        <datastore>hackerbot_key</datastore>
       </input>
     </utility>
 
@@ -249,6 +259,8 @@
     </build>
   </system>
 
+  <!-- system_name must be 'ids_monitor': mirror_traffic_to_ids_iptables secgen_test
+       cross-VM checks (Snort installed, TEE target IP match) rely on this name. -->
   <system>
     <system_name>ids_monitor</system_name>
     <base distro="Debian 10" type="desktop" name="KDE"/>
@@ -274,6 +286,12 @@
     <utility module_path=".*/snort"/>
     <utility module_path=".*/wireshark"/>
     <utility module_path=".*/nmap"/>
+
+    <utility module_path=".*/hackerbot_client">
+      <input into="ssh_key_pair">
+        <datastore>hackerbot_key</datastore>
+      </input>
+    </utility>
 
     <vulnerability module_path=".*/ssh_root_login">
       <input into="root_password">
@@ -323,6 +341,12 @@
       </input>
     </utility>
 
+    <utility module_path=".*/hackerbot_client">
+      <input into="ssh_key_pair">
+        <datastore>hackerbot_key</datastore>
+      </input>
+    </utility>
+
     <vulnerability module_path=".*/ssh_root_login">
       <input into="root_password">
         <datastore>spoiler_admin_pass</datastore>
@@ -343,7 +367,16 @@
     <system_name>hackerbot_server</system_name>
     <base distro="Kali" name="MSF"/>
 
-    <service type="ircd"/>
+    <service module_path=".*/ergochat"/>
+
+    <utility module_path=".*/hackerbot_webclient">
+      <input into="username">
+        <datastore access="0" access_json="['username']">accounts</datastore>
+      </input>
+      <input into="irc_server_ip">
+        <value>hackerbot</value>
+      </input>
+    </utility>
 
     <utility module_path=".*/metasploit_framework"/>
     <utility module_path=".*/handy_cli_tools"/>
@@ -352,13 +385,13 @@
     <service type="httpd" module_path=".*/apache.*"/>
 
     <utility module_path=".*/hackerbot">
+      <input into="ssh_key_pair">
+        <datastore>hackerbot_key</datastore>
+      </input>
       <input into="hackerbot_configs">
         <generator module_path=".*/ids">
           <input into="accounts">
             <datastore>accounts</datastore>
-          </input>
-          <input into="root_password">
-            <datastore>spoiler_admin_pass</datastore>
           </input>
           <input into="ids_server_ip">
             <datastore access="1">IP_addresses</datastore>

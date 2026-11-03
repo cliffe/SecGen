@@ -17,6 +17,14 @@ class linuxki_rce::configure {
     home       => $user_home,
     managehome => true,
   }
+  # The RCE lands as the Apache user (www-data), not $user: Debian's default
+  # UMASK gives a new home dir 0750/0700, which would leave www-data unable
+  # to even traverse into it to read the leaked flag. Open the directory up
+  # so the leaked file (mode 0644 below) is actually reachable post-exploit.
+  -> file { $user_home:
+    ensure => directory,
+    mode   => '0755',
+  }
 
   ::secgen_functions::leak_files { 'linuxki-flag-leak':
     storage_directory => $user_home,

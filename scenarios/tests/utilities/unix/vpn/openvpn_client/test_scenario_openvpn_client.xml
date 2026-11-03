@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>Test: openvpn_client</name>
+  <author>Thomas Shaw</author>
+  <description>Single-VM test scenario for the openvpn_client utility module, used to exercise its secgen_test via the Proxmox QEMU Guest Agent testing pipeline.</description>
+
+  <type>test</type>
+
+  <system>
+    <system_name>openvpn_client_testing</system_name>
+    <base platform="linux" distro="Debian 12" type="desktop"/>
+
+    <input into_datastore="IP_addresses">
+      <network_ip system="openvpn_client_testing"/>
+    </input>
+
+    <utility module_path=".*/openvpn_client">
+      <input into="openvpn_pki">
+        <generator module_path=".*/openvpn_pki">
+          <input into="server_ip">
+            <datastore access="0">IP_addresses</datastore>
+          </input>
+          <input into="port">
+            <value>1194</value>
+          </input>
+          <input into="vpn_subnet">
+            <value>10.8.0.0</value>
+          </input>
+          <input into="vpn_subnet_mask">
+            <value>255.255.255.0</value>
+          </input>
+          <input into="push_routes">
+            <value>10.0.1.0 255.255.255.0</value>
+          </input>
+          <input into="num_clients">
+            <value>1</value>
+          </input>
+        </generator>
+      </input>
+      <input into="client_index">
+        <value>0</value>
+      </input>
+      <input into="start_on_boot">
+        <value>false</value>
+      </input>
+    </utility>
+
+    <network type="private_network"/>
+
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+
+</scenario>

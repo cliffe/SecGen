@@ -37,9 +37,9 @@ The lab includes four components as shown in Figure \ref{fig:topology}:
 \begin{itemize}
 \item \textbf{Slave Device} A simple slave device containing two buttons and a lamp.  The device has an
 ethernet interface via which it is connected to a PLC using Modbus TCP/IP.
-\item \textbf{PLC} A programable logic controller implemented using the OpenPLC Soft-PLC implementation
+\item \textbf{PLC} A programmable logic controller implemented using the OpenPLC Soft-PLC implementation
 on a Linux based computer.  The PLC is connected to the slave device via Modbus TCP/IP over ethernet.
-The PLC has a seperate ethernet connection to an HMI computer.
+The PLC has a separate ethernet connection to an HMI computer.
 For convenience of the lab, the PLC computer includes Wireshark and will be used to capture, review and
 replay network traffic between the PLC and the slave device.  
 
@@ -113,7 +113,7 @@ on the ``Import'' dialog to import those files.  It may take a minute to complet
 \item When the import completes, close the ``Import'' dialog.
 \end{itemize}
 You should then see the ``Logical Graph'' of system components that the GrassMarlin tool discovered from the
-PCAP files.   If the component icons overlap, use the mouse to seperate them.  You should now be able to correlate 
+PCAP files.   If the component icons overlap, use the mouse to separate them.  You should now be able to correlate 
 the computers in the lab network with elements within the logical graph.  Note that Logical Graph is organized by 
 subnets,  and not physical devices.   For example, it lacks information necessary to associate the two IP addresses of the
 PLC as belonging to the same device.  Consider why that is.

@@ -48,14 +48,5 @@
     }
   ],
   "description": "LAMP basic configuration and deploy module on RedHat/CentOS/Debian/Ubuntu Linux distributions",
-  "dependencies": [
-    {
-      "name": "puppetlabs/apache",
-      "version_requirement": "1.x"
-    },
-    {
-      "name": "puppetlabs/mysql",
-      "version_requirement": "3.x"
-    }
-  ]
+  "dependencies": []
 }

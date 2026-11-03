@@ -13,7 +13,10 @@
     resulting in security vulnerability.
   </description>
 
-  <type>webapp</type>
+  <!-- "web" not "webapp": php7's own conflict on type webapp would otherwise
+  exclude php7 as soon as this module (which requires it) is selected; same
+  self-conflict gravcms_exec avoids the same way -->
+  <type>web</type>
   <type>in_the_wild</type>
   <privilege>user_rwx</privilege>
   <access>remote</access>
@@ -59,7 +62,13 @@
   </requires>
 
   <requires>
-    <module_path>.*apache.*compatible.*</module_path>
+    <software_name>apache</software_name>
+  </requires>
+
+  <!-- needs PHP 7 (see modules/utilities/unix/languages/php7): kivis.php's bare
+  switch-case labels fatal on undefined constant under Debian 12's PHP 8.2 -->
+  <requires>
+    <module_path>.*utilities/unix/languages/php7</module_path>
   </requires>
 
   <CyBOK KA="MAT" topic="Attacks and exploitation">

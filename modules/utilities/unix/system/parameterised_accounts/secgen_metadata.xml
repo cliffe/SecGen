@@ -19,6 +19,11 @@
 
   <read_fact>accounts</read_fact>
 
+  <!-- Default: one random, non-sudo account (scenarios override with their own account generators) -->
+  <default_input into="accounts">
+    <generator type="account"/>
+  </default_input>
+
   <requires>
     <module_path>utilities/unix/system/.*/accounts</module_path>
   </requires>

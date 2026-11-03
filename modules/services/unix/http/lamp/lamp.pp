@@ -1,2 +1,1 @@
-include ::lamp::apache
-include ::lamp::mysql
+include ::lamp::config

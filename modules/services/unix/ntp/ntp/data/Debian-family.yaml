@@ -1,0 +1,11 @@
+ntp::restrict:
+  - '-4 default kod nomodify notrap nopeer noquery'
+  - '-6 default kod nomodify notrap nopeer noquery'
+  - '127.0.0.1'
+  - '::1'
+ntp::service_name: 'ntp'
+ntp::servers:
+  - '0.debian.pool.ntp.org'
+  - '1.debian.pool.ntp.org'
+  - '2.debian.pool.ntp.org'
+  - '3.debian.pool.ntp.org'

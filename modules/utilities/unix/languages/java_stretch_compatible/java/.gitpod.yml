@@ -1,9 +1,0 @@
-image:
-  file: .gitpod.Dockerfile
-
-tasks:
-  - init: pdk bundle install
-
-vscode:
-  extensions:
-    - puppet.puppet-vscode@1.0.0:oSzfTkDf6Cmc1jOjgW33VA==

@@ -1,0 +1,15 @@
+ntp::driftfile: '/var/db/ntpd.drift'
+ntp::leapfile: '/var/db/ntpd.leap-seconds.list'
+ntp::package_name: ['net/ntp']
+ntp::restrict:
+  - 'default kod nomodify notrap nopeer noquery'
+  - '-6 default kod nomodify notrap nopeer noquery'
+  - '127.0.0.1'
+  - '-6 ::1'
+ntp::servers:
+  - '0.freebsd.pool.ntp.org'
+  - '1.freebsd.pool.ntp.org'
+  - '2.freebsd.pool.ntp.org'
+  - '3.freebsd.pool.ntp.org'
+ntp::maxpoll: 9
+ntp::package_manage: false

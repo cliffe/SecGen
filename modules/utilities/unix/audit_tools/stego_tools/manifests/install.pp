@@ -1,3 +1,4 @@
 class stego_tools::install{
-  ensure_packages(["exif", "exiftool", "steghide"])
+  # Debian ships exiftool as libimage-exiftool-perl; there is no "exiftool" package
+  ensure_packages(["exif", "libimage-exiftool-perl", "steghide"])
 }

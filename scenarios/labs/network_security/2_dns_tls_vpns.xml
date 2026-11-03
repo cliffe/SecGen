@@ -411,7 +411,7 @@
       </input>
     </utility>
 
-    <service module_path=".*/apache_stretch_compatible/apache">
+    <service software_name="apache">
       <input into="domain">
         <datastore>web_domain</datastore>
       </input>

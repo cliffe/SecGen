@@ -191,7 +191,7 @@ public class GoalsData {
                     if(listofGoals.get(i).operator == null){
                         error.badOperator = true;
                         System.out.println("NULL operator "+goalID);
-                        mainUI.output("Unknownn operator for goal "+goalID);
+                        mainUI.output("Unknown operator for goal "+goalID);
                         continue;
                     }
                     operator = listofGoals.get(i).operator.getItem();
@@ -543,7 +543,7 @@ public class GoalsData {
             }
             if(subgoalError){
                 rowPassed = false;
-                infoMsg+= "-Make sure your Subgoal list is seperated by commas(', ') and only contains goals from above this goal line" + System.lineSeparator()
+                infoMsg+= "-Make sure your Subgoal list is separated by commas(', ') and only contains goals from above this goal line" + System.lineSeparator()
                         + "and/or result booleans." + System.lineSeparator();
             }
             if(subgoalMissing){

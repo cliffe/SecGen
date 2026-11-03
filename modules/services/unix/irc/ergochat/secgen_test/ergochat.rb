@@ -20,7 +20,7 @@ class ErgochatTest < PostProvisionTest
       test_local_command('datastore owned by ergochat', 'stat -c %U /var/lib/ergochat/ircd.db', 'ergochat')
       test_local_command('systemd unit installed', 'cat /etc/systemd/system/ergochat.service', 'ExecStart=/usr/local/bin/ergo run')
       test_local_command('service enabled', 'systemctl is-enabled ergochat', 'enabled')
-      test_local_command('service active', 'systemctl is-active ergochat', 'active')
+      test_local_command('service active', 'systemctl is-active ergochat | grep -x active', 'active')
     end
     tier(2) do
       test_service_up

@@ -10,6 +10,7 @@
   I need to build this for VirtualBox.</description>
   <cpu_word_size>64-bit</cpu_word_size>
   <type>desktop</type>
+  <type>server</type>
 
   <platform>linux</platform>
   <platform>unix</platform>

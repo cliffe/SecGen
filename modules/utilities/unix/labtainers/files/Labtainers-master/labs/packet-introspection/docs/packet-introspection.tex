@@ -63,14 +63,14 @@ click Close.
 Correlating network interfaces/IP addresses to physical locations is often a useful task. Wireshark
 includes a basic capability in this regard, which utilizes the free versions of the MaxMind2
 database. It is important to recognize that no IP-geolocation database is error-free.
-Later on in the quarter we will discuss various approaches to geolocating IP addresses and
-the associated complexities of this process.
 \begin{itemize}
 \item Open {\tt pcaps/http-browse101c.pcapng} in Wireshark.
 \item Now select Edit | Preferences
 | Name Resolution4 and click the GeoIP database directories Edit button. Click
-New and point to the maxmind directory (which has database files downloaded from
-\url{http://dev.maxmind.com/geoip/legacy/geolite/)}. Continue to click OK until you have
+New and point to the maxmind directory which has legacy geo location database files compatable
+with the older version of Wireshark used in this lab.  For newer versions of Wiresark, the geo location
+files can be downloaded from:
+\url{https://github.com/P3TERX/GeoLite.mmdb?tab=readme-ov-file}. Continue to click OK until you have
 closed the GeoIP database paths windows and the Preferences window.
 \item Select Statistics | Endpoints and click on the IPv4 tab. You should see information
 in the Country, City, Latitude, and Longitude columns.

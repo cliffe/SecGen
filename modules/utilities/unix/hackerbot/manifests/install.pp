@@ -17,7 +17,6 @@ class hackerbot::install {
 
   # System dependencies required for nokogiri and other gems
   $system_packages = [
-    'zlibc',
     'zlib1g',
     'zlib1g-dev',
     'sshpass',
@@ -59,7 +58,7 @@ class hackerbot::install {
 
   # Install cinch from GitHub
   exec { 'install cinch gem from github':
-    command => 'sudo gem specific_install -l https://github.com/cliffe/cinch.git',
+    command => 'gem specific_install -l https://github.com/cliffe/cinch.git',
     path    => [ '/usr/bin', '/bin', '/usr/sbin' ],
     require => Package['specific_install'],
     unless  => 'gem list | grep -q "^cinch"',

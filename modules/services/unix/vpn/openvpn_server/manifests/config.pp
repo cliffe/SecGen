@@ -16,10 +16,51 @@ class openvpn_server::config {
   $push_routes    = $openvpn_conf['push_routes']
 
   file { '/etc/openvpn/server':
-    ensure => directory,
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0750',
+    ensure  => directory,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0750',
+    require => Package['openvpn'],
+  }
+
+  # server.conf binds to the configured 'local' address, which may not be up
+  # yet when the unit starts (private network interface still configuring).
+  # Allow binding to a not-yet-assigned address, and retry on failure.
+  file { '/etc/sysctl.d/99-openvpn-server.conf':
+    ensure  => present,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    content => "net.ipv4.ip_nonlocal_bind = 1\n",
+  }
+
+  exec { 'openvpn-server-sysctl':
+    command     => '/sbin/sysctl -w net.ipv4.ip_nonlocal_bind=1',
+    refreshonly => true,
+    subscribe   => File['/etc/sysctl.d/99-openvpn-server.conf'],
+  }
+
+  file { '/etc/systemd/system/openvpn-server@server.service.d':
+    ensure  => directory,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
+    require => Package['openvpn'],
+  }
+
+  file { '/etc/systemd/system/openvpn-server@server.service.d/restart.conf':
+    ensure  => present,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    content => "[Service]\nRestart=on-failure\nRestartSec=5\n",
+    require => File['/etc/systemd/system/openvpn-server@server.service.d'],
+  }
+
+  exec { 'openvpn-server-daemon-reload':
+    command     => '/bin/systemctl daemon-reload',
+    refreshonly => true,
+    subscribe   => File['/etc/systemd/system/openvpn-server@server.service.d/restart.conf'],
   }
 
   file { '/etc/openvpn/server/ca.crt':

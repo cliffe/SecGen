@@ -7,41 +7,36 @@
   <author>Connor Wilson</author>
   <author>alexggolovin</author>
   <module_license>Apache v2</module_license>
-  <description>A LAMP stack</description>
+  <description>A LAMP stack. Apache and MySQL come from whichever apache and mysql service
+  modules suit the base (required by software_name); this module enables mod_php in Apache
+  and installs the PHP MySQL extension.</description>
 
   <type>httpd</type>
   <type>database</type>
 
   <platform>linux</platform>
 
-  <!--optional details-->
   <reference>https://httpd.apache.org/</reference>
-  <reference>https://forge.puppet.com/alexggolovin/lamp</reference>
 
-  <software_name>apache</software_name>
-  <software_name>mysql</software_name>
-  <software_name>apache</software_name>
+  <!-- lamp installs PHP via apache::mod::php; apache and mysql come from required modules -->
   <software_name>php</software_name>
   <software_license>Apache v2</software_license>
   <software_license>PHP</software_license>
 
-  <!--Cannot co-exist with other installations-->
-  <conflict>
-    <software_name>mysql</software_name>
-  </conflict>
+  <!-- Prevent a second PHP module alongside lamp's own mod_php -->
   <conflict>
     <software_name>php</software_name>
   </conflict>
 
-  <!-- FIXME: Currently fails to install PHP on kali and Stretch... -->
-  <conflict>
-    <module_path>.*debian_stretch.*</module_path>
-  </conflict>
-  <conflict>
-    <module_path>.*debian_buster.*</module_path>
-  </conflict>
-  <conflict>
-    <module_path>.*kali_light.*</module_path>
-  </conflict>
+  <requires>
+    <type>update</type>
+  </requires>
+  <!-- Whichever apache/mysql service module suits the base -->
+  <requires>
+    <software_name>apache</software_name>
+  </requires>
+  <requires>
+    <software_name>mysql</software_name>
+  </requires>
 
 </service>

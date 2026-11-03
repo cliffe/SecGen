@@ -93,19 +93,17 @@
 
   <!--optional hints-->
   <msf_module>exploit/linux/http/bludit_upload_images_exec</msf_module>
-  <hint>Visit the webapp in a browser at: ip:80/bludit </hint>
+  <hint>Visit the webapp in a browser at: ip:80/ </hint>
 
   <!-- can't live alongside other web sites, since it accepts any virtual host name -->
   <conflict>
     <type>webapp</type>
   </conflict>
 
+  <!-- Patched PHP 7.4 (php2shell fix) so only CVE-2019-16113 is exploitable.
+       Apache is self-contained in apache.pp. -->
   <requires>
-    <module_path>.*apache.*compatible.*</module_path>
-  </requires>
-
-  <requires>
-    <module_path>.*php.*compatible.*</module_path>
+    <module_path>.*utilities/unix/languages/php7_patched.*</module_path>
   </requires>
 
   <!-- CyBOK metadata - related security concepts / knowledge required -->

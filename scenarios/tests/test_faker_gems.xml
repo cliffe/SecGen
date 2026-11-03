@@ -5,7 +5,7 @@
           xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
   <system>
     <system_name>testing_faker</system_name>
-    <base platform="linux" distro="Debian 7.8" type="server"/>
+    <base platform="linux" type="server"/>
 
     <input into_datastore="IP_addresses">
       <network_ip system="testing_faker"/>

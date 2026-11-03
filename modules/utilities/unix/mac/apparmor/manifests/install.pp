@@ -12,12 +12,19 @@ class apparmor::install {
     ensure => 'absent',
   } ->
 
+  # tier 2 expects the apparmor unit to be active after the post-build reboot;
+  # enable only (no ensure => running), as the unit is skipped by its
+  # ConditionSecurity until the running kernel has AppArmor switched on
+  service { 'apparmor':
+    enable => true,
+  } ->
+
   file { "/etc/default/grub.d":
     ensure => 'directory',
   } ->
 
   file { "/etc/default/grub.d/apparmor.cfg":
-    content => 'GRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT apparmor=1 security=apparmor"',
+    content => "GRUB_CMDLINE_LINUX_DEFAULT=\"\$GRUB_CMDLINE_LINUX_DEFAULT apparmor=1 security=apparmor\"\n",
   } ->
 
   exec { "sudo update-grub":

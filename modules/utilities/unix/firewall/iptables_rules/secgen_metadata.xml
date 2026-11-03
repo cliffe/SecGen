@@ -6,7 +6,7 @@
   <name>iptables_rules</name>
   <author>Tom Shaw</author>
   <module_license>GPLv3</module_license>
-  <description>Configures iptables rules using puppetlabs-firewall. Optionally enables IP forwarding.</description>
+  <description>Writes iptables rules (iptables command arguments, e.g. from the iptables_rule generators) to /etc/iptables/rules.v4, restored at boot by netfilter-persistent. Optionally enables IP forwarding.</description>
 
   <type>iptables_rule</type>
   <platform>linux</platform>
@@ -18,6 +18,11 @@
 
   <default_input into="ip_forwarding">
     <value>false</value>
+  </default_input>
+
+  <!-- default so a bare module (no rules supplied by the scenario) still builds -->
+  <default_input into="rules">
+    <value>-A INPUT -i lo -j ACCEPT</value>
   </default_input>
 
   <requires>

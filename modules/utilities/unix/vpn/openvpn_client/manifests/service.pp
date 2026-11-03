@@ -6,13 +6,13 @@ class openvpn_client::service {
     service { 'openvpn-client@client':
       ensure  => running,
       enable  => true,
-      require => File['/etc/openvpn/client/client.ovpn'],
+      require => File['/etc/openvpn/client/client.conf'],
     }
   } else {
     service { 'openvpn-client@client':
       ensure  => stopped,
       enable  => false,
-      require => File['/etc/openvpn/client/client.ovpn'],
+      require => File['/etc/openvpn/client/client.conf'],
     }
   }
 }

@@ -10,11 +10,11 @@ domain and is not subject to copyright.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions
 are met:
-  1. Redistributions of source code must retain the above copyright
-     notice, this list of conditions and the following disclaimer.
-  2. Redistributions in binary form must reproduce the above copyright
-     notice, this list of conditions and the following disclaimer in the
-     documentation and/or other materials provided with the distribution.
+1. Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -39,11 +39,26 @@ target=~/.bashrc
 grep ":./bin:" $target | grep PATH >>/dev/null
 result=$?
 if [[ result -ne 0 ]];then
-   cat <<EOT >>$target
-   if [[ ":\$PATH:" != *":./bin:"* ]]; then 
-       export PATH="\${PATH}:./bin:$here/trunk/scripts/designer/bin"
-   fi
-   export LABTAINER_DIR=$here/trunk
+    cat <<EOT >>$target
+    if [[ ":\$PATH:" != *":./bin:"* ]]; then 
+        export PATH="\${PATH}:./bin:$here/trunk/scripts/designer/bin"
+    fi
+    export LABTAINER_DIR=$here/trunk
+EOT
+fi
+
+grep "Labtainer Aliases" $target >>/dev/null
+result=$?
+if [[ result -ne 0 ]];then
+    here=`realpath ../`
+    cat <<EOT >>$target
+    #
+    # Labtainer Aliases
+    alias vncstart="vncserver -local :1"
+    alias vncstop="vncserver -kill :1"
+    alias vncrestart="vncstop && vncstart"
+    alias dex="sudo docker exec -it"
+    alias cdlab="cd $LABTAINER_DIR/scripts/labtainer-student/"
 EOT
 fi
 
@@ -85,9 +100,9 @@ if [[ "$RESULT" -eq 0 ]]; then
     source ./pull-all.sh
     /usr/bin/newgrp $USER 
 EONG
-    sudo ./dns-add.py
-    ./getinfo.py
-    sudo reboot
+sudo ./dns-add.py
+./getinfo.py
+sudo reboot
 else
     echo "There was a problem with the installation."
 fi

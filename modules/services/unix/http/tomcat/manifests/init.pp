@@ -1,57 +1,44 @@
-# == Class: tomcat
+# @summary Class to manage installation and configuration of Tomcat.  
 #
-# Class to manage installation and configuration of Tomcat.
+# @param catalina_home
+#   Specifies the default root directory of the Tomcat installation. Valid options: a string containing an absolute path.
+# @param user
+#   Specifies a default user to run Tomcat as. Valid options: a string containing a valid username.
+# @param group
+#   Specifies a default group to run Tomcat as. Valid options: a string containing a valid group name.
+# @param purge_connectors
+#   Specifies whether to purge any unmanaged Connector elements that match defined protocol but have a different port from the configuration file by default.
+# @param purge_realms
+#   Specifies whether to purge any unmanaged realm elements from the configuration file by default. If two realms are defined for a specific server config only use `purge_realms` for the first realm and ensure the realms enforce a strict order between each other.
+# @param manage_user
+#   Determines whether defined types should default to creating the specified user, if it doesn't exist. Uses Puppet's native [user](https://docs.puppetlabs.com/references/latest/type.html#user) with default parameters.
+# @param manage_group
+#   Determines whether defined types should default to creating the specified group, if it doesn't exist. Uses Puppet's native [group](https://docs.puppetlabs.com/references/latest/type.html#group) with default parameters.
+# @param manage_home
+#   Specifies the default value of `manage_home` for all `tomcat::instance` instances.
+# @param manage_base
+#   Specifies the default value of `manage_base` for all `tomcat::install` instances.
+# @param manage_properties
+#   Specifies the default value of `manage_properties` for all `tomcat::instance` instances.
 #
-# === Parameters
-#
-# [*catalina_home*]
-#   The base directory for the Tomcat installation. Default: /opt/apache-tomcat
-#
-# [*user*]
-#   The user to run Tomcat as. Default: tomcat
-#
-# [*group*]
-#   The group to run Tomcat as. Default: tomcat
-#
-# [*manage_user*]
-#   Boolean specifying whether or not to manage the user. Defaults to true.
-#
-# [*purge_connectors*]
-#   Boolean specifying whether to purge all Connector elements from server.xml. Defaults to false.
-#
-# [*purge_realms*]
-#   Boolean specifying whether to purge all Realm elements from server.xml. Defaults to false.
-#
-# [*manage_group*]
-#   Boolean specifying whether or not to manage the group. Defaults to true.
-#
-# [*manage_properties*]
-#   Boolean specifying whether or not to manage the catalina.properties file. Defaults to true.
 class tomcat (
-  $catalina_home       = $::tomcat::params::catalina_home,
-  $user                = $::tomcat::params::user,
-  $group               = $::tomcat::params::group,
-  $install_from_source = true,
-  $purge_connectors    = false,
-  $purge_realms        = false,
-  $manage_user         = true,
-  $manage_group        = true,
-  $manage_home         = true,
-  $manage_base         = true,
-  $manage_properties   = true,
-) inherits ::tomcat::params {
-  validate_bool($install_from_source)
-  validate_bool($purge_connectors)
-  validate_bool($purge_realms)
-  validate_bool($manage_user)
-  validate_bool($manage_group)
-  validate_bool($manage_home)
-  validate_bool($manage_base)
-
-  case $::osfamily {
+  String $catalina_home      = '/opt/apache-tomcat',
+  String[1] $user            = 'tomcat',
+  String[1] $group           = 'tomcat',
+  Boolean $purge_connectors  = false,
+  Boolean $purge_realms      = false,
+  Boolean $manage_user       = true,
+  Boolean $manage_group      = true,
+  Boolean $manage_home       = true,
+  Boolean $manage_base       = true,
+  Boolean $manage_properties = true,
+) {
+  case $facts['os']['family'] {
     'windows','Solaris','Darwin': {
-      fail("Unsupported osfamily: ${::osfamily}")
+      fail("Unsupported osfamily: ${facts['os']['family']}")
     }
-    default: { }
+    default: {
+      # Empty
+    }
   }
 }

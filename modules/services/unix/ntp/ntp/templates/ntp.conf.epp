@@ -1,0 +1,157 @@
+# ntp.conf: Managed by puppet.
+#
+<% if $ntp::_tinker and ($ntp::_panic or $ntp::stepout) {-%>
+# Enable next tinker options:
+# panic - keep ntpd from panicking in the event of a large clock skew
+# when a VM guest is suspended and resumed;
+# stepout - allow ntpd change offset faster
+tinker<% if $ntp::_panic { %> panic <%= $ntp::_panic %><% } %><%if $ntp::stepout { %> stepout <%=$ntp::stepout %><% } %>
+<% } -%>
+<%# -%>
+<% if $ntp::disable_monitor {-%>
+disable monitor
+<% } -%>
+
+statsdir <%= $ntp::statsdir %>
+<% unless $ntp::statistics.empty {-%>
+# Build requested statistics files
+statistics <%= $ntp::statistics.join(' ') %>
+<% $ntp::statistics.each |$statistic| {-%>
+filegen <%= $statistic %> file <%= $statistic %> type day enable
+<% } -%>
+
+<% } -%>
+<% if $ntp::disable_auth {-%>
+disable auth
+<% } -%>
+<% if $ntp::disable_kernel {-%>
+disable kernel
+<% } -%>
+<% if $ntp::enable_mode7 {-%>
+enable mode7
+<% } -%>
+<%# -%>
+<% unless $ntp::restrict.empty {-%>
+
+# Permit time synchronization with our time source, but do not
+# permit the source to query or modify the service on this system.
+<% $ntp::restrict.each |$restrict| {-%>
+restrict <%= $restrict %>
+<% } -%>
+<% } -%>
+<%# -%>
+<% unless $ntp::interfaces.empty {-%>
+<% if $ntp::interfaces_ignore.empty {-%>
+
+# Ignore wildcard interface and only listen on the following specified
+# interfaces
+interface ignore wildcard
+<% } else {-%>
+<% $ntp::interfaces_ignore.each |$interface| {-%>
+interface ignore <%= $interface %>
+<% } -%>
+<% } -%>
+<% $ntp::interfaces.each |$interface| {-%>
+interface listen <%= $interface %>
+<% } -%>
+<% } -%>
+<%# -%>
+<% if $ntp::broadcastclient {-%>
+broadcastclient
+<% } -%>
+
+# Set up servers for ntpd with next options:
+# server - IP address or DNS name of upstream NTP server
+# burst - send a burst of eight packets instead of the usual one.
+# iburst - allow send sync packages faster if upstream unavailable
+# prefer - select preferrable server
+# minpoll - set minimal update frequency
+# maxpoll - set maximal update frequency
+# noselect - do not sync with this server
+<% $ntp::servers.each |$server| {-%>
+server <%= $server %><% if $ntp::iburst_enable == true {%> iburst<% } %><% if ($ntp::preferred_servers).member($server) { %> prefer<% } %><% if $ntp::burst == true {%> burst<% } %><% if $ntp::minpoll { %> minpoll <%= $ntp::minpoll %><% } %><% if $ntp::maxpoll { %> maxpoll <%= $ntp::maxpoll %><% } %><% if ($ntp::noselect_servers).member($server) { %> noselect<% } %>
+<% } -%>
+<%# -%>
+<% if $ntp::udlc {-%>
+
+# Undisciplined Local Clock. This is a fake driver intended for backup
+# and when no outside source of synchronized time is available.
+server   127.127.1.0
+fudge    127.127.1.0 stratum <%= $ntp::udlc_stratum %>
+restrict 127.127.1.0
+<% } -%>
+
+# Driftfile.
+driftfile <%= $ntp::driftfile %>
+<%# -%>
+<% if $ntp::logfile {-%>
+
+# Logfile
+logfile <%= $ntp::logfile %>
+<% } -%>
+<%# -%>
+<% if $ntp::logconfig {-%>
+
+# Logconfig
+logconfig <%= $ntp::logconfig %>
+<% } -%>
+<%# -%>
+<% if $ntp::ntpsigndsocket {-%>
+
+# Enable signed packets
+ntpsigndsocket <%= $ntp::ntpsigndsocket %>
+<% } -%>
+<%# -%>
+<% unless $ntp::peers.empty {-%>
+
+# Peers
+<% $ntp::peers.each |$peer| {-%>
+peer <%= $peer %>
+<% } -%>
+<% if $ntp::tos_orphan {-%>
+# Enable peer group orphan mode
+tos orphan <%= $ntp::tos_orphan %>
+<% } -%>
+<% } -%>
+<% unless $ntp::pool.empty {-%>
+
+# Pool
+<% $ntp::pool.each |$pool_srv| {-%>
+pool <%= $pool_srv %>
+<% } -%>
+<% } -%>
+<%# -%>
+<% if $ntp::keys_enable {-%>
+keys <%= $ntp::keys_file %>
+<% unless $ntp::keys_trusted.empty {-%>
+trustedkey <%= $ntp::keys_trusted.join(' ') %>
+<% } -%>
+<% if $ntp::keys_requestkey != '' {-%>
+requestkey <%= $ntp::keys_requestkey %>
+<% } -%>
+<% if $ntp::keys_controlkey != '' {-%>
+controlkey <%= $ntp::keys_controlkey %>
+<% } -%>
+<% } -%>
+<% $ntp::fudge.each |$entry| {-%>
+fudge <%= $entry %>
+<% } -%>
+<%# -%>
+<% if $ntp::leapfile {-%>
+
+# Leapfile
+leapfile <%= $ntp::leapfile %>
+<% } -%>
+<%# -%>
+<% if $ntp::tos {-%>
+tos <% if $ntp::tos_minclock {-%> minclock <%= $ntp::tos_minclock %><% } %> <% if $ntp::tos_maxclock {-%> maxclock <%= $ntp::tos_maxclock %><% } %> <% if $ntp::tos_minsane {-%> minsane <%= $ntp::tos_minsane %><% } %> <% if $ntp::tos_floor {-%> floor <%= $ntp::tos_floor %><% } %> <% if $ntp::tos_ceiling {-%> ceiling <%= $ntp::tos_ceiling %><% } %> <% if $ntp::tos_cohort {-%> cohort <%= $ntp::tos_cohort %><% } %>
+<% } -%>
+<%# -%>
+<% if $ntp::authprov {-%>
+authprov <%= $ntp::authprov %>
+<% } -%>
+<%# -%>
+<% if $ntp::slewalways {-%>
+
+slewalways <%= $ntp::slewalways -%>
+<% } -%>

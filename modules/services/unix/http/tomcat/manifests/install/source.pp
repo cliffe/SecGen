@@ -1,26 +1,19 @@
-# Definition: tomcat::install::source
+# @summary Private define to install Tomcat from source.
 #
-# Private define to install Tomcat from source.
+# @api private
 #
-# Parameters:
-# - $catalina_home is the root of the Tomcat installation.
-# - The $source_url to install from.
-# - $source_strip_first_dir is a boolean specifying whether or not to strip
-#   the first directory when unpacking the source tarball. Defaults to true
-#   when installing from source on non-Solaris systems. Requires puppet/staging
-#   > 0.4.0
-# - $environment is variables for settings such as http_proxy, https_proxy, or ftp_proxy
 define tomcat::install::source (
-  $catalina_home,
-  $manage_home,
-  $source_url,
-  $source_strip_first_dir,
-  $user,
-  $group,
-  $environment = undef,
+  String[1] $catalina_home,
+  Boolean   $manage_home,
+  String[1]  $source_url,
+  Boolean   $source_strip_first_dir,
+  String[1] $group,
+  Boolean   $allow_insecure                                   = false,
+  String[1] $user                                             = 'root',
+  Optional[Enum['none', 'http', 'https', 'ftp']] $proxy_type  = undef,
+  Optional[String[1]] $proxy_server                           = undef,
 ) {
   tag(sha1($catalina_home))
-  include ::staging
 
   if $caller_module_name != $module_name {
     fail("Use of private class ${name} by ${caller_module_name}")
@@ -28,6 +21,8 @@ define tomcat::install::source (
 
   if $source_strip_first_dir {
     $_strip = 1
+  } else {
+    $_strip = 0
   }
 
   $filename = regsubst($source_url, '.*/(.*)', '\1')
@@ -40,19 +35,18 @@ define tomcat::install::source (
     }
   }
 
-  ensure_resource('staging::file',$filename, {
-    'source'      => $source_url,
-    'environment' => $environment,
-  })
-
-  staging::extract { "${name}-${filename}":
-    source      => "${::staging::path}/tomcat/${filename}",
-    target      => $catalina_home,
-    require     => Staging::File[$filename],
-    unless      => "test -f ${catalina_home}/NOTICE",
-    user        => $user,
-    group       => $group,
-    environment => $environment,
-    strip       => $_strip,
+  archive { "${name}-${catalina_home}/${filename}":
+    path           => "${catalina_home}/${filename}",
+    source         => $source_url,
+    extract        => true,
+    extract_path   => $catalina_home,
+    creates        => "${catalina_home}/NOTICE",
+    extract_flags  => "--strip ${_strip} -xf",
+    cleanup        => true,
+    allow_insecure => $allow_insecure,
+    user           => $user,
+    group          => $group,
+    proxy_server   => $proxy_server,
+    proxy_type     => $proxy_type,
   }
 }

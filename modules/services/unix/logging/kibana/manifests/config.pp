@@ -1,5 +1,6 @@
 class kibana::config (
   $elasticsearch_ip,
+  $kibana_ip = 'localhost',
   $elasticsearch_port = '9200',
   $kibana_port = '5601',
 ) {

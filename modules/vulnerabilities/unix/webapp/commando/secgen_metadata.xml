@@ -87,14 +87,14 @@ WARNING: This module needs some further testing, and may not work without input 
 </default_input>
 
 <requires>
-  <module_path>.*apache.*compatible.*</module_path>
+  <software_name>apache</software_name>
 </requires>
 
 <requires>
-  <module_path>.*php.*compatible.*</module_path>
+  <module_path>.*/php_5/php</module_path>
 </requires>
 <requires>
-  <module_path>.*mysql.*compatible.*</module_path>
+  <software_name>mysql</software_name>
 </requires>
 
 <CyBOK KA="WAM" topic="Fundamental Concepts and Approaches">

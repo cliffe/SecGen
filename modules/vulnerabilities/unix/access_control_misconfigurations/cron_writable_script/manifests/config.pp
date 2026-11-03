@@ -57,7 +57,9 @@ class cron_writable_script::config {
     owner   => 'root',
     group   => 'root',
     mode    => '0777',
-    content => "#!/bin/bash -p\necho '${cron_message}' >> /tmp/cron.log\n",
+    # Quoted heredoc: the message (a multi-line evil plan, often with apostrophes)
+    # is written verbatim without any shell quoting of its own.
+    content => "#!/bin/bash -p\ncat >> /tmp/cron.log <<'SECGEN_CRON_EOF'\n${cron_message}\nSECGEN_CRON_EOF\n",
     require => $cron_script_requires,
   }
 

@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>Test: leak_to_file</name>
+  <author>Thomas Shaw</author>
+  <description>Single-VM test scenario for the leak_to_file utility module, used to exercise its secgen_test via the Proxmox QEMU Guest Agent testing pipeline.</description>
+
+  <type>test</type>
+
+  <system>
+    <system_name>leak_to_file_testing</system_name>
+    <base platform="linux" distro="Debian 12" type="desktop"/>
+
+    <!-- a low-privilege account to own the leaked file (exercises the account input) -->
+    <input into_datastore="accounts">
+      <generator type="account">
+        <input into="username">
+          <generator type="random_sanitised_word">
+            <input into="wordlist">
+              <value>mythical_creatures</value>
+            </input>
+          </generator>
+        </input>
+        <input into="password">
+          <generator type="strong_password_generator"/>
+        </input>
+        <input into="super_user">
+          <value>false</value>
+        </input>
+      </generator>
+    </input>
+
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts">
+        <datastore>accounts</datastore>
+      </input>
+    </utility>
+
+    <!-- default leaked_filename is empty (leaks nothing), so supply one -->
+    <utility module_path=".*/leak_to_file">
+      <input into="leaked_filename">
+        <value>leaked_note.txt</value>
+      </input>
+      <input into="base64_file">
+        <value>bGVha190b19maWxlIHRlc3QgY29udGVudAo=</value>
+      </input>
+      <input into="account">
+        <datastore>accounts</datastore>
+      </input>
+    </utility>
+
+    <network type="private_network"/>
+
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+
+</scenario>

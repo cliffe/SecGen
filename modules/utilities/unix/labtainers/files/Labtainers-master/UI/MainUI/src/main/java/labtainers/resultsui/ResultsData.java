@@ -163,7 +163,7 @@ public class ResultsData {
                     error.fileIDMissing = true;
                 }
                 //Checks if non-file-path file input has .stdin | .stdout | .prgout dottag
-                //Note: most OS, but Windows use backslashes as a File seperator                
+                //Note: most OS, but Windows use backslashes as a File separator                
                 //else if(!file.contains("/")){
                 //    if(!file.contains(".")){
                 //        System.out.println("Bad file, missing dot for resultTag "+ resultTag);

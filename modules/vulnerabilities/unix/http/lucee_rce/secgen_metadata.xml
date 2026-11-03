@@ -14,8 +14,9 @@
   <type>http</type>
   <type>webapp</type>
   <type>in_the_wild</type>
-  <!-- currently running as root but leaking to user home dir -->
-  <privilege>root_rwx</privilege>
+  <!-- lucee.service runs the Tomcat process as unix_username (not root, not a sudoer),
+       matching the description above: exploitation yields that user's shell -->
+  <privilege>user_rwx</privilege>
   <access>remote</access>
   <platform>linux</platform>
   <difficulty>low</difficulty>

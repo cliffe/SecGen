@@ -1,0 +1,9 @@
+---
+ntp::driftfile: '/etc/ntp.drift'
+ntp::package_name:
+  - 'bos.net.tcp.client'
+ntp::restrict:
+  - 'default nomodify notrap nopeer noquery'
+  - '127.0.0.1'
+ntp::service_name: 'xntpd'
+ntp::slewalways: 'no'

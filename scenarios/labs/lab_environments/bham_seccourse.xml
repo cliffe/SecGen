@@ -7,7 +7,7 @@
   <system>
     <system_name>course_vm</system_name>
     <!--base platform="linux" distro="Debian 8.2"/-->
-    <base platform="linux" distro="Debian 7.8"/>
+    <base platform="linux" type="server"/>
 
     <!--utility module_path=".*/gnome"/-->
     <!--utility module_path=".*/xfce"/-->

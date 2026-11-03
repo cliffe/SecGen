@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>PHP 7.4 patched against php2shell (source build, Debian 10 Buster)</name>
+  <author>Thomas Shaw</author>
+  <module_license>Apache v2</module_license>
+  <description>Builds PHP 7.4 from the upstream php-src branch
+          PHP-7.4-CVE-2026-109618-109619 (pinned to commit
+          712e60f9edfd03f0960fc4fc3c2c375f42b90aa2) and makes it the default
+          `php` CLI. This branch is the end-of-life source backport that carries
+          the php2shell fix (CVE-2026-109618 / CVE-2026-109619); the released
+          7.4 packages on deb.sury.org and Debian are end of life and do not.
+          Built on Debian 10 Buster, whose OpenSSL 1.1.1 and toolchain are
+          contemporary with PHP 7.4 (the ext/openssl source does not compile
+          against bookworm's OpenSSL 3.0). The build reports version 7.4.31-dev,
+          so the fix cannot be identified by version string alone; the install
+          records the pinned source commit in a provenance marker
+          (/opt/php-7.4-patched/PHP2SHELL_FIX_COMMIT) for checks to read. For a
+          PHP application that would otherwise run on an end-of-life PHP 7.x and
+          be php2shell-exploitable, require this so only the application's own
+          vulnerability is exploitable.
+  </description>
+
+  <type>language</type>
+  <type>php</type>
+  <platform>linux</platform>
+
+  <reference>https://www.php.net/archive/2026.php#2026-10-21-1</reference>
+  <reference>https://github.com/php/php-src/tree/PHP-7.4-CVE-2026-109618-109619</reference>
+  <reference>https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w</reference>
+  <reference>https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp</reference>
+
+  <software_name>php</software_name>
+  <software_license>PHP License v3.01</software_license>
+
+  <conflict>
+    <software_name>php</software_name>
+  </conflict>
+  <conflict>
+    <module_path>.*services/unix/http/lamp.*</module_path>
+  </conflict>
+
+  <requires>
+    <type>update</type>
+  </requires>
+  <requires>
+    <module_path>.*bases/debian_buster.*</module_path>
+  </requires>
+</utility>

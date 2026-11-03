@@ -107,17 +107,6 @@ These VMs are provisioned by the Break Escape game engine via SecGen integration
     <system_name>attack_vm</system_name>
     <base distro="Kali" name="MSF"/>
 
-    <input into_datastore="IP_addresses">
-      <!-- 0 attack_vm -->
-      <network_ip system="attack_vm"/>
-      <!-- 1 bunker_monitor -->
-      <network_ip system="bunker_monitor"/>
-      <!-- 2 release_host -->
-      <network_ip system="release_host"/>
-      <!-- 3 core_host -->
-      <network_ip system="core_host"/>
-    </input>
-
     <utility module_path=".*/parameterised_accounts">
       <input into="accounts">
         <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
@@ -224,11 +213,7 @@ FIRST ENTRIES. SEATTLE.
       </input>
     </utility>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="1">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
     <build type="cleanup">
       <input into="root_password">
         <datastore>spoiler_admin_pass</datastore>
@@ -345,11 +330,7 @@ Staged by the release operators. The shift is on the operators' duty sheet.</val
       </input>
     </vulnerability>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="2">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
     <build type="cleanup">
       <input into="root_password">
         <datastore>spoiler_admin_pass</datastore>
@@ -412,11 +393,7 @@ Drafted 2017. Held. Not sent.</value>
       </input>
     </vulnerability>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="3">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
     <build type="cleanup">
       <input into="root_password">
         <datastore>spoiler_admin_pass</datastore>

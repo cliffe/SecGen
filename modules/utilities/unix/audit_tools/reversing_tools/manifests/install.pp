@@ -65,32 +65,40 @@ class reversing_tools::install {
     }
   }
 
-  # # Install Cutter
-  # $cutter_dir = '/opt/Cutter'
-  # $cutter_appimage_url = 'https://github.com/radareorg/cutter/releases/download/v1.7.2/Cutter-v1.7.2-x86_64.Linux.AppImage'
-  # $cutter_filename = 'Cutter-v1.7.2-x86_64.Linux.AppImage'
-  # file { $cutter_dir:
-  #   ensure => directory,
-  # }
-  #
-  # # Download image
-  # exec { 'download cutter appimage':
-  #   command => "/usr/bin/wget -q $cutter_appimage_url -O $cutter_dir/$cutter_filename",
-  #   cwd => $cutter_dir,
-  #   require => File[$cutter_dir],
-  # }
-  #
-  # exec { 'chmod cutter':
-  #   command => "/bin/chmod +x $cutter_dir/$cutter_filename",
-  #   cwd => $cutter_dir,
-  #   require => Exec['download cutter appimage'],
-  # }
-  #
-  # exec { 'install cutter':
-  #   command => "/usr/bin/install $cutter_dir/$cutter_filename /usr/bin/cutter",
-  #   cwd => $cutter_dir,
-  #   require => Exec['download cutter appimage'],
-  # }
+  # Cutter (GUI front end for radare2): deploy the bundled v1.7.2 AppImage rather than downloading it at build time.
+  # The AppImage is extracted once here so it runs without FUSE; --appimage-extract-and-run would unpack
+  # 240 MB into /tmp and list every file on each launch.
+  file { '/opt/Cutter':
+    ensure => directory,
+  }
+  file { '/opt/Cutter/Cutter-v1.7.2-x86_64.Linux.AppImage':
+    ensure  => file,
+    source  => 'puppet:///modules/reversing_tools/Cutter-v1.7.2-x86_64.Linux.AppImage',
+    mode    => '0755',
+    require => File['/opt/Cutter'],
+  }
+  exec { 'extract cutter appimage':
+    command => '/opt/Cutter/Cutter-v1.7.2-x86_64.Linux.AppImage --appimage-extract',
+    cwd     => '/opt/Cutter',
+    creates => '/opt/Cutter/squashfs-root/AppRun',
+    require => File['/opt/Cutter/Cutter-v1.7.2-x86_64.Linux.AppImage'],
+  }
+  # The extracted tree is root-only (0700), so open it up for the student accounts.
+  exec { 'cutter readable by all users':
+    command  => 'chmod -R a+rX /opt/Cutter/squashfs-root',
+    onlyif   => 'find /opt/Cutter/squashfs-root \( ! -perm -a+r -o -type d ! -perm -a+x \) -print -quit | grep -q .',
+    provider => shell,
+    require  => Exec['extract cutter appimage'],
+  }
+  # The bundled Python's _ctypes links libffi.so.6, but Qt's glib loads the system libffi.so.8 first and
+  # _ctypes binds to it, so Cutter aborts at "Python init" when it opens a file. Preloading libffi.so.6
+  # (present on the Debian 12 KDE base) keeps those calls on the ABI _ctypes was built for.
+  file { '/usr/local/bin/cutter':
+    ensure  => file,
+    content => "#!/bin/sh\nexport LD_PRELOAD=\"libffi.so.6\${LD_PRELOAD:+:\$LD_PRELOAD}\"\nexec /opt/Cutter/squashfs-root/AppRun \"\$@\"\n",
+    mode    => '0755',
+    require => Exec['cutter readable by all users'],
+  }
 
 
   # TODO: Fix me

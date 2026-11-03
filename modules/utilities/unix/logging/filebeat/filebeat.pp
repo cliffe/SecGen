@@ -15,11 +15,14 @@ unless defined('analysis_alert_action_client') {
     },
   }
 
-  filebeat::prospector { 'syslogs':
-    paths    => [
+  # Filebeat 7 loads conf.d/*.yml as a list of inputs; the legacy
+  # filebeat::prospector template writes a 'filebeat: prospectors:' map that
+  # 7.x cannot load. The old doc_type label is kept as a tag.
+  filebeat::input { 'syslogs':
+    paths => [
       '/var/log/auth.log',
       '/var/log/syslog',
     ],
-    doc_type => 'syslog-beat',
+    tags  => ['syslog-beat'],
   }
 }

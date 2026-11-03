@@ -9,6 +9,7 @@
     * [tomcatを開始する](#tomcatを開始する)
 4. [使用方法 - 設定オプションとその他の機能](#使用方法)
     * [複数のバージョン、複数インスタンスのtomcatを実行したい](#複数のバージョン、複数インスタンスのtomcatを実行したい)
+    * [SSLを設定し、使用するプロトコルと暗号を指定したい](#SSLを設定し、使用するプロトコルと暗号を指定したい)
     * [WARファイルをデプロイしたい](#warファイルをデプロイしたい)
     * [構成の一部を削除したい](#構成の一部を削除したい)
     * [既存のConnectorまたはRealmを管理したい](#既存のconnectorまたはrealmを管理したい)
@@ -34,6 +35,7 @@
         * [tomcat::config::context::manager](#tomcatconfigcontextmanager)
         * [tomcat::config::context::resource](#tomcatconfigcontextresource)
         * [tomcat::config::context::resourcelink](#tomcatconfigcontextresourcelink)
+        * [tomcat::config::context::valve](#tomcatconfigcontextvalve)
         * [tomcat::install](#tomcatinstall)
         * [tomcat::instance](#tomcatinstance)
         * [tomcat::service](#tomcatservice)
@@ -59,20 +61,6 @@ tomcatモジュールには、[puppetlabs-stdlib](https://forge.puppetlabs.com/p
 ```bash
 puppet module upgrade puppetlabs-stdlib
 ```
-
-### tomcatを開始する
-
-tomcatモジュールでTomcatを立ち上げる最も簡単な方法は、次のようにTomcatソースをインストールして、サービスを起動することです。
-
-```puppet
-tomcat::install { '/opt/tomcat':
-  source_url => 'https://www-us.apache.org/dist/tomcat/tomcat-7/v7.0.x/bin/apache-tomcat-7.0.x.tar.gz',
-}
-tomcat::instance { 'default':
-  catalina_home => '/opt/tomcat',
-}
-```
-
 > 注: [バージョンリスト](http://tomcat.apache.org/whichversion.html)でインストールするバージョンを照合してください。
 
 ## 使用方法
@@ -82,24 +70,24 @@ tomcat::instance { 'default':
 ```puppet
 class { 'java': }
 
-tomcat::install { '/opt/tomcat8':
-  source_url => 'https://www.apache.org/dist/tomcat/tomcat-8/v8.0.x/bin/apache-tomcat-8.0.x.tar.gz'
+tomcat::install { '/opt/tomcat9':
+  source_url => 'https://www.apache.org/dist/tomcat/tomcat-9/v9.0.x/bin/apache-tomcat-9.0.x.tar.gz'
 }
-tomcat::instance { 'tomcat8-first':
-  catalina_home => '/opt/tomcat8',
-  catalina_base => '/opt/tomcat8/first',
+tomcat::instance { 'tomcat9-first':
+  catalina_home => '/opt/tomcat9',
+  catalina_base => '/opt/tomcat9/first',
 }
-tomcat::instance { 'tomcat8-second':
-  catalina_home => '/opt/tomcat8',
-  catalina_base => '/opt/tomcat8/second',
+tomcat::instance { 'tomcat9-second':
+  catalina_home => '/opt/tomcat9',
+  catalina_base => '/opt/tomcat9/second',
 }
 # 2つ目のインスタンスのサーバおよびHTTPコネクタのデフォルトポートを変更
-tomcat::config::server { 'tomcat8-second':
-  catalina_base => '/opt/tomcat8/second',
+tomcat::config::server { 'tomcat9-second':
+  catalina_base => '/opt/tomcat9/second',
   port          => '8006',
 }
-tomcat::config::server::connector { 'tomcat8-second-http':
-  catalina_base         => '/opt/tomcat8/second',
+tomcat::config::server::connector { 'tomcat9-second-http':
+  catalina_base         => '/opt/tomcat9/second',
   port                  => '8081',
   protocol              => 'HTTP/1.1',
   additional_attributes => {
@@ -107,44 +95,51 @@ tomcat::config::server::connector { 'tomcat8-second-http':
   },
 }
 
-tomcat::install { '/opt/tomcat6':
-  source_url => 'http://www-eu.apache.org/dist/tomcat/tomcat-6/v6.0.x/bin/apache-tomcat-6.0.x.tar.gz',
-}
-tomcat::instance { 'tomcat6':
-  catalina_home => '/opt/tomcat6',
-}
-# tomcat 6のサーバとHTTP/AJPコネクタを変更
-tomcat::config::server { 'tomcat6':
-  catalina_base => '/opt/tomcat6',
-  port          => '8105',
-}
-tomcat::config::server::connector { 'tomcat6-http':
-  catalina_base         => '/opt/tomcat6',
-  port                  => '8180',
-  protocol              => 'HTTP/1.1',
-  additional_attributes => {
-    'redirectPort' => '8543'
-  },
-}
-tomcat::config::server::connector { 'tomcat6-ajp':
-  catalina_base         => '/opt/tomcat6',
-  port                  => '8109',
-  protocol              => 'AJP/1.3',
-  additional_attributes => {
-    'redirectPort' => '8543'
-  },
-}
-```
 
 > 注: [バージョンリスト](http://tomcat.apache.org/whichversion.html)でインストールするバージョンを照合してください。
+
+### SSLを設定し、使用するプロトコルと暗号を指定したい
+
+```puppet
+  file { $keystore_path: 
+    ensure => present,
+    source => $keystore_source,
+    owner => $keystore_user,
+    mode => '0400',
+    checksum => 'md5',
+    checksum_value => $keystore_checksum,
+  } ->
+
+  tomcat::config::server::connector { "${tomcat_instance}-https":
+    catalina_base         => $catalina_base,
+    port                  => $https_port,
+    protocol              => $http_version,
+    purge_connectors      => true,
+    additional_attributes => {
+      'SSLEnabled'          => bool2str($https_enabled),
+      'maxThreads'          => $https_connector_max_threads,
+      'scheme'              => $https_connector_scheme,
+      'secure'              => bool2str($https_connector_secure),
+      'clientAuth'          => bool2str($https_connector_client_auth),
+      'sslProtocol'         => $https_connector_ssl_protocol,
+      'sslEnabledProtocols' => join($https_connector_ssl_protocols_enabled, ","),
+      'ciphers'             => join($ciphers_enabled, ","),
+      
+      'keystorePass'        => $keystore_pass.unwrap,
+      'keystoreFile'        => $keystore_path,
+    },
+  }
+```
+
+> [SSL/TLS Configuration HOW-TO](https://tomcat.apache.org/tomcat-8.5-doc/ssl-howto.html)も参照してください
 
 ### WARファイルをデプロイしたい
 
 既存のインストールファイルに次のコードを追加し、warソースの場所を指定します。
 ```puppet
 tomcat::war { 'sample.war':
-  catalina_base => '/opt/tomcat8/first',
-  war_source    => '/opt/tomcat8/webapps/docs/appdev/sample/sample.war',
+  catalina_base => '/opt/tomcat9/first',
+  war_source    => '/opt/tomcat9/webapps/docs/appdev/sample/sample.war',
 }
 ```
 
@@ -159,9 +154,9 @@ WARファイル名は`.war`で終わる必要があります。
 たとえばコネクタを削除するには、次の構成でコネクタが存在しないものとして処理します。
 
 ```puppet
-tomcat::config::server::connector { 'tomcat8-jsvc':
+tomcat::config::server::connector { 'tomcat9-jsvc':
   connector_ensure => 'absent',
-  catalina_base    => '/opt/tomcat8/first',
+  catalina_base    => '/opt/tomcat9/first',
   port             => '8080',
   protocol         => 'HTTP/1.1',
 }
@@ -213,10 +208,11 @@ tomcat::config::server::realm { 'org.apache.catalina.realm.LockOutRealm':
 * `tomcat::config::context::environment`: `$CATALINA_BASE/conf/context.xml`の[Environment](http://tomcat.apache.org/tomcat-8.0-doc/config/context.html#Environment_Entries)要素を構成します。
 * `tomcat::config::context::resource`: `$CATALINA_BASE/conf/context.xml`の[Resource](http://tomcat.apache.org/tomcat-8.0-doc/config/context.html#Resource_Definitions)要素を構成します。
 * `tomcat::config::context::resourcelink`: `$CATALINA_BASE/conf/context.xml`の[ResourceLink](http://tomcat.apache.org/tomcat-8.0-doc/config/context.html#Resource_Links)要素を構成します。
+* `tomcat::config::context::valve`: `$CATALINA_BASE/conf/context.xml`の[Valve](http://tomcat.apache.org/tomcat-8.0-doc/config/valve.html)要素を構成します。
 * `tomcat::install`: Tomcatインスタンスをインストールします。
 * `tomcat::instance`: Tomcatインスタンスを構成します。
 * `tomcat::service`: Tomcatサービス管理を提供します。
-* `tomcat::setenv::entry`: Tomcat構成ファイル(`setenv.sh`または`/etc/sysconfig/tomcat`など)にエントリを追加します。
+* `tomcat::setenv::entry`: Tomcat設定ファイル(`setenv.sh`または`/etc/sysconfig/tomcat`など)にエントリを追加します。
 * `tomcat::war`:  WARファイルのデプロイを管理します。
 
 #### プライベート定義タイプ
@@ -250,14 +246,6 @@ Tomcatを実行するデフォルトグループを指定します。
 
 デフォルト値: 'tomcat'。
 
-##### `install_from_source`
-
-デフォルトでTomcatをソースからインストールするかどうかを指定します。
-
-有効なオプション: `true`と`false`。
-
-デフォルト値: `true`。
-
 ##### `manage_group`
 
 指定されたグループが存在しない場合、定義タイプがデフォルトでそのグループを作成するかどうかを指定します。Puppetのネイティブ[`group`リソースタイプ](https://docs.puppetlabs.com/references/latest/type.html#group)をデフォルトのパラメータとともに使用します。
@@ -275,16 +263,19 @@ Tomcatを実行するデフォルトグループを指定します。
 デフォルト値: `true`。
 
 ##### `manage_base`
+
 すべての`tomcat::install`インスタンスに対して、`manage_base`のデフォルト値を指定します。
 
 デフォルト値: `true`。
 
 ##### `manage_home`
+
 すべての`tomcat::instance`インスタンスに対して、`manage_home`のデフォルト値を指定します。
 
 デフォルト値: `true`。
 
 ##### `manage_properties`
+
 すべての`tomcat::instance`インスタンスに対して、`manage_properties`のデフォルト値を指定します。
 
 デフォルト値: `true`。
@@ -348,7 +339,7 @@ catalina.propertiesファイルのあるcatalinaベースです。`${catalina_ba
 
 [address XML属性](http://tomcat.apache.org/tomcat-8.0-doc/config/server.html#Common_Attributes)が構成ファイルに存在するかどうかを指定します。
 
-有効なオプション: `true`、`false`、'present'、'absent'。
+有効なオプション: 'present'、'absent'。
 
 デフォルト値: 'present'。
 
@@ -372,7 +363,7 @@ catalina.propertiesファイルのあるcatalinaベースです。`${catalina_ba
 
 [className XML属性](http://tomcat.apache.org/tomcat-8.0-doc/config/server.html#Common_Attributes)が構成ファイルに存在するかどうかを指定します。
 
-有効なオプション: `true`、`false`、'present'、'absent'。
+有効なオプション: 'present'、'absent'。
 
 デフォルト値: 'present'。
 
@@ -412,9 +403,9 @@ Connectorに追加するその他の属性を指定します。
 
 ##### `attributes_to_remove`
 
-Connectorコネクタから削除する属性を指定します。
+要素から削除する属性の配列を指定します。
 
-有効なオプション: '< attribute >' => '< value >'ペアのハッシュ値。
+有効なオプション: 文字列の配列。
 
 デフォルト値: `[]`。
 
@@ -430,7 +421,7 @@ Connectorコネクタから削除する属性を指定します。
 
 [Connector XML要素](http://tomcat.apache.org/tomcat-8.0-doc/connectors.html)が構成ファイルに存在するかどうかを指定します。
 
-有効なオプション: `true`、`false`、'present'、'absent'。
+有効なオプション: 'present'、'absent'。
 
 デフォルト値: 'present'。
 
@@ -484,9 +475,9 @@ Contextに追加するその他の属性を指定します。
 
 ##### `attributes_to_remove`
 
-Contextから削除する属性を指定します。 
+要素から削除する属性の配列を指定します。
 
-有効なオプション: '< attribute >' => '< value >'ペアのハッシュ値。
+有効なオプション: 文字列の配列。
 
 デフォルト値: `[]`。
 
@@ -502,7 +493,7 @@ Contextから削除する属性を指定します。
 
 [Context XML要素](http://tomcat.apache.org/tomcat-8.0-doc/config/context.html)が構成ファイルに存在するかどうかを指定します。
 
-有効なオプション: `true`、`false`、'present'、'absent'。
+有効なオプション: 'present'、'absent'。
 
 デフォルト値: 'present'。
 
@@ -560,7 +551,7 @@ ContextをどのService XML要素下にネストするかを指定します。
 
 [backgroundProcessorDelay XML属性](http://tomcat.apache.org/tomcat-8.0-doc/config/engine.html#Common_Attributes)が構成ファイルに存在するかどうかを指定します。
 
-有効なオプション: `true`、`false`、'present'、'absent'。
+有効なオプション: 'present'、'absent'。
 
 デフォルト値: 'present'。
 
@@ -584,13 +575,13 @@ ContextをどのService XML要素下にネストするかを指定します。
 
 [className XML属性](http://tomcat.apache.org/tomcat-8.0-doc/config/engine.html#Common_Attributes)が構成ファイルに存在するかどうかを指定します。
 
-有効なオプション: `true`、`false`、'present'、'absent'。
+有効なオプション: 'present'、'absent'。
 
 デフォルト値: 'present'。
 
 ##### `default_host`
 
-*必須指定です。* サーバ上に存在するがこの構成ファイルに定義されていないホスト名を宛先とするリクエストを処理するホストを指定します。Engineの[defaultHost XML属性](http://tomcat.apache.org/tomcat-8.0-doc/config/engine.html#Common_Attributes)にマッピングします。
+**必須**。サーバ上に存在するがこの設定ファイルに定義されていないホスト名を宛先とするリクエストを処理するホストを指定します。Engineの[defaultHost XML属性](http://tomcat.apache.org/tomcat-8.0-doc/config/engine.html#Common_Attributes)にマッピングします。
 
 有効なオプション: ホスト名を含む文字列。
 
@@ -614,7 +605,7 @@ Engineの論理名を指定します。ログやエラーに使用されます�
 
 [jvmRoute XML属性](http://tomcat.apache.org/tomcat-8.0-doc/config/engine.html#Common_Attributes)が構成ファイルに存在するかどうかを指定します。
 
-有効なオプション: `true`、`false`、'present'、'absent'。
+有効なオプション: 'present'、'absent'。
 
 デフォルト値: 'present'。
 
@@ -646,7 +637,7 @@ EngineをどのService要素下にネストするかを指定します。
 
 [startStopThreads XML属性](http://tomcat.apache.org/tomcat-8.0-doc/config/engine.html#Common_Attributes)が構成ファイルに存在するかどうかを指定します。
 
-有効なオプション: `true`、`false`、'present'、'absent'。
+有効なオプション: 'present'、'absent'。
 
 デフォルト値: 'present'。
 
@@ -658,7 +649,7 @@ EngineをどのService要素下にネストするかを指定します。
 
 指定したXML要素が構成ファイルに存在するかどうかを指定します。
 
-有効なオプション: `true`、`false`、'present'、'absent'。
+有効なオプション: 'present'、'absent'。
 
 デフォルト値: 'present'。
 
@@ -694,9 +685,9 @@ Hostに追加するその他の属性を指定します。
 
 ##### `attributes_to_remove`
 
-Hostから削除する属性を指定します。
+要素から削除する属性の配列を指定します。
 
-有効なオプション: `'< attribute >' => '< value >'`ペアの配列。
+有効なオプション: 文字列の配列。
 
 デフォルト値: `[]`。
 
@@ -730,9 +721,9 @@ Hostに追加するその他の属性を指定します。
 
 ##### `attributes_to_remove`
 
-Hostから削除する属性を指定します。
+要素から削除する属性の配列を指定します。
 
-有効なオプション: '< attribute >' => '< value >'ペアの配列。
+有効なオプション: 文字列の配列。
 
 デフォルト値: `[]`。
 
@@ -748,7 +739,7 @@ Hostから削除する属性を指定します。
 
 仮想ホスト([Host XML要素](http://tomcat.apache.org/tomcat-8.0-doc/config/host.html#Introduction))が構成ファイルに存在するかどうかを指定します。
 
-有効なオプション: `true`、`false`、'present'、'absent'。
+有効なオプション: 'present'、'absent'。
 
 デフォルト値: 'present'。
 
@@ -788,9 +779,9 @@ Listenerに追加するその他の属性を指定します。
 
 ##### `attributes_to_remove`
 
-Listenerから削除する属性を指定します。
+要素から削除する属性の配列を指定します。
 
-有効なオプション: '< attribute >' => '< value >'ペアのハッシュ値。
+有効なオプション: 文字列の配列。
 
 デフォルト値: `[]`。
 
@@ -814,7 +805,7 @@ Tomcatインストール先のベースディレクトリを指定します。
 
 [Listener XML要素](http://tomcat.apache.org/tomcat-8.0-doc/config/listeners.html)が構成ファイルに存在するかどうかを指定します。
 
-有効なオプション: `true`、`false`、'present'、'absent'。
+有効なオプション: 'present'、'absent'。
 
 デフォルト値: 'present'。
 
@@ -862,9 +853,9 @@ Realm要素に追加するその他の属性を指定します。
 
 ##### `attributes_to_remove`
 
-Realm要素から削除する属性を指定します。
+要素から削除する属性の配列を指定します。
 
-有効なオプション: '< attribute >' => '< value >'ペアの配列。
+有効なオプション: 文字列の配列。
 
 デフォルト値: `[]`。
 
@@ -926,7 +917,7 @@ RealmをどのRealm要素下にネストするかを指定します。
 
 Realm要素が構成ファイルに存在するかどうかを指定します。
 
-有効なオプション: `true`、`false`、'present'、'absent'。
+有効なオプション: 'present'、'absent'。
 
 デフォルト値: 'present'。
 
@@ -960,7 +951,7 @@ Tomcatインストール先のベースディレクトリを指定します。
 
 [className XML属性](http://tomcat.apache.org/tomcat-8.0-doc/config/service.html#Common_Attributes)が構成ファイルに存在するかどうかを指定します。
 
-有効なオプション: `true`、`false`、'present'、'absent'。
+有効なオプション: 'present'、'absent'。
 
 デフォルト値: 'present'。
 
@@ -976,7 +967,7 @@ Tomcatインストール先のベースディレクトリを指定します。
 
 [Service要素](http://tomcat.apache.org/tomcat-8.0-doc/config/service.html#Introduction)が構成ファイルに存在するかどうかを指定します。 
 
-有効なオプション: `true`、`false`、'present'、'absent'。
+有効なオプション: 'present'、'absent'。
 
 デフォルト値: 'present'。
 
@@ -1010,7 +1001,7 @@ Tomcatインストール先のベースディレクトリを指定します。
 
 指定したXML要素が構成ファイルに存在するかどうかを指定します。
 
-有効なオプション: `true`、`false`、'present'、'absent'。
+有効なオプション: 'present'、'absent'。
 
 デフォルト値: 'present'。
 
@@ -1070,9 +1061,9 @@ Valveに追加するその他の属性を指定します。
 
 ##### `attributes_to_remove`
 
-Valveから削除する属性を指定します。
+要素から削除する属性の配列を指定します。
 
-有効なオプション: '< attribute >' => '< value >'ペアのハッシュ値。
+有効なオプション: 文字列の配列。
 
 デフォルト値: `[]`。
 
@@ -1128,7 +1119,7 @@ ValveをどのContext要素下にネストするかを指定します。
 
 Valveが構成ファイルに存在するかどうかを指定します。[Valve XML要素](http://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Introduction)にマッピングします。
 
-有効なオプション: `true`、`false`、'present'、'absent'。
+有効なオプション: 'present'、'absent'。
 
 デフォルト値: 'present'。
 
@@ -1147,7 +1138,7 @@ Tomcatインストール先のルートディレクトリを指定します。
 
 Manager要素を追加しようとしているのか、削除しようとしているのかを指定します。
 
-有効なオプション: `true`、`false`、'present'、'absent'。
+有効なオプション: 'present'、'absent'。
 
 デフォルト値: 'present'。
 
@@ -1173,11 +1164,11 @@ Managerに追加するその他の属性を指定します。
 
 ##### `attributes_to_remove`
 
-Managerから削除する属性を指定します。 
+要素から削除する属性の配列を指定します。
 
-'attribute' => 'value'形式のハッシュ値である必要があります。
+有効なオプション: 文字列の配列。
 
-任意指定
+デフォルト値: `[]`。
 
 #### tomcat::config::context::environment
 
@@ -1187,7 +1178,7 @@ Managerから削除する属性を指定します。
 
 Environment要素を追加しようとしているのか、削除しようとしているのかを指定します。
 
-有効なオプション: `true`、`false`、'present'、'absent'。
+有効なオプション: 'present'、'absent'。
 
 デフォルト値: 'present'。
 
@@ -1235,20 +1226,21 @@ Environmentに追加するその他の属性を指定します。
 
 ##### `attributes_to_remove`
 
-Environmentから削除する属性を指定します。
+要素から削除する属性の配列を指定します。
 
-'attribute' => 'value'形式のハッシュ値である必要があります。
+有効なオプション: 文字列の配列。
 
-任意指定
+デフォルト値: `[]`。
 
 #### tomcat::config::context::resource
+
 `${catalina_base}/conf/context.xml`のResource要素を指定します。
 
 ##### `ensure`
 
 Resource要素の追加または削除のどちらを試みるか指定します。 
 
-有効なオプション: `true`、`false`、'present'、'absent'。
+有効なオプション: 'present'、'absent'。
 
 デフォルト値: 'present'。
 
@@ -1278,11 +1270,55 @@ Valveに追加するその他の属性を指定します。
 
 ##### `attributes_to_remove`
 
-Valveから削除する属性を指定します。
+要素から削除する属性の配列を指定します。
 
-'attribute' => 'value'形式のハッシュ値である必要があります。
+有効なオプション: 文字列の配列。
 
-任意指定
+デフォルト値: `[]`。
+
+#### tomcat::config::context::valve
+
+`${catalina_base}/conf/context.xml`のValve要素を指定します。
+
+##### `ensure`
+
+Valve要素を追加しようとしているのか、削除しようとしているのかを指定します。
+
+有効な値：'present'、'absent'。
+
+デフォルト値：'present'
+
+##### `resource_name`
+
+作成するResourceの名前。java:comp/envコンテキストに対して相対的な名前です。
+
+デフォルト値: `$name`
+
+##### `resource_type`
+
+このリソースのルックアップを実行するときにWebアプリケーションから期待される完全修飾Javaクラス名。リソースを作成する場合は必須です。
+
+##### `catalina_base`
+
+Tomcatインストール先のルートディレクトリを指定します。
+
+デフォルト値: `$tomcat::catalina_home`
+
+##### `additional_attributes`
+
+Valveに追加するその他の属性を指定します。
+
+有効なオプション: '< attribute >' => '< value >'ペアのハッシュ値。
+
+デフォルト値: `{}`。
+
+##### `attributes_to_remove`
+
+要素から削除する属性の配列を指定します。
+
+有効なオプション: 文字列の配列。
+
+デフォルト値: `[]`。
 
 #### tomcat::config::context::resourcelink
 
@@ -1292,7 +1328,7 @@ Valveから削除する属性を指定します。
 
 ResourceLink要素の追加または削除のどちらを試みるかを指定します。
 
-有効なオプション: `true`、`false`、'present'、'absent'。
+有効なオプション: 'present'、'absent'。
 
 デフォルト値: 'present'。
 
@@ -1322,11 +1358,11 @@ Valveに追加するその他の属性を指定します。
 
 ##### `attributes_to_remove`
 
-Valveから削除する属性を指定します。
+要素から削除する属性の配列を指定します。
 
-'attribute' => 'value'形式のハッシュ値である必要があります。
+有効なオプション: 文字列の配列。
 
-任意指定
+デフォルト値: `[]`。
 
 #### `tomcat::install`
 
@@ -1352,7 +1388,7 @@ Valveから削除する属性を指定します。
 
 ##### `source_url`
 
-シングルインスタンスモードの場合: *`install_from_source`が`true`に設定されている場合は必須です。* インストール元のソースURLを指定します。 to install from.
+シングルインスタンスモードの場合: *`install_from_source`が`true`に設定されている場合は必須です。* インストール元のソースURLを指定します。
 
 有効なオプション: `puppet://`、`http(s)://`、または`ftp://`のURLを含む文字列。
 
@@ -1364,11 +1400,27 @@ Valveから削除する属性を指定します。
 
 デフォルト値: `true`。
 
-##### `environment`
+##### `proxy_server`
 
-http_proxy、https_proxy、ftp_proxyなどを設定するための環境変数です。これらはステージングモジュールを介して、配下のexecに渡されるので、execタイプ`environment`と同じ形式に従います。
+Tomcatのバイナリをダウンロードするときに使用するプロキシサーバを指定します。例：'https://example.com:8080'
 
-https://docs.puppet.com/puppet/latest/reference/type.html#exec-attribute-environment
+デフォルト値: `undef`。
+
+##### `proxy_type`
+
+`proxy_server` が使用するプロキシサーバのタイプを指定します。通常、これには`proxy_server` のURIで指定されたプロトコルがデフォルトで設定されます。
+
+デフォルト値: `proxy_server`から自動検出。
+
+有効なオプション: 'none', 'http', 'https', 'ftp'。
+
+##### `allow_insecure`
+
+ソースコードのダウンロード時にHTTPSエラーを無視する必要がある場合に指定します。
+
+デフォルト値: `false`。
+
+有効なオプション: `true`と`false`。
 
 ##### `user`
 
@@ -1441,11 +1493,43 @@ Apache Tomcatソフトウェアが`tomcat::install`リソースによってイ�
 
 デフォルト値: '$::tomcat::catalina_home'。
 
-##### `user`
+##### `dir_list`
 
-インスタンスディレクトリおよびファイルの所有者を指定します。
+ `catalina_base`の下に、インスタンスを管理するためのサブディレクトリを指定します(`manage_dirs`ブール値では無効)。
 
-デフォルト値: `$::tomcat::user`。
+有効なオプション: 文字列。それぞれが`catalina_base`の相対サブディレクトリになります。
+
+デフォルト値: `['bin','conf','lib','logs','temp','webapps','work']`。
+
+##### `dir_mode`
+
+`catalina_base`の下のインスタンス用管理サブディレクトリのモードを指定します(`dir_list`で指定され、`manage_dirs`ブール値では無効)。
+
+有効なオプション: 標準Linuxモードを含む文字列。
+
+デフォルト値: '2770'。
+
+##### `copy_from_home_list`
+
+`catalina_home`から`catalina_base`へインスタンスをコピーするための構成ファイルのフルパスを指定します(`manage_copy_from_home`ブール値では無効)。
+
+有効なオプション: パスとファイル名を含む文字列。
+
+デフォルト値:
+    [ '${_catalina_base}/conf/catalina.policy',
+      '${_catalina_base}/conf/context.xml',
+      '${_catalina_base}/conf/logging.properties',
+      '${_catalina_base}/conf/server.xml',
+      '${_catalina_base}/conf/web.xml',
+    ]
+
+##### `copy_from_home_mode`
+
+`catalina_home` から`catalina_base`へ初期構成ファイルをコピーする場合のファイルモードを指定します。
+
+有効なオプション: 標準Linuxモードを含む文字列。
+
+デフォルト値: '0660'。 
 
 ##### `group`
 
@@ -1453,11 +1537,31 @@ Apache Tomcatソフトウェアが`tomcat::install`リソースによってイ�
 
 デフォルト値: `$::tomcat::group`。
 
-##### `manage_user`
+##### `java_home`
 
-ユーザをこのモジュールで管理するかどうかを指定します。
+`tomcat::service`インスタンスの宣言時にjava homeを使用するかどうかを指定します。[tomcat::service](#tomcatservice)を参照してください。
 
-デフォルト値: `$::tomcat::manage_user`。
+##### `manage_base`
+
+catalina_baseディレクトリをpuppetで管理するかどうかを指定します。ネットワークファイルシステム環境では推奨されないことがあります。
+
+デフォルト値: `true`。
+
+
+##### `manage_dirs`
+
+`catalina_base`のサブディレクトリをtomcat::instanceの一部として管理するかどうかを指定します。デフォルトのディレクトリは`dir_list`に記載されています。
+
+有効なオプション: `true`と`false`。
+
+##### `manage_copy_from_home`
+
+`catalina_home` から`catalina_base`へ初期構成ファイルをコピーするかどうかを指定します。
+
+有効なオプション: ブール値。
+
+
+デフォルト値: `true`。
 
 ##### `manage_group`
 
@@ -1465,9 +1569,11 @@ Apache Tomcatソフトウェアが`tomcat::install`リソースによってイ�
 
 デフォルト値: `$::tomcat::manage_group`。
 
-##### `manage_base`
+##### `manage_properties`
 
-catalina_baseディレクトリをpuppetで管理するかどうかを指定します。ネットワークファイルシステム環境では推奨されないことがあります。
+`catalina.properties`ファイルを作成および管理しているかどうかを指定します。`true`の場合、このファイルに加えられたカスタム変更が実行中にオーバーライドされます。
+
+有効なオプション: `true`、`false`。
 
 デフォルト値: `true`。
 
@@ -1479,17 +1585,15 @@ catalina_baseディレクトリをpuppetで管理するかどうかを指定し�
 
 デフォルト値: `true` (マルチインスタンスをインストールする場合)、 `false` (シングルインスタンスをインストールする場合)。
 
-##### `manage_properties`
+##### `manage_user`
 
-`catalina.properties`ファイルを作成および管理しているかどうかを指定します。`true`の場合、このファイルに加えられたカスタム変更が実行中にオーバーライドされます。
+ユーザをこのモジュールで管理するかどうかを指定します。
 
-有効なオプション: `true`、`false`。
+デフォルト値: `$::tomcat::manage_user`。
 
-デフォルト値: `true`。
+##### `use_init`
 
-##### `java_home`
-
-`tomcat::service`インスタンスの宣言時にjava homeを使用するかどうかを指定します。[tomcat::service](#tomcatservice)を参照してください。
+`tomcat::service`インスタンスの宣言時にinitスクリプトを管理するかどうかを指定します。[tomcat::service](#tomcatservice)を参照してください。
 
 ##### `use_jsvc`
 
@@ -1497,9 +1601,11 @@ catalina_baseディレクトリをpuppetで管理するかどうかを指定し�
 
 >注: このモジュールはjsvcのコンパイル/インストールは行いません。[tomcat::service](#tomcatservice)を参照してください。
 
-##### `use_init`
+##### `user`
 
-`tomcat::service`インスタンスの宣言時にinitスクリプトを管理するかどうかを指定します。[tomcat::service](#tomcatservice)を参照してください。
+インスタンスディレクトリおよびファイルの所有者を指定します。
+
+デフォルト値: `$::tomcat::user`。
 
 #### tomcat::service
 
@@ -1527,7 +1633,7 @@ Javaのインストール場所を指定します。`use_jsvc`が`true`に設定
 
 デフォルト値: `undef`。
 
->注: このパラメータにhomeパスを指定しない場合、Puppetは`-home`スイッチをTomcatに受け渡しません。これにより、一部のシステムで問題が生じる可能性があるため、このパラメータを指定することを推奨します。
+>注: このパラメータにhomeパスを指定しない場合、Puppetは`-home`スイッチをTomcatに受け渡しません。一部のシステムでは、これにより問題が生じる可能性があるため、このパラメータを指定することを推奨します。
 
 ##### `service_enable`
 
@@ -1554,6 +1660,14 @@ Tomcatサービスが実行中かどうかを指定します。Puppetのネイ�
 ##### `start_command`
 
 サービスを起動するコマンドを指定します。Designates a command to start the service.
+
+有効なオプション: 文字列。
+
+デフォルト値: `use_init`および`use_jsvc`の値によって決まります。
+
+##### `status_command`
+
+サービスのステータスを得るコマンドを指定します。
 
 有効なオプション: 文字列。
 
@@ -1596,10 +1710,6 @@ Tomcatサービスが実行中かどうかを指定します。Puppetのネイ�
 `use_init => true`のときのjsvcプロセスのユーザ。
 
 #### tomcat::setenv::entry
-
-##### `base_path`
-
-**廃止されました。** 代わりに`config_file`を使用してください。
 
 ##### `config_file`
 
@@ -1659,7 +1769,7 @@ Tomcatサービスが実行中かどうかを指定します。Puppetのネイ�
 
 ##### `value`
 
-*必須です。* 管理対象のパラメータの値を提供します。
+**必須**。管理対象のパラメータの値を提供します。
 
 有効なオプション: 文字列または配列。配列を渡す場合、半角空白1つで値を区切ります。
 
@@ -1672,6 +1782,14 @@ Tomcatサービスが実行中かどうかを指定します。Puppetのネイ�
 デフォルト値: `true`。
 
 #### `tomcat::war`
+
+##### `allow_insecure`
+
+war tarballのダウンロード時にHTTPSエラーを無視する必要がある場合に指定します。
+
+デフォルト値: `false`、
+
+有効なオプション: `true`と`false`。
 
 ##### `app_base`
 
@@ -1701,7 +1819,7 @@ WARをデプロイする場所を指定します。`app_base`と組み合わせ�
 
 WARが存在するかどうかを指定します。
 
-有効なオプション: `true`、`false`、'present'、'absent'。
+有効なオプション: 'present'、'absent'。
 
 デフォルト値: 'present'。
 
@@ -1728,6 +1846,19 @@ WARの名前を指定します。
 *`war_ensure`が`false`または'absent'に設定されている場合を除き、必須です。* WARのデプロイ元のソースを指定します。
 
 有効なオプション: `puppet://`、`http(s)://`、または`ftp://`のURLを含む文字列。
+
+##### `user`
+
+tomcat warファイルの'owner'。
+
+デフォルト値: 'tomcat'。
+
+##### `group`
+
+tomcat warファイルの'group'所有者。
+
+デフォルト値: 'tomcat'。
+
 
 ## 制限事項
 

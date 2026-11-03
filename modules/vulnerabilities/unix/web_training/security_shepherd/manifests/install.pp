@@ -55,17 +55,36 @@ class security_shepherd::install {
     ensure => file,
     source => 'puppet:///modules/security_shepherd/database.properties',
   }
-  -> file { '/etc/mysql/my.cnf':
+  # A drop-in, not a replacement for /etc/mysql/my.cnf: that file belongs to the
+  # mysql module (which this module requires), and replacing it dropped the
+  # module's settings, skip-ssl included. Its my.cnf includes conf.d last.
+  -> file { '/etc/mysql/conf.d/security_shepherd.cnf':
     ensure  => file,
-    source  => 'puppet:///modules/security_shepherd/my.cnf',
-    replace => true,
+    source  => 'puppet:///modules/security_shepherd/security_shepherd.cnf',
+    require => Package['mariadb-server'],
   }
-  -> service { 'tomcat9':
+  # server.xml binds 80 and 443, and tomcat9 runs as the unprivileged 'tomcat'
+  # user. Grant the bind capability explicitly so the connectors start whatever
+  # the packaged unit file allows.
+  -> file { '/etc/systemd/system/tomcat9.service.d':
+    ensure => directory,
+  }
+  -> file { '/etc/systemd/system/tomcat9.service.d/bind-privileged-ports.conf':
+    ensure  => file,
+    content => "[Service]\nAmbientCapabilities=CAP_NET_BIND_SERVICE\n",
+  }
+  ~> exec { 'tomcat9-daemon-reload':
+    command     => 'systemctl daemon-reload',
+    refreshonly => true,
+  }
+  # The package starts tomcat9 on install with the stock config; restart it so
+  # the module's server.xml, web.xml and webapp are loaded now, not only after
+  # the post-build reboot.
+  ~> service { 'tomcat9':
     ensure     => running,
     name       => 'tomcat9',
     enable     => true,
     hasrestart => true,
   }
-  
 
 }

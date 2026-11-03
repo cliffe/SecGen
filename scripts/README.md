@@ -12,7 +12,7 @@ bundler at the main checkout's gems.
 | `scripts/secgen-dev-run --test -s <scenario.xml>` / `scripts/secgen-dev-run -m <module path>` | Build, test and destroy (`secgen.rb test-scenario` / `test-module`): tests run after net0 teardown and the reboot; results in `test_results/<project_id>/` (`summary.json`, resolved `scenario.xml`, masked `build.log`, per-module JSON/logs/evidence). Exits 0 PASS / 1 FAIL / 2 SKIP. `-- --keep-vms` keeps the VMs. |
 | `scripts/secgen-dev-destroy [--keep-dir] <projects/<id>>...` | Deletes a kept project's VMs with `secgen.rb destroy-project`, passing the options file by path: on Proxmox they are hard-stopped and deleted through the API (only those in its `.vagrant/machines/*/proxmox/id`), elsewhere `vagrant destroy` is used; then removes the project dir unless `--keep-dir`. |
 | `scripts/secgen-test-run <projects/.../secgen_test/<mod>.rb>` | Runs one module's post-provision test against its built VM over the QEMU Guest Agent. Exits 0 PASS / 1 FAIL / 2 SKIP; writes `<project>/test_results/<system>/<mod>.json` (plus evidence on FAIL). |
-| `scripts/pve-check [--all]` | Read-only: PVE version and the QEMU Guest Agent option on every template (or all VMs). |
+| `scripts/pve-check [--all \| --list \| --nodes]` | Read-only: PVE version and the QEMU Guest Agent option on every template (or all VMs). `--list` prints just `VMID NODE NAME STATUS` for every VM from one API call. `--nodes` prints `NODE STATUS MEM_PCT CPU_PCT` for every cluster node (memory and CPU in use, as whole percentages), for picking a node to build on. |
 | `scripts/agent-check <vmid> [node]` | Read-only guest-agent smoke test (`id`, `hostname`, IPs) via `lib/helpers/proxmox_connection.rb`. |
 
 ## Setup

@@ -6,7 +6,7 @@
 
 		 <system>
 	 		<system_name>shared_desktop</system_name>
-	 		<base distro="Debian 9" type="desktop" name="KDE"/>
+	 		<base platform="linux" type="server"/>
 
 	 		<input into_datastore="IP_addresses">
 	 			<!-- 0 desktop -->

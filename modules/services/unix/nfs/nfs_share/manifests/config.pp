@@ -16,22 +16,38 @@ class nfs_share::config {
     group  => 'wheel',
     mode   => '0754',
   }
-  
+
+  # Puppet adds the x bit wherever r is set on a directory, so the file
+  # resource above ends up 0755. Force the intended 0754 afterwards.
+  exec { 'nfs_share_storage_mode':
+    command => "chmod 0754 ${storage_directory}",
+    path    => ['/usr/bin', '/bin'],
+    unless  => "test \"$(stat -c %a ${storage_directory})\" = 754",
+    require => File[$storage_directory],
+    before  => Service['nfs-kernel-server'],
+  }
+
   file { '/etc/exports':
-    require => Package['nfs-common'],
     ensure  => present,
     owner   => 'root',
     group   => 'root',
-    mode    => '0777',
-    content  => template('nfs_share/exports.erb')
+    mode    => '0644',
+    require => [Package['nfs-kernel-server'], File[$storage_directory]],
+    content => template('nfs_share/exports.erb'),
   }
 
-  exec { "exportfs":
-      require => Package['nfs-common'],
-      command => "exportfs -a",
-      path    => "/usr/sbin",
-      # path    => [ "/usr/local/bin/", "/bin/" ],  # alternative syntax
+  # nfs-server.service has ConditionPathExists=/etc/exports, so it does not
+  # start when the package is installed; start it once the exports exist.
+  service { 'nfs-kernel-server':
+    ensure    => running,
+    enable    => true,
+    require   => [Package['nfs-kernel-server', 'rpcbind'], File['/etc/exports']],
+    subscribe => File['/etc/exports'],
+  }
+
+  exec { 'exportfs':
+    command => 'exportfs -ra',
+    path    => ['/usr/sbin', '/sbin', '/usr/bin', '/bin'],
+    require => Service['nfs-kernel-server'],
   }
 }
-
-

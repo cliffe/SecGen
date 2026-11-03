@@ -175,7 +175,18 @@ class mysql::params {
       $basedir                 = '/usr'
       $config_file             = '/etc/mysql/my.cnf'
       $includedir              = '/etc/mysql/conf.d'
-      $datadir                 = '/var/lib/mysql'
+      # Debian's mariadb packages from 1:11.8.6-5 (what Kali rolling ships)
+      # create a new install's system tables in /var/lib/mariadb; only an
+      # existing install keeps /var/lib/mysql. Pointing a fresh install at
+      # /var/lib/mysql leaves mariadbd with an empty datadir, and it aborts
+      # with "Can't open and lock privilege tables: Table 'mysql.db' doesn't
+      # exist". The catalog compiles on the guest (puppet apply), so this
+      # checks the target VM before the package is installed.
+      if $facts['os']['name'] == 'Kali' and !find_file('/var/lib/mysql/mysql') {
+        $datadir               = '/var/lib/mariadb'
+      } else {
+        $datadir               = '/var/lib/mysql'
+      }
       $log_error               = '/var/log/mysql/error.log'
       $pidfile                 = '/var/run/mysqld/mysqld.pid'
       $root_group              = 'root'

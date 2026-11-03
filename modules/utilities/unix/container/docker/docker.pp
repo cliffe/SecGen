@@ -5,8 +5,12 @@ $images = $secgen_params['images']
 # include 'docker'
 
 # TODO: configure proxy via secgen argument?
+# docker_ce_release is set from os.distro.codename: the module defaults to the legacy
+# lsbdistcodename fact, which is empty on bases without lsb-release (Debian 12), giving
+# an invalid apt source.
 class { 'docker':
-  proxy => "http://172.22.0.51:3128",
+  proxy             => "http://172.22.0.51:3128",
+  docker_ce_release => $facts['os']['distro']['codename'],
 }
 
 

@@ -12,7 +12,7 @@
   </description>
 
   <type>ftp</type>
-  <privilege>root_rwx</privilege>
+  <privilege>user_rwx</privilege>
   <access>remote</access>
   <platform>linux</platform>
   <difficulty>low</difficulty>

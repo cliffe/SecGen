@@ -52,15 +52,19 @@
   <!-- disable faulty module (TODO: FIXME module is vulnerable/exploitable but not discoverable or functioning as normal) -->
   <msf_module>exploit/linux/http/glpi_htmlawed_php_injection</msf_module>
   <conflict>
-    <name>.*</name>
+    <type>webapp</type>
   </conflict>
 
   <requires>
-    <module_path>.*apache.*compatible.*</module_path>
+    <software_name>apache</software_name>
   </requires>
 
   <requires>
-    <module_path>.*mysql.*compatible.*</module_path>
+    <software_name>mysql</software_name>
+  </requires>
+  <!-- Patched php8.2 (php2shell fix) so only CVE-2022-35914 is exploitable. -->
+  <requires>
+    <module_path>.*utilities/unix/languages/php82_patched.*</module_path>
   </requires>
 
   <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">

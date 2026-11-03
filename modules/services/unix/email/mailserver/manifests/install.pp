@@ -1,8 +1,7 @@
 class mailserver::install {
-  # $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
-  # $ip = $secgen_parameters['server_ip'][0]
-  # TODO: read this from parameter
-  $ip = "accountingnow.com"
+  $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
+  # server_ip is the name (or IP) this mail server presents as postfix myhostname
+  $ip = $secgen_parameters['server_ip'][0]
 
   package { 'postfix':
     ensure => installed,
@@ -64,7 +63,7 @@ class mailserver::install {
 
   file { "/var/mail":
     ensure => directory,
-    mode => "777", # TODO: Fix this
+    mode => "777", # deliberately world-writable (weak mail spool); secgen_test asserts 777
   }
 
   # if $::in_container == "true" {

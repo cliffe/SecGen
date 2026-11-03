@@ -12,16 +12,36 @@ class gitlab_13102::configure {
 
   Exec { path => ['/bin', '/usr/bin', '/sbin', '/usr/sbin'] }
 
-  exec { 'set_gitlab_password':
-    command => "echo \"gitlab_rails['initial_root_password'] = '${strings_to_leak[0]}'\" >> /etc/gitlab/gitlab.rb",
+  # Written with file_line (not shell echo) so an arbitrary leaked value
+  # containing quotes or other shell metacharacters can never break the
+  # command used to write it -- that is what previously broke the build
+  # (a message_generator value landed in strings_to_leak[0] and contained
+  # an unescaped single quote).
+  file_line { 'set_gitlab_password':
+    path    => '/etc/gitlab/gitlab.rb',
+    line    => "gitlab_rails['initial_root_password'] = '${strings_to_leak[0]}'",
+    require => Exec['install_gitlab'],
   }
   ->
-  exec { 'set_gitlab_store_password':
-    command => "echo \"gitlab_rails['store_initial_root_password'] = true\" >> /etc/gitlab/gitlab.rb",
+  file_line { 'set_gitlab_store_password':
+    path => '/etc/gitlab/gitlab.rb',
+    line => "gitlab_rails['store_initial_root_password'] = true",
   }
   ->
-  exec { 'disable_monitoring': # Avoids race condition where monitoring services don't start before gitlab-ctl reconfigure completes
-    command => "echo \"prometheus_monitoring['enable'] = false\" >> /etc/gitlab/gitlab.rb && echo \"alertmanager['enable'] = false\" >> /etc/gitlab/gitlab.rb && echo \"grafana['enable'] = false\" >> /etc/gitlab/gitlab.rb",
+  # Avoids race condition where monitoring services don't start before gitlab-ctl reconfigure completes
+  file_line { 'disable_prometheus_monitoring':
+    path => '/etc/gitlab/gitlab.rb',
+    line => "prometheus_monitoring['enable'] = false",
+  }
+  ->
+  file_line { 'disable_alertmanager':
+    path => '/etc/gitlab/gitlab.rb',
+    line => "alertmanager['enable'] = false",
+  }
+  ->
+  file_line { 'disable_grafana':
+    path => '/etc/gitlab/gitlab.rb',
+    line => "grafana['enable'] = false",
   }
   ->
   exec { 'reconfigure_gitlab':
@@ -32,10 +52,14 @@ class gitlab_13102::configure {
     try_sleep => 30,
   }
 
-  # Leak credentials via git user's home directory
+  # Leak credentials via git user's home directory. The 'git' system user
+  # is only created by GitLab's Chef run (reconfigure_gitlab), not by the
+  # dpkg install, so this must wait for it explicitly rather than rely on
+  # manifest declaration order.
   exec { 'create_git_home':
     command => 'mkdir -p /home/git',
     creates => '/home/git',
+    require => Exec['reconfigure_gitlab'],
   }
   ->
   exec { 'set_git_home_ownership':
@@ -83,9 +107,11 @@ class gitlab_13102::configure {
       cwd     => '/tmp/dev-notes',
     }
     ->
-    exec { 'create_env_file':
-      command => "echo -e 'DB_HOST=localhost\\nDB_PORT=5432\\nDB_USER=root\\nDB_PASSWORD=${strings_to_leak[1]}\\nAPI_KEY=abc123xyz' > .env",
-      cwd     => '/tmp/dev-notes',
+    # Written with a file resource (not shell echo) so an arbitrary leaked
+    # value containing quotes can't break the command that writes it.
+    file { '/tmp/dev-notes/.env':
+      ensure  => file,
+      content => "DB_HOST=localhost\nDB_PORT=5432\nDB_USER=root\nDB_PASSWORD=${strings_to_leak[1]}\nAPI_KEY=abc123xyz\n",
     }
     ->
     exec { 'create_python_script':

@@ -23,7 +23,7 @@ class golang (
   if ($download_url) {
     $download_location = $download_url
   } else {
-    $download_location = "https://storage.googleapis.com/golang/go${version}.${arch}.tar.gz"
+    $download_location = "https://dl.google.com/go/go${version}.${arch}.tar.gz"
   }
 
   Exec {
@@ -35,10 +35,16 @@ class golang (
     'mercurial',
   ]
 
-  ensure_packages($package_prereqs)
+  # Declared directly (not via stdlib's ensure_packages) so the module needs no
+  # stdlib version; skipped where another module has already declared it.
+  $package_prereqs.each |$pkg| {
+    if !defined(Package[$pkg]) {
+      package { $pkg: ensure => installed }
+    }
+  }
 
   exec { 'download':
-    command => "curl -o ${download_dir}/go-${version}.tar.gz ${download_location}",
+    command => "curl -fsSL -o ${download_dir}/go-${version}.tar.gz ${download_location}",
     creates => "${download_dir}/go-${version}.tar.gz",
     unless  => "which go && go version | grep '${version}'",
     require => Package['curl'],

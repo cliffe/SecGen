@@ -36,7 +36,10 @@ class raspap_rce::config {
   # RaspAP expects: line 1 = username, line 2 = bcrypt hash
   # htpasswd outputs username:hash format, so we extract and create separate lines
   exec { 'create-raspap-auth':
-    command => "htpasswd -bcB /tmp/raspap_auth_temp admin '${admin_password}' && awk -F: '{print $1; print $2}' /tmp/raspap_auth_temp > ${install_dir}/config/raspap.auth && rm /tmp/raspap_auth_temp",
+    # $1/$2 must be escaped: this is a Puppet double-quoted string, and bare $1/$2
+    # would otherwise be parsed as (undefined) Puppet variable interpolation, not
+    # passed through to awk - silently emptying both printed fields.
+    command => "htpasswd -bcB /tmp/raspap_auth_temp admin '${admin_password}' && awk -F: '{print \$1; print \$2}' /tmp/raspap_auth_temp > ${install_dir}/config/raspap.auth && rm /tmp/raspap_auth_temp",
     require => [Class['raspap_rce::install'], Package['apache2-utils']],
     creates => "${install_dir}/config/raspap.auth",
   }

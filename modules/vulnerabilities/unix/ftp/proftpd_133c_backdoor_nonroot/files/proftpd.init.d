@@ -79,7 +79,13 @@ start()
 {
     log_daemon_msg "Starting ftp server" "$NAME"
 
-    start-stop-daemon --start --quiet --pidfile "$PIDFILE" --oknodo --exec $DAEMON -- -c $CONFIG_FILE $OPTIONS  
+    # nonroot variant: run the daemon as the ftp service user so the pre-auth
+    # backdoor shell is non-root. The binary has cap_net_bind_service (set at
+    # install) to bind the privileged port; ensure its runtime/log paths are
+    # writable by ftp first.
+    mkdir -p /var/run/proftpd
+    chown -R ftp:nogroup /var/run/proftpd /var/log/proftpd 2>/dev/null
+    start-stop-daemon --start --quiet --pidfile "$PIDFILE" --oknodo --chuid ftp:nogroup --exec $DAEMON -- -c $CONFIG_FILE $OPTIONS
     if [ $? != 0 ]; then
         log_end_msg 1
         exit 1

@@ -24,7 +24,6 @@
   <software_name>bash</software_name>
   <software_license>GPLv3+</software_license>
 
-  <!-- only tested for Wheezy -->
   <conflict>
     <name>.*Debian.*Stretch.*</name>
   </conflict>
@@ -36,5 +35,4 @@
   </requires>
 <!-- TODO: set metadata on this module as a local privilege escalation attack -->
 <!-- TODO: strings_to_leak to /root -->
-<!-- TODO: test on newer versions of Debian -->
 </vulnerability>

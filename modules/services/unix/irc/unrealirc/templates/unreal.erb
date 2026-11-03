@@ -25,12 +25,20 @@ SCRIPTNAME=/etc/init.d/$NAME
 [ -r /etc/default/$NAME ] && . /etc/default/$NAME
 
 # Load the VERBOSE setting and other rcS variables
-. /lib/init/vars.sh
+# /lib/init/vars.sh is not installed on every Debian release (absent from
+# minimal bookworm installs), so source it only if present.
+[ -r /lib/init/vars.sh ] && . /lib/init/vars.sh
 
 # Define LSB log_* functions.
 # Depend on lsb-base (>= 3.2-14) to ensure that this file is present
 # and status_of_proc is working.
-. /lib/lsb/init-functions
+if [ -r /lib/lsb/init-functions ]; then
+	. /lib/lsb/init-functions
+else
+	log_daemon_msg() { echo "$*"; }
+	log_end_msg() { return "$1"; }
+	status_of_proc() { pidof "$(basename "$1")" > /dev/null; }
+fi
 
 #
 # Function that starts the daemon/service

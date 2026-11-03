@@ -24,6 +24,15 @@ class hackerbot_webclient::config {
     require => File['/opt/hackerbot_webclient'],
   }
 
+  file { '/opt/hackerbot_webclient/serve.py':
+    ensure  => file,
+    source  => 'puppet:///modules/hackerbot_webclient/serve.py',
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
+    require => File['/opt/hackerbot_webclient'],
+  }
+
   # The only templated file: bakes in the per-lab nick/target/server values.
   # index.html and app.js are static and identical across every deployment.
   file { '/opt/hackerbot_webclient/config.js':

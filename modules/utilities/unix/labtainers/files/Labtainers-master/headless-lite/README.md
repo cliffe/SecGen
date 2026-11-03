@@ -9,7 +9,7 @@ the Labtainer VM Appliance.
 
 # Quick Start 
 Execute the ./headless-labtainers.sh script.  Or download from 
-   https://raw.githubusercontent.com/mfthomps/Labtainers/master/headless-lite/headless-labtainers.sh 
+https://raw.githubusercontent.com/mfthomps/Labtainers/master/headless-lite/headless-labtainers.sh 
 and make executable and then run.
 On a Mac, this would be done from a terminal.  On Windows, use Powershell.
 
@@ -26,7 +26,10 @@ The user name and password on the resulting Labtainers container are both "labat
 **Warning**: if you run docker-compose directly prior to running headless-labtainers.sh, you may end up with broken file 
 permissions (though running it directly after first running headless-labtainers.sh should work fine).
 
-# Security considerations
+# Demo
+[![Watch YouTube Demo](https://img.youtube.com/vi/pG6mJc8Nmno/hqdefault.jpg)](https://youtu.be/pG6mJc8Nmno)
+
+# Security Considerations
 Please note that Docker runs as a privileged service on your computer, and Labtainers containers run as privileged containers.
 If you have sensitive data on your computer, you should understand the isolation provided by Dockers on your system.  An alternative
 is to use one of our virtual machine appliances rather than running Docker directly on your computer.

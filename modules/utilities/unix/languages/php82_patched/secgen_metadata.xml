@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>PHP 8.2 patched against php2shell (Debian 12 Bookworm security build)</name>
+  <author>Thomas Shaw</author>
+  <module_license>Apache v2</module_license>
+  <description>Ensures the Debian 12 php8.2 on the box carries the php2shell fix
+          (CVE-2026-109618 / CVE-2026-109619) by refreshing the apt cache and
+          pinning the php8.2 core packages to the fixed Debian security build
+          (>= 8.2.35-1~deb12u1, DLA-4848-1). A module that installs a PHP
+          application on bookworm php8.2 requires this so the php2shell vector
+          is closed and only its own application vulnerability is exploitable.
+          It runs before the requiring module, so the application's own php
+          packages resolve to the same fixed version (php8.2-* are versioned in
+          lockstep). The 7.4 counterpart is php7_patched (a source build, since
+          7.4 has no fixed package).
+  </description>
+
+  <type>language</type>
+  <type>php</type>
+  <platform>linux</platform>
+
+  <reference>https://security-tracker.debian.org/tracker/DLA-4848-1</reference>
+  <reference>https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w</reference>
+  <reference>https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp</reference>
+
+  <!-- A box cannot be both "7.4 default" and "patched 8.2": the php7 variants
+       make 7.4 the default php, which is a different intent. -->
+  <conflict>
+    <module_path>.*utilities/unix/languages/php7.*</module_path>
+  </conflict>
+
+  <requires>
+    <type>update</type>
+  </requires>
+  <requires>
+    <module_path>.*bases/debian_bookworm.*</module_path>
+  </requires>
+</utility>

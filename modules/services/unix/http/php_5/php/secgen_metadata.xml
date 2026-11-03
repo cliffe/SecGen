@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<service xmlns="http://www.github/cliffe/SecGen/service"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
+  <name>PHP 5 Server</name>
+  <author>Thomas Shaw</author>
+  <author>Vox Pupuli</author>
+  <module_license>Apache v2</module_license>
+  <description>An installation of PHP for Stretch / Kali</description>
+
+  <type>web_server</type>
+  <platform>linux</platform>
+
+  <!--optional details-->
+  <reference>http://php.net</reference>
+  <reference>https://forge.puppet.com/puppet/php</reference>
+  <software_name>php</software_name>
+  <software_license>PHP License v3.01</software_license>
+
+  <!-- works with pretty much any base except wheezy -->
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+  <requires>
+    <software_name>apache</software_name>
+  </requires>
+  <requires>
+    <software_name>mysql</software_name>
+  </requires>
+</service>

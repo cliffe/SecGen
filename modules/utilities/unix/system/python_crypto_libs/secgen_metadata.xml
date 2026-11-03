@@ -3,10 +3,10 @@
 <utility xmlns="http://www.github/cliffe/SecGen/utility"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
-  <name>Numpy for Python3</name>
+  <name>Python 3 crypto libraries</name>
   <author>Thomas Shaw</author>
   <module_license>Apache v2</module_license>
-  <description>Installs numpy for python3.</description>
+  <description>Installs pip, numpy and pycryptodome (the Crypto module) for python3 from Debian packages.</description>
 
   <type>library</type>
   <platform>linux</platform>

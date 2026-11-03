@@ -19,10 +19,17 @@ mkdir -p workspace_master/.local/share
 cd workspace_master
 
 cat <<EOT >bashrc.labtainer.master
-   if [[ ":\$PATH:" != *":./bin:"* ]]; then 
-       export PATH="\${PATH}:./bin:/home/labtainer/labtainer/trunk/scripts/designer/bin:/home/labtainer/labtainer/trunk/testsets/bin"
-       export LABTAINER_DIR=/home/labtainer/labtainer/trunk
-   fi
+if [[ ":\$PATH:" != *":./bin:"* ]]; then 
+    export PATH="\${PATH}:./bin:/home/labtainer/labtainer/trunk/scripts/designer/bin:/home/labtainer/labtainer/trunk/testsets/bin"
+    export LABTAINER_DIR=/home/labtainer/labtainer/trunk
+fi
+#
+# Labtainer Aliases
+alias vncstart="vncserver -local :1"
+alias vncstop="vncserver -kill :1"
+alias vncrestart="vncstop && vncstart"
+alias dex="sudo docker exec -it"
+alias cdlab="cd $LABTAINER_DIR/scripts/labtainer-student/"
 EOT
 
 CACHE="--no-cache"

@@ -8,8 +8,8 @@
   <module_license>MIT</module_license>
   <description>
     GitLab CE/EE versions 11.9 through 13.10.2 are vulnerable to an exploit where an unauthenticated attacker is able
-    to upload a malicious DjVu image file that exploits ExifTool's metadata parsing, resulting in remote code execution 
-    with full system privileges.
+    to upload a malicious DjVu image file that exploits ExifTool's metadata parsing, resulting in remote code execution
+    as the git user.
   </description>
 
   <type>webapp</type>
@@ -23,7 +23,19 @@
   <read_fact>strings_to_pre_leak</read_fact>
   <read_fact>difficulty</read_fact>
 
+  <!--
+    Module_reader builds default_inputs_selectors by unshifting each
+    generator as it is parsed, so the array ends up in the REVERSE of
+    declaration order. strings_to_leak[0] is used as the GitLab root
+    password (embedded in a shell command) and must stay a safe,
+    single-line, quote-free value, so random_sanitised_word is declared
+    second here to land at index 0. message_generator (declared first,
+    landing at index 1) can produce multi-line/quoted content (e.g.
+    random_ascii_art) and is only ever written via Puppet file content,
+    never interpolated into a shell command.
+  -->
   <default_input into="strings_to_leak">
+    <generator type="message_generator"/>
     <generator type="random_sanitised_word">
         <input into="wordlist">
             <value>wordlist</value>
@@ -32,7 +44,6 @@
             <value>8</value>
         </input>
     </generator>
-    <generator type="message_generator"/>
   </default_input>
 
   <default_input into="leaked_filenames">

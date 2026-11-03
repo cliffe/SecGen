@@ -7,7 +7,5 @@
   "source": "https://github.com/djjudas21/puppet-sqlmap",
   "project_page": "https://github.com/djjudas21/puppet-sqlmap",
   "issues_url": "https://github.com/djjudas21/puppet-sqlmap/issues",
-  "dependencies": [
-    {"name":"stankevich/python","version_requirement":">= 1.9.0"},
-  ]
+  "dependencies": []
 }

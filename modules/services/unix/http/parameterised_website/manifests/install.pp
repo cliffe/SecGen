@@ -139,19 +139,19 @@ class parameterised_website::install {
   }
 
   if $images_to_leak {
-    if $images_mode {
-      ::secgen_functions::leak_files { 'parameterised_website-image-leak-mode':
-        storage_directory => $docroot,
-        images_to_leak    => $images_to_leak,
-        mode              => $images_mode,
-        leaked_from       => "parameterised_website",
-      }
+    # images_mode is an array input: use its first element as the file mode.
+    # Without it, leak_files would default to root:root 0660, which Apache
+    # (www-data) cannot read, so default to world-readable 0644.
+    if $images_mode and $images_mode[0] and $images_mode[0] != '' {
+      $image_file_mode = $images_mode[0]
     } else {
-      ::secgen_functions::leak_files { 'parameterised_website-image-leak':
-        storage_directory => $docroot,
-        images_to_leak    => $images_to_leak,
-        leaked_from       => "parameterised_website",
-      }
+      $image_file_mode = '0644'
+    }
+    ::secgen_functions::leak_files { 'parameterised_website-image-leak':
+      storage_directory => $docroot,
+      images_to_leak    => $images_to_leak,
+      mode              => $image_file_mode,
+      leaked_from       => "parameterised_website",
     }
   }
 

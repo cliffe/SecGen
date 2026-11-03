@@ -1,10 +1,12 @@
-## manage the catalina.properties file
-# private
+# @summary Manage the catalina.properties file
+#
+# @api private
+#
 define tomcat::config::properties (
-  $catalina_base,
-  $catalina_home,
-  $user,
-  $group,
+  Stdlib::Absolutepath $catalina_base,
+  String[1]            $catalina_home,
+  String[1]            $user,
+  String[1]            $group,
 ) {
   tag(sha1($catalina_base))
   tag(sha1($catalina_home))

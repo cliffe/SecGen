@@ -17,7 +17,7 @@ Everything below is derived from the current tree (~430 modules, ~1550 `.pp` fil
 
 - **Puppetfile per system** (`lib/templates/Puppetfile.erb`): contains only `secgen_functions` (from `modules/build/puppet/secgen_functions`), **the modules selected for that system**, and `puppetlabs-stdlib` from the Forge (latest compatible). librarian-puppet installs them into `projects/<proj>/puppet/<system>/modules/`.
   - Consequence: `puppet:///modules/<other_module>/...` and `include other_module::x` only work if `<other_module>` is also selected. Do not reach into another module's `files/`; vendor a copy (e.g. `reversing_tools/files/upx` is a copy of `coconut/files/upx`) or declare it in `<requires>`.
-  - Third-party Puppet modules are themselves SecGen utilities pulled in via `<requires>`: `utilities/unix/puppet_module/{cron_legacy,cron_new,sudo,host,wordpress}`, `utilities/unix/system/accounts_{legacy,newer}` (the `accounts` module), `.*apache.*compatible.*`, `.*mysql.*compatible.*`, etc. stdlib is always there; `apt` and `translate` live in `modules/build/puppet/`.
+  - Third-party Puppet modules are themselves SecGen utilities pulled in via `<requires>`: `utilities/unix/puppet_module/{cron_legacy,cron_new,sudo,host,wordpress}`, `utilities/unix/system/accounts_newer` (the `accounts` module), Apache and MySQL (`<software_name>apache</software_name>` / `mysql`, which picks `services/unix/http/apache` or `database/mysql` on Debian and the `*_kali_compatible` ones on Kali), etc. stdlib is always there; `apt` and `translate` live in `modules/build/puppet/`.
 - **One `vagrant provision "puppet"` run per module** (`lib/templates/Vagrantfile.erb`), in module selection order (`<requires>` deps come first; most modules require `<type>update</type>`, i.e. `unix_update` running `apt-get update`).
   - `manifests_path` = the module dir, `manifest_file` = **`<module_dir_name>.pp`**. That top-level file is the entry point, not `manifests/init.pp`.
   - Each module is a separate catalog: resource titles only need to be unique **within one module's run**, but within that run they must be unique even across defines (see `create_directory` below).
@@ -107,7 +107,6 @@ Source: `modules/build/puppet/secgen_functions/` (the copy in `modules/code_exam
 | `leak_data` [3] | Leak base64 `secgen_leaked_data` JSON blobs (binary files, subdirs) | `data_to_leak`, `storage_directory`, `owner/group/mode`, `leaked_from` | Fails if an element is not `secgen_leaked_data` JSON. Uses `create_directory` with unique `res`. |
 | `install_setgid_binary` [6] | CTF: setgid binary + flag in `/home/<user>/<challenge>/` | `challenge_name`, `source_module_name`, `group`, `account` (parsed hash), `flag`, `flag_name`, `binary_path` | Without `binary_path` it calls `compile_binary_module` passing `gcc_params`, **which that define does not declare** -> "Invalid parameter gcc_params" (hit by `simple_bof`). Pass a precompiled `binary_path` (as `metactf` does) or fix the define. |
 | `install_setuid_root_binary` [4] | CTF: compile module's `files/` with `make`, install 4755 root | `challenge_name`, `source_module_name`, `account`, `flag`, `flag_name` | Module `files/` must contain a Makefile producing `<challenge_name>`. Calls `create_directory` without `res` - only one per run. |
-| `install_setgid_script` [2] | CTF: setgid script + flag, optional xinetd port | `script_name`, `script_data`, `group`/`account`/`flag`/`port` (as **arrays**) | Takes raw array params (`$account[0]` is JSON). Requires xinetd + accounts modules selected. Calls `create_directory` without `res`. |
 | `compile_binary_module` [3] | Copy module `files/` to a dir and run `make` | `source_module_name`, `binary_directory`, `challenge_name` | No `gcc_params` - put flags in the Makefile. |
 
 ## Installing software
@@ -166,7 +165,7 @@ exec { 'clone theZoo':
 
 - **Puppet does not create parent directories.** `file { '/a/b/c/x': ensure => file }` fails ("Could not set 'file' on ensure: No such file or directory") unless `/a/b/c` exists or is managed. Options:
   1. Install into a directory that always exists (`/usr/local/bin`, `/opt`, `/etc`, `/home/<user>` after the user exists).
-  2. `::secgen_functions::create_directory { "create_$dir": res => "create_$dir", path => $dir, notify => File["$dir/x"] }` (pasted pattern from `install_setgid_script`).
+  2. `::secgen_functions::create_directory { "create_$dir": res => "create_$dir", path => $dir, notify => File["$dir/x"] }`.
   3. Declare every level explicitly as an array (autorequire then orders them): `file { ["/home/$u/", "/home/$u/.config/", "/home/$u/.config/autostart/"]: ensure => directory, owner => $u, group => $u }` (from `kde_minimal`).
 - Per-user files: set `owner`/`group` to the user and make sure the account exists first (`require` the account resource, or depend on `parameterised_accounts`/`accounts` via `<requires>`).
 - Templates: `content => template('<module>/<file>.erb')` [301] - variables in scope are available as `@var`.
@@ -193,7 +192,7 @@ exec { 'clone theZoo':
    - `Could not retrieve information from environment production source(s) puppet:///modules/<m>/<f>` -> file missing from `<m>/files/`, or `<m>` not selected for the system.
    - `Unable to locate package` -> package gone on this release; branch on `$operatingsystemrelease` or bundle it.
    - `externally-managed-environment` -> pip on Debian 12; use a venv.
-   - HTTP on `/` returns 200 but the wrong content (e.g. Apache's default page instead of the app) even though files are installed correctly -> **vhost priority conflict** with `apache.*compatible.*` dependency. That dependency registers its own default vhost at `priority => '15'`; add `priority => '05'` (or any value below 15) to the module's `apache::vhost` so it takes precedence. See `gitlist_040` for the pattern.
+   - HTTP on `/` returns 200 but the wrong content (e.g. Apache's default page instead of the app) even though files are installed correctly -> **vhost priority conflict** with the required Apache module. That dependency registers its own default vhost at `priority => '15'`; add `priority => '05'` (or any value below 15) to the module's `apache::vhost` so it takes precedence. See `gitlist_040` for the pattern.
    - `Unknown resource type: 'cron'` -> `cron` left Puppet core in 6+ (now puppetlabs-cron_core). On a Debian 12 base it isn't loaded. Either `<requires>` the `cron_new`/`cron_legacy` puppet_module utility, or - cleaner for a vuln module composed randomly as an unspecified `<vulnerability/>`, where a required cron variant could clash with another module's - drop a self-contained `/etc/cron.d/<job>` file (`ensure => file`, a `www-data`/user field in the line, trailing newline) and `ensure_packages(['cron'])`.
    - `Could not find class <name>` (e.g. after `include docker`) -> the manifest `include`s a foreign Puppet class whose utility isn't declared. A vuln/service module that uses another module's class must list it in `<requires>` (e.g. `utilities/unix/container/docker`), or the catalog won't compile. `build-project` catches this with zero VMs.
 
@@ -236,4 +235,4 @@ Add to the debugging messages (ยง above): `Could not resolve the dependencies` โ
 - [ ] No `puppet:///modules/<other>/` unless `<other>` is in `<requires>`.
 - [ ] Titles unique within loops/defines; `create_directory` gets a unique `res`.
 - [ ] Leaks use `leak_files` with a unique `leaked_from`; then run `review-secgen-module`.
-- [ ] If the module uses `apache.*compatible.*` as a `<requires>`, the `apache::vhost` has `priority => '05'` (prevents the dependency's own default vhost from taking precedence).
+- [ ] If the module requires Apache (`<software_name>apache</software_name>`), the `apache::vhost` has `priority => '05'` (prevents the dependency's own default vhost from taking precedence).

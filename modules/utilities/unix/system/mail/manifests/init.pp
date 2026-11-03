@@ -22,19 +22,20 @@ class mail::init {
     $id = $message['id']
     $message_id = $message['message_id']
 
-    file { "/var/mail/temp_file_$counter":
-      ensure => file,
-      content => template('mail/message.erb')
+    # Stage each message in its own file, then append it to the recipient's
+    # spool and remove it. The old shared temp_file_* glob appended every staged
+    # message to whichever spool ran first and made the later execs fail.
+    file { "/var/tmp/secgen_mail_${counter}":
+      ensure  => file,
+      content => template('mail/message.erb'),
+      require => Package['mailutils'],
     }
 
-    exec { "mail_concat_$counter":
-      command => "/bin/cat /var/mail/temp_file_* >> /var/mail/$recipient_user",
-      require => File["/var/mail/temp_file_$counter"],
-    }
-
-    exec { "remove_temp_files_$counter":
-      command => "/bin/rm /var/mail/temp_file_*",
-      require => Exec["mail_concat_$counter"],
+    exec { "mail_deliver_${counter}":
+      command  => "cat /var/tmp/secgen_mail_${counter} >> /var/mail/${recipient_user} && rm /var/tmp/secgen_mail_${counter}",
+      provider => shell,
+      path     => ['/bin', '/usr/bin'],
+      require  => File["/var/tmp/secgen_mail_${counter}"],
     }
   }
 }

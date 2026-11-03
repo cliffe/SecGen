@@ -1,50 +1,56 @@
-# Definition tomcat::setenv::entry
+# @summary This define adds an entry to the setenv.sh script.
 #
-# This define adds an entry to the setenv.sh script.
+# @param value
+#   Provides the value(s) of the managed parameter. Valid options: a string or an array. If passing an array, separate values with a single space.
+# @param ensure
+#   Determines whether the fragment should exist in the configuration file. Valid options: 'present', 'absent'. 
+# @param catalina_home
+#   Root of the Tomcat installation.
+# @param config_file
+#   Specifies the configuration file to edit. Valid options: a string containing an absolute path. 
+# @param param
+#   Specifies a parameter to manage. Valid options: a string. `name` passed in your defined type.
+# @param name
+#   `$param`
+# @param quote_char
+#   Specifies a character to include before and after the specified value. Valid options: a string (usually a single or double quote). 
+# @param order
+#   Determines the ordering of your parameters in the configuration file (parameters with lower `order` values appear first.) Valid options: an integer or a string containing an integer. `10`.
+# @param addto
 #
-# Parameters:
-# - $value is the value of the parameter you're setting
-# - $ensure whether the fragment should be present or absent.
-# - $config_file is the path to the config file to edit
-# - $param is the parameter you're setting. Defaults to $name.
-# - $quote_char is the optional character to quote the value with.
-# - $order is the optional order to the param in the file. Defaults to 10
-# - $doexport is the optional prefix before the variable.
-# - (Deprecated) $base_path is the path to create the setenv.sh script under. Should be
-#   either $catalina_base/bin or $catalina_home/bin.
+# @param doexport
+#   Specifies if you want to append export to the entry. Valid options: Boolean
+# @param user
+#   Specifies the owner of the config file. `$::tomcat::user`.
+# @param group
+#   Specifies the group of the config file. `$::tomcat::group`.
+#
 define tomcat::setenv::entry (
-  $value,
-  $ensure        = 'present',
-  $catalina_home = undef,
-  $config_file   = undef,
-  $param         = $name,
-  $quote_char    = undef,
-  $order         = '10',
-  $addto         = undef,
-  $doexport      = true,
-  $user          = undef,
-  $group         = undef,
-  # Deprecated
-  $base_path     = undef,
+  Variant[String[1], Array[String[1]]]  $value,
+  Enum['present', 'absent']             $ensure = 'present',
+  Optional[String[1]]                   $catalina_home = undef,
+  Optional[String[1]]                   $config_file   = undef,
+  String[1]                             $param         = $name,
+  Optional[String[1]]                   $quote_char    = undef,
+  Variant[String[1], Integer]           $order         = '10',
+  Optional[String[1]]                   $addto         = undef,
+  Boolean                               $doexport      = true,
+  Optional[String[1]]                   $user          = undef,
+  Optional[String[1]]                   $group         = undef,
 ) {
   include tomcat
-  $_user = pick($user, $::tomcat::user)
-  $_group = pick($group, $::tomcat::group)
-  $_catalina_home = pick($catalina_home, $::tomcat::catalina_home)
+  $_user = pick($user, $tomcat::user)
+  $_group = pick($group, $tomcat::group)
+  $_catalina_home = pick($catalina_home, $tomcat::catalina_home)
   $home_sha = sha1($_catalina_home)
   tag($home_sha)
 
   Tomcat::Install <| tag == $home_sha |>
   -> Tomcat::Setenv::Entry[$name]
 
-  if $base_path {
-    warning('The $base_path parameter is deprecated; please use catalina_home or config_file instead')
-    $_config_file = "${base_path}/setenv.sh"
-  } else {
-    $_config_file = $config_file ? {
-      undef   => "${_catalina_home}/bin/setenv.sh",
-      default => $config_file,
-    }
+  $_config_file = $config_file ? {
+    undef   => "${_catalina_home}/bin/setenv.sh",
+    default => $config_file,
   }
 
   if ! $quote_char {
@@ -69,7 +75,7 @@ define tomcat::setenv::entry (
   }
 
   if $addto {
-    $_content = inline_template('<%= @_doexport %> <%= @param %>=<%= @_quote_char %><%= Array(@value).join(" ") %><%= @_quote_char}"\n" %> ; <%= @_doexport %> <%= @addto %>="$<%= @addto %> $<%= @param %>"')
+    $_content = inline_template('<%= @_doexport %> <%= @param %>=<%= @_quote_char %><%= Array(@value).join(" ") %><%= @_quote_char %> ; <%= @_doexport %> <%= @addto %>="$<%= @addto %> $<%= @param %>"')
   } else {
     $_content = inline_template('<%= @_doexport %> <%= @param %>=<%= @_quote_char %><%= Array(@value).join(" ") %><%= @_quote_char+"\n" %>')
   }

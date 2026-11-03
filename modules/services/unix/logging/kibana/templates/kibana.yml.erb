@@ -1,4 +1,4 @@
-server.host: <%= @elasticsearch_ip %>
+server.host: "<%= @kibana_ip %>"
 server.port: <%= @kibana_port %>
 elasticsearch.hosts: ["http://<%= @elasticsearch_ip %>:<%= @elasticsearch_port %>"]
 xpack.security.encryptionKey: "<%= SecureRandom.hex %>"

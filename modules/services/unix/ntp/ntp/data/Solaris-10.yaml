@@ -1,0 +1,9 @@
+ntp::config: '/etc/inet/ntp.conf'
+ntp::driftfile: '/var/ntp/ntp.drift'
+ntp::keys_file: '/etc/inet/ntp.keys'
+ntp::package_name: [ 'SUNWntp4r', 'SUNWntp4u' ]
+ntp::restrict:
+  - 'default nomodify notrap nopeer noquery'
+  - '127.0.0.1'
+ntp::service_name: 'network/ntp4'
+ntp::iburst_enable: false

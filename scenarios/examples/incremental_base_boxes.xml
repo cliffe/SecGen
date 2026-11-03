@@ -6,7 +6,7 @@
 
 	<system>
 		<system_name>debian_desktop_base</system_name>
-		<base type="server" distro="Debian 7.8"/>
+		<base platform="linux" type="server"/>
 
 		<utility module_path=".*/kde_minimal"/>
 		<!-- <utility module_path=".*/iceweasel"/> -->
@@ -15,7 +15,7 @@
 
 <!--	<system>
 		<system_name>debian_server_base</system_name>
-		<base platform="linux" distro="Debian 7.8"/>
+		<base platform="linux" type="server"/>
 
 		<utility module_path=".*/handy_cli_tools"/>
 	</system>

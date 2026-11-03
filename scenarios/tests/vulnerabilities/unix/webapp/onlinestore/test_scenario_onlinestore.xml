@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+  <system>
+    <system_name>onlinestore</system_name>
+    <base platform="linux" type="server"/>
+
+    <input into_datastore="IP_addresses">
+      <network_ip system="onlinestore"/>
+    </input>
+
+    <vulnerability module_path=".*onlinestore.*">
+      <input into="IP_address">
+        <datastore access="0">IP_addresses</datastore>
+      </input>
+    </vulnerability>
+
+    <network type="private_network"/>
+  </system>
+
+</scenario>

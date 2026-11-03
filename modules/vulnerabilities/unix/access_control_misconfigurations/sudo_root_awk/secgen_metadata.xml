@@ -18,8 +18,6 @@ awk 'BEGIN {system("/bin/sh")}'
 
   <read_fact>strings_to_leak</read_fact>
   <read_fact>leaked_filenames</read_fact>
-  <read_fact>strings_to_pre_leak</read_fact>
-  <read_fact>pre_leak_filename</read_fact>
 
   <!-- flags or other secrets exposed after exploitation -->
   <default_input into="strings_to_leak">

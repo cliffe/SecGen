@@ -54,9 +54,11 @@ class ParamWebsiteTest < PostProvisionTest
       organisation = get_organisation(json_inputs)
       employee_1 = organisation['employees'][0]
 
-      test_html_returned_content('/index.html', organisation['business_name'])
-      test_html_returned_content('/contact.html', organisation['business_motto'])
-      test_html_returned_content('/contact.html', employee_1['name'])
+      # the module renders these as PHP (install.pp: index.php, contact.php);
+      # only the policy/audit pages below are served as .html
+      test_html_returned_content('/index.php', organisation['business_name'])
+      test_html_returned_content('/contact.php', organisation['business_motto'])
+      test_html_returned_content('/contact.php', employee_1['name'])
     end
   end
 

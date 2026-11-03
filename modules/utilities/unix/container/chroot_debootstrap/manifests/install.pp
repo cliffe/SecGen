@@ -9,7 +9,9 @@ class chroot_debootstrap::install {
     ensure => 'directory',
   } ->
 
-  exec { "sudo -E debootstrap bookworm $chroot_dir http://deb.debian.org/debian/":
+  exec { "debootstrap bookworm $chroot_dir":
+    command => "debootstrap bookworm $chroot_dir http://deb.debian.org/debian/",
+    environment => ["DEBIAN_FRONTEND=noninteractive"],
     cwd     => '/var/tmp',
     provider     => 'shell',
     creates => "$chroot_dir/etc",
@@ -18,7 +20,9 @@ class chroot_debootstrap::install {
     timeout     => 1800, # 30 mins timeout
   } ->
 
-  exec { "sudo -E chroot $chroot_dir /usr/bin/apt-get install ncat -y":
+  exec { "chroot ncat install $chroot_dir":
+    command => "chroot $chroot_dir /usr/bin/apt-get install ncat -y",
+    environment => ["DEBIAN_FRONTEND=noninteractive"],
     cwd     => '/var/tmp',
     provider     => 'shell',
     creates => "$chroot_dir/usr/bin/ncat",

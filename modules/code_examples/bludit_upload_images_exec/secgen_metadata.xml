@@ -101,11 +101,11 @@
   </conflict>
 
   <requires>
-    <module_path>.*apache.*compatible.*</module_path>
+    <software_name>apache</software_name>
   </requires>
 
   <requires>
-    <module_path>.*php.*compatible.*</module_path>
+    <module_path>.*/php_5/php</module_path>
   </requires>
 
   <!-- CyBOK metadata - related security concepts / knowledge required -->

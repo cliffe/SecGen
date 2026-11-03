@@ -15,10 +15,8 @@ class gnuscreen::install {
     cwd => '/opt/',
     command => 'tar -xvf screen-4.5.0.tar.gz',
   }
-  -> exec { 'exec autogen':
-    cwd => '/opt/screen-4.5.0',
-    command => 'sh ./autogen.sh',
-  }
+  # The release tarball ships a generated configure; autogen.sh is only for git
+  # checkouts, and Debian 12's autoconf rejects it (no install-sh).
   -> exec { 'exec configure':
     cwd => '/opt/screen-4.5.0',
     command => 'sh ./configure'

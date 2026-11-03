@@ -84,7 +84,7 @@
   </requires>
 
   <requires>
-    <module_path>.*mysql.*compatible.*</module_path>
+    <software_name>mysql</software_name>
   </requires>
 
 </vulnerability>

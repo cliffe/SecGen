@@ -6,7 +6,7 @@
   <name>Wireshark Network Monitor Tool</name>
   <author>Z. Cliffe Schreuders</author>
   <module_license>Apache v2</module_license>
-  <description>Installs Wireshark and Tcpdump.</description>
+  <description>Installs Wireshark, TShark and Tcpdump.</description>
 
   <type>audit_tools</type>
   <platform>linux</platform>

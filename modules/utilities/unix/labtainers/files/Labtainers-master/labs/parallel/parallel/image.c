@@ -34,8 +34,8 @@ int main(int argc, char **argv) {
   FILE *outfile;
   char name[256], buf[256];
 
-  /* Now replicte this process to create parallel processes.
-   * From this point on, every process executes a seperate copy
+  /* Now replicate this process to create parallel processes.
+   * From this point on, every process executes a separate copy
    * of this program */
 
   ierr = MPI_Init(&argc, &argv);

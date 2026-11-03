@@ -1,11 +1,12 @@
-# Definition: tomcat::instance::copy_from_home
+# @summary Private define to copy a conf file from catalina_home to catalina_base
 #
-# Private define to copy a conf file from catalina_home to catalina_base
+# @api private
 #
 define tomcat::instance::copy_from_home (
-  $catalina_home,
-  $user,
-  $group,
+  String[1] $catalina_home,
+  String[1] $user,
+  String[1] $group,
+  String[1] $mode,
 ) {
   tag(sha1($catalina_home))
   $filename = basename($name)
@@ -16,7 +17,7 @@ define tomcat::instance::copy_from_home (
 
   file { $name:
     ensure  => file,
-    mode    => '0660',
+    mode    => $mode,
     owner   => $user,
     group   => $group,
     source  => "${catalina_home}/conf/${filename}",

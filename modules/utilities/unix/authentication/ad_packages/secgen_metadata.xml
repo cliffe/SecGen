@@ -11,4 +11,7 @@
   <type>authentication_configuration</type>
   <platform>linux</platform>
 
+  <requires>
+    <type>update</type>
+  </requires>
 </utility>

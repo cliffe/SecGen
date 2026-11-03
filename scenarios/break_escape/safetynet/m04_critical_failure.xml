@@ -75,20 +75,13 @@ scenario.json.erb to match — do not renumber here.
 
     <base distro="Debian 12" type="desktop" name="KDE"/>
 
-    <input into_datastore="IP_addresses">
-      <!-- 0 bms jump server -->
-      <network_ip system="bms_jump_server"/>
-      <!-- 1 kali -->
-      <network_ip system="kali"/>
-    </input>
-
     <!-- FLAG 1 (submit_network_scan_flag)
          The falsified rack status page. Reachable as soon as a scan turns up the
          web service, which is the point: the SCADA screens in the control room are
          being fed from here. -->
     <service module_path=".*/parameterised_website">
       <input into="organisation">
-        <value>Albion Energy Storage — BMS Status</value>
+        <value>{"business_name": "Albion Energy Storage - BMS Status", "business_motto": "Grid-scale storage, monitored around the clock.", "business_address": "Unit 4, Harbour Road, Grangemouth, FK3 8XH", "domain": "albion-energy.co.uk", "office_telephone": "01324 555 014", "office_email": "ops@albion-energy.co.uk", "industry": "Energy storage", "manager": {"name": "Fiona Gale", "address": "Unit 4, Harbour Road, Grangemouth, FK3 8XH", "phone_number": "07700 900412", "email_address": "fgale@albion-energy.co.uk", "username": "fgale", "password": ""}, "employees": [], "product_name": "Battery management system", "intro_paragraph": ["Live battery management status for the Albion grid storage site. Rack bank readings are published to the control room SCADA HMI."]}</value>
       </input>
       <input into="main_page_paragraph_content">
         <value>RACK BANK STATUS -- AUTOMATED FEED
@@ -113,7 +106,7 @@ Last integrity check: PASSED</value>
          "maintenance crew" installed. Holds the cross-cell coordination intel. -->
     <vulnerability module_path=".*/proftpd_133c_backdoor">
       <input into="organisation">
-        <value>OptiGrid Solutions</value>
+        <value>{"business_name": "OptiGrid Solutions", "business_motto": "Smarter grids, quietly maintained.", "business_address": "12 Canal Wharf, Leeds, LS11 5PS", "domain": "optigrid-solutions.co.uk", "office_telephone": "0113 496 0727", "office_email": "ops@optigrid-solutions.co.uk", "industry": "Grid maintenance contractor", "manager": {"name": "Darren Pryce", "address": "12 Canal Wharf, Leeds, LS11 5PS", "phone_number": "07700 900412", "email_address": "dpryce@optigrid-solutions.co.uk", "username": "dpryce", "password": ""}, "employees": [], "product_name": "Maintenance file transfer", "intro_paragraph": ["OptiGrid Solutions provides maintenance and integration services for grid storage operators."]}</value>
       </input>
       <input into="strings_to_leak">
         <!-- R27: the leaked file carries a real in-fiction document (heading + text);
@@ -213,11 +206,7 @@ Leave nothing signed. OptiGrid is a shell -- there is no help desk to call.</val
 
     <utility module_path=".*/handy_cli_tools"/>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="0">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
 
     <input into_datastore="spoiler_admin_pass">
       <generator type="strong_password_generator"/>
@@ -245,11 +234,7 @@ Leave nothing signed. OptiGrid is a shell -- there is no help desk to call.</val
     <utility module_path=".*/handy_cli_tools"/>
     <utility module_path=".*/nmap"/>
 
-    <network type="private_network">
-      <input into="IP_address">
-        <datastore access="1">IP_addresses</datastore>
-      </input>
-    </network>
+    <network type="private_network"/>
     <build type="cleanup">
       <input into="root_password">
         <datastore>spoiler_admin_pass</datastore>

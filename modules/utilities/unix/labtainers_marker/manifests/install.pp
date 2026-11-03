@@ -4,10 +4,14 @@ class labtainers_marker::install{
   $flags = $secgen_parameters['flags']
 
 
+  # labflags (setuid wrapper) execs /usr/bin/ruby to run labflags.rb
+  ensure_packages(['ruby'])
+
   # flag-based marking
   file { "/opt/labflags/":
     ensure => directory,
     mode   => '755',
+    require => Package['ruby'],
   } ->
   file { "/opt/labflags/labflags":
     ensure => present,

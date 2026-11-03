@@ -56,10 +56,9 @@ accesslog.filename          = "/var/log/lighttpd/access.log"
 # Directory listing disabled
 dir-listing.activate        = "disable"
 
-# Redirect root URL to index.php
-url.redirect = (
-    "^/$" => "/index.php"
-)
+# Serve index.php for the document root directly (no 301 redirect, so the
+# vulnerable app's own content is what a plain GET / returns)
+server.indexfiles           = ( "index.php" )
 
 # URL rewriting for RaspAP - exclude ajax endpoints to preserve vulnerability
 url.rewrite-if-not-file = (

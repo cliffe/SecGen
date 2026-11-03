@@ -132,11 +132,11 @@ names instead of IP addresses.
 
 \subsection{Add missing name}
 In this section, you will update the DNS so that it can provide the IP address of {\tt ws3}.
-The DNS is provided by the \textit{bind9} service on the dns computer.  Information about this service and
+The DNS is provided by the \textit{bind9} service on the {\tt dns} computer.  Information about this service and
 its configuration files can be found at \url{https://ubuntu.com/server/docs/service-domain-name-service-dns}.
 This section refers to the primary files used to configure the DNS.  
 
-The starting point is the {\tt /etc/named.conf} file\footnote{The word \textit{named} derives from
+The starting point is the {\tt /etc/bind/named.conf} file\footnote{The word \textit{named} derives from
 the fact that this service is sometimes referred to as the \textit{name daemon}}.  View that file and note that it simply includes
 three other files.  The second file, {\tt named.conf.local} is where the local names are defined.
 View that file.  As you see, this DNS manages names defined in a single local file, {\tt example.conf}. 

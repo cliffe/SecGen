@@ -45,6 +45,6 @@ class proftpd_133c_backdoor::config {
     leaked_filenames  => $pre_leaked_filenames,
     strings_to_leak   => $strings_to_pre_leak,
     leaked_from       => "proftpd_133c_backdoor-pre",
-    mode              => '0600'
+    mode              => '0644'
   }
 }

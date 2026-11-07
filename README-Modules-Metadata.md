@@ -241,7 +241,7 @@ secgen_metadata.xml:
 
 ## VM resources
 
-A module can state what the VM holding it needs. These apply only to that VM, not to the rest of the scenario.
+A utility, service, vulnerability or base module can state what the VM holding it needs. These apply only to that VM, not to the rest of the scenario.
 
-- `<memory_required>` (utility and service modules): minimum memory in MB, on any provider. If several modules on a VM declare it, the largest applies. It only ever raises the memory a VM would otherwise get (4096 MB on Proxmox).
-- `<proxmox_cpu>` and `<proxmox_cores>` (utility modules): the Proxmox CPU type and core count, applied after provisioning, so they are not in effect while Puppet runs.
+- `<memory_required>`: minimum memory in MB, on any provider. If several modules on a VM declare it, the largest applies. It only ever raises the memory a VM would otherwise get (4096 MB on Proxmox).
+- `<proxmox_cpu>` and `<proxmox_cores>`: the Proxmox CPU type and core count, applied after provisioning, so they are not in effect while Puppet runs.

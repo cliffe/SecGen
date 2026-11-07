@@ -40,6 +40,9 @@
         <xs:element name="software_name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element name="software_license" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
 
+        <!--hardware the VM needs on Proxmox, applied after provisioning-->
+        <xs:element name="proxmox_cpu" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="proxmox_cores" type="xs:positiveInteger" minOccurs="0" maxOccurs="1"/>
         <!--minimum memory in MB for the VM holding this module, on any provider-->
         <xs:element name="memory_required" type="xs:positiveInteger" minOccurs="0" maxOccurs="1"/>
 

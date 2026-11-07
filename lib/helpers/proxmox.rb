@@ -1,3 +1,4 @@
+require 'json'
 require 'timeout'
 require 'rubygems'
 require 'process_helper'
@@ -91,6 +92,30 @@ class ProxmoxFunctions
         Print.err "Error: Failed to teardown provisioning NIC: #{e.message}"
       ensure
         file.close if file
+      end
+    end
+  end
+
+  # Applies the settings modules asked for (test_context.json's proxmox_vm_config).
+  # QEMU reads these when it starts, so call this while the VMs are stopped.
+  def self.apply_vm_config(project_dir, vm_names, options)
+    context_path = "#{project_dir}/test_context.json"
+    return unless File.exist?(context_path)
+
+    configs = JSON.parse(File.read(context_path))['systems'].to_a.each_with_object({}) do |system, wanted|
+      wanted[system['name']] = system['proxmox_vm_config'] unless system['proxmox_vm_config'].to_h.empty?
+    end
+    return if configs.empty?
+
+    connection = connect(options)
+    vm_ids(project_dir, vm_names).each do |vm_name, node, vm_id|
+      next unless configs[vm_name]
+      begin
+        Print.std " Setting #{configs[vm_name]} on #{vm_name} (#{node}/#{vm_id})"
+        params = configs[vm_name].map { |option, value| [option.to_sym, value] }.to_h.merge(vmid: vm_id)
+        connection.config_clone(node: node, vm_type: :qemu, params: params)
+      rescue StandardError => e
+        Print.err "Error: Failed to apply VM settings to #{vm_name}: #{e.message}"
       end
     end
   end

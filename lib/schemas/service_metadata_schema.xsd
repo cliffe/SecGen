@@ -40,6 +40,9 @@
         <xs:element name="software_name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element name="software_license" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
 
+        <!--minimum memory in MB for the VM holding this module, on any provider-->
+        <xs:element name="memory_required" type="xs:positiveInteger" minOccurs="0" maxOccurs="1"/>
+
         <!-- cannot co-exist with a system matching ALL of the optionally specified values (can be repeated for OR)-->
         <xs:element name="conflict" minOccurs="0" maxOccurs="unbounded">
           <xs:complexType>

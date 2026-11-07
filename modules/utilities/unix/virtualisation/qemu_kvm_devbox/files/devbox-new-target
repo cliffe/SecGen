@@ -1,0 +1,44 @@
+#!/bin/bash
+# Starts a disposable Debian guest under KVM with a local QMP socket and a USB controller.
+# Usage: devbox-new-target <name> [ssh port on localhost, default 2222]
+set -euo pipefail
+
+name=${1:?usage: devbox-new-target <name> [ssh-port]}
+port=${2:-2222}
+[[ $name =~ ^[A-Za-z0-9_-]+$ ]] || { echo "name may only use letters, digits, - and _" >&2; exit 1; }
+
+dir="$HOME/targets/$name"
+[[ -e $dir ]] && { echo "$dir already exists" >&2; exit 1; }
+mkdir -p "$dir"
+
+password=$(tr -dc 'a-z0-9' </dev/urandom | head -c 12 || true)
+qemu-img create -q -f qcow2 -F qcow2 -b /var/lib/devbox/images/debian-12-generic-amd64.qcow2 "$dir/disk.qcow2" 10G
+
+cat >"$dir/user-data" <<EOF
+#cloud-config
+password: $password
+chpasswd: { expire: false }
+ssh_pwauth: true
+EOF
+echo "instance-id: $name" >"$dir/meta-data"
+cloud-localds "$dir/seed.img" "$dir/user-data" "$dir/meta-data"
+
+if ! qemu-system-x86_64 -machine q35,accel=kvm -cpu host -m 2048 -smp 2 -display none -daemonize \
+  -pidfile "$dir/qemu.pid" -serial "file:$dir/console.log" \
+  -drive "file=$dir/disk.qcow2,if=virtio" -drive "file=$dir/seed.img,if=virtio,format=raw" \
+  -nic "user,model=virtio-net-pci,hostfwd=tcp:127.0.0.1:$port-:22" \
+  -device qemu-xhci,id=xhci \
+  -qmp "unix:$dir/qmp.sock,server=on,wait=off" >"$dir/qemu.log" 2>&1 </dev/null; then
+  cat "$dir/qemu.log" >&2
+  rm -rf "$dir"
+  exit 1
+fi
+
+cat <<EOF
+Started $name
+  QMP socket: $dir/qmp.sock
+  USB bus:    xhci.0
+  Console:    $dir/console.log (the guest takes a minute or so to boot)
+  SSH:        ssh -p $port debian@localhost (password: $password)
+  Stop:       kill \$(cat $dir/qemu.pid), then rm -r $dir
+EOF

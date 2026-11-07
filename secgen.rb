@@ -380,6 +380,8 @@ rescue Proxmox::ApiError::ConnectionError => e
   end
 end
 
+ProxmoxFunctions::apply_vm_config(project_dir, get_vm_names(scenario), options)
+
 snapshot_failed = nil
 if options[:snapshot] || test_snapshot
   Print.info 'Creating a snapshot of VM(s)'

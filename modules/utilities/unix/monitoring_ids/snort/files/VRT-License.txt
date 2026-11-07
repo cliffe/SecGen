@@ -1,0 +1,336 @@
+                                     CISCO
+                    SNORT SUBSCRIBER RULES LICENSE AGREEMENT
+                                    (v. 3.1)
+
+IMPORTANT: PLEASE READ THIS AGREEMENT CAREFULLY.
+
+THIS SNORT SUBSCRIBER  RULES LICENSE AGREEMENT IS A LEGAL AGREEMENT BETWEEN YOU
+AND CISCO SYSTEMS, INC. OR ONE OF ITS DESIGNATED SUBSIDIARIES LICENSING THE RULES
+TO YOU  HEREUNDER INSTEAD  OF CISCO  SYSTEMS, INC.  (“CISCO”). THE  TERMS AND
+CONDITIONS  UNDER WHICH  YOU MAY  USE  THE RULES  ARE  SET FORTH  IN THIS  SNORT
+SUBSCRIBER RULES LICENSE AGREEMENT (“AGREEMENT”).
+
+BY DOWNLOADING, INSTALLING  OR USING ANY OF THE RULES,  YOU ARE BINDING YOURSELF
+IF YOU  ARE ACTING  IN YOUR PERSONAL  CAPACITY OR THE  BUSINESS ENTITY  THAT YOU
+REPRESENT (AS  APPLICABLE, “YOU”) TO  THIS AGREEMENT AND AGREEING  THAT THIS
+AGREEMENT WITH CISCO IS ENFORCEABLE LIKE ANY WRITTEN CONTRACT SIGNED BY YOU.
+
+IF  YOU DO  NOT AGREE  TO ALL  OF  THE TERMS  AND CONDITIONS  CONTAINED IN  THIS
+AGREEMENT, THEN CISCO  IS UNWILLING TO LICENSE  THE RULES TO YOU,  IN WHICH CASE
+YOU MAY NOT DOWNLOAD, INSTALL OR USE ANY OF THE RULES.
+
+IF  YOU DO  NOT AGREE  TO THE  TERMS AND  CONDITIONS OF  THIS AGREEMENT,  DO NOT
+DOWNLOAD,  INSTALL OR  USE THE  RULES.  BY SELECTING  “I ACCEPT,”  “OK,”
+“CONTINUE,” “YES,” “NEXT” OR BY INSTALLING OR USING THE RULES IN ANY
+WAY, YOU ARE INDICATING YOUR COMPLETE UNDERSTANDING AND ACCEPTANCE OF ALL OF THE
+TERMS AND CONDITIONS OF THIS AGREEMENT.
+
+1. Definitions
+
+1.1 “Commercial Purpose”  means the direct or indirect  use, reproduction or
+distribution of any Rule, Modification or Compilation, in whole or in part, that
+is  intended to  result in  financial gain,  economic benefit  or other  form of
+consideration to  any person  or entity  involved in  such use,  reproduction or
+distribution. Examples of  a Commercial Purpose include but are  not limited to:
+(a) integrating the Rules with other software  or hardware for sale as a bundled
+product; (b)  licensing, distributing  or selling  the Rules for  a fee;  or (c)
+using the Rules to provide a fee-based service or subscription.
+
+1.2.  “Community  Rules”  means   specifically  formulated  network  traffic
+characteristics and instructions  in text form, source code form  or object code
+form (including the structure, sequence, organization and syntax of such network
+traffic characteristics), and  all documentation related thereto,  that: (a) are
+owned by  Cisco and designated with  SIDs of 3,464  and below; or (b)  have been
+developed by a third party and  approved by Cisco Talos (Cisco’s vulnerability
+research team or successor group within Cisco).
+
+1.3 “Compilation” means  a work that combines the Rules  or any Modification
+or portions  thereof with  any services,  programs, code  or other  products not
+governed by the terms of this Agreement.
+
+1.4. “Improvements” means  a Modification to a Rule (or  to a Modified Rule)
+that corrects a bug, defect, or error in such Rule without affecting the overall
+functionality of such Rule.
+
+1.5. “Limited Ruleset” means those Rules that have been expressly designated
+by Cisco Talos as “Limited Ruleset”,  and are tagged or otherwise identified
+as “ruleset limited” in the ruleset.
+
+1.6. “Modifications” or “Modified” means  any alteration, addition to or
+deletion from the  substance or structure of  the Rules (or to  a Modified Rule)
+including,  without  limitation: (a)  an  Improvement;  (b)  any change  to  the
+contents of a  file containing a Rule  or a Modification; (c)  any derivative of
+the Rule or of any Modified Rule; or  (d) any new file that contains any part of
+the Rule or Modified Rule.
+
+1.7. “Registered User”  means an individual or entity who  has registered on
+www.snort.org to use the Rules and who is  not required to pay a license fee for
+such use.
+
+1.8. “Rules”  means specifically formulated network  traffic characteristics
+and instructions in  text form, source code form or  object code form (including
+the  structure,  sequence,  organization  and syntax  of  such  network  traffic
+characteristics), and  all documentation  related thereto,  that: (a)  have been
+created, developed, tested  and officially approved by Cisco Talos;  and (b) are
+designated with SIDs  between 3,465 and 1,000,000.  Modifications are considered
+part of the Rules,  however, the Community Rules are not  considered part of the
+Rules definition. The “Limited Ruleset” is  considered part of the Rules and
+subject to additional licensing limitations set forth in this Agreement.
+
+1.9. “Sensor”  means any hardware or  virtual device that runs  at least one
+detection engine such as Snort.
+
+1.10.  “Subscriber” means  an individual  or  entity who  has registered  on
+www.snort.org to use the  Rules as a subscriber and who  has paid the applicable
+license fee for such use.
+
+2. License Grant
+
+2.1. Subscriber  Use. If  You are a  Subscriber, then subject  to the  terms and
+conditions of  this Agreement, Cisco  grants You a world-wide  and non-exclusive
+license to:  (a) download,  install and  use the  Rules only  on that  number of
+Sensors for which You have paid the applicable license fee; (b) Modify the Rules
+and install and use those Modified  Rules consistent with Section 2.1 (a) above;
+(c) reproduce  the Rules as strictly  necessary in exercising Your  rights under
+this Section 2.1; and (d) make the  Rules and any Modification available to Your
+consultants, agents  and subcontractors  for the  limited purpose  of exercising
+Your rights under this Section 2.1 provided  that such use is in compliance with
+this Agreement. As a Subscriber You will  have access to the Rules promptly upon
+release by  Cisco and thirty  (30) days before new  Rules are made  available to
+Registered Users.  Once a  Rule (excluding  the Limited  Ruleset) has  been made
+available to Registered  Users (i.e. 30 days after release  to Subscribers), You
+may  then also  distribute  such Rule  or any  Modification  in accordance  with
+Section  2.2 (c)  and Section  2.2  (d) below,  as applicable.  As a  Subscriber
+You  may  not  distribute  new  Rules  until  such  30-day  period  has  lapsed.
+Notwithstanding the  foregoing, under  no circumstances  may You  distribute the
+Limited Ruleset, or  any portion thereof, to  a Registered User or  to any third
+party or  otherwise make  the Limited  Ruleset available to  any third  party or
+allow a third party to use the Limited Ruleset.
+
+2.2. Use by Registered Users. If You  are a Registered User, then subject to the
+terms  and conditions  of  this Agreement,  Cisco grants  You  a world-wide  and
+non-exclusive license  to: (a) download,  install and  use the Rules  on Sensors
+that You manage (or over which  You have administrative control); (b) Modify the
+Rules  and use  such Modifications  consistent  with Section  2.2(a) above;  (c)
+distribute those Rules  and any Modifications that are  made generally available
+to  other  Registered  Users;  (d) distribute  any  Improvement  made  generally
+available to other Registered Users on  mailing lists commonly used by the Snort
+user community  as a  whole; (e)  reproduce the Rules  as strictly  necessary in
+exercising the  rights under this  Section 2.2; and (f)  make the Rules  and any
+Modification available  to Your consultants,  agents and subcontractors  for the
+limited purpose of  exercising Your rights under this Section  2.2 provided that
+such use is in compliance with this Agreement. If You are a Registered User, You
+acknowledge and agree  that new Rules (excluding the Limited  Ruleset) will only
+be made  available to  Registered Users  thirty (30) days  after they  have been
+released to  Subscribers. You  will have access  to Modifications  promptly upon
+release  by Cisco  at the  same  time they  are made  available to  Subscribers.
+Notwithstanding  the foregoing,  as  a Registered  User, You  have  no right  or
+license  under this  Agreement to  use,  transfer, Modify,  distribute, copy  or
+reproduce the Limited Ruleset, or any portion thereof.
+
+2.3. Community Rules. The Community Rules are not governed by this Agreement and
+are  separately made  available for  use under  the GNU  General Public  License
+(GPL), v2.
+
+2.4 License Limitations; Restrictions. You  acknowledge and agree that the Rules
+are the property  of Cisco, contain valuable assets  and proprietary information
+of  Cisco, and  are provided  to  You under  the  terms and  conditions of  this
+Agreement. You  agree that  You will  NOT at any  time do  any of  the following
+without  Cisco’s prior  written  consent: (a)  use,  deploy, modify,  license,
+transfer, display, reproduce, distribute or  disclose the Rules or Modifications
+(even if  merged with other  materials as a  Compilation) other than  as allowed
+under Section  2.1 if You  are a Subscriber  or under Section  2.2 if You  are a
+Registered User; (b) use, deploy, modify, license, transfer, display, reproduce,
+distribute or disclose the Rules or  Modifications for a Commercial Purpose; (c)
+share any  user authentication  information and/or password  provided to  You by
+Cisco with any third party to allow  such party to access Your snort.org account
+or  to  otherwise access  the  Rules;  (d)  except  as provided  under  Sections
+2.1(c)-(d), Sections 2.2(c)-(e)  and Section 4, post or make  available any Rule
+or any Modification  (in whole or in  part) to any individual or  entity who has
+not agreed to the terms and conditions of this Agreement; or (e) alter or remove
+any  copyright notice  or proprietary  legend contained  in or  on the  Rules or
+Modifications. Cisco reserves the right to  limit the time and/or frequency that
+the  Rules are  made available  for download  at www.snort.org.  All rights  not
+granted under this Agreement are reserved by Cisco.
+
+2.5. Support.  Technical support for  the Rules is  limited to the  FAQs, e-mail
+support assistance and user forums available at www.snort.org.
+
+2.6. Commercial Use. You must enter into a separate commercial license agreement
+with Cisco in order  to use the Rules for a Commercial  Purpose. You can contact
+Cisco at www.snort.org if  You desire to use the Rules  for a Commercial Purpose
+under a commercial license agreement.
+
+2.7.  Reproduction Obligations.  If You  make  any copies  of the  Rules or  any
+Modifications as  permitted by this Agreement,  You agree that any  and all such
+copies will contain: (a) a copy of an appropriate copyright notice and all other
+applicable proprietary legends; (b) a disclaimer of any warranty consistent with
+this Agreement; and (c) the following notices:
+
+    The contents of this file are  subject to the Snort Subscriber Rules License
+    Agreement  (the  “Agreement”). You  may  not  use  this file  except  in
+    compliance with  the Agreement. You  may obtain a  copy of the  Agreement at
+    www.snort.org. The developer  of the Rules is Cisco Systems,  Inc. 
+    
+    The  Rules are  distributed under  the Agreement  on an  “AS IS”  basis,
+    WITHOUT WARRANTY OF  ANY KIND, either express or implied.  See the Agreement
+    for  the  specific  language  governing rights  and  limitations  under  the
+    Agreement.
+
+    2005 – 2015 © Cisco Systems, Inc. All Rights Reserved.
+
+    Contributor/Change  Made By:  ________________. [Only  apply if  changes are
+    made]
+
+3. Modifications.
+
+If You  create a Modification,  then the  use, reproduction and  distribution of
+such  Modification  shall be  governed  by  the  terms  and conditions  of  this
+Agreement. You  are encouraged to disclose  Your Modifications to Cisco  and the
+user community but are not required to  do so. If You disclose a Modification to
+Cisco or the user community, You hereby grant Cisco and all other licensed users
+of the Rules an irrevocable, perpetual, fully paid-up, world-wide, royalty-free,
+non-exclusive license  to download, install  and use such Modification  (and the
+source code thereto).  For each Modification You make and  distribute, You shall
+include  a prominent  notice  stating that  the  You changed  the  Rule (or  any
+Modification thereto) and the date of such change.
+
+4. Distribution Obligations.
+
+The  Rules (or  any Modification  thereof)  may be  distributed by  You only  as
+permitted under  this Agreement. You must  include a copy of  this Agreement and
+the notices  referenced in Section 2.7  in each file  of the Rules that  You are
+permitted to  distribute. If  it is not  possible to include  such notices  in a
+particular file due  to its structure, then  You must include such  notices in a
+location (such as a relevant directory) where a user would be likely to look for
+notices.  If  You  create  any  Modifications,  You must  add  Your  name  as  a
+contributor to the notice described in Section 2.7.
+
+5. Payment Terms.
+
+If You are a Subscriber and have  provided Cisco (or its payment processor) with
+a valid  credit card number  or an  alternate payment method,  Your subscription
+will be automatically  renewed and the then-current license fee  will be charged
+to such  account for another term  at the expiration of  Your then-current term.
+The new term will be for the  same duration as the expired term unless otherwise
+specified at  time of renewal. This  renewal will be processed  (and Your credit
+card account  charged) within thirty  (30) days prior  to the expiration  of the
+term and  each anniversary thereafter. If  You do not want  Your subscription to
+automatically  renew, You  must, prior  to the  expiration of  Your subscription
+term, inform Cisco of Your intention  not to renew Your subscription. Cisco will
+send notice  of Your renewal  to the e-mail address  You have provided  prior to
+charging  Your  account.  You  must  provide  current,  complete,  and  accurate
+information  for Your  billing account.  You are  responsible for  ensuring this
+information is  correct and must  promptly update  all information to  keep Your
+billing account  current, complete, and  accurate (such  as a change  in billing
+address, credit card number, or credit  card expiration date). You must promptly
+notify Cisco if Your credit card is canceled or is no longer valid.
+
+6. Representations and Warranties.
+
+You represent  and warrant that the  information that You provide  to Cisco when
+registering as either a Registered User or a Subscriber is complete and accurate
+in all respects, and You have the  right, power and authority to so register. If
+You are  a Subscriber, You further  represent and warrant that  the subscription
+categories selected  (e.g., personal or  business use) accurately  reflects Your
+intended use of the Rules.
+
+7. Versions of the Agreement.
+
+Cisco may  publish revised  and/or new  versions of the  Agreement from  time to
+time. Each version  of the Agreement will be distinguished  by a version number;
+this Agreement  is version 3.1  and replaces version 3.0.  Once a Rule  has been
+published under  a particular version of  the Agreement, You may  always use the
+Rule  under the  terms of  that version  of the  Agreement which  such Rule  was
+acquired. You may also choose to use such Rule under the terms of any subsequent
+version of the  Agreement. No one other  than Cisco has the right  to modify the
+terms of the Agreement.
+
+8. Warranty Disclaimer.
+
+THE RULES AND MODIFICATIONS ARE PROVIDED  UNDER THIS AGREEMENT ON AN “AS IS”
+BASIS, WITHOUT  WARRANTY OF  ANY KIND, EITHER  EXPRESSED OR  IMPLIED, INCLUDING,
+WITHOUT LIMITATION, WARRANTIES  THAT THE RULES OR THE MODIFICATIONS  ARE FREE OF
+DEFECTS,  MERCHANTABLE, FIT  FOR  A PARTICULAR  PURPOSE  OR NON-INFRINGING.  THE
+ENTIRE RISK AS TO PERFORMANCE OF THE RULES AND MODIFICATIONS IS WITH YOU. SHOULD
+THE  RULES OR  MODIFICATIONS PROVE  DEFECTIVE IN  ANY RESPECT,  YOU (NOT  CISCO)
+ASSUME  THE  COST  OF  ANY  NECESSARY  SERVICING,  REPAIR  OR  CORRECTION.  THIS
+DISCLAIMER OF WARRANTY  CONSTITUTES AN ESSENTIAL PART OF THIS  AGREEMENT. NO USE
+OF  ANY RULE  OR  ANY MODIFICATION  IS AUTHORIZED  HEREUNDER  EXCEPT UNDER  THIS
+DISCLAIMER.
+
+9. Liability Limitation.
+
+UNDER  NO CIRCUMSTANCES  AND  UNDER  NO LEGAL  THEORY,  WHETHER TORT  (INCLUDING
+NEGLIGENCE), CONTRACT  OR OTHERWISE, SHALL CISCO  OR YOU BE LIABLE  TO THE OTHER
+FOR ANY INDIRECT, SPECIAL, INCIDENTAL  OR CONSEQUENTIAL DAMAGES OF ANY CHARACTER
+INCLUDING, WITHOUT  LIMITATION, DAMAGES  FOR LOSS OF  PROFITS OR  GOODWILL, WORK
+STOPPAGE, SECURITY BREACHES OR FAILURES, COMPUTER FAILURE OR MALFUNCTION, OR ANY
+AND ALL OTHER DAMAGES OR LOSSES, EVEN  IF SUCH PARTY SHALL HAVE BEEN INFORMED OF
+THE  POSSIBILITY  OF SUCH  DAMAGES.  ALL  LIABILITY  OF CISCO,  ITS  AFFILIATES,
+OFFICERS, DIRECTORS, EMPLOYEES, AGENTS, SUPPLIERS AND LICENSORS COLLECTIVELY, TO
+YOU, WHETHER  IN TORT (INCLUDING  NEGLIGENCE), CONTRACT OR OTHERWISE,  SHALL NOT
+EXCEED THE  PRICE PAID BY YOU  FOR THE RULES THAT  GAVE RISE TO THE  CLAIM. THIS
+LIMITATION OF LIABILITY  SHALL NOT APPLY TO THE EXTENT  APPLICABLE LAW PROHIBITS
+SUCH LIMITATIONS. SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OR LIMITATION OF
+INCIDENTAL OR  CONSEQUENTIAL DAMAGES, SO  THIS EXCLUSION AND LIMITATION  MAY NOT
+APPLY.
+
+10. Term; Termination.
+
+If You are a Registered User this Agreement will remain in effect for as long as
+You use the Rules, subject to Section 7 and the termination provisions below. If
+You are a Subscriber this Agreement is effective for a term of one (1) year from
+the  date of  purchase of  Your license  and for  all renewal  terms thereafter,
+subject to  Section 7 and the  termination provisions below. This  Agreement and
+the rights granted hereunder will terminate automatically if You breach any term
+herein and  You fail  to cure such  breach within thirty  (30) days  of becoming
+aware  of the  breach.  Additionally,  Cisco may  terminate  this Agreement  for
+convenience at any time  by providing You thirty (30) days notice.  If You are a
+Subscriber and Cisco terminates this  Agreement for convenience, then Cisco will
+provide  You  a pro-rated  refund  for  the license  fees  You  prepaid for  the
+remaining portion of  the term that has been cancelled.  Upon any termination or
+expiration of this  Agreement, You must cease  use of the Rules  and destroy all
+copies of  the Rules. Provisions which,  by their nature, must  remain in effect
+beyond the termination of this Agreement shall survive.
+
+11. United States Government Users.
+
+The Rules provided under this Agreement are prepared entirely at private expense
+and are “Commercial Items”  as that term is defined in  48 C.F.R. 2.101. The
+Rules  are licensed  to U.S.  Government end  users: (a)  only as  “Commercial
+Items”; and  (b) with  only those  rights as  are granted  to all  other users
+pursuant  to the  Cisco’s  standard  license agreement.  In  case of  conflict
+between any  FAR and DFARS  and this  Agreement, the construction  that provides
+greater limitations on the U.S. Government's rights shall control.
+
+12. Miscellaneous.
+
+This Agreement represents  the complete agreement concerning  the subject matter
+hereof. If  it is impossible  for You to  comply with any  of the terms  of this
+Agreement due to statute, judicial order or regulation then You must comply with
+all  other terms  of  this Agreement  to  the maximum  extent  possible. If  any
+provision of this Agreement is held to be unenforceable, such provision shall be
+reformed only  to the extent  necessary to  make it enforceable.  This Agreement
+shall  be  governed by  the  laws  of the  State  of  California, excluding  its
+conflict-of-law provisions. Any  litigation relating to this  Agreement shall be
+subject to the jurisdiction of the  state and federal Courts serving California,
+with the losing party responsible for costs, including without limitation, court
+costs  and reasonable  attorneys’  fees  and expenses.  You  hereby submit  to
+jurisdiction and  venue in  such courts. Notwithstanding  the foregoing,  if the
+licensee hereunder is the U.S. Government  then this Agreement shall be governed
+by  U.S. Federal  Law and  any litigation  relating to  this Agreement  and such
+licensee  shall  be subject  to  the  jurisdiction  of U.S.  Federal  Courts.The
+application of the United Nations  Convention on Contracts for the International
+Sale of Goods  is expressly excluded. Any law or  regulation which provides that
+the language  of a  contract shall  be construed against  the drafter  shall not
+apply to this Agreement. The Rules are subject to export controls under the laws
+of the United  States and other countries.  You shall comply with  all such laws
+governing export, re-export, transfer and use of the Rules. You agree not to use
+or  transfer  the  Rules for  any  use  relating  to  the operation  of  nuclear
+facilities,  chemical  or  biological  weapons  or  missile  technology,  unless
+authorized by  the U.S.  Government by regulation  or specific  written license.
+Headings and  section references are  used for reference  only and shall  not be
+used define, limit or describe such section.
+
+*********

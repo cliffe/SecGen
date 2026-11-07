@@ -8,9 +8,9 @@
   <author>Z. Cliffe Schreuders</author>
   <description>
     # Introduction
-    In this lab, you will delve into the critical realm of Data Loss Prevention (DLP) and exfiltration detection. Data loss prevention is a vital cybersecurity practice aimed at safeguarding sensitive information from unauthorized access or leakage. It is highly relevant in today's digital age, where data breaches and insider threats pose significant risks to organizations. This lab provides you with hands-on experience in setting up and configuring Snort, a popular Intrusion Detection System (IDS), to monitor network traffic and detect the unauthorized transfer of sensitive data.
+    In this lab you will use Snort, an intrusion detection system (IDS), to spot sensitive data being exfiltrated over the network, which is one part of data loss prevention (DLP). Data breaches and insider threats remain a serious risk to organisations, and watching for sensitive data as it leaves the network is one way to catch them.
 
-    In this lab, you will learn how to configure Snort to detect unauthorized data transfers and exfiltration. By editing Snort configuration files, you will set up monitoring rules that trigger alerts when sensitive data, like credit card details and national insurance numbers, are being transported over the network. You will also extend your rule to detect the transfer of a fake data file so that your rules are effective without revealing the actual sensitive content. To accomplish this, you'll explore various Snort rule techniques, such as text-based, regular expression-based, and hash-based matching, gaining an in-depth understanding of data loss prevention strategies. By the end of the lab, you'll have practical experience in setting up DLP measures using Snort, a valuable skill for protecting an organization's sensitive data assets.
+    Hackerbot will break into a web server and steal a client list containing credit card details and national insurance numbers. You will write Snort rules that detect the theft: first by matching the data directly, then with regular expressions that match the format of the records without containing any of them, and finally with hash-based matching, so that the rules themselves hold no sensitive data. Along the way you will track down a copy of the data left at rest on a server. Finally, you will respond to an incident: capture and investigate a fresh theft to work out what was taken, where it went and how the attacker got in, then contain the breach with a packet filter without taking the website offline.
 
     This is a Hackerbot lab. Work through the lab sheet, then when prompted interact with Hackerbot.
   </description>
@@ -29,7 +29,7 @@
     <keyword>network traffic</keyword>
   </CyBOK>
   <CyBOK KA="SOIM" topic="Analyse: Analysis Methods">
-    <keyword>Exfiltation detection / data loss prevention</keyword>
+    <keyword>Exfiltration detection / data loss prevention</keyword>
   </CyBOK>
   <CyBOK KA="NS" topic="Network Defence Tools">
     <keyword>packet filters</keyword>
@@ -77,9 +77,6 @@
       <network_ip system="hackerbot_server"/>
     </input>
 
-    <input into_datastore="organisation">
-      <generator type="realistic_organisation"/>
-    </input>
 
     <!--generate two accounts, YOU and someone else-->
     <input into_datastore="accounts">
@@ -294,17 +291,15 @@
       </input>
     </utility>
 
-    <vulnerability module_path=".*/distcc_exec"/>
+    <!-- Shellshock over Apache CGI (CVE-2014-6271): a remote shell as www-data. Replaces distcc so the
+         break-in is detected by the IDS's updated community rule (OS-OTHER Bash CGI environment variable
+         injection) and so students don't meet distcc in yet another lab. Pulls in a vulnerable bash and an
+         Apache CGI endpoint (/cgi-bin/test.cgi) on port 80; that Apache is the web server for this lab. -->
+    <vulnerability module_path=".*/shellshock_apache_cgi"/>
 
     <service module_path=".*/vsftpd"/>
 
     <service type="pop3"/>
-
-    <service module_path="services/unix/http/parameterised_website">
-      <input into="organisation">
-        <datastore>organisation</datastore>
-      </input>
-    </service>
 
     <utility module_path=".*/mirror_traffic_to_ids_iptables">
       <input into="ids_IP_address">

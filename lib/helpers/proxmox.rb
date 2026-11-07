@@ -112,8 +112,8 @@ class ProxmoxFunctions
       next unless configs[vm_name]
       begin
         Print.std " Setting #{configs[vm_name]} on #{vm_name} (#{node}/#{vm_id})"
-        params = configs[vm_name].map { |option, value| [option.to_sym, value] }.to_h.merge(vmid: vm_id)
-        connection.config_clone(node: node, vm_type: :qemu, params: params)
+        connection.set_vm_cpu(vm_id, node, configs[vm_name]['cpu']) if configs[vm_name]['cpu']
+        connection.set_vm_cores(vm_id, node, configs[vm_name]['cores']) if configs[vm_name]['cores']
       rescue StandardError => e
         Print.err "Error: Failed to apply VM settings to #{vm_name}: #{e.message}"
       end

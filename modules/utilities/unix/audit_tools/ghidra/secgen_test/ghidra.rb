@@ -12,6 +12,8 @@ class GhidraTest < PostProvisionTest
   def test_module
     super
     kali = run_command('grep -qi "^ID=kali" /etc/os-release && echo kali')[:stdout].to_s.include?('kali')
+    # the Debian debugger dependencies are only set up on Debian 12; older Debian bases are not expected to have them
+    bookworm = run_command('. /etc/os-release; [ "$ID" = debian ] && [ "$VERSION_ID" = 12 ] && echo bookworm')[:stdout].to_s.include?('bookworm')
 
     tier(1) do
       test_local_command('ghidra installed?', 'ls /opt/ghidra/ghidraRun /usr/local/bin/ghidra', '/usr/local/bin/ghidra')
@@ -43,6 +45,12 @@ class GhidraTest < PostProvisionTest
         # the debugger's gdb python packages were installed into gdb's embedded python
         test_local_command('gdb can import the Ghidra debugger packages',
                            'gdb -batch -ex "python import ghidragdb, ghidratrace; print(\'GHIDRA_GDB_OK\')" 2>&1', 'GHIDRA_GDB_OK')
+      end
+      if bookworm
+        # as Ghidra's local-gdb.sh launcher does: the bundled packages come from PYTHONPATH, protobuf from the system
+        pypath = '/opt/ghidra/Ghidra/Debug/Debugger-rmi-trace/pypkg/src:/opt/ghidra/Ghidra/Debug/Debugger-agent-gdb/pypkg/src'
+        test_local_command('gdb can import the Ghidra debugger packages as a student',
+                           "PYTHONPATH=#{pypath} gdb -nx -batch -ex \"python import ghidragdb, ghidratrace; print('GHIDRA_GDB_OK')\" 2>&1", 'GHIDRA_GDB_OK', user: 'nobody')
       end
     end
   end

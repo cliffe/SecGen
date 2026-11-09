@@ -68,7 +68,16 @@ class ghidra::install{
     if ($operatingsystem == 'Debian') {
       case $operatingsystemrelease {
         /^(12).*/: { # do 12.x bookworm stuff
-          ensure_packages(['openjdk-17-jre', 'openjdk-17-jdk'])
+          ensure_packages(['openjdk-17-jre', 'openjdk-17-jdk', 'gdb', 'python3-pip', 'python3-psutil'])
+
+          # Debugger: Ghidra's gdb launcher puts its own ghidragdb/ghidratrace on PYTHONPATH, but they need protobuf
+          # (>=3,<4), which Debian 12 does not otherwise install. Offline install of the wheel Ghidra bundles.
+          # gdb embeds the system python3 here, so a system-wide install reaches it.
+          exec { 'install protobuf for the ghidra gdb debugger':
+            command => 'pip3 install --break-system-packages --no-index --no-deps /opt/ghidra/Ghidra/Debug/Debugger-rmi-trace/pypkg/dist/protobuf-3.20.3-py2.py3-none-any.whl',
+            unless  => "python3 -c 'import google.protobuf'",
+            require => [File['/opt/ghidra'], Package['python3-pip', 'gdb']],
+          }
         }
         /^(9|10).*/: { # do 9.x stretch stuff
           ensure_packages(['openjdk-11-jre', 'openjdk-11-jdk'])

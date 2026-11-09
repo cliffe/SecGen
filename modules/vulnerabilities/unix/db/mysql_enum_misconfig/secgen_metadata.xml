@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability ">
+  <name>MySQL CIS-style Misconfiguration Audit</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>A MySQL/MariaDB server exposed on all interfaces (bind-address 0.0.0.0) with a
+    remotely-reachable account whose password is weak, plus the CIS-benchmark weaknesses an audit
+    surfaces: an anonymous account with a blank password, grants on a wildcard host (not restricted
+    by source), and over-broad privileges on a non-admin user (global SELECT, FILE and GRANT).
+    The Metasploit auxiliary auxiliary/admin/mysql/mysql_enum authenticates with the weak account
+    and reports every finding.</description>
+
+  <type>database</type>
+  <privilege>info_leak</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>account_username</read_fact>
+  <read_fact>account_password</read_fact>
+  <read_fact>database_name</read_fact>
+
+  <default_input into="account_username">
+    <value>appuser</value>
+  </default_input>
+
+  <!-- A weak, remotely-usable password wired from the datastore. -->
+  <default_input into="account_password">
+    <generator type="weak_password_generator" />
+  </default_input>
+
+  <default_input into="database_name">
+    <value>appdb</value>
+  </default_input>
+
+  <!--optional details-->
+  <reference>https://www.cisecurity.org/benchmark/oracle_mysql</reference>
+  <reference>https://www.rapid7.com/db/modules/auxiliary/admin/mysql/mysql_enum</reference>
+  <software_name>mysql</software_name>
+  <software_license>GPL v2</software_license>
+
+  <!--optional hints-->
+  <msf_module>auxiliary/admin/mysql/mysql_enum</msf_module>
+
+  <!-- Debian-only seeding (conf.d layout, mariadb service); matches the required mysql service. -->
+  <conflict>
+    <module_path>.*bases/(?!debian_(bookworm|buster)).*</module_path>
+  </conflict>
+
+  <requires>
+    <module_path>modules/services/unix/database/mysql</module_path>
+  </requires>
+  <requires>
+    <type>update</type>
+  </requires>
+
+  <CyBOK KA="AAA" topic="Authentication">
+    <keyword>Authentication in distributed systems</keyword>
+    <keyword>Passwords and alternatives</keyword>
+  </CyBOK>
+  <CyBOK KA="AAA" topic="Authorisation">
+    <keyword>access control</keyword>
+    <keyword>Vulnerabilities and attacks on access control misconfigurations</keyword>
+  </CyBOK>
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>server-side misconfiguration and vulnerable components</keyword>
+    <keyword>Vulnerable defaults</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+</vulnerability>

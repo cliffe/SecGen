@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+
+<service xmlns="http://www.github/cliffe/SecGen/service"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
+  <name>PostgreSQL database</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>A standard, non-vulnerable installation of PostgreSQL from the Debian repositories, with one database and one login role. Other modules layer specific misconfigurations on top of it.</description>
+
+  <type>database</type>
+  <platform>linux</platform>
+
+  <read_fact>port</read_fact>
+  <read_fact>database_name</read_fact>
+  <read_fact>username</read_fact>
+  <read_fact>password</read_fact>
+  <read_fact>listen_addresses</read_fact>
+  <read_fact>auth_method</read_fact>
+
+  <default_input into="port">
+    <value>5432</value>
+  </default_input>
+
+  <default_input into="database_name">
+    <value>appdb</value>
+  </default_input>
+
+  <default_input into="username">
+    <value>appuser</value>
+  </default_input>
+
+  <default_input into="password">
+    <generator type="strong_password_generator"/>
+  </default_input>
+
+  <!-- 'localhost' or '*' (or any listen_addresses value) -->
+  <default_input into="listen_addresses">
+    <value>localhost</value>
+  </default_input>
+
+  <!-- pg_hba.conf method for the created role: scram-sha-256, md5, password, trust ... -->
+  <default_input into="auth_method">
+    <value>scram-sha-256</value>
+  </default_input>
+
+  <!--optional details-->
+  <reference>https://www.postgresql.org/</reference>
+  <reference>https://www.postgresql.org/docs/15/auth-pg-hba-conf.html</reference>
+  <software_name>postgresql</software_name>
+  <software_license>PostgreSQL Licence</software_license>
+
+  <!-- PostgreSQL 15 paths (/etc/postgresql/15) are Debian 12 specific -->
+  <conflict>
+    <module_path>.*bases/(?!debian_bookworm).*</module_path>
+  </conflict>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+</service>

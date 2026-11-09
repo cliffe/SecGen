@@ -29,6 +29,9 @@ class MetactfTest < PostProvisionTest
     challenges = Array(json_inputs['challenge_list']).map { |c| JSON.parse(c) }
     skip!('no account or challenge_list input') if user.nil? || challenges.empty?
 
+    # the build tree holds filled-in program.c files containing this VM's passwords
+    tier(2) { test_local_command('student cannot list the metactf build tree', 'ls /opt/metactf 2>&1; true', 'Permission denied', user: user) }
+
     challenges.each do |challenge|
       name = challenge['challenge_name']
       dir = "/home/#{user}/challenges/#{name}"
@@ -74,6 +77,9 @@ class MetactfTest < PostProvisionTest
         # the challenge binary runs as the student and prints something (a prompt) rather than failing to execute
         test_command_succeeds("#{name}: binary runs as #{user}",
                               "cd #{Shellwords.escape(dir)} && test -x ./#{Shellwords.escape(name)} && out=$(printf '\\n' | timeout 10 ./#{Shellwords.escape(name)} 2>&1); test -n \"$out\"", user: user)
+        unless category == 'src_angr'
+          test_local_command("#{name}: student cannot read the filled-in source", "cat #{Shellwords.escape("/opt/metactf/#{challenge['challenge_path']}/program.c")} 2>&1 | head -1; true", 'Permission denied', user: user)
+        end
         test_command_succeeds("#{name}: student cannot read the flag directly", "! cat #{flag_file}", user: user)
         # A challenge built with empty randomised values (e.g. build.zsh without bc) typically accepts an empty or
         # arbitrary password; a correctly built one releases the flag only for its password.

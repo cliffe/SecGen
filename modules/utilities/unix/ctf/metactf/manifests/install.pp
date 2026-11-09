@@ -76,4 +76,12 @@ class metactf::install {
     require => [Exec['src_sse chmod executable'], Package['bc']],
   }
 
+  # Every build leaves a filled-in program.c holding that VM's passwords. configure.pp installs
+  # what it needs as root, so students have no reason to read this tree.
+  exec { 'restrict metactf build tree':
+    command => "chmod -R go-rwx $install_dir",
+    require => [Exec['build src_angr binaries'], Exec['build src_csp binaries'],
+                Exec['build src_malware binaries'], Exec['build src_sse binaries']],
+  }
+
 }

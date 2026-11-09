@@ -193,6 +193,7 @@ class MetaCTFChallengeGenerator < StringGenerator
      {:difficulty => 'medium', :path => 'src_malware/Ch01-08/Ch08Dbg_GdbPractice'},
      {:difficulty => 'medium', :path => 'src_malware/Ch01-08/Ch08Dbg_GdbRegs'},
      {:difficulty => 'medium', :path => 'src_malware/Ch01-08/Ch08Dbg_GdbSetmem'},
+     {:difficulty => 'hard', :path => 'src_malware/Ch01-08/Ch08Dbg_GdbWatch'},
      {:difficulty => 'medium', :path => 'src_malware/Ch01-08/Ch08Dbg_InputFormat'},
      {:difficulty => 'medium', :path => 'src_malware/Ch01-08/Ch08Dbg_Radare2Intro1'},
      {:difficulty => 'medium', :path => 'src_malware/Ch01-08/Ch08Dbg_Radare2Intro2'},

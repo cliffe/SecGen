@@ -177,10 +177,11 @@ The operational records are not here. They sit on the legacy distcc box.</value>
       </input>
     </vulnerability>
 
-    <!-- flag 3: pricing intel, ROT13-encoded price list served over HTTP (HTML
-         comments in the index page source). This is the PUBLIC price list: the
-         catalogue's tiers and prices without the buyers or reserved Phase 2 stock
-         (those stay in the game's wall-safe catalogue). -->
+    <!-- flag 3: pricing intel, Caesar shift 7; the key is in the game, in
+         Sterling's unsent email. Price list served over HTTP (HTML comments in
+         the index page source). This is the PUBLIC price list: the catalogue's
+         tiers and prices without the buyers or reserved Phase 2 stock (those stay
+         in the game's wall-safe catalogue). -->
     <service module_path=".*/http/parameterised_website">
       <input into="strings_to_leak">
         <!-- Plain HTML comment: the web host's banner, carrying the SAME flag 1
@@ -196,8 +197,13 @@ The operational records are not here. They sit on the legacy distcc box.</value>
           </input>
         </encoder>
 
-        <!-- ROT13 price list: decode for flag 3 -->
-        <encoder module_path="modules/encoders/string/rot13">
+        <!-- Plain HTML comment: pointer back to the game. The board moved off
+             ROT13 to Sable's own client shift; the number is mailed to buyers
+             (it is in Sterling's unsent email in the game). -->
+        <value>PRICE BOARD (clients only): no longer ROT13. Shifted with the client key Sable mails to buyers.</value>
+
+        <!-- Caesar shift (key 7) price list: decode for flag 3 -->
+        <encoder module_path="modules/encoders/cipher/caesar_shift">
           <input into="strings_to_encode">
             <value>FILED: CONFIDENTIAL - CLIENTS ONLY
 
@@ -216,6 +222,9 @@ Note: healthcare buyers carry a 40% premium. They pay fast and they pay quietly.
 
 Buyer details are held internally. Ask your account contact.</value>
             <generator type="flag_generator"/>
+          </input>
+          <input into="shift_key">
+            <value>7</value>
           </input>
         </encoder>
       </input>

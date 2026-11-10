@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Python machine learning environment</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>A Python 3 virtual environment in /opt/python_ml_env with numpy, pandas, scikit-learn, TensorFlow (CPU), Flask and JupyterLab, activated in every interactive bash shell, plus (unless download_mnist is false) the Keras MNIST archive for offline use. Provides the python_ml_env::notebook_repo define, which other modules use to install a notebook repository at a fixed commit into each account's home directory.</description>
+
+  <type>python_ml_env</type>
+  <platform>linux</platform>
+
+  <read_fact>download_mnist</read_fact>
+
+  <default_input into="download_mnist">
+    <value>true</value>
+  </default_input>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+</utility>

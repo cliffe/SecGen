@@ -1,0 +1,22 @@
+# Versions current in spring 2025 (TensorFlow 2.19 with Keras 3), matching the notebooks' saved outputs.
+tensorflow==2.19.0
+numpy==2.1.3
+pandas==2.2.3
+scipy==1.15.2
+scikit-learn==1.6.1
+imbalanced-learn==0.13.0
+matplotlib==3.10.1
+seaborn==0.13.2
+pillow==11.1.0
+opencv-python-headless==4.11.0.86
+flask==3.1.0
+flask-cors==5.0.1
+gunicorn==23.0.0
+requests==2.32.3
+tqdm==4.67.1
+h5py==3.13.0
+jupyterlab==4.3.6
+notebook==7.3.3
+ipykernel==6.29.5
+ipywidgets==8.1.5
+nbconvert==7.16.6

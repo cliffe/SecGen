@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+  <name>Stealing a machine learning model</name>
+  <author>Thomas Shaw</author>
+  <description>
+    A company has deployed a machine learning model behind a pay-per-query API. You don't have its training data or its weights, only the answers it gives. In this lab you will build a working copy of the model using nothing but those answers, measure how closely it matches, and then do it again with far fewer queries.
+
+    Log in to the desktop VM as "student" with the password "tiaspbiqe2r". Open the notebook in ~/lab from the JupyterLab icon, and talk to Hackerbot in the browser at http://hackerbot:8080.
+
+    Based on material from the CyBOK-funded Security-of-AI project (Anglia Ruskin University). Contains public sector information licensed under the Open Government Licence v3.0.
+  </description>
+  <lab_sheet_url>https://cliffe.github.io/HacktivityLabSheets/labs/ai_security/1-model-stealing/</lab_sheet_url>
+  <type>hackerbot-lab</type>
+  <type>lab-sheet</type>
+  <difficulty>intermediate</difficulty>
+  <CyBOK KA="SPAI" topic="Attacks on machine learning models">
+    <keyword>MODEL STEALING</keyword>
+    <keyword>MODEL EXTRACTION</keyword>
+  </CyBOK>
+  <system>
+    <system_name>desktop</system_name>
+    <base distro="Debian 12" type="desktop" name="KDE"/>
+    <input into_datastore="IP_addresses">
+      <network_ip system="desktop"/>
+      <network_ip system="hackerbot_server"/>
+    </input>
+    <input into_datastore="account">
+      <value>{"username":"student","password":"tiaspbiqe2r","super_user":"false","strings_to_leak":[],"leaked_filenames":[]}</value>
+    </input>
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+    <input into_datastore="hackerbot_key">
+      <generator type="ssh_key_pair"/>
+    </input>
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts">
+        <datastore>account</datastore>
+      </input>
+    </utility>
+    <utility module_path=".*/kde_minimal">
+      <input into="autologin_user">
+        <datastore access="0" access_json="['username']">account</datastore>
+      </input>
+      <input into="accounts">
+        <datastore>account</datastore>
+      </input>
+      <input into="autostart_konsole">
+        <value>false</value>
+      </input>
+    </utility>
+    <utility module_path=".*/hosts">
+      <input into="hosts">
+        <value>hackerbot</value>
+      </input>
+      <input into="IP_addresses">
+        <datastore access="1">IP_addresses</datastore>
+      </input>
+    </utility>
+    <utility module_path=".*/iceweasel">
+      <input into="accounts">
+        <datastore>account</datastore>
+      </input>
+      <input into="autostart">
+        <value>true</value>
+      </input>
+      <input into="start_page">
+        <value>http://hackerbot:8080</value>
+      </input>
+    </utility>
+    <utility module_path=".*/python_ml_env">
+      <input into="download_mnist">
+        <value>false</value>
+      </input>
+    </utility>
+    <utility module_path=".*/ai_lab_student">
+      <input into="accounts">
+        <datastore>account</datastore>
+      </input>
+      <input into="lab">
+        <value>model_stealing</value>
+      </input>
+    </utility>
+    <utility module_path=".*/hackerbot_client">
+      <input into="ssh_key_pair">
+        <datastore>hackerbot_key</datastore>
+      </input>
+    </utility>
+    <network type="private_network"/>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+  <system>
+    <system_name>hackerbot_server</system_name>
+    <base distro="Debian 12" type="desktop" name="KDE"/>
+    <input into_datastore="lab_params">
+      <generator type="ai_lab_params">
+        <input into="lab">
+          <value>model_stealing</value>
+        </input>
+      </generator>
+    </input>
+    <service module_path=".*/ergochat"/>
+    <utility module_path=".*/hackerbot_webclient">
+      <input into="username">
+        <datastore access="0" access_json="['username']">account</datastore>
+      </input>
+      <input into="irc_server_ip">
+        <value>hackerbot</value>
+      </input>
+    </utility>
+    <utility module_path=".*/python_ml_env"/>
+    <utility module_path=".*/ai_lab_server">
+      <input into="lab_params">
+        <datastore>lab_params</datastore>
+      </input>
+    </utility>
+    <utility module_path=".*/hackerbot">
+      <input into="ssh_key_pair">
+        <datastore>hackerbot_key</datastore>
+      </input>
+      <input into="hackerbot_configs">
+        <generator module_path=".*/ai_model_stealing">
+          <input into="accounts">
+            <datastore>account</datastore>
+          </input>
+          <input into="lab_params">
+            <datastore>lab_params</datastore>
+          </input>
+        </generator>
+      </input>
+    </utility>
+    <network type="private_network"/>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+</scenario>

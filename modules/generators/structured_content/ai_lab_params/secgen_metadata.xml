@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<generator xmlns="http://www.github/cliffe/SecGen/generator"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/generator">
+  <name>AI lab parameters</name>
+  <author>Thomas Shaw</author>
+  <module_license>GPLv3</module_license>
+  <description>Generates the per-build random values for an AI security lab as one JSON string, for the lab server module and its Hackerbot generator.</description>
+
+  <type>ai_lab_params</type>
+  <type>local_calculation</type>
+  <platform>linux</platform>
+
+  <read_fact>lab</read_fact>
+
+  <default_input into="lab">
+    <value>model_stealing</value>
+  </default_input>
+
+  <output_type>ai_lab_params</output_type>
+</generator>

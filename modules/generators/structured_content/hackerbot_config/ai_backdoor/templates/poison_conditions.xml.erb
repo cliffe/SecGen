@@ -1,0 +1,20 @@
+    <condition>
+      <output_matches>RESULT NOFILE</output_matches>
+      <message>I can't find ~/poisoned_dataset.npz. Run the save cell in your notebook, then say 'ready'.</message>
+    </condition>
+    <condition>
+      <output_matches>RESULT BADFILE</output_matches>
+      <message>I could not use that file. It should be saved with np.savez, with the images as x and the labels as y, in the same shape as the training data.</message>
+    </condition>
+    <condition>
+      <output_matches>RESULT OVERLIMIT</output_matches>
+      <message>You altered too many examples. Remember that an example counts as altered if you changed its image or its label.</message>
+    </condition>
+    <condition>
+      <output_matches>RESULT DAMAGE</output_matches>
+      <message>Accuracy on clean images fell too far, which would give you away. Alter fewer examples, and leave the rest as they were.</message>
+    </condition>
+    <condition>
+      <output_matches>RESULT LOW</output_matches>
+      <message>The trigger isn't working well enough. Check that it is the right size and in the right place, and that the images carrying it have the target label.</message>
+    </condition>

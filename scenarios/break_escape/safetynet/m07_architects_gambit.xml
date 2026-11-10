@@ -69,9 +69,9 @@
 
     <input into_datastore="IP_addresses">
       <!-- 0 attack_vm -->
-      <network_ip system="attack_vm"/>
+      <value>172.16.0.3</value>
       <!-- 1 scada_attack_host -->
-      <network_ip system="scada_attack_host"/>
+      <value>172.16.0.2</value>
     </input>
 
     <utility module_path=".*/parameterised_accounts">
@@ -92,7 +92,11 @@
     <utility module_path=".*/kali_top10"/>
     <utility module_path=".*/kali_web"/>
 
-    <network type="private_network"/>
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="0">IP_addresses</datastore>
+      </input>
+    </network>
     <input into_datastore="spoiler_admin_pass">
       <generator type="strong_password_generator"/>
     </input>
@@ -115,9 +119,9 @@
         </input>
       </generator>
     </input>
-    <!-- strong password -->
+    <!-- pinned: shared secret = Elena's control room door code and the operator login (must match scada_password in scenario.json.erb exactly) -->
     <input into_datastore="password">
-      <generator type="strong_password_generator"/>
+      <value>CascadeWindow19</value>
     </input>
 
     <!-- FLAG ORDER (Break Escape m07): 1 nfs_overshare, 2 nc_message, 3 parameterised_accounts, 4 sudo_root_awk -->
@@ -176,7 +180,11 @@
       </input>
     </vulnerability>
 
-    <network type="private_network"/>
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="1">IP_addresses</datastore>
+      </input>
+    </network>
     <build type="cleanup">
       <input into="root_password">
         <datastore>spoiler_admin_pass</datastore>

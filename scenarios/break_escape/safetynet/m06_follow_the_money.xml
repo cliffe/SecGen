@@ -96,7 +96,7 @@ These VMs are provisioned by the Break Escape game engine via SecGen integration
       <value>hcvault</value>
     </input>
 
-    <!-- Weak, crackable service passwords from the shared word list.
+    <!-- Weak, crackable service passwords: fixed words from Volkova's list in the game.
          weak_passwords[0] is reused across the auth and ledger accounts to
          model HashChain's credential-reuse weakness (flag_1 -> flag_2).
          The vault account (hcvault, flag_4) deliberately does NOT draw from
@@ -105,17 +105,9 @@ These VMs are provisioned by the Break Escape game engine via SecGen integration
          cracking the vault directly. -->
     <input into_datastore="weak_passwords">
       <!-- 0 shared reused password (hcauth AND hcledger) -->
-      <generator type="custom_list_password">
-        <input into="list_name">
-          <value>jtrpassword.lst</value>
-        </input>
-      </generator>
+      <value>moonshot</value>
       <!-- 1 financial database account -->
-      <generator type="custom_list_password">
-        <input into="list_name">
-          <value>jtrpassword.lst</value>
-        </input>
-      </generator>
+      <value>privatekey</value>
     </input>
 
     <!-- Accounts on the HashChain backend.
@@ -132,7 +124,7 @@ These VMs are provisioned by the Break Escape game engine via SecGen integration
           <datastore access="0">usernames</datastore>
         </input>
         <input into="password">
-          <value>password</value>
+          <value>hodl</value>
         </input>
         <input into="super_user">
           <value>true</value>

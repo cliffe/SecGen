@@ -1,0 +1,14 @@
+[Unit]
+Description=Spring Cloud Gateway
+After=network.target
+
+[Service]
+Type=simple
+User=<%= @user %>
+WorkingDirectory=/opt/scg
+ExecStart=/usr/bin/java -jar /opt/scg/scg-gateway.jar
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

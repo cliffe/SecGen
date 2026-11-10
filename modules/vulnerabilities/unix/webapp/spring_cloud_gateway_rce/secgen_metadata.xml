@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>Spring Cloud Gateway Actuator SpEL Injection RCE</name>
+  <author>SecGen</author>
+  <module_license>MIT</module_license>
+  <description>
+    Deploys a Spring Cloud Gateway 3.1.0 application (Spring Boot 2.6.x) with the
+    actuator API exposed. The gateway actuator lets a route be defined with a
+    RewritePath filter that holds a SpEL expression; refreshing the routes
+    evaluates it server-side, giving unauthenticated remote code execution as the
+    user running the gateway process. Fixed in 3.1.1 and 3.0.7.
+  </description>
+
+  <type>http</type>
+  <type>webapp</type>
+  <type>in_the_wild</type>
+  <!-- scg.service runs the Spring Boot process as unix_username (not root, not a
+       sudoer); SpEL evaluation runs commands as that user, so exploitation yields
+       that user's shell, matching user_rwx. -->
+  <privilege>user_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>port</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+  <read_fact>unix_username</read_fact>
+
+  <default_input into="port">
+    <generator module_path=".*/random_unregistered_port" />
+  </default_input>
+
+  <!-- flag exposed in the gateway user's home, reachable after exploitation -->
+  <default_input into="strings_to_leak">
+    <generator type="message_generator" />
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator" />
+  </default_input>
+
+  <default_input into="unix_username">
+    <generator type="username_generator" />
+  </default_input>
+
+  <cve>CVE-2022-22947</cve>
+  <cvss_base_score>10.0</cvss_base_score>
+  <cvss_vector>AV:N/AC:L/Au:N/C:C/I:C/A:C</cvss_vector>
+  <reference>https://spring.io/security/cve-2022-22947</reference>
+  <reference>https://nvd.nist.gov/vuln/detail/CVE-2022-22947</reference>
+  <reference>https://github.com/vulhub/vulhub/tree/master/spring/CVE-2022-22947</reference>
+  <reference>
+    https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/multi/http/spring_cloud_gateway_rce.rb</reference>
+  <software_name>Spring Cloud Gateway</software_name>
+  <software_license>Apache-2.0</software_license>
+  <msf_module>exploit/multi/http/spring_cloud_gateway_rce</msf_module>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION</keyword>
+    <keyword>EXPLOITATION FRAMEWORKS</keyword>
+  </CyBOK>
+  <CyBOK KA="SS" topic="Categories of Vulnerabilities">
+    <keyword>CVEs and CWEs</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>server-side misconfiguration and vulnerable components</keyword>
+  </CyBOK>
+
+</vulnerability>

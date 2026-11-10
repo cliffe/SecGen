@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>Apache WebDAV Unauthenticated File Upload</name>
+  <author>Tom Shaw</author>
+  <module_license>MIT</module_license>
+  <description>
+    Apache HTTP Server configured with mod_dav/mod_dav_fs and a writable WebDAV
+    collection that requires no authentication. Anyone who can reach the server
+    may upload, overwrite or delete files with an HTTP PUT/DELETE, and uploaded
+    files are then served straight back. A web shell uploaded this way runs as
+    the Apache user. Demonstrates the danger of leaving a WebDAV directory
+    writable without access control.
+  </description>
+
+  <type>remote</type>
+  <privilege>user_rw</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>port</read_fact>
+  <read_fact>webdav_path</read_fact>
+
+  <!-- A valid unprivileged port (1025-65535) for the Apache vhost to Listen on. -->
+  <default_input into="port">
+    <generator module_path=".*/random_unregistered_port" />
+  </default_input>
+
+  <default_input into="webdav_path">
+    <value>webdav</value>
+  </default_input>
+
+  <cvss_base_score>7.3</cvss_base_score>
+  <cvss_vector>AV:N/AC:L/Au:N/C:P/I:P/A:P</cvss_vector>
+  <reference>https://httpd.apache.org/docs/2.4/mod/mod_dav.html</reference>
+  <reference>https://owasp.org/www-community/attacks/Webdav</reference>
+  <reference>https://github.com/rapid7/metasploit-framework/blob/master/modules/auxiliary/scanner/http/http_put.rb</reference>
+
+  <msf_module>auxiliary/scanner/http/http_put</msf_module>
+  <hint>An unauthenticated HTTP PUT to the WebDAV collection writes a file that is then served back over GET.</hint>
+
+  <requires>
+    <module_path>.*apache</module_path>
+    <type>httpd</type>
+  </requires>
+
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>server-side misconfiguration and vulnerable components</keyword>
+    <keyword>Vulnerable defaults</keyword>
+  </CyBOK>
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION</keyword>
+    <keyword>EXPLOITATION FRAMEWORKS</keyword>
+  </CyBOK>
+  <CyBOK KA="SS" topic="Categories of Vulnerabilities">
+    <keyword>CVEs and CWEs</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+</vulnerability>

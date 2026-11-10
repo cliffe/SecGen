@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>Webmin Package Updates RCE</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>This module installs a vulnerable version of Webmin, the Perl-based web
+          system administration interface, which listens over HTTPS on port 10000.
+          Webmin 1.996 and earlier are affected by CVE-2022-36446, an authenticated
+          OS command injection in the Software Package Updates module
+          (package-updates/update.cgi). The CGI concatenates the chosen package names
+          (the request parameter u) into the shell command it runs to install updates
+          without sanitisation, so an authenticated user who can reach that module can
+          inject arbitrary operating-system commands. Because the Webmin miniserv
+          process runs as root, exploitation yields code execution as root. The module
+          creates a full-privilege Webmin administrator account (credentials in the
+          webmin_username / webmin_password datastores) so the attack path is reachable.
+          The Metasploit module exploit/linux/http/webmin_package_updates_rce automates
+          authentication and injection. Note that CVE-2022-36446 was fixed in Webmin
+          1.997, so this module deliberately pins 1.996, the last vulnerable
+          release.</description>
+
+  <type>web</type>
+  <privilege>root_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>medium</difficulty>
+
+  <read_fact>port</read_fact>
+  <read_fact>webmin_username</read_fact>
+  <read_fact>webmin_password</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+
+  <default_input into="port">
+    <value>10000</value>
+  </default_input>
+
+  <default_input into="webmin_username">
+    <value>admin</value>
+  </default_input>
+
+  <default_input into="webmin_password">
+    <generator type="password_generator" />
+  </default_input>
+
+  <default_input into="strings_to_leak">
+    <generator type="message_generator" />
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator" />
+  </default_input>
+
+  <cve>CVE-2022-36446</cve>
+  <cvss_base_score>9.8</cvss_base_score>
+
+  <reference>https://nvd.nist.gov/vuln/detail/CVE-2022-36446</reference>
+  <reference>https://www.webmin.com/security.html</reference>
+  <reference>https://medium.com/@emirpolat/cve-2022-36446-webmin-1-997-7a9225af3165</reference>
+  <reference>https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/linux/http/webmin_package_updates_rce.rb</reference>
+
+  <software_name>Webmin</software_name>
+  <software_license>BSD-3-Clause</software_license>
+
+  <msf_module>exploit/linux/http/webmin_package_updates_rce</msf_module>
+  <hint>A Perl web administration panel on an unusual high port trusts the package names an authenticated user submits.</hint>
+  <solution>Webmin 1.996 and earlier concatenate the selected package names into a shell command in the Software Package Updates module (CVE-2022-36446); authenticate and inject an OS command to gain code execution as root.</solution>
+</vulnerability>

@@ -14,7 +14,7 @@ Virtual machines for the Break Escape SAFETYNET mission 5 narrative experience. 
 ## Included Systems
 
 **qdc_research_server** (172.16.0.2)
-- Debian 12 desktop system
+- Debian 10 desktop system
 - Hosts QDC's Bludit-based research portal, with a mismanaged admin account and a vulnerable authenticated image-upload path
 - Contains a manager account used as the insider's exfiltration staging point, and a root-level cache of the operation's authorisation paperwork
 - Intelligence: leaked admin credentials, a manager-level data package manifest, and The Architect's signed deployment authorisation with a casualty projection
@@ -133,18 +133,6 @@ These VMs are provisioned by the Break Escape game engine via SecGen integration
       </encoder>
     </input>
 
-    <!-- bludit requires a password >= 6 characters long -->
-    <input into_datastore="password">
-        <generator type="random_sanitised_word">
-        <input into="wordlist">
-          <value>wordlist</value>
-        </input>
-        <input into="min_length">
-          <value>6</value>
-        </input>
-      </generator>
-    </input>
-
     <vulnerability module_path=".*/bludit_upload_images_exec">
       <!-- Flag order is document order: the recon (pre_leak) input is written first so it numbers
            before the RCE flag. Within-module order needs a build to confirm. -->
@@ -154,12 +142,12 @@ These VMs are provisioned by the Break Escape game engine via SecGen integration
 From: IT Support (temp cover, night shift)
 To: Next on-call
 
-Sorry, rushed this. Portal login still on defaults from the migration,
+Sorry, rushed this. Portal login is still on the migration default,
 nobody's rotated it. Ticket open for months, keeps getting deprioritised.
 
-Creds:</value>
-        <datastore access_json="['manager']['username']">organisation</datastore>
-        <datastore>password</datastore>
+Not putting the login on a web server, I'm not daft. It's on the card
+in the IT on-call lockbox in the server room. Code's Owen's badge
+number, same as everything else round here.</value>
         <generator type="flag_generator"/>
       </input>
       <input into="strings_to_leak">
@@ -170,10 +158,10 @@ Creds:</value>
         <datastore>organisation</datastore>
       </input>
       <input into="known_username">
-        <datastore access_json="['manager']['username']">organisation</datastore>
+        <value>portaladmin</value>
       </input>
       <input into="known_password">
-        <datastore>password</datastore>
+        <value>QdcPortal2024</value>
       </input>
     </vulnerability>
 
@@ -183,10 +171,10 @@ Creds:</value>
       <input into="accounts">
         <generator type="account">
           <input into="username">
-            <datastore access_json="['manager']['username']">organisation</datastore>
+            <value>portaladmin</value>
           </input>
           <input into="password">
-            <datastore>password</datastore>
+            <value>QdcPortal2024</value>
           </input>
           <input into="super_user">
             <value>false</value>

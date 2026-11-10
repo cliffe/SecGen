@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>Test: apache_verb_auth_bypass</name>
+  <author>Tom Shaw</author>
+  <description>Two-VM test scenario for the apache_verb_auth_bypass vulnerability module: a Debian 12 target and a Kali/MSF attacker on the same private network. Exercises the full chain the module's secgen_test asserts - the verb bypass reaching the admin page, the unauthenticated password reset of the wired account, and the tier-3 verb_auth_bypass MSF auxiliary - via the Proxmox QEMU Guest Agent testing pipeline.</description>
+
+  <type>test</type>
+
+  <system>
+    <system_name>apache_verb_auth_bypass_target</system_name>
+    <base platform="linux" distro="Debian 12" type="desktop"/>
+
+    <input into_datastore="IP_addresses">
+      <network_ip system="apache_verb_auth_bypass_target"/>
+      <network_ip system="attacker"/>
+    </input>
+
+    <!-- the account the admin panel can reset, and whose home holds flag 2 -->
+    <input into_datastore="victim_user">
+      <value>alice</value>
+    </input>
+
+    <vulnerability module_path=".*/apache_verb_auth_bypass">
+      <input into="strings_to_leak">
+        <generator type="flag_generator"/>
+      </input>
+      <input into="reset_target_username">
+        <datastore>victim_user</datastore>
+      </input>
+    </vulnerability>
+
+    <input into_datastore="victim_account">
+      <generator type="account">
+        <input into="username">
+          <datastore>victim_user</datastore>
+        </input>
+        <input into="password">
+          <generator type="strong_password_generator"/>
+        </input>
+        <input into="leaked_filenames">
+          <value>flag2.txt</value>
+        </input>
+        <input into="strings_to_leak">
+          <generator type="flag_generator"/>
+        </input>
+      </generator>
+    </input>
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts">
+        <datastore>victim_account</datastore>
+      </input>
+    </utility>
+
+    <network type="private_network"/>
+
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+
+  <system>
+    <system_name>attacker</system_name>
+    <base distro="Kali" name="MSF"/>
+
+    <network type="private_network"/>
+
+    <input into_datastore="spoiler_admin_pass_attacker">
+      <generator type="strong_password_generator"/>
+    </input>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass_attacker</datastore>
+      </input>
+    </build>
+  </system>
+
+</scenario>

@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>Apache HTTP Verb-Based Authentication Bypass</name>
+  <author>Tom Shaw</author>
+  <module_license>Apache v2</module_license>
+  <description>An Apache admin page (admin.php) is protected with Basic Auth
+    written as &lt;Limit GET POST&gt; instead of &lt;LimitExcept GET POST&gt;.
+    A &lt;Limit&gt; block only applies to the methods it names (GET, POST and
+    the HEAD that Apache folds into GET), so any other HTTP method reaches the
+    script without being challenged for credentials. Because PHP runs the page
+    whatever the request method is, an arbitrary verb (for example
+    "curl -X HACK http://host/admin.php") returns the full admin page
+    unauthenticated. The admin page exposes a flag and a password-reset action
+    that is driven from the query string, so the same verb bypass also drives
+    the action - an attacker resets a system account's password and logs in as
+    that user. The stock Metasploit module
+    auxiliary/scanner/http/verb_auth_bypass detects the bypass by comparing a
+    GET against a set of alternative verbs. The fix is &lt;LimitExcept&gt;,
+    which authenticates every method except the ones listed.</description>
+
+  <type>remote</type>
+  <type>web</type>
+  <type>misc</type>
+  <!-- unauthenticated access to an access-controlled page, and an
+       unauthenticated privileged action (password reset) that the page exposes -->
+  <privilege>info_leak</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>unix_username</read_fact>
+  <read_fact>used_password</read_fact>
+  <read_fact>reset_target_username</read_fact>
+
+  <!-- the flag shown on the admin page once the auth is bypassed -->
+  <default_input into="strings_to_leak">
+    <generator type="flag_generator" />
+  </default_input>
+
+  <!-- Basic Auth username (the legitimate credentials, which the attacker
+       never needs because the verb bypass avoids auth entirely) -->
+  <default_input into="unix_username">
+    <value>webadmin</value>
+  </default_input>
+
+  <!-- Basic Auth password. Strong on purpose: guessing it is not the intended
+       path - the verb bypass avoids authentication entirely. -->
+  <default_input into="used_password">
+    <generator type="strong_password_generator" />
+  </default_input>
+
+  <!-- the single system account the admin panel is allowed to reset. In a
+       scenario, wire the same username into a parameterised_accounts account so
+       the reset lands on a real user whose home holds the second flag. The
+       default is only so the module resolves and builds standalone; without a
+       matching account the reset action has nothing to act on. -->
+  <default_input into="reset_target_username">
+    <value>alice</value>
+  </default_input>
+
+  <cvss_base_score>7.3</cvss_base_score>
+  <cvss_vector>AV:N/AC:L/Au:N/C:P/I:P/A:N</cvss_vector>
+  <reference>https://httpd.apache.org/docs/2.4/mod/core.html#limit</reference>
+  <reference>https://httpd.apache.org/docs/2.4/mod/core.html#limitexcept</reference>
+  <reference>https://owasp.org/www-community/attacks/HTTP_Verb_Tampering</reference>
+  <reference>https://github.com/rapid7/metasploit-framework/blob/master/modules/auxiliary/scanner/http/verb_auth_bypass.rb</reference>
+
+  <!-- php and libapache2-mod-php are installed by this module's config.pp, so
+       the admin page executes without pulling in the php_5/php service module
+       (which would also require mysql). Only Apache is required here. Requiring
+       apache AND a module that itself requires apache would make the resolver
+       try to select Apache twice and hit apache's software_name self-conflict,
+       so there is a single apache require. -->
+  <msf_module>auxiliary/scanner/http/verb_auth_bypass</msf_module>
+  <hint>Basic Auth that only lists GET and POST in a &lt;Limit&gt; block leaves other verbs unauthenticated. PHP runs whatever the verb, and reads the query string whatever the verb.</hint>
+
+  <requires>
+    <software_name>apache</software_name>
+  </requires>
+
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>server-side misconfiguration and vulnerable components</keyword>
+    <keyword>Vulnerable defaults</keyword>
+  </CyBOK>
+  <CyBOK KA="AAA" topic="Authentication">
+    <keyword>authentication</keyword>
+  </CyBOK>
+  <CyBOK KA="AAA" topic="Authorisation">
+    <keyword>access control</keyword>
+    <keyword>Vulnerabilities and attacks on access control misconfigurations</keyword>
+  </CyBOK>
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION</keyword>
+    <keyword>EXPLOITATION FRAMEWORKS</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+</vulnerability>

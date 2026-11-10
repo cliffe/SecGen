@@ -1,0 +1,16 @@
+#!/bin/bash
+# Managed by SecGen apache_verb_auth_bypass. Deliberately vulnerable.
+#
+# Over-privileged helper the web admin panel runs through sudo. It resets the
+# password of exactly one account, fixed here at build time - the panel passes
+# only the new password, never the user name, so the attacker cannot steer it at
+# root or any other account.
+#
+# Usage: panel_reset <new_password>
+set -eu
+new_pw="${1:-}"
+if [ -z "$new_pw" ]; then
+  echo "usage: $0 <new_password>" >&2
+  exit 1
+fi
+printf '%s:%s\n' '<%= @reset_user %>' "$new_pw" | /usr/sbin/chpasswd

@@ -1,0 +1,19 @@
+# Managed by SecGen apache_verb_auth_bypass. Deliberately vulnerable.
+#
+# admin.php is protected with <Limit GET POST>, which applies Basic Auth only to
+# GET and POST (and the HEAD that Apache folds into GET). Any other verb - an
+# arbitrary or unknown method - is left unauthenticated, and because PHP runs the
+# page whatever the method, that verb returns the admin page without credentials.
+# The correct directive is <LimitExcept GET POST>, which authenticates every
+# method except the listed ones.
+<Directory "<%= @docroot %>">
+    <Files "admin.php">
+        AuthType Basic
+        AuthName "<%= @auth_realm %>"
+        AuthBasicProvider file
+        AuthUserFile "<%= @htpasswd %>"
+        <Limit GET POST>
+            Require valid-user
+        </Limit>
+    </Files>
+</Directory>

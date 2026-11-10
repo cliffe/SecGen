@@ -2,4 +2,3 @@ __pycache__
 *.swp
 obj/
 *.pyc
-users

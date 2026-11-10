@@ -26,10 +26,12 @@ class metactf::install {
   }
 
   # For now just build all of the binaries.
+  # src_angr's generator needs python2 (not available on every base); templite is bundled alongside it
   exec { 'build src_angr binaries':
     cwd     => "$install_dir/src_angr/",
     logoutput => on_failure,
     command => "/usr/bin/make",
+    onlyif  => 'which python2',
     require => Package['bc'],
   }
 

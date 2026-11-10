@@ -382,8 +382,8 @@ Hacktivity is powered by SecGen, and provides a fully-hosted lab environment for
 
 *Development team:*
 
-- Dr Z. Cliffe Schreuders http://z.cliffe.schreuders.org
-- Tom Shaw
+- Dr Z. Cliffe Schreuders http://z.cliffe.schreuders.org (project lead)
+- Dr Tom Shaw (co-lead)
 - Alix Hiscock
 - Rosie Fletcher
 - James Davis

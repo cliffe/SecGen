@@ -16,6 +16,11 @@
   <read_fact>strings_to_leak</read_fact>
   <read_fact>leaked_filenames</read_fact>
   <read_fact>unix_username</read_fact>
+  <read_fact>ssh_port</read_fact>
+
+  <default_input into="ssh_port">
+    <value>2222</value>
+  </default_input>
 
   <default_input into="strings_to_leak">
     <generator type="message_generator"/>
@@ -35,7 +40,7 @@
   <software_name>erlang</software_name>
   <software_license>Apache-2.0</software_license>
 
-  <hint>Erlang/OTP SSH server running on 2222 port</hint>
+  <hint>Erlang/OTP SSH server running on a non-standard high port (default 2222)</hint>
   <solution>Erlang/OTP SSH is vulnerable to pre-authentication RCE. Exploit via metasploit module (linux/ssh/ssh_erlangotp_rce).</solution>
 
   <conflict>

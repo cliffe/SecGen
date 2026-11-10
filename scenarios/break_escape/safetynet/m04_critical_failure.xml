@@ -75,6 +75,15 @@ scenario.json.erb to match — do not renumber here.
 
     <base distro="Debian 12" type="desktop" name="KDE"/>
 
+    <!-- Pin the subnet so the address printed in-game (jump server 192.168.100.10)
+         matches the real build in standalone mode. 0 = bms_jump_server, 1 = kali.
+         m03 pins the same subnet. When a VmSet binding is present the game reads the
+         address from the binding instead. -->
+    <input into_datastore="IP_addresses">
+      <value>192.168.100.10</value>
+      <value>192.168.100.3</value>
+    </input>
+
     <!-- FLAG 1 (submit_network_scan_flag)
          The falsified rack status page. Reachable as soon as a scan turns up the
          web service, which is the point: the SCADA screens in the control room are
@@ -173,7 +182,11 @@ runaway while every screen in the control room says it is fine.</value>
     <!-- FLAG 4 (submit_erlang_rce_flag)
          Erlang/OTP SSH daemon (CVE-2025-32433) on a high port — a brand-new pre-auth
          RCE in the plant's control stack, left reachable by the "maintenance" crew.
-         This is the route onto the jump server. -->
+         This is the route onto the jump server.
+         The port is fixed at 22222 and printed on the in-game OptiGrid Job Card #4782
+         (keep this value in step with foothold_port in the Break Escape scenario). It
+         is deliberately outside nmap's default top-1000, so the job card is a useful
+         shortcut, while a full port sweep still finds it. -->
     <vulnerability module_path=".*/ssh_erlangotp_rce">
       <input into="strings_to_leak">
         <!-- R27: in-fiction operator notes; flag concatenated on the end. -->
@@ -197,7 +210,7 @@ Leave nothing signed. OptiGrid is a shell -- there is no help desk to call.</val
         </encoder>
       </input>
       <input into="ssh_port">
-        <value>2222</value>
+        <value>22222</value>
       </input>
       <input into="leaked_filenames">
         <value>optigrid_toolkit/operator_notes</value>
@@ -206,7 +219,11 @@ Leave nothing signed. OptiGrid is a shell -- there is no help desk to call.</val
 
     <utility module_path=".*/handy_cli_tools"/>
 
-    <network type="private_network"/>
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="0">IP_addresses</datastore>
+      </input>
+    </network>
 
     <input into_datastore="spoiler_admin_pass">
       <generator type="strong_password_generator"/>
@@ -234,7 +251,11 @@ Leave nothing signed. OptiGrid is a shell -- there is no help desk to call.</val
     <utility module_path=".*/handy_cli_tools"/>
     <utility module_path=".*/nmap"/>
 
-    <network type="private_network"/>
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="1">IP_addresses</datastore>
+      </input>
+    </network>
     <build type="cleanup">
       <input into="root_password">
         <datastore>spoiler_admin_pass</datastore>

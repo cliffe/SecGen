@@ -1,0 +1,15 @@
+[Unit]
+Description=Minimal log4j 2.14.1 web app (SecGen service: minimal_log4j_webapp)
+After=network.target
+
+[Service]
+Type=simple
+User=<%= @user %>
+Environment=PORT=<%= @port %>
+Environment=JAVA_HOME=<%= @jdk_dir %>
+ExecStart=<%= @java %> -cp <%= @classpath %> -Dlog4j.configurationFile=<%= @app_dir %>/log4j2.xml com.secgen.App
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

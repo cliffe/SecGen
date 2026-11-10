@@ -1,0 +1,67 @@
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>Log4Shell JNDI Header Injection RCE</name>
+  <author>SecGen pipeline</author>
+  <module_license>MIT</module_license>
+  <description>
+    A minimal plain-Java web service logs a request header through log4j 2.14.1, which evaluates JNDI lookups in attacker-controlled strings written to its logs. A crafted HTTP header is logged verbatim, triggering an outbound JNDI lookup and unauthenticated remote code execution (CVE-2021-44228, Log4Shell). Students see how a ubiquitous logging library turned header input into RCE across a huge range of Java services. The vulnerable service is provided by the required minimal_log4j_webapp module; this module leaks the post-exploitation flag.
+  </description>
+
+  <type>remote</type>
+  <privilege>user_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>medium</difficulty>
+
+  <read_fact>port</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+  <read_fact>unix_username</read_fact>
+
+  <!-- port and unix_username match the required minimal_log4j_webapp service so
+       the flag lands in the service user's home and the test targets the right
+       port (requires passes no inputs, so both modules default to the same). -->
+  <default_input into="port">
+    <value>8983</value>
+  </default_input>
+  <!-- flag exposed after exploitation (read by the shell the exploit lands) -->
+  <default_input into="strings_to_leak">
+    <generator type="message_generator" />
+  </default_input>
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator" />
+  </default_input>
+  <default_input into="unix_username">
+    <value>log4j</value>
+  </default_input>
+
+  <cve>CVE-2021-44228</cve>
+  <cvss_base_score>10</cvss_base_score>
+  <reference>https://nvd.nist.gov/vuln/detail/CVE-2021-44228</reference>
+  <reference>https://github.com/vulhub/vulhub/tree/master/log4j/CVE-2021-44228</reference>
+  <software_name>log4j 2.14.1</software_name>
+
+  <!-- the stock Metasploit module the tier-3 test drives (read by the pipeline) -->
+  <msf_module>exploit/multi/http/log4shell_header_injection</msf_module>
+
+  <requires>
+    <type>update</type>
+  </requires>
+  <requires>
+    <module_path>services/unix/http/minimal_log4j_webapp</module_path>
+  </requires>
+
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>server-side misconfiguration and vulnerable components</keyword>
+    <keyword>Vulnerable defaults</keyword>
+  </CyBOK>
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION</keyword>
+    <keyword>EXPLOITATION FRAMEWORKS</keyword>
+  </CyBOK>
+  <CyBOK KA="SS" topic="Categories of Vulnerabilities">
+    <keyword>CVEs and CWEs</keyword>
+  </CyBOK>
+</vulnerability>

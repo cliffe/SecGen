@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+
+<service xmlns="http://www.github/cliffe/SecGen/service"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
+  <name>Minimal log4j 2.14.1 Web App</name>
+  <author>SecGen pipeline</author>
+  <module_license>MIT</module_license>
+  <description>A tiny plain-Java HTTP service that logs a request header through log4j 2.14.1. Built from a single source file and compiled on the target with an early JDK 8; no Spring, Maven or Gradle. Provides a reusable log4j logging endpoint that other modules can make exploitable.</description>
+
+  <type>http</type>
+  <platform>linux</platform>
+
+  <read_fact>port</read_fact>
+  <read_fact>unix_username</read_fact>
+
+  <default_input into="port">
+    <value>8983</value>
+  </default_input>
+  <default_input into="unix_username">
+    <value>log4j</value>
+  </default_input>
+
+  <reference>https://logging.apache.org/log4j/2.x/</reference>
+  <reference>https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.14.1/</reference>
+  <software_name>log4j 2.14.1</software_name>
+  <software_license>Apache v2</software_license>
+
+  <requires>
+    <type>update</type>
+  </requires>
+</service>

@@ -66,6 +66,31 @@ class metactf::configure {
       port               => $port,
     }
 
+    # This level links against a library built alongside it. A setgid binary ignores LD_LIBRARY_PATH and
+    # $ORIGIN, so the library goes on the system path; the angr scaffold works on the copy beside the binary.
+    if $challenge_name == '14_angr_shared_library' {
+      $shared_library = "lib$challenge_name.so"
+      $shared_library_source = "$install_dir/$metactf_challenge_category/obj/secgen/angr/$shared_library"
+
+      file { "/usr/local/lib/$shared_library":
+        ensure  => file,
+        source  => $shared_library_source,
+        mode    => '0755',
+        require => Secgen_functions::Install_setgid_binary["metactf_$challenge_name"],
+      } ~>
+      exec { "ldconfig for $shared_library":
+        command     => 'ldconfig',
+        refreshonly => true,
+      }
+
+      file { "$storage_dir/$challenge_name/$shared_library":
+        ensure  => file,
+        source  => $shared_library_source,
+        mode    => '0644',
+        require => Secgen_functions::Install_setgid_binary["metactf_$challenge_name"],
+      }
+    }
+
     if $include_c {
       notice("include_c: \"$storage_dir/$challenge_name/program.c\"")
       file { "$storage_dir/$challenge_name/program.c":

@@ -268,13 +268,33 @@ SYNC_PASSWORD=changeme</value>
             <value>false</value>
           </input>
           <input into="leaked_filenames">
-            <value>flag</value> <!-- flag3: USER ACCESS - the ENTROPY correspondence in the mole's home directory -->
+            <!-- flag3: USER ACCESS - the sealed dead drop in the mole's home directory.
+                 The filename carries the ENTROPY alias (deep_state_drop) so the player
+                 matches it to the Director's intercept, which holds the drop's seal. -->
+            <value>deep_state_drop.zip.b64</value>
           </input>
           <input into="strings_to_leak">
-            <!-- flag3: USER ACCESS - decoded ENTROPY correspondence, staged on the box -->
-            <encoder module_path="modules/encoders/selector/concatenate">
-              <input into="strings_to_encode">
-                <value>SAFETYNET INTERNAL -- RECOVERED FROM ~/flag
+            <!-- flag3: USER ACCESS - the ENTROPY correspondence, sealed in a password-
+                 protected zip (base64 text at rest). The login (history credential) opens
+                 the home, but the drop stays unreadable without the seal
+                 "candle-in-a-hurricane" (the Director's intercept carries it), so the
+                 game input is genuinely required on every route (user and root).
+                 The zip generator is nested INLINE here (not hoisted into an
+                 into_datastore) so this flag keeps its document-order slot after the
+                 gitlist flags; confirm flag3 is still the home/drop flag after a build. -->
+            <generator type="zip_file_generator">
+              <input into="file_name">
+                <value>package_receipt.txt</value>
+              </input>
+              <input into="password">
+                <!-- fixed; must equal drop_seal in the game (scenario.json.erb) -->
+                <value>candle-in-a-hurricane</value>
+              </input>
+              <input into="strings_to_leak">
+                <!-- decoded ENTROPY correspondence, staged on the box -->
+                <encoder module_path="modules/encoders/selector/concatenate">
+                  <input into="strings_to_encode">
+                    <value>ENTROPY DEAD DROP -- deep_state_drop
 
 To:      architect@entropy.onion
 From:    svc-planning  (ENTROPY alias: deep_state_drop)
@@ -294,9 +314,11 @@ choosing which fire to fight and never noticed the vault open behind them.
 
 Awaiting next tasking.
 -- N (Insider Threat Initiative)</value>
-                <generator type="flag_generator"/>
+                    <generator type="flag_generator"/>
+                  </input>
+                </encoder>
               </input>
-            </encoder>
+            </generator>
           </input>
         </generator>
       </input>

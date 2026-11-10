@@ -1,0 +1,149 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>Special DAVlivery</name>
+  <author>Tom Shaw</author>
+  <description>
+    A small company's web server runs a file-sharing extension so that staff can
+    drop documents onto it from anywhere, though nobody decided who counts as
+    staff. The share sits on an unusual port and takes files from anyone who uses
+    the right HTTP verb, and some of what you send it doesn't just get stored.
+    Scan the target, find the share and get the server to run something of yours.
+    The first flag is hidden in the web server account's home directory. Once you
+    have a shell, check what that account may run as root: one sudo rule on a
+    routine system-management command is enough to take the box and claim the
+    second flag in root's home.
+  </description>
+
+  <type>ctf</type>
+  <type>attack-ctf</type>
+  <type>pwn-ctf</type>
+  <difficulty>easy</difficulty>
+
+  <!-- foothold: unauthenticated WebDAV upload that executes -->
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>server-side misconfiguration and vulnerable components</keyword>
+    <keyword>Vulnerable defaults</keyword>
+  </CyBOK>
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION</keyword>
+    <keyword>EXPLOITATION FRAMEWORKS</keyword>
+  </CyBOK>
+  <CyBOK KA="SS" topic="Categories of Vulnerabilities">
+    <keyword>CVEs and CWEs</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+    <keyword>PENETRATION TESTING - NETWORK MAPPING - RECONNAISSANCE</keyword>
+  </CyBOK>
+  <CyBOK KA="NS" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - NETWORK MAPPING - FINGERPRINTING</keyword>
+    <keyword>PENETRATION TESTING - NETWORK MAPPING - NMAP</keyword>
+  </CyBOK>
+
+  <!-- escalation: sudo rule on service -->
+  <CyBOK KA="AAA" topic="Authorisation">
+    <keyword>access control</keyword>
+    <keyword>Elevated privileges</keyword>
+    <keyword>Vulnerabilities and attacks on access control misconfigurations</keyword>
+  </CyBOK>
+  <CyBOK KA="OSV" topic="Primitives for Isolation and Mediation">
+    <keyword>Access controls and operating systems</keyword>
+    <keyword>Linux security model</keyword>
+    <keyword>Attacks against SUDO</keyword>
+  </CyBOK>
+
+  <CyBOK KA="AB" topic="Models">
+    <keyword>kill chains</keyword>
+  </CyBOK>
+  <CyBOK KA="MAT" topic="Malicious Activities by Malware">
+    <keyword>cyber kill chain</keyword>
+  </CyBOK>
+
+  <system>
+    <system_name>attack_vm</system_name>
+    <base distro="Kali" name="MSF"/>
+
+    <input into_datastore="IP_addresses">
+      <!-- 0 attack_vm -->
+      <network_ip system="attack_vm"/>
+      <!-- 1 web_server -->
+      <network_ip system="web_server"/>
+    </input>
+
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts">
+        <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
+      </input>
+    </utility>
+
+    <utility module_path=".*/iceweasel">
+      <input into="accounts">
+        <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
+      </input>
+      <input into="autostart"><value>false</value></input>
+    </utility>
+
+    <utility module_path=".*/kali_top10"/>
+    <utility module_path=".*/kali_web"/>
+
+    <network type="private_network"/>
+
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+    <build type="cleanup">
+      <input into="root_password"><datastore>spoiler_admin_pass</datastore></input>
+    </build>
+  </system>
+
+  <system>
+    <system_name>web_server</system_name>
+    <base distro="Debian 12" type="desktop" name="KDE"/>
+
+    <!-- The site owner. Strong password: SSH is not a way in. hidden_file
+         requires an accounts utility. -->
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts">
+        <generator type="account">
+          <input into="username"><generator type="username_generator"/></input>
+          <input into="password"><generator type="strong_password_generator"/></input>
+          <input into="super_user"><value>false</value></input>
+          <input into="leaked_filenames"><value></value></input>
+          <input into="strings_to_leak"><value></value></input>
+        </generator>
+      </input>
+    </utility>
+
+    <!-- step 1: unauthenticated WebDAV PUT on a random port; the meta-module
+         adds a PHP or CGI exec enabler at random, so the upload runs as
+         www-data -->
+    <vulnerability module_path=".*/webdav_file_upload_rce"/>
+
+    <!-- flag 1: /var/www/.flag (0644). /var/www is www-data's home but sits
+         outside the /var/www/webdav docroot, so it needs a shell, not a GET.
+         hidden_file writes to <storage_directory>/<challenge_name>/, hence
+         /var + www. -->
+    <vulnerability module_path=".*/hidden_file">
+      <input into="storage_directory"><value>/var</value></input>
+      <input into="challenge_name"><value>www</value></input>
+      <input into="leaked_filenames"><value>flag</value></input>
+      <input into="strings_to_leak"><generator type="flag_generator"/></input>
+    </vulnerability>
+
+    <!-- step 2 / flag 2: sudo rule on service for ALL users, flag in /root -->
+    <vulnerability module_path=".*/sudo_root_service">
+      <input into="strings_to_leak"><generator type="flag_generator"/></input>
+    </vulnerability>
+
+    <network type="private_network"/>
+    <build type="cleanup">
+      <input into="root_password"><datastore>spoiler_admin_pass</datastore></input>
+    </build>
+  </system>
+
+</scenario>

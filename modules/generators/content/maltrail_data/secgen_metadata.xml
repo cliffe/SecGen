@@ -13,6 +13,7 @@
 
     <read_fact>data_volume</read_fact>
     <read_fact>embedded_flag</read_fact>
+    <read_fact>themed_trails</read_fact>
 
     <default_input into="data_volume">
         <value>medium</value>
@@ -20,6 +21,15 @@
 
     <default_input into="embedded_flag">
         <generator type="flag_generator"/>
+    </default_input>
+
+    <!-- Optional scenario theming. When empty (the default) the feed is purely random,
+         unchanged from before. When set, each non-empty, non-comment line is woven into the
+         threat feed as a recognisable indicator so the dashboard can match a scenario's story.
+         Line format: "trail | trail_info | reference" (info and reference optional). The trail
+         may be a domain, an IPv4 address, or an http(s) URL; its type is detected automatically. -->
+    <default_input into="themed_trails">
+        <value></value>
     </default_input>
 
     <output_type>generated_strings</output_type>

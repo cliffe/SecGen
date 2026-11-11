@@ -6,6 +6,7 @@ require 'securerandom'
 class MalTrailDataGenerator < StringGenerator
   attr_accessor :data_volume
   attr_accessor :embedded_flag
+  attr_accessor :themed_trails
 
   # TLDs for malicious-looking domains
   TLDS = ['.com', '.net', '.xyz', '.ru', '.cn', '.info', '.pw', '.top', '.ml', '.tk']
@@ -48,12 +49,14 @@ class MalTrailDataGenerator < StringGenerator
     self.module_name = 'MalTrail Randomized Data Generator'
     self.data_volume = 'medium'
     self.embedded_flag = ''
+    self.themed_trails = ''
   end
 
   def get_options_array
     super + [
       ['--data_volume', GetoptLong::REQUIRED_ARGUMENT],
-      ['--embedded_flag', GetoptLong::REQUIRED_ARGUMENT]
+      ['--embedded_flag', GetoptLong::REQUIRED_ARGUMENT],
+      ['--themed_trails', GetoptLong::REQUIRED_ARGUMENT]
     ]
   end
 
@@ -64,6 +67,8 @@ class MalTrailDataGenerator < StringGenerator
       self.data_volume = arg
     when '--embedded_flag'
       self.embedded_flag = arg
+    when '--themed_trails'
+      self.themed_trails = arg
     end
   end
 
@@ -89,8 +94,14 @@ class MalTrailDataGenerator < StringGenerator
       events.insert(insert_position, flag_event)
     end
 
+    # Scenario-themed indicators (optional). Prepended so they lead the feed and are never
+    # truncated by the custom-trails take-limits; empty input leaves the feed purely random.
+    themed = parse_themed_trails
+    themed_events = themed.map { |t| generate_themed_event(t) }
+    events = themed_events + events
+
     # Generate custom trails
-    custom_trails = generate_custom_trails(events, flag_event)
+    custom_trails = generate_custom_trails(events, flag_event, themed)
 
     # Build output structure
     output = {
@@ -184,11 +195,70 @@ class MalTrailDataGenerator < StringGenerator
     }
   end
 
-  def generate_custom_trails(events, flag_event)
+  # Parse the optional themed_trails input into indicator hashes.
+  # Each non-empty, non-comment line is "trail | trail_info | reference" (info/reference optional).
+  def parse_themed_trails
+    return [] if self.themed_trails.nil? || self.themed_trails.strip.empty?
+
+    self.themed_trails.split("\n").map(&:strip).reject do |line|
+      line.empty? || line.start_with?('#')
+    end.map do |line|
+      parts = line.split('|').map(&:strip)
+      {
+        trail: parts[0].to_s,
+        trail_info: (parts[1].to_s.empty? ? 'indicator' : parts[1]),
+        reference: (parts[2].to_s.empty? ? '(static)' : parts[2])
+      }
+    end.reject { |t| t[:trail].empty? }
+  end
+
+  # Build a full MalTrail event around a themed indicator, detecting its trail type.
+  def generate_themed_event(themed)
+    trail = themed[:trail]
+    if trail =~ %r{\Ahttps?://}i
+      trail_type = 'URL'
+      dst_ip = random_public_ip
+      dst_port = [80, 443, 8080, 8443].sample
+    elsif trail =~ /\A\d{1,3}(\.\d{1,3}){3}\z/
+      trail_type = 'IP'
+      dst_ip = trail
+      dst_port = [443, 8443, 4444, 9999].sample
+    else
+      trail_type = 'DNS'
+      dst_ip = random_public_ip
+      dst_port = 53
+    end
+
+    {
+      timestamp: generate_timestamp,
+      sensor: 'maltrail',
+      src_ip: random_private_ip,
+      src_port: rand(1024..65535),
+      dst_ip: dst_ip,
+      dst_port: dst_port,
+      proto: trail_type == 'DNS' ? 'UDP' : 'TCP',
+      trail_type: trail_type,
+      trail: trail,
+      trail_info: themed[:trail_info],
+      reference: themed[:reference]
+    }
+  end
+
+  def generate_custom_trails(events, flag_event, themed = [])
     trails = []
 
     # Add header comment
     trails << '# Custom trails for training scenario'
+
+    # Scenario-themed indicators lead the list so they are always present and read first.
+    unless themed.empty?
+      trails << '# Watch list'
+      themed.each do |t|
+        ref = t[:reference].to_s.empty? ? '(static)' : t[:reference]
+        trails << "#{t[:trail]} #{t[:trail_info]} #{ref}".squeeze(' ').strip
+      end
+    end
+
     trails << '# Malicious IPs'
 
     # Extract unique IPs from events

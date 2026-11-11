@@ -176,6 +176,29 @@ These VMs are provisioned by the Break Escape game engine via SecGen integration
           <input into="embedded_flag">
             <value>SAFETYNET watch floor. Cameras and doors nominal. Release staging copy moved off this console to the staging operators' account.</value>
           </input>
+
+          <!-- Immersion: theme the watch-floor threat feed to Tomb Gamma and the Publication so
+               the monitoring dashboard reads as SAFETYNET's own catalogue, not generic noise. The
+               feed still carries bulk random events (module default); these lead the list. The two
+               internal (.lan) indicators match the embedded-flag note ("Cameras and doors
+               nominal"); the catalogue indicators are the same live channels the staging schedule
+               and the core file index already describe (Carrow/Albion RM-4, the Seattle first
+               entries 0001-0003, the Trojan Horse backdoor, the two early-access buyers, the
+               Citadel vault line). All ambience: no flag lives in this feed, and the player's three
+               targets are handed out by in-game IP, so nothing here is a red herring to chase. -->
+          <input into="themed_trails">
+            <value>cam-gate.tombgamma.lan | camera_feed_ok | internal
+door-ctl.tombgamma.lan | door_controller_ok | internal
+rm4-mgmt.carrow-controls.net | remote_mgmt_backdoor | catalogue
+albion-plant-rtu.carrow-controls.net | plant_rtu_beacon | catalogue
+infusion-fleet.seattle-hospitalgroup.org | medical_device_beacon | catalogue
+dispatch-cad.county-911.gov | emergency_dispatch_c2 | catalogue
+scada-wtp.seattle-water.gov | water_treatment_scada | catalogue
+trojan-horse.release-cdn.net | mass_backdoor_c2 | catalogue
+203.0.113.47 | vault_line_citadel | catalogue
+zero-day.earlyaccess.pw | buyer_beacon | catalogue
+ransomware-inc.earlyaccess.pw | buyer_beacon | catalogue</value>
+          </input>
         </generator>
       </input>
 

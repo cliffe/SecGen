@@ -10,8 +10,14 @@ if ARGV.empty?
 end
 
 begin
+  # ARGV[0] is either a path to a file holding the JSON, or the JSON string
+  # itself. Reading from a file avoids shell-quoting problems when the data
+  # contains characters such as apostrophes.
+  input = ARGV[0]
+  json_text = File.file?(input) ? File.read(input) : input
+
   # Parse the JSON data
-  data = JSON.parse(ARGV[0])
+  data = JSON.parse(json_text)
   
   # Generate custom trails content
   trails = []

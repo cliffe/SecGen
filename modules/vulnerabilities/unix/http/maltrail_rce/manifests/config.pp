@@ -38,6 +38,17 @@ class maltrail_rce::config {
     mode   => '0755',
   }
 
+  # Write the generated MalTrail JSON to a file rather than passing it as a
+  # shell argument. The data can contain characters (e.g. apostrophes) that
+  # would otherwise break shell single-quoting in the Exec commands below.
+  file { '/tmp/maltrail_data.json':
+    ensure  => file,
+    content => $maltrail_data_json,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+  }
+
   # Create MalTrail log directory
   file { '/var/log/maltrail':
     ensure => directory,
@@ -58,9 +69,9 @@ class maltrail_rce::config {
   # Generate today's log file with synthetic events using Ruby script
   # The script reads from maltrail_data_json and generates properly formatted log entries
   exec { 'generate-maltrail-log':
-    command => "ruby /tmp/generate_maltrail_log.rb '${maltrail_data_json}' > /var/log/maltrail/$(date +%Y-%m-%d).log",
+    command => "ruby /tmp/generate_maltrail_log.rb /tmp/maltrail_data.json > /var/log/maltrail/$(date +%Y-%m-%d).log",
     unless  => "test -f /var/log/maltrail/$(date +%Y-%m-%d).log",
-    require => [File['/var/log/maltrail'], File['/tmp/generate_maltrail_log.rb']],
+    require => [File['/var/log/maltrail'], File['/tmp/generate_maltrail_log.rb'], File['/tmp/maltrail_data.json']],
   }
 
   # Set permissions on log file
@@ -71,9 +82,9 @@ class maltrail_rce::config {
 
   # Generate custom trails file using Ruby script
   exec { 'generate-custom-trails':
-    command => "ruby /tmp/generate_custom_trails.rb '${maltrail_data_json}' > /opt/maltrail/trails/custom.txt",
+    command => "ruby /tmp/generate_custom_trails.rb /tmp/maltrail_data.json > /opt/maltrail/trails/custom.txt",
     unless  => 'test -f /opt/maltrail/trails/custom.txt',
-    require => [File['/opt/maltrail/trails'], File['/tmp/generate_custom_trails.rb']],
+    require => [File['/opt/maltrail/trails'], File['/tmp/generate_custom_trails.rb'], File['/tmp/maltrail_data.json']],
   }
 
   # Set permissions on custom trails file

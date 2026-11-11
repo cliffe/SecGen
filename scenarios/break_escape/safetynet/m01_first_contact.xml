@@ -125,7 +125,7 @@ These VMs are provisioned by the Break Escape game engine via SecGen integration
                file reads like real ENTROPY key material rather than a bare token. The record text and
                the flag are concatenated into ONE string (delim "\n", exactly parallel to
                deployment_notes below), so derek still resolves to 2 strings_to_leak zipping cleanly
-               onto the 2 leaked_filenames -- no change to flag path, value or order. The player reads
+               onto the 2 leaked_filenames - no change to flag path, value or order. The player reads
                the record and submits the KEY line at the in-game archive station (scenario.json.erb
                ~line 2128, "Submit it here to unlock"). -->
           <encoder module_path="modules/encoders/selector/concatenate"> <!-- DECRYPTION_KEY -->

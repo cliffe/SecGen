@@ -1,6 +1,27 @@
 class gitlist_040::configure {
   $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
-  $leaked_files_path = '/home/git/repositories/secret_files'
+
+  # Optional cosmetic identity of the repository, so a scenario can make the box
+  # read as its own organisation's source server rather than a generic lab box.
+  # All three default to the historical values, so scenarios that do not set them
+  # are completely unaffected.
+  #   repo_name            - the repository directory name (shown in GitList's repo
+  #                          list and .git/description). Default 'secret_files'.
+  #   commit_author_name   - git author/committer name on every commit (shown in
+  #                          GitList's commit view and in `git log`). Default 'gitlist'.
+  #   commit_author_email  - git author/committer email. Default 'git@list.com'.
+  $repo_name_raw = $secgen_parameters['repo_name']
+  $have_repo_name = ($repo_name_raw != undef) and ($repo_name_raw[0] != undef) and ($repo_name_raw[0] != '')
+  $repo_name = $have_repo_name ? { true => $repo_name_raw[0], default => 'secret_files' }
+  $leaked_files_path = "/home/git/repositories/${repo_name}"
+
+  $author_name_raw = $secgen_parameters['commit_author_name']
+  $have_author_name = ($author_name_raw != undef) and ($author_name_raw[0] != undef) and ($author_name_raw[0] != '')
+  $commit_author_name = $have_author_name ? { true => $author_name_raw[0], default => 'gitlist' }
+
+  $author_email_raw = $secgen_parameters['commit_author_email']
+  $have_author_email = ($author_email_raw != undef) and ($author_email_raw[0] != undef) and ($author_email_raw[0] != '')
+  $commit_author_email = $have_author_email ? { true => $author_email_raw[0], default => 'git@list.com' }
 
   $images_to_leak = $secgen_parameters['images_to_leak']
 
@@ -33,7 +54,7 @@ class gitlist_040::configure {
   # Decide whether a secret should be buried in deleted history.
   $do_history_leak = ($strings_to_leak_in_history != undef) and ($strings_to_leak_in_history[0] != undef) and ($strings_to_leak_in_history[0] != '')
 
-  $git_args = '-c user.name="gitlist" -c user.email="git@list.com"'
+  $git_args = "-c user.name=\"${commit_author_name}\" -c user.email=\"${commit_author_email}\""
 
   Exec { path => ['/bin', '/usr/bin', '/usr/local/bin', '/sbin', '/usr/sbin'] }
 
@@ -55,7 +76,7 @@ class gitlist_040::configure {
   } ->
 
   file { "$leaked_files_path/.git/description":
-    content => "secret_files",
+    content => $repo_name,
     owner => 'www-data'
   }
 

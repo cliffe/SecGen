@@ -33,6 +33,11 @@
   <read_fact>history_leaked_filenames</read_fact>
   <read_fact>history_commit_message</read_fact>
   <read_fact>history_removal_commit_message</read_fact>
+  <!-- optional cosmetic repository identity (immersion). All default to the historical
+       values, so scenarios that do not set them are unaffected. -->
+  <read_fact>repo_name</read_fact>
+  <read_fact>commit_author_name</read_fact>
+  <read_fact>commit_author_email</read_fact>
 
   <!-- [0] leaks flag to home directory, [1..n] leak messages to gitlist repository (visible through the webapp) -->
   <default_input into="port">
@@ -70,6 +75,17 @@
 
   <default_input into="history_removal_commit_message">
     <value/>
+  </default_input>
+
+  <!-- cosmetic repository identity: unchanged historical defaults -->
+  <default_input into="repo_name">
+    <value>secret_files</value>
+  </default_input>
+  <default_input into="commit_author_name">
+    <value>gitlist</value>
+  </default_input>
+  <default_input into="commit_author_email">
+    <value>git@list.com</value>
   </default_input>
 
   <!--optional vulnerability details-->

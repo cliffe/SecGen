@@ -154,6 +154,24 @@ These VMs are provisioned by the Break Escape game engine via SecGen integration
       <!-- Flag order is document order: the recon (pre_leak) flag is written first so it
            numbers before the credentials flag. Within-module order needs a build to confirm. -->
 
+      <!-- Immersion: make the box read as SAFETYNET's own internal source server, not a
+           generic lab box. The repository is the mission-tooling repo the README names,
+           and every commit is authored by the ops service account the mole worked
+           through (svc-planning), so `git log` and GitList's commit view reinforce
+           "my account, my terminal, my mail" (R22) instead of showing a stock
+           "gitlist <git@list.com>" identity. Cosmetic only: the unauthenticated RCE
+           enumerates whatever repository exists, so the kill chain is unchanged. The
+           m08 solve fetches this repo name and digs its on-disk history. -->
+      <input into="repo_name">
+        <value>mission-tooling</value>
+      </input>
+      <input into="commit_author_name">
+        <value>svc-planning</value>
+      </input>
+      <input into="commit_author_email">
+        <value>svc-planning@safetynet.internal</value>
+      </input>
+
       <!-- The repo's "real" files, committed in the initial commit and browsable in
            GitList. README.md carries the recon flag; the python stub and the example
            env file make the repo read as a used project and point at planning_sync.env,

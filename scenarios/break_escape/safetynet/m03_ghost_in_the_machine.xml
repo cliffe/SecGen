@@ -183,6 +183,15 @@ The operational records are not here. They sit on the legacy distcc box.</value>
          tiers and prices without the buyers or reserved Phase 2 stock (those stay
          in the game's wall-safe catalogue). -->
     <service module_path=".*/http/parameterised_website">
+      <!-- Immersion: the training-lab web host wears WhiteHat Security's legitimate
+           front (the same firm, address and 2010/Sterling backstory the player meets
+           in game: a respectable Cardiff pentest shop). The rendered page is clean
+           corporate cover; Zero Day's exploit price board lives only in the HTML
+           source comments below. No flag is generated here, so flag count/order is
+           unchanged. business_name/motto/intro drive the visible index + contact page. -->
+      <input into="organisation">
+        <value>{"business_name":"WhiteHat Security Services","business_motto":"Security Through Economics","business_address":"Callaghan Square, Cardiff, CF10 5BT","domain":"whitehat-security.co.uk","office_telephone":"029 2010 0101","office_email":"enquiries@whitehat-security.co.uk","industry":"Penetration Testing and Security Audit","manager":{"name":"Victoria Sterling","address":"Callaghan Square, Cardiff, CF10 5BT","phone_number":"029 2010 0102","email_address":"v.sterling@whitehat-security.co.uk","username":"v_sterling","password":""},"employees":[],"product_name":"Security assessments","intro_paragraph":["Independent penetration testing and security audit since 2010. Retail, logistics, local government and financial services. Clean reports, happy clients, discretion as standard.","This host is part of WhiteHat's isolated research and training network. Authorised staff only -- everything on this segment is rehearsal. If you can read this and you are not on the research team, you are in the wrong place."]}</value>
+      </input>
       <input into="strings_to_leak">
         <!-- Plain HTML comment: the web host's banner, carrying the SAME flag 1
              value as the FTP login banner (datastore, not a second generator). -->

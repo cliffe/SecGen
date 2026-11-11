@@ -125,12 +125,17 @@ These VMs are provisioned by the Break Escape game engine via SecGen integration
     <system_name>qdc_research_server</system_name>
     <base distro="Debian 10" type="desktop" name="KDE"/>
 
+    <!-- Immersion: the research portal must read as Quantum Dynamics Corporation, the
+         Home Office quantum-crypto contractor near Cambridge the player is sent into,
+         not a random generated business. This single organisation datastore drives the
+         Bludit site title/slogan/about/what-we-do/contact pages AND the bonus zip
+         password (manager name). Public-facing copy only -- Project Heisenberg stays
+         RESTRICTED and is never named here; it surfaces only in the staged manifest and
+         the Architect's authorisation after exploitation. The public portal contact is
+         Owen Gallagher (IT), the same on-call admin whose rushed handover note leaks the
+         login, so the bonus archive ends up locked with his name. No flag change. -->
     <input into_datastore="organisation">
-      <encoder type="line_selector">
-        <input into="file_path">
-          <value>lib/resources/structured_content/organisations/json_organisations</value>
-        </input>
-      </encoder>
+      <value>{"business_name":"Quantum Dynamics Corporation","business_motto":"Securing tomorrow's communications, today.","business_address":"Unit 7, Cambridge Science Park, Milton Road, Cambridge, CB4 0FX","domain":"quantumdynamics.co.uk","office_telephone":"01223 740 900","office_email":"research-portal@quantumdynamics.co.uk","industry":"Applied Cryptographic Research","manager":{"name":"Owen Gallagher","address":"Unit 7, Cambridge Science Park, Milton Road, Cambridge, CB4 0FX","phone_number":"01223 740 904","email_address":"o.gallagher@quantumdynamics.co.uk","username":"o_gallagher","password":""},"employees":[],"product_name":"Post-quantum key management","intro_paragraph":["Quantum Dynamics Corporation is a research contractor to UK government and critical national infrastructure, specialising in post-quantum (quantum-safe) cryptography and key management.","This portal hosts internal research notes and handover documentation for the engineering team. Access is restricted to QDC staff and cleared partners. Material on this system may be classified -- do not remove, forward or discuss it outside QDC."]}</value>
     </input>
 
     <vulnerability module_path=".*/bludit_upload_images_exec">

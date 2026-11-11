@@ -246,6 +246,14 @@ Week 1: Network bridge deployment
 Week 3: Emergency storage reconnaissance
 Week 6: ProFTPD exploit execution
 
+SITE SELECTION:
+--------------
+St. Catherine's was not the weakest target of the 214 hospitals surveyed.
+It was the cleanest. Seven written warnings from one administrator
+(G. Whitlock, IT Systems), each one answered, each one deferred by the CTO.
+The paper trail is immaculate. When this becomes public there will be no
+argument about whether they knew. That is the whole point of the choice.
+
 INSIDE CONTACT:
 --------------
 Status: ACTIVE. Unpaid. The contact came to us -- a grievance of their own,
@@ -276,6 +284,8 @@ RANSOM:
 ------
 Amount: £150,000, payable in BTC at the prevailing rate
 Payment wallet: bc1q7cyrfmckn2ewz5m78ts6jt9lcfhfwcvzefm27k
+Settlement: Syndicate cut 30% / Operator cut 70%. Architect approval: CONFIRMED.
+Projected success at this site: 94% (upgrades deferred, systems unpatched).
 
 OPERATIONAL SECURITY:
 --------------------

@@ -121,8 +121,29 @@ These VMs are provisioned by the Break Escape game engine via SecGen integration
           <value>operation_shatter/deployment_notes</value> <!-- flag2: directory traversal intel -->
         </input>
         <input into="strings_to_leak">
-          <generator type="flag_generator" /> <!-- flag1: decryption key for the ENTROPY archive -->
-          
+          <!-- flag1: decryption key for the ENTROPY archive. Framed as a key-issue record so the
+               file reads like real ENTROPY key material rather than a bare token. The record text and
+               the flag are concatenated into ONE string (delim "\n", exactly parallel to
+               deployment_notes below), so derek still resolves to 2 strings_to_leak zipping cleanly
+               onto the 2 leaked_filenames -- no change to flag path, value or order. The player reads
+               the record and submits the KEY line at the in-game archive station (scenario.json.erb
+               ~line 2128, "Submit it here to unlock"). -->
+          <encoder module_path="modules/encoders/selector/concatenate"> <!-- DECRYPTION_KEY -->
+            <input into="strings_to_encode">
+              <value>ENTROPY ENCRYPTED ARCHIVE -- DECRYPTION KEY
+Classification: ENTROPY -- EYES ONLY
+Cell: SOCIAL FABRIC   Operative: D. Lawson (derek)
+
+This key decrypts the ruggedised ENTROPY archive staged for Operation Shatter.
+Separate custody from the launch authorization code -- do NOT combine the two.
+No second copy exists. Launch window: Sunday 06:00 UTC.
+-- The Architect
+
+KEY:</value>
+              <generator type="flag_generator" /> <!-- flag1: archive decryption key -->
+            </input>
+          </encoder>
+
           <encoder module_path="modules/encoders/selector/concatenate"> <!-- deployment_notes -->
             <input into="strings_to_encode">
               <value>OPERATION SHATTER -- DEPLOYMENT NOTES

@@ -118,7 +118,10 @@ These VMs are provisioned by the Break Escape game engine via SecGen integration
            flag_4 = hcvault  (read by hcops via sudo — privilege escalation) -->
     <input into_datastore="user_accounts_desktop">
 
-      <!-- main operator: sudoer, no flag. Its sudo rights are the priv-esc path to flag_4. -->
+      <!-- main operator: sudoer, no flag. Its sudo rights are the priv-esc path to flag_4.
+           Carries a themed ops runbook only (no flag_generator), so the estate stays a four-flag
+           scenario. The runbook reinforces the intended priv-esc route (ops -> hc-vault via sudo),
+           a findable hint, not a red herring. -->
       <generator type="account">
         <input into="username">
           <datastore access="0">usernames</datastore>
@@ -128,6 +131,21 @@ These VMs are provisioned by the Break Escape game engine via SecGen integration
         </input>
         <input into="super_user">
           <value>true</value>
+        </input>
+        <input into="leaked_filenames">
+          <value>ops_runbook.txt</value>
+        </input>
+        <input into="strings_to_leak">
+          <value>HASHCHAIN BACKEND -- OPS RUNBOOK (hc-ops)
+New starter notes. Keep off customer-facing boxes.
+
+- Service accounts (hc-auth, hc-ledger, hc-findb) were set from the starter word
+  list during the migration. Yes, some share a password. On the backlog to rotate.
+- This ops account can sudo to anything (ALL=(ALL) ALL). That is how we read the
+  cold-storage index on hc-vault without the vault password -- the vault login is
+  the long generated one in the safe, nobody types it.
+- Do NOT leave the shadow world-readable again after maintenance. (It is. Fix it.)
+  -- HashChain IT</value>
         </input>
       </generator>
 
@@ -142,10 +160,23 @@ These VMs are provisioned by the Break Escape game engine via SecGen integration
         <input into="super_user">
           <value>false</value>
         </input>
+        <!-- Note wrapped in a concatenate encoder (not a bare <value>) so document order is preserved:
+             SecGen hoists bare <value> strings ahead of generators, which would scramble the
+             filename->content pairing. Encoders keep order, so [note, flag] pairs with [README, flag]. -->
         <input into="leaked_filenames">
+          <value>auth_service/README.txt</value>
           <value>flag</value>
         </input>
         <input into="strings_to_leak">
+          <encoder module_path="modules/encoders/selector/concatenate">
+            <input into="strings_to_encode">
+              <value>HASHCHAIN AUTH SERVICE (hc-auth) -- service account home
+This account fronts customer logins for the exchange. Password was set from the
+ops "starter list" during the migration and never rotated. Note for whoever
+inherits this: the ledger service (hc-ledger) was handed the SAME password "to
+save time" -- if you can get in here you can get in there. Flagged to I.V.; closed.</value>
+            </input>
+          </encoder>
           <generator type="flag_generator" /> <!-- flag_1: first backend account cracked -->
         </input>
       </generator>
@@ -189,8 +220,15 @@ Closed as accepted. If you are reading this, the risk was not theoretical.</valu
         <input into="super_user">
           <value>false</value>
         </input>
+        <!-- Each note is a concatenate encoder (not a bare <value>) so document order is preserved and
+             the filename->content pairing stays 1:1 (bare values are hoisted ahead of the flag
+             generator and would scramble it). Order: README, network_analysis, settlement_log,
+             custody_index, then the flag last. -->
         <input into="leaked_filenames">
           <value>transaction_records/README</value>
+          <value>transaction_records/network_analysis.txt</value>
+          <value>transaction_records/settlement_log.txt</value>
+          <value>transaction_records/custody_index.csv</value>
           <value>flag</value>
         </input>
         <input into="strings_to_leak">
@@ -198,9 +236,59 @@ Closed as accepted. If you are reading this, the risk was not theoretical.</valu
             <input into="strings_to_encode">
               <value>HASHCHAIN -- TRANSACTION LEDGER (RESTRICTED)
 Every deposit, conversion and withdrawal the exchange has ever brokered.
-Inbound wallets of interest: 1ENTROPY2RansomInc, 1ENTROPY5InsiderTh.
+Inbound wallets of interest: 1ENTROPY2RansomInc, 1ENTROPY3ZeroDaySy, 1ENTROPY1SocialFab.
 Outbound destination of interest: 1ARCHITECT9FUND.
 This account is the financial database. Its flag confirms full read access.</value>
+            </input>
+          </encoder>
+          <encoder module_path="modules/encoders/selector/concatenate">
+            <input into="strings_to_encode">
+              <value>ENTROPY FINANCIAL NETWORK -- TRANSACTION ANALYSIS
+(P. Raghavan, draft. Not for Irina yet.)
+
+1. INTO OUR MIXER (public chain, Bitcoin side) -- paying into hc-mixer-01 (times UTC):
+   14 Jul  21:40  1ENTROPY2RansomInc  $2,400,000  ransomware proceeds, pooled across victims
+   29 Jul  22:10  1ENTROPY3ZeroDaySy  $1,200,000  exploit sales
+   03 Aug  20:05  1ENTROPY1SocialFab    $680,000  disinformation contracts
+   (Plus about $12M more since January from wallets with no names on them. Same pattern.)
+
+2. OUT OF THE MIXER
+   The middle is Monero. What comes out is a fresh Bitcoin credit into one of our own
+   cold-storage slots, and the chain can't tell me which slot. The settlement log can.
+
+3. OUT OF WHEREVER IT LANDED
+   04 Aug  $3,200,000 split six ways. Advances to 1ARCHITECT9FUND. Paid on CEO authorisation.
+
+(Margin: every cell seems to use us. Are we the bank for all of them?)</value>
+            </input>
+          </encoder>
+          <encoder module_path="modules/encoders/selector/concatenate">
+            <input into="strings_to_encode">
+              <value>hc-mixer-01 :: SETTLEMENTS TO CUSTODY
+(mixer output credited to a cold slot, credits over $100,000, times UTC)
+
+date    time   slot   credit (USD)
+14 Jul  23:05  2207     $310,400
+15 Jul  04:20  4471   $2,364,000
+30 Jul  05:05  4471   $1,182,000
+04 Aug  03:35  4471     $669,800
+04 Aug  09:00  8846     $133,750
+
+Exception note: every flagged deposit into the mixer this month was released by the
+same account (CTO override). Slot 4471 has no customer behind it. -- P.R.</value>
+            </input>
+          </encoder>
+          <encoder module_path="modules/encoders/selector/concatenate">
+            <input into="strings_to_encode">
+              <value># HashChain cold-storage custody index. Labels are whatever the account
+# manager typed. Trust the money, not the label. -- I.V.
+slot,label,opened_by,opened
+2207,OTC desk settlement,CEO,2023-02
+3815,customer reserve B,CEO,2022-09
+4471,client escrow,ops,2025-05
+5093,client escrow,CEO,2025-04
+6120,market-making float,CEO,2024-08
+8846,fees,ops,2024-01</value>
             </input>
           </encoder>
           <generator type="flag_generator" /> <!-- flag_3: financial database access -->
@@ -220,10 +308,46 @@ This account is the financial database. Its flag confirms full read access.</val
         <input into="super_user">
           <value>false</value>
         </input>
+        <!-- Notes as concatenate encoders (order-preserving) with the flag generator last, so the flag
+             lands in cold_storage/full_access_flag and the two notes in their named files. -->
         <input into="leaked_filenames">
+          <value>cold_storage/THE_ARCHITECTS_FUND.txt</value>
+          <value>cold_storage/custody_procedure.txt</value>
           <value>cold_storage/full_access_flag</value>
         </input>
         <input into="strings_to_leak">
+          <encoder module_path="modules/encoders/selector/concatenate">
+            <input into="strings_to_encode">
+              <value>THE ARCHITECT'S FUND -- STRATEGIC ALLOCATION
+CUSTODY: cold slot 4471 (1ARCHITECT9FUND)
+AUTHORISED: Satoshi's Ghost (Crypto Anarchists), for The Architect
+
+Advances paid (4 August): $3.2M
+Balance pending: $12.8M USD (BTC equivalent)
+Release: pre-signed by Satoshi's Ghost. Goes out on its own in 72 hours unless the
+         wallet is moved first.
+
+PER CELL (advance paid / balance pending):
+- Critical Mass: $0.8M / $3.2M. Pacific Northwest grid control
+- Ghost Protocol: $0.4M / $1.5M. Operation Fracture (election data centre)
+- Social Fabric: $0.5M / $2.1M. Operation Fracture, with Ghost Protocol
+- Supply Chain Saboteurs: $0.3M / $1.3M. Operation Trojan Horse
+- Digital Vanguard: $0.5M / $1.9M. Operation Meltdown (hospitals)
+- Zero Day Syndicate: $0.7M / $2.8M. Operation Meltdown, ordnance
+
+OPERATION: The Architect's Masterpiece    COORDINATOR: The Architect
+Projected casualties (cells' own estimates, all operations): 350-600</value>
+            </input>
+          </encoder>
+          <encoder module_path="modules/encoders/selector/concatenate">
+            <input into="strings_to_encode">
+              <value>HASHCHAIN COLD STORAGE -- CUSTODY PROCEDURE (hc-vault)
+Air-gapped signing keys live off this host. This account holds the slot index and
+release authorisations only. Openings are logged to the exchange's on-call phone.
+A slot opens by its four-digit number at the custody console in the data centre:
+one number per try, a wrong one shuts the pad. Trust the money, not the label. -- I.V.</value>
+            </input>
+          </encoder>
           <generator type="flag_generator" /> <!-- flag_4: complete network access via priv-esc -->
         </input>
       </generator>
@@ -265,10 +389,19 @@ This account is the financial database. Its flag confirms full read access.</val
          + leaked_filenames); port defaults to random_unregistered_port. -->
     <vulnerability module_path=".*/apache_druid_rce">
       <input into="strings_to_leak">
-        <value>HASHCHAIN BACKEND -- you have code execution via the analytics service.
-From here, read the world-readable shadow file and take the hashes offline to
-crack. The accounts you want are the service accounts, not root.</value>
+        <value>HASHCHAIN EXCHANGE -- hc-analytics-01 (Apache Druid dashboards, backend LAN)
+# This is the no-auth analytics console Priya runs the transaction reports on.
+# If you are reading this, you have code execution on the backend estate.
+#
+# From here: the shadow file was left world-readable (another "we'll fix it after
+# the migration" job). Read it, take the service-account hashes offline and crack
+# them. The accounts you want are the HashChain service accounts (hc*), not root.
+# Start with hc-auth; the ledger service shares its password. The money is on
+# hc-findb. Cold storage (hc-vault) is reachable from the ops account over sudo.
+#   -- HashChain IT, backend runbook (do not leave on the box)</value>
       </input>
+      <!-- Filename kept as druid_foothold_note: the m06 solve reads this note back by exact name
+           (find -name druid_foothold_note) in its foothold proof, so only the CONTENT is themed. -->
       <input into="leaked_filenames">
         <value>druid_foothold_note</value>
       </input>

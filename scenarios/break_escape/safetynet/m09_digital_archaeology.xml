@@ -382,7 +382,13 @@ Source file: HL2015-0477
         2 albion_memo            = Tesseract's memo to the Disposition Board (no flag)
         3 vendor_notice_draft    = his unsent vendor notice (no flag)
         4 vulnerability_holdings = the catalogue holdings record for the Albion flaw (no flag)
-      strings_to_pre_leak is set empty so no generated text appears on the public page.
+      strings_to_pre_leak carries an authored, diegetic landing page for Tomb Beta's
+      enrolment site (immersion): the game's enrolment binder sends the player to
+      browse this web service, so the public page reads as the owner's old, sealed
+      host-enrolment node rather than a blank default. It holds no flag (pre_leak has
+      no flag_generator) and no login hint (entry is the unauthenticated RCE, not a
+      credential), so the attack chain is unchanged. The owner stays anonymous on the
+      public page; his name is on the staff credential in the service account's home.
       The Albion documents are aligned to the game's specifics (R37): ref
       VH-2017-0312, Carrow Controls RM-4, 14 March 2017, ~400 UK sites, the
       Disposition Board.
@@ -393,7 +399,19 @@ Source file: HL2015-0477
         <value>8016</value>
       </input>
       <input into="strings_to_pre_leak">
-        <value></value>
+        <value>TOMB BETA // host enrolment service
+
+  Internal host-enrolment node for the Tomb Beta workshop.
+  This service signed workshop hosts into the register and ran
+  under the site's own web service account.
+
+  Register ............. SEALED
+  Workshop ............. decommissioned
+  Hosts on file ........ archived on the owner's departure
+  Maintainer ........... post vacant, seven years
+  Last status .......... node still powered, nothing scheduled
+
+  No listings are published here.</value>
       </input>
       <input into="leaked_filenames">
         <value>enrolment_record</value>      <!-- flag3 -->

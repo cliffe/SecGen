@@ -24,19 +24,20 @@ Virtual machines for the Break Escape SAFETYNET mission 10 narrative experience.
 - Runs the release service inside a privileged container, behind a bind shell on a random port
 - Two generated operative accounts. Neither is an administrator. The shell is a container, not the host.
 - Root's home on the host beneath the container holds flag 3 and the release service's arming / kill configuration (how six o'clock is armed and what stops it; the trigger itself is on the core console). The container itself holds no flag.
+- The shift operator's home holds the handover log, which names the port the release service's bind shell listens on
 
 **core_host** (climax stage two)
 - Debian 12 desktop system
 - Runs a bind shell on a random port that drops into an older chroot jail
-- Root's home on the host beneath the jail holds flag 4, the stolen copy of the database and the live line into the Citadel's vault. The jail itself holds no flag.
+- Root's home on the host beneath the jail holds a sealed archive addressed to the agent, holding flag 4 and a short note, opened only with the core access code the envelope on the desk carries. The stolen copy of the database and the live line into the Citadel's vault are here too. The jail itself holds no flag.
 
 **attack_vm**
 - Kali Linux penetration testing platform
-- The forward post's terminal, the only attack box
+- HaX's field console (SAFETYNET kit), racked at the gate, in the server hall and in the core; the only attack box
 
 ## Flags
 
-Flag 1 and flag 2 are submitted at the forward post's terminal and the server-hall console. Flag 3 is submitted at the server-hall console. Flag 4 is submitted at the core host terminal, after the clock is stopped.
+Flag 1 and flag 2 are submitted at the forward post's terminal and the server-hall console. Flag 3 is submitted at the sealed section's hatch in the server hall. Flag 4 is submitted at the core host terminal, after the clock is stopped.
 
 ## Integration with Break Escape
 
@@ -150,6 +151,13 @@ These VMs are provisioned by the Break Escape game engine via SecGen integration
         <value>secmon</value>
       </input>
 
+      <!-- Pin the monitoring console port. 8338 is the module default, but pinning it makes the
+           game/VM contract explicit: this MUST equal monitor_console_port in the game ERB, which
+           the maintenance tag (forward post) hands the player. -->
+      <input into="port">
+        <value>8338</value>
+      </input>
+
       <!-- flag 1: the monitoring service account's home, reached by the command-injection foothold -->
       <input into="leaked_filenames">
         <value>monitor_status</value>
@@ -226,6 +234,13 @@ FIRST ENTRIES. SEATTLE.
     <system_name>release_host</system_name>
     <base distro="Debian 12" type="desktop" name="KDE"/>
 
+    <!-- The release service's bind-shell port, per build. The handover log in relops' home names
+         it, and nc_backdoor_docker_esc listens on it. The player reads it off the log, not from the
+         game, and asserts it matches the open port a scan finds. -->
+    <input into_datastore="release_service_port">
+      <generator module_path=".*/random_unregistered_port"/>
+    </input>
+
     <!-- Two operative accounts, neither an administrator; no root login over SSH.
          R34: the first is named relops with the duty-sheet password (relops / Release!Shift25),
          so the operator duty card the game hands out names a real login on this host. The second
@@ -243,11 +258,28 @@ FIRST ENTRIES. SEATTLE.
         <input into="super_user">
           <value>false</value>
         </input>
+        <!-- R32: the handover log in relops' home names the release service's port, where HaX's
+             hatch steer points ("the log it points to says where the service listens"). The port
+             value is the per-build release_service_port datastore, so the player must read the log
+             on the VM (it is not handed out by the game). Concept level only, no technique. -->
         <input into="leaked_filenames">
-          <value></value>
+          <value>handover_log</value>
         </input>
         <input into="strings_to_leak">
-          <value></value>
+          <encoder module_path="modules/encoders/selector/concatenate">
+            <input into="delim">
+              <value>&#10;</value>
+            </input>
+            <input into="strings_to_encode">
+              <value>RELEASE SERVICE. HANDOVER LOG. NIGHT SHIFT, DAY 12-13.
+The service runs in its container. Don't touch the host under it.
+The arming state is on the host. The trigger is on the core console, not here.
+Sign below at handover.
+  relops  22:00  signed on.
+Release service listens on port:</value>
+              <datastore>release_service_port</datastore>
+            </input>
+          </encoder>
         </input>
       </generator>
       <generator type="account">
@@ -311,6 +343,11 @@ FIRST ENTRIES. SEATTLE.
          stops it) is seeded in root's home beside the flag, where HaX's hatch steer points. Concept
          level only, no technique. -->
     <vulnerability module_path=".*/nc_backdoor_docker_esc">
+      <!-- The bind shell listens on the per-build release_service_port, which the handover log in
+           relops' home names. -->
+      <input into="port">
+        <datastore>release_service_port</datastore>
+      </input>
       <input into="leaked_filenames">
         <value>docker_flag</value>
         <value>release_kill_config</value>
@@ -319,7 +356,7 @@ FIRST ENTRIES. SEATTLE.
         <generator type="flag_generator"/>
         <value>RELEASE SERVICE. ARMING / KILL CONFIGURATION.
 
-The publication is armed to release at 06:00 UTC, day 13, city by city, from the release servers on this site. The early-access shares go an hour and a half ahead, at 04:00 UTC.
+The publication is armed to release at 06:00 UTC, day 13, city by city, from the release servers on this site. The early-access shares go two hours ahead, at 04:00 UTC.
 
 What stops it:
 - The release is held on a single trigger. Nothing goes until the trigger is thrown.
@@ -352,21 +389,18 @@ Staged by the release operators. The shift is on the operators' duty sheet.</val
       </input>
     </utility>
 
-    <!-- flag 4: root's home on the host, beneath the chroot jail.
-         The chroot escape yields host root, so the core access key (TSRCT-CORE-9F21) corresponds to
-         no Unix credential and cannot gate this flag VM-side; it stays a narrative prop (the envelope).
-         The hard rule is held by the submit-station room-gating. See the VM review report.
-         R32: the core host's file index (matching the game's "Core Host: File Index") and the unsent
-         Albion / Carrow Controls vendor notice are seeded in root's home beside the flag, where the
-         description and Tesseract's steer point. Concept level only, no technique. -->
+    <!-- The chroot escape yields host root and seeds root's home with the core host's file index
+         (matching the game's "Core Host: File Index") and the unsent Albion / Carrow Controls vendor
+         notice, where the description and Tesseract's steer point. flag 4 is NO LONGER leaked here:
+         it now lives in the sealed archive below (zip_file), gated by the core access code the
+         envelope hands the player, so reaching host root is not enough. Concept level only, no
+         technique. This module now leaks exactly two files and no flag. -->
     <vulnerability module_path=".*/nc_backdoor_chroot_esc">
       <input into="leaked_filenames">
-        <value>chroot_flag</value>
         <value>core_file_index</value>
         <value>vendor_notice_albion</value>
       </input>
       <input into="strings_to_leak">
-        <generator type="flag_generator"/>
         <value>CORE HOST. FILE INDEX.
 
 catalogue         92,460 entries. Theirs, with working detail.
@@ -379,7 +413,8 @@ purge             Armed. Both copies, or nothing.
 alpha             Closed. Papers to Helena.
 beta              Closed. Server left running in Helena. For whoever came.
 notice, albion    2017. Drafted. Not sent.
-reading, for 0x00 A copy. The original went to Helena.</value>
+reading, for 0x00 A copy. The original went to Helena.
+for the agent     Sealed. The code is on my desk.</value>
         <value>VENDOR NOTICE. ALBION / CARROW CONTROLS. DRAFT. NOT SENT.
 
 To: Carrow Controls, product security.
@@ -390,6 +425,46 @@ A flaw in the RM-4 remote-management module lets an unauthenticated operator tak
 This notice was drafted so the vendor could issue a fix. It was never sent. SAFETYNET disposition at the time: retain for operational value.
 
 Drafted 2017. Held. Not sent.</value>
+      </input>
+    </vulnerability>
+
+    <!-- flag 4: the sealed archive Tesseract left for the agent, in root's home (0600, root-owned),
+         readable only after the chroot escape. The zip is password-protected with the core access
+         code TSRCT-CORE-9F21, which the game's Core Access Code envelope hands the player: this
+         MUST equal core_access_key in the game ERB, and the password is case-sensitive. Reaching
+         host root is not enough; without the envelope's code the archive stays sealed, so the flag
+         cannot be read until the player has physically reached the core. The archive also carries
+         Tesseract's short note to 0x00, read on the way to the flag. zip_file writes a real binary
+         zip (leak_to_file base64-decodes it). core_host must still have exactly one flag (this one);
+         check flag_hints.xml after the build. -->
+    <vulnerability module_path=".*/zip_file">
+      <input into="leaked_filename">
+        <value>for_the_agent.zip</value>
+      </input>
+      <input into="storage_directory">
+        <value>/root/</value>
+      </input>
+      <input into="mode">
+        <value>0600</value>
+      </input>
+      <input into="base64_file">
+        <generator type="zip_file_generator">
+          <input into="file_name">
+            <value>for_the_agent.txt</value>
+          </input>
+          <input into="password">
+            <value>TSRCT-CORE-9F21</value>
+          </input>
+          <input into="strings_to_leak">
+            <value>FOR THE AGENT. FROM A.T.
+
+You came down through my walls. I built them to be come through, by someone who would read what was behind them.
+Everything on this box is true. The notice is real. I wrote it in 2017 and was told to hold it.
+The trigger is on my console. Come and talk to me before you touch it.
+</value>
+            <generator type="flag_generator"/>
+          </input>
+        </generator>
       </input>
     </vulnerability>
 

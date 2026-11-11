@@ -32,4 +32,16 @@ class shellshock::install{
     unless  => '/bin/bash --version | grep -q "version 4\.1"',
     require => Exec['configure-make-make-install-bash'],
   }
+
+  # The vulnerable bash 4.1 cannot parse Debian's modern bash-completion script
+  # (it uses "[[ -v name ]]", unsupported in 4.1), so every interactive login
+  # prints syntax errors. Remove the package (nothing depends on it) so logins
+  # on this box are clean.
+  exec { 'remove-incompatible-bash-completion':
+    command     => "apt-get remove -y bash-completion",
+    onlyif      => "dpkg-query -W -f='\${Status}' bash-completion 2>/dev/null | grep -q 'install ok installed'",
+    path        => ['/usr/bin', '/bin', '/usr/sbin', '/sbin'],
+    environment => ['DEBIAN_FRONTEND=noninteractive'],
+    provider    => shell,
+  }
 }

@@ -1,0 +1,25 @@
+#!/bin/sh
+# SecGen webdav_file_upload_cgi dispatcher.
+#
+# mod_actions runs this CGI whenever a script with one of the configured
+# extensions is requested under the WebDAV docroot, passing the requested file's
+# real path in PATH_TRANSLATED. We run that file through the interpreter named in
+# its #! line, so a script uploaded by an unauthenticated WebDAV PUT (mode 0644,
+# no execute bit) still executes. This is the whole point of the module: it turns
+# the writable collection into a code-execution sink.
+printf 'Content-Type: text/plain\r\n\r\n'
+
+target="$PATH_TRANSLATED"
+[ -n "$target" ] && [ -f "$target" ] || { echo 'secgen-dav-cgi: target not found'; exit 0; }
+
+shebang=$(head -n1 "$target" | tr -d '\r')
+case "$shebang" in
+  '#!'*)
+    interp=${shebang#\#!}
+    # word-split the interpreter line (e.g. "/usr/bin/perl -w") on purpose
+    exec $interp "$target"
+    ;;
+  *)
+    exec /bin/sh "$target"
+    ;;
+esac

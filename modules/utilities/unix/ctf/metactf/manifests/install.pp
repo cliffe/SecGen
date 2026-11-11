@@ -26,10 +26,12 @@ class metactf::install {
   }
 
   # For now just build all of the binaries.
+  # src_angr's generator needs python2 (not available on every base); templite is bundled alongside it
   exec { 'build src_angr binaries':
     cwd     => "$install_dir/src_angr/",
     logoutput => on_failure,
     command => "/usr/bin/make",
+    onlyif  => 'which python2',
     require => Package['bc'],
   }
 
@@ -74,6 +76,14 @@ class metactf::install {
     command => "/usr/bin/make",
     logoutput => true,
     require => [Exec['src_sse chmod executable'], Package['bc']],
+  }
+
+  # Every build leaves a filled-in program.c holding that VM's passwords. configure.pp installs
+  # what it needs as root, so students have no reason to read this tree.
+  exec { 'restrict metactf build tree':
+    command => "chmod -R go-rwx $install_dir",
+    require => [Exec['build src_angr binaries'], Exec['build src_csp binaries'],
+                Exec['build src_malware binaries'], Exec['build src_sse binaries']],
   }
 
 }

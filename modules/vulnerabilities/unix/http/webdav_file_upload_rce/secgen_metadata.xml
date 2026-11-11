@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>Apache WebDAV Upload Remote Shell (randomised PHP/CGI)</name>
+  <author>Tom Shaw</author>
+  <module_license>MIT</module_license>
+  <description>
+    Composition module that builds a complete, solvable WebDAV-to-shell chain and
+    randomises how the shell is obtained. It selects the writable, unauthenticated
+    WebDAV collection (apache_webdav_upload) and exactly one execution enabler at
+    random: PHP (webdav_file_upload_php) or CGI (webdav_file_upload_cgi). The
+    attacker PUTs a web shell of the matching kind into the collection and runs
+    commands as the Apache user. Drop this single module into a scenario to get a
+    randomised upload-to-RCE target; it declares no resources of its own.
+  </description>
+
+  <type>remote</type>
+  <privilege>user_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <cvss_base_score>8.8</cvss_base_score>
+  <cvss_vector>AV:N/AC:L/Au:N/C:P/I:P/A:P</cvss_vector>
+  <reference>https://httpd.apache.org/docs/2.4/mod/mod_dav.html</reference>
+  <reference>https://owasp.org/www-community/attacks/Webdav</reference>
+
+  <hint>Unauthenticated WebDAV PUT writes a file that Apache then executes (PHP or CGI): upload a matching web shell to get command execution as www-data.</hint>
+
+  <!-- Pull in exactly one execution enabler at random. The module_path regex
+       matches both enablers; the resolver shuffles and selects one. Each enabler
+       in turn requires apache_webdav_upload and the apache service, so this one
+       line resolves the whole chain. -->
+  <requires>
+    <module_path>.*/webdav_file_upload_(php|cgi)</module_path>
+  </requires>
+
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>server-side misconfiguration and vulnerable components</keyword>
+    <keyword>Vulnerable defaults</keyword>
+  </CyBOK>
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION</keyword>
+  </CyBOK>
+</vulnerability>

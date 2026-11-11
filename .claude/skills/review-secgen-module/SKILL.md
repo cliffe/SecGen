@@ -175,7 +175,19 @@ Sanity-check `<default_input>` generator choices:
 - `strings_to_leak` / `strings_to_pre_leak` → `message_generator` (or a nested generator/encoder producing text).
 - `leaked_filenames` / `pre_leaked_filenames` → `filename_generator` or a literal `<value>`.
 - `server_name` / usernames → `username_generator`.
+- Weak passwords in vulnerability modules → `<generator type="weak_password_generator"/>`, never a literal `<value>` (see below).
 - `port` → a literal `<value>` (e.g. `21`). Flag mismatches (e.g. a filename fact defaulting to a message generator).
+
+**Vulnerability modules must not hard-code weak passwords.** When writing a module, or reviewing one, flag any weak password set as a literal in `secgen_metadata.xml` (`<value>password123</value>`) or written directly into a manifest or template. A fixed password is the same on every build, so one published answer solves every copy. Declare it as an input instead:
+
+```xml
+<read_fact>known_password</read_fact>
+<default_input into="known_password">
+  <generator type="weak_password_generator"/>
+</default_input>
+```
+
+The manifest must read the value from `$secgen_parameters`, and the module's `secgen_test` must take it from `json_inputs` instead of assuming a fixed string. Only literals are in scope: leave a `strong_password_generator` default alone where the password is not part of the attack. The one exception is a vulnerability that *is* a specific vendor default or backdoor credential, where a different value would remove the vulnerability; the metadata should say so (for example in `<hint>` or `<solution>`).
 
 ### R8 — Manifest/metadata plumbing consistency
 
@@ -201,7 +213,7 @@ Report as a grouped list, most severe first. Use this shape:
 Severity guide:
 
 - **High**: a declared payload never reaches the attacker (R3/R4), the solution reachable pre-attack or the pre-leak clue unreachable (R4), credentials that don't match the live config or aren't obtainable by the intended method (R4b), a read fact with no default that isn't an intentional exception (R1), resource clashes (R5).
-- **Medium**: dead defaults/facts (R2/R6), wrong generator (R7), plumbing gaps (R8).
+- **Medium**: dead defaults/facts (R2/R6), wrong generator or a hard-coded weak password (R7), plumbing gaps (R8).
 - **Low**: metadata attribute polish (R9).
 
 End with an explicit walkthrough of the attack path and a verdict:

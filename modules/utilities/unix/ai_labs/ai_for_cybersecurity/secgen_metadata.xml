@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>AI for Cyber Security lab material</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>The CyBOK-funded AI-for-Cybersecurity notebooks (Anglia Ruskin University; Open Government Licence), unmodified at a fixed commit, in each account's home directory: lecturer and student notebooks on supervised, unsupervised and deep learning, spam detection, network anomaly detection, malware detection in network traffic and phishing domain detection.</description>
+
+  <type>ai_lab_material</type>
+  <platform>linux</platform>
+
+  <read_fact>accounts</read_fact>
+  <read_fact>repo_url</read_fact>
+  <read_fact>commit</read_fact>
+
+  <default_input into="repo_url">
+    <value>https://github.com/thomashaw/AI-for-Cybersecurity.git</value>
+  </default_input>
+
+  <default_input into="commit">
+    <value>acff4ff17e0ed981fb80271c0c8c941d6ebc0e08</value>
+  </default_input>
+
+  <requires>
+    <type>update</type>
+  </requires>
+  <requires>
+    <type>python_ml_env</type>
+  </requires>
+
+</utility>

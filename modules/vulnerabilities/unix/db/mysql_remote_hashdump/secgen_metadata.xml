@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>MySQL Remote Hash Dump</name>
+  <author>SecGen</author>
+  <module_license>MIT</module_license>
+  <description>MySQL/MariaDB configured to listen on all interfaces (bind-address = 0.0.0.0)
+    with a remote administrative account protected by a weak password. An attacker who
+    guesses or captures the credentials can connect over the network and read mysql.user,
+    dumping every account's password hash for offline cracking.</description>
+
+  <type>db</type>
+  <privilege>info_leak</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>username</read_fact>
+  <read_fact>password</read_fact>
+
+  <!-- Weak remote DBA credentials, overridable from a datastore in a scenario. -->
+  <default_input into="username">
+    <value>dbadmin</value>
+  </default_input>
+
+  <default_input into="password">
+    <generator type="weak_password_generator"/>
+  </default_input>
+
+  <reference>https://www.rapid7.com/db/modules/auxiliary/scanner/mysql/mysql_hashdump</reference>
+
+  <msf_module>auxiliary/scanner/mysql/mysql_hashdump</msf_module>
+
+  <!-- Pulls in the MySQL/MariaDB service (Debian service on bookworm/buster,
+       the kali-compatible one on Kali). This module must not declare
+       software_name=mysql itself, or the requirement self-satisfies and the
+       service is never added. -->
+  <requires>
+    <software_name>mysql</software_name>
+  </requires>
+
+  <CyBOK KA="NS" topic="Network protocols and vulnerability">
+    <keyword>DATABASE</keyword>
+    <keyword>AUTHENTICATION</keyword>
+  </CyBOK>
+
+</vulnerability>

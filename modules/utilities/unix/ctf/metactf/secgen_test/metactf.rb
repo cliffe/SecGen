@@ -29,6 +29,9 @@ class MetactfTest < PostProvisionTest
     challenges = Array(json_inputs['challenge_list']).map { |c| JSON.parse(c) }
     skip!('no account or challenge_list input') if user.nil? || challenges.empty?
 
+    # the build tree holds filled-in program.c files containing this VM's passwords
+    tier(2) { test_local_command('student cannot list the metactf build tree', 'ls /opt/metactf 2>&1; true', 'Permission denied', user: user) }
+
     challenges.each do |challenge|
       name = challenge['challenge_name']
       dir = "/home/#{user}/challenges/#{name}"
@@ -40,8 +43,8 @@ class MetactfTest < PostProvisionTest
       built = category == 'src_angr' ? "/opt/metactf/#{category}/obj/secgen/angr/#{name}" : "/opt/metactf/#{challenge['challenge_path']}/obj/secgen/#{name}"
       tier(1) { test_local_command("#{name}: built binary", "test -x #{Shellwords.escape(built)} && echo built", 'built') }
 
-      # challenge directory belongs to the account
-      tier(1) { test_local_command("#{name}: directory owned by #{user}", "stat -c '%U' #{Shellwords.escape(dir)}", user) }
+      # leak_file chowns the flag's directory to root, which stops students deleting or replacing the flag or binary
+      tier(1) { test_local_command("#{name}: directory owned by root", "stat -c '%U' #{Shellwords.escape(dir)}", 'root') }
 
       # include_scaffolding: src_angr challenges get scaffoldNN.py when it is true
       if category == 'src_angr'
@@ -74,7 +77,11 @@ class MetactfTest < PostProvisionTest
         # the challenge binary runs as the student and prints something (a prompt) rather than failing to execute
         test_command_succeeds("#{name}: binary runs as #{user}",
                               "cd #{Shellwords.escape(dir)} && test -x ./#{Shellwords.escape(name)} && out=$(printf '\\n' | timeout 10 ./#{Shellwords.escape(name)} 2>&1); test -n \"$out\"", user: user)
-        test_command_succeeds("#{name}: student cannot read the flag directly", "! cat #{flag_file}", user: user)
+        unless category == 'src_angr'
+          test_local_command("#{name}: student cannot read the filled-in source", "cat #{Shellwords.escape("/opt/metactf/#{challenge['challenge_path']}/program.c")} 2>&1 | head -1; true", 'Permission denied', user: user)
+        end
+        test_local_command("#{name}: student cannot read the flag directly", "cat #{flag_file} 2>&1; true", 'Permission denied', user: user)
+        test_local_command("#{name}: student cannot change the challenge directory", "test -w #{Shellwords.escape(dir)} && echo writable || echo read-only", 'read-only', user: user)
         # A challenge built with empty randomised values (e.g. build.zsh without bc) typically accepts an empty or
         # arbitrary password; a correctly built one releases the flag only for its password.
         %w[empty wrong].each do |kind|

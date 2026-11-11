@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>Spring Framework Class Property RCE (Spring4Shell)</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>This module deploys a vulnerable Spring MVC web application (Spring
+          Framework 5.3.17) as a WAR on Apache Tomcat 8.5.77, reachable on port 8080.
+          A @GetMapping controller binds request parameters onto a plain Java object,
+          which is the sink for CVE-2022-22965 (Spring4Shell). On JDK 9+ the data
+          binder exposes the object's class loader via the class.module.classLoader
+          property path. An unauthenticated attacker walks
+          class.module.classLoader.resources.context.parent.pipeline.first.* to
+          reconfigure Tomcat's AccessLogValve so that request data is written as a JSP
+          into the web root, then requests that JSP to run arbitrary commands as the
+          Tomcat service user (an unprivileged account). Tomcat 8.5.77 predates the
+          8.5.78 hardening that blocks this AccessLogValve write, and JDK 9+ (Debian 12
+          ships OpenJDK 17) provides the java.lang.Module class the property path needs.
+          The Metasploit module
+          exploit/multi/http/spring_framework_rce_spring4shell automates this.</description>
+
+  <type>web</type>
+  <privilege>user_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>medium</difficulty>
+
+  <cve>CVE-2022-22965</cve>
+
+  <reference>https://nvd.nist.gov/vuln/detail/CVE-2022-22965</reference>
+  <reference>https://spring.io/security/cve-2022-22965</reference>
+  <reference>https://github.com/vulhub/vulhub/tree/master/spring/CVE-2022-22965</reference>
+  <reference>https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/multi/http/spring_framework_rce_spring4shell.rb</reference>
+
+  <software_name>Spring Framework</software_name>
+
+  <msf_module>exploit/multi/http/spring_framework_rce_spring4shell</msf_module>
+  <hint>A Spring MVC page echoes the name and age you pass it; the same data binding reaches the server's class loader on JDK 9+.</hint>
+  <solution>Spring Framework 5.3.0-5.3.17 / 5.2.0-5.2.19 on JDK 9+ binds request parameters to the class loader (CVE-2022-22965); abuse the class.module.classLoader path to write a JSP webshell via Tomcat's AccessLogValve and gain code execution as the Tomcat user.</solution>
+
+  <!-- Installs and runs its own pinned Tomcat on 8080; don't co-build another Tomcat. -->
+  <conflict>
+    <software_name>tomcat</software_name>
+  </conflict>
+
+  <!-- Needs a JDK (JDK 9+ for the exploit; Debian 11 -> OpenJDK 11, Debian 12 -> OpenJDK 17). -->
+  <requires>
+    <module_path>utilities/unix/languages/java</module_path>
+  </requires>
+  <requires>
+    <type>update</type>
+  </requires>
+</vulnerability>

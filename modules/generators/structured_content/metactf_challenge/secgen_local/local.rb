@@ -109,7 +109,8 @@ class MetaCTFChallengeGenerator < StringGenerator
     end
 
     if self.group == ''
-      self.group = SecureRandom.hex.slice(1..8)
+      # always start with a letter: Puppet treats an all-digit group name as a numeric GID
+      self.group = 'g' + SecureRandom.hex.slice(1..7)
     end
 
     outputs << {'challenge_name' => challenge[:path].split('/')[-1], 'challenge_path' => challenge[:path], 'flag' => self.flag, 'group' => self.group, 'copy_directory' => self.copy_directory, 'port' => self.port, 'include_c' => self.include_c }.to_json
@@ -193,6 +194,7 @@ class MetaCTFChallengeGenerator < StringGenerator
      {:difficulty => 'medium', :path => 'src_malware/Ch01-08/Ch08Dbg_GdbPractice'},
      {:difficulty => 'medium', :path => 'src_malware/Ch01-08/Ch08Dbg_GdbRegs'},
      {:difficulty => 'medium', :path => 'src_malware/Ch01-08/Ch08Dbg_GdbSetmem'},
+     {:difficulty => 'hard', :path => 'src_malware/Ch01-08/Ch08Dbg_GdbWatch'},
      {:difficulty => 'medium', :path => 'src_malware/Ch01-08/Ch08Dbg_InputFormat'},
      {:difficulty => 'medium', :path => 'src_malware/Ch01-08/Ch08Dbg_Radare2Intro1'},
      {:difficulty => 'medium', :path => 'src_malware/Ch01-08/Ch08Dbg_Radare2Intro2'},

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>QEMU/KVM development box</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Turns a VM into a nested virtualisation host: QEMU, libvirt, virt-install and build
+    tools, a Debian cloud image for disposable guests, and helper commands that start a guest with a
+    local QMP socket (devbox-new-target) and check that KVM and QMP work (devbox-check). The listed
+    accounts join the kvm and libvirt groups. On Proxmox the VM is given CPU type host, which only
+    exposes KVM to the guest if nested virtualisation is enabled on the node.</description>
+
+  <type>virtualisation</type>
+  <platform>linux</platform>
+
+  <software_name>qemu</software_name>
+  <software_license>GPLv2</software_license>
+
+  <proxmox_cpu>host</proxmox_cpu>
+  <proxmox_cores>4</proxmox_cores>
+  <memory_required>8192</memory_required>
+
+  <read_fact>accounts</read_fact>
+
+  <default_input into="accounts">
+    <generator type="account"/>
+  </default_input>
+
+  <requires>
+    <type>update</type>
+  </requires>
+</utility>

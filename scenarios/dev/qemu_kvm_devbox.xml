@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>QEMU/KVM development box</name>
+  <author>Thomas Shaw</author>
+  <description>A single VM for developing against QEMU directly: nested KVM, QEMU, libvirt and build
+    tools, with disposable guests started by the devbox-new-target command. Needs nested
+    virtualisation enabled on the Proxmox node.</description>
+
+  <type>test</type>
+
+  <system>
+    <system_name>devbox</system_name>
+    <base platform="linux" distro="Debian 12" type="server"/>
+
+    <input into_datastore="accounts">
+      <generator type="account">
+        <input into="username"><value>sam</value></input>
+        <input into="password"><generator type="strong_password_generator"/></input>
+        <input into="super_user"><value>true</value></input>
+      </generator>
+    </input>
+
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts"><datastore>accounts</datastore></input>
+    </utility>
+
+    <utility module_path=".*/qemu_kvm_devbox">
+      <input into="accounts"><datastore>accounts</datastore></input>
+    </utility>
+
+    <network type="public_network"/>
+
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+
+</scenario>

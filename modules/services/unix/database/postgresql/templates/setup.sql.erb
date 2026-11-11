@@ -1,0 +1,12 @@
+DO $do$
+BEGIN
+  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = $secgen$<%= @username %>$secgen$) THEN
+    EXECUTE format('CREATE ROLE %I LOGIN PASSWORD %L', $secgen$<%= @username %>$secgen$, $secgen$<%= @password %>$secgen$);
+  ELSE
+    EXECUTE format('ALTER ROLE %I LOGIN PASSWORD %L', $secgen$<%= @username %>$secgen$, $secgen$<%= @password %>$secgen$);
+  END IF;
+END
+$do$;
+SELECT format('CREATE DATABASE %I OWNER %I', $secgen$<%= @database_name %>$secgen$, $secgen$<%= @username %>$secgen$)
+WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = $secgen$<%= @database_name %>$secgen$)
+\gexec

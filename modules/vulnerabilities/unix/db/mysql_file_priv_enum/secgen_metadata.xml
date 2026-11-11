@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>MySQL FILE-privilege filesystem enumeration</name>
+  <author>SecGen Pipeline</author>
+  <module_license>MIT</module_license>
+  <description>A MySQL/MariaDB server with an empty secure_file_priv and a remote account granted the
+    global FILE privilege. The account can read arbitrary files from the server's filesystem with
+    LOAD_FILE / LOAD DATA INFILE, disclosing any path the database process can read.</description>
+
+  <type>database</type>
+  <privilege>info_leak</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>username</read_fact>
+  <read_fact>password</read_fact>
+  <read_fact>enum_database</read_fact>
+  <read_fact>storage_directory</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+
+  <default_input into="username">
+    <generator type="username_generator"/>
+  </default_input>
+
+  <!-- Deliberately weak, overridden from a datastore in a scenario. -->
+  <default_input into="password">
+    <generator type="weak_password_generator"/>
+  </default_input>
+
+  <!-- The database the FILE-privileged account can create a staging table in
+       (mysql_file_enum needs one). -->
+  <default_input into="enum_database">
+    <value>filepriv</value>
+  </default_input>
+
+  <default_input into="storage_directory">
+    <generator type="storage_directory_generator"/>
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+  </default_input>
+
+  <default_input into="strings_to_leak">
+    <generator type="message_generator"/>
+  </default_input>
+
+  <!--optional details-->
+  <reference>https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_file</reference>
+  <reference>https://www.rapid7.com/db/modules/auxiliary/scanner/mysql/mysql_file_enum</reference>
+  <!-- No <software_name> here: this module installs no software of its own, it
+       misconfigures the MySQL provided by the required service module. Declaring
+       software_name "mysql" would make this module self-satisfy its own
+       <requires> below, so the real mysql service module would never be added
+       (the dependency resolver matches software_name as an unanchored regexp). -->
+
+  <!--optional hints-->
+  <msf_module>auxiliary/scanner/mysql/mysql_file_enum</msf_module>
+  <hint>A database account that can read files</hint>
+  <solution>Revoke the FILE privilege and set secure_file_priv to a restricted directory</solution>
+
+  <requires>
+    <software_name>mysql</software_name>
+  </requires>
+
+  <CyBOK KA="OSV" topic="Operating System Hardening">
+    <keyword>ACCESS CONTROLS</keyword>
+    <keyword>PRIVILEGE ESCALATION</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+
+</vulnerability>

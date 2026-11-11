@@ -1,6 +1,6 @@
 ---
 name: build-secgen-scenario
-description: Author a SecGen scenario XML (scenarios/**/*.xml) from scratch - assemble a valid, resolvable scenario that selects modules, wires datastores, networks the systems and places reachable flags. Use when asked to write a scenario, build a scenario, create a scenario, make a new scenario, add a scenario under scenarios/..., or turn a lab/CTF idea into scenario XML. The mechanical authoring counterpart to review-secgen-scenario (author then review). Trigger words - "write a scenario", "build a scenario", "create a scenario", "new scenario XML", "scenarios/tests/...".
+description: Author a SecGen scenario XML (scenarios/**/*.xml) from scratch - assemble a valid, resolvable scenario that selects modules, wires datastores, networks the systems and places reachable flags. Use when asked to write a scenario, build a scenario, create a scenario, make a new scenario, add a scenario under scenarios/..., turn a lab/CTF idea into scenario XML, or build a Hacktivity "hack box" or "hackbox" (a small practice CTF with a short kill chain and flags, briefed only by its description). The mechanical authoring counterpart to review-secgen-scenario (author then review). Trigger words - "write a scenario", "build a scenario", "create a scenario", "new scenario XML", "scenarios/tests/...", "hack box", "hackbox", "practice box", "practice CTF".
 ---
 
 # Build a SecGen scenario
@@ -46,7 +46,8 @@ Scenarios live under `scenarios/`, sorted by purpose:
   `test_scenario_<thing>.xml` (e.g. `test_scenario_proftpd.xml`). Put a
   from-scratch exercise or a module smoke test here.
 - `scenarios/ctf/` — attacker-vs-target challenges, `<name>.xml`
-  (e.g. `feeling_blu.xml`).
+  (e.g. `feeling_blu.xml`). Hacktivity hack boxes live here too; see
+  "Hack boxes" below.
 - `scenarios/labs/<category>/` — teaching labs, usually `<n>_<slug>.xml`
   (e.g. `web_security/1_intro_web_security.xml`). The category directory
   matters; it pairs with the lab sheet's `categories`.
@@ -396,6 +397,19 @@ both systems in the `IP_addresses` datastore, put both on the default
 `private_network` (same VLAN 1 subnet), and point the attacker's browser/notes
 at the target's IP. See `scenarios/labs/web_security/1_intro_web_security.xml`
 and `scenarios/ctf/feeling_blu.xml` for worked multi-VM examples.
+
+## Hack boxes (Hacktivity practice CTFs)
+
+A hack box is a small `scenarios/ctf/` scenario that Hacktivity users play on
+their own: a Kali attacker (or a desktop login), one target, a one- to
+three-step kill chain with a flag per step, and no lab sheet, so the
+description is the only brief. **When building or reviewing one, read
+`references/hack-boxes.md`** (relative to this skill's directory). It covers
+the three shapes the existing boxes use, copy-ready attacker and target
+blocks, the Proxmox-capable bases, flag and pivot wiring, and a checklist of
+the defects found in the first seven boxes (Debian 10 bases, hard-coded IPs,
+leftover Hackerbot plumbing, weak extra accounts, difficulty/description
+mismatches).
 
 ## Pair with these skills
 

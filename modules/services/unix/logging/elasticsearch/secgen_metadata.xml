@@ -23,6 +23,8 @@
     <value>9200</value>
   </default_input>
 
+  <memory_required>8192</memory_required>
+
   <conflict>
     <name>Wheezy</name>
   </conflict>

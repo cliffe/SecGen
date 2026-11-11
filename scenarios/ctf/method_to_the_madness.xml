@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+    <name>Method to the Madness</name>
+    <author>Tom Shaw</author>
+    <description>
+        Acme runs a small internal web portal, and its admin console sits behind a
+        password prompt. The lock holds when you knock the way the staff do - but it
+        only ever learned to watch for those knocks, and a request that arrives any
+        other way walks straight past it. Get inside the console without a password
+        and the first flag is waiting on the dashboard. The console also lends its
+        operators a convenience they never secured as carefully as the front door,
+        and turning that convenience against a user account is enough to walk in as
+        them and claim the second flag. Scan the host, find the admin page, work out
+        why the guard keeps letting the wrong visitors through, and use the same
+        trick twice.
+    </description>
+
+    <type>ctf</type>
+    <type>attack-ctf</type>
+    <type>pwn-ctf</type>
+    <difficulty>easy</difficulty>
+
+    <!-- http verb tampering / authentication bypass -->
+    <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+        <keyword>server-side misconfiguration and vulnerable components</keyword>
+        <keyword>Vulnerable defaults</keyword>
+    </CyBOK>
+    <CyBOK KA="AAA" topic="Authentication">
+        <keyword>authentication</keyword>
+    </CyBOK>
+    <CyBOK KA="AAA" topic="Authorisation">
+        <keyword>access control</keyword>
+        <keyword>Vulnerabilities and attacks on access control misconfigurations</keyword>
+    </CyBOK>
+    <CyBOK KA="MAT" topic="Attacks and exploitation">
+        <keyword>EXPLOITATION</keyword>
+        <keyword>EXPLOITATION FRAMEWORKS</keyword>
+    </CyBOK>
+    <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+        <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+        <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+    </CyBOK>
+    <CyBOK KA="SS" topic="Categories of Vulnerabilities">
+        <keyword>CVEs and CWEs</keyword>
+        <keyword>Web vulnerabilities / OWASP Top 10</keyword>
+    </CyBOK>
+
+    <system>
+        <system_name>attack_vm</system_name>
+        <base distro="Kali" name="MSF" />
+
+        <input into_datastore="IP_addresses">
+            <!-- 0 attack_vm -->
+            <network_ip system="attack_vm"/>
+            <!-- 1 acme_portal -->
+            <network_ip system="acme_portal"/>
+        </input>
+
+        <utility module_path=".*/parameterised_accounts">
+            <input into="accounts">
+                <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
+            </input>
+        </utility>
+
+        <utility module_path=".*/iceweasel">
+            <input into="accounts">
+                <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
+            </input>
+            <input into="autostart">
+                <value>false</value>
+            </input>
+        </utility>
+
+        <utility module_path=".*/kali_top10" />
+        <utility module_path=".*/kali_web" />
+
+        <network type="private_network"/>
+
+        <input into_datastore="spoiler_admin_pass">
+            <generator type="strong_password_generator"/>
+        </input>
+        <build type="cleanup">
+            <input into="root_password">
+                <datastore>spoiler_admin_pass</datastore>
+            </input>
+        </build>
+    </system>
+
+    <system>
+        <system_name>acme_portal</system_name>
+        <base distro="Debian 12" type="desktop" name="KDE" />
+
+        <!-- the account the admin console can reset, and whose home holds flag 2 -->
+        <input into_datastore="victim_user">
+            <value>alice</value>
+        </input>
+
+        <!-- flag 1: shown on the admin page once the verb bypass reaches it -->
+        <vulnerability module_path=".*/apache_verb_auth_bypass">
+            <input into="strings_to_leak">
+                <generator type="flag_generator"/>
+            </input>
+            <input into="reset_target_username">
+                <datastore>victim_user</datastore>
+            </input>
+        </vulnerability>
+
+        <!-- flag 2: in alice's home, reachable after her password is reset -->
+        <input into_datastore="victim_account">
+            <generator type="account">
+                <input into="username">
+                    <datastore>victim_user</datastore>
+                </input>
+                <input into="password">
+                    <generator type="strong_password_generator"/>
+                </input>
+                <input into="leaked_filenames">
+                    <value>flag2.txt</value>
+                </input>
+                <input into="strings_to_leak">
+                    <generator type="flag_generator"/>
+                </input>
+            </generator>
+        </input>
+        <utility module_path=".*/parameterised_accounts">
+            <input into="accounts">
+                <datastore>victim_account</datastore>
+            </input>
+        </utility>
+
+        <network type="private_network"/>
+
+        <build type="cleanup">
+            <input into="root_password">
+                <datastore>spoiler_admin_pass</datastore>
+            </input>
+        </build>
+    </system>
+
+</scenario>

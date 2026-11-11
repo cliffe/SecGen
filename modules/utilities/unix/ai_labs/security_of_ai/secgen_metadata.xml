@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Security of AI lab material</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>The CyBOK-funded Security-of-AI notebooks, demonstrations and toolkits (Anglia Ruskin University; Open Government Licence), unmodified at a fixed commit, in each account's home directory: evasion, poisoning, backdoor, model stealing and realizable attacks on machine learning models, with defences.</description>
+
+  <type>ai_lab_material</type>
+  <platform>linux</platform>
+
+  <read_fact>accounts</read_fact>
+  <read_fact>repo_url</read_fact>
+  <read_fact>commit</read_fact>
+
+  <default_input into="repo_url">
+    <value>https://github.com/thomashaw/Security-of-AI.git</value>
+  </default_input>
+
+  <default_input into="commit">
+    <value>288259933ee7c1bf196f0507a000b29998d66aaf</value>
+  </default_input>
+
+  <requires>
+    <type>update</type>
+  </requires>
+  <requires>
+    <type>python_ml_env</type>
+  </requires>
+
+</utility>

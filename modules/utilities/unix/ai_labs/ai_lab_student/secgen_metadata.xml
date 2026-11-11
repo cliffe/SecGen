@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>AI lab student workspace</name>
+  <author>Thomas Shaw</author>
+  <module_license>GPLv3</module_license>
+  <description>Puts an AI security lab's notebook and data (pool_size images, or the same number of labelled examples) in each account's ~/lab, adds a JupyterLab launcher, and installs the script Hackerbot uses to run a student's model as that student. Based on material from the CyBOK-funded Security-of-AI project (Anglia Ruskin University). Contains public sector information licensed under the Open Government Licence v3.0.</description>
+
+  <type>ai_lab_student</type>
+  <platform>linux</platform>
+
+  <read_fact>accounts</read_fact>
+  <read_fact>lab</read_fact>
+  <read_fact>pool_size</read_fact>
+
+  <default_input into="lab">
+    <value>model_stealing</value>
+  </default_input>
+
+  <default_input into="pool_size">
+    <value>12000</value>
+  </default_input>
+
+  <requires>
+    <type>update</type>
+  </requires>
+  <requires>
+    <type>python_ml_env</type>
+  </requires>
+
+</utility>

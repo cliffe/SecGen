@@ -1,0 +1,11 @@
+# Managed by SecGen. The first matching line wins.
+local   all             postgres                                peer
+local   all             all                                     peer
+host    <%= @database_name %>   <%= @username %>   127.0.0.1/32   <%= @auth_method %>
+host    <%= @database_name %>   <%= @username %>   ::1/128        <%= @auth_method %>
+<% unless @listen_addresses == 'localhost' -%>
+host    <%= @database_name %>   <%= @username %>   0.0.0.0/0      <%= @auth_method %>
+host    <%= @database_name %>   <%= @username %>   ::/0           <%= @auth_method %>
+<% end -%>
+host    all             all             127.0.0.1/32            scram-sha-256
+host    all             all             ::1/128                 scram-sha-256

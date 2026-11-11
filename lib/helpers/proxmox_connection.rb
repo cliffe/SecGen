@@ -168,6 +168,14 @@ module Proxmox
       wait_for_completion task_response: response, timeout_message: 'vagrant_proxmox.errors.create_vm_timeout'
     end
 
+    def set_vm_cpu(vm_id, node, cpu)
+      config_clone(node: node, vm_type: :qemu, params: { vmid: vm_id, cpu: cpu })
+    end
+
+    def set_vm_cores(vm_id, node, cores)
+      config_clone(node: node, vm_type: :qemu, params: { vmid: vm_id, cores: cores })
+    end
+
     def get_vm_config(node: required('node'), vm_id: required('node'), vm_type: required('node'))
       response = get "/nodes/#{node}/#{vm_type}/#{vm_id}/config"
       response = response[:data]

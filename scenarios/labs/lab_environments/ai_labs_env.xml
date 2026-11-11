@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+  <name>AI security lab environment</name>
+  <author>Thomas Shaw</author>
+  <description>
+    A Debian 12 desktop with the CyBOK-funded Security-of-AI and AI-for-Cybersecurity notebooks from Anglia Ruskin University, unmodified, in the student's home directory. JupyterLab, TensorFlow, scikit-learn and Flask are installed in a Python environment that every terminal activates, and the MNIST dataset is already downloaded. Log in as "student" with the password "tiaspbiqe2r", then open JupyterLab from the desktop.
+
+    Contains public sector information licensed under the Open Government Licence v3.0.
+  </description>
+  <type>lab-environment</type>
+  <difficulty>intermediate</difficulty>
+  <system>
+    <system_name>ai_labs_desktop</system_name>
+    <base distro="Debian 12" type="desktop" name="KDE"/>
+    <input into_datastore="account">
+      <value>{"username":"student","password":"tiaspbiqe2r","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
+    </input>
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts">
+        <datastore>account</datastore>
+      </input>
+    </utility>
+    <utility module_path=".*/kde_minimal">
+      <input into="autologin_user">
+        <datastore access="0" access_json="['username']">account</datastore>
+      </input>
+      <input into="accounts">
+        <datastore>account</datastore>
+      </input>
+      <input into="autostart_konsole">
+        <value>false</value>
+      </input>
+    </utility>
+    <utility module_path=".*/handy_cli_tools"/>
+    <utility module_path=".*/iceweasel">
+      <input into="accounts">
+        <datastore>account</datastore>
+      </input>
+      <input into="autostart">
+        <value>false</value>
+      </input>
+      <input into="start_page">
+        <value>http://localhost:8888/lab</value>
+      </input>
+    </utility>
+    <utility module_path=".*/python_ml_env"/>
+    <utility module_path=".*/security_of_ai">
+      <input into="accounts">
+        <datastore>account</datastore>
+      </input>
+    </utility>
+    <utility module_path=".*/ai_for_cybersecurity">
+      <input into="accounts">
+        <datastore>account</datastore>
+      </input>
+    </utility>
+    <network type="private_network"/>
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+</scenario>

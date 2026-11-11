@@ -204,14 +204,20 @@ exec { 'clone theZoo':
 
 **Identify what kind of module it is:**
 
-- **Bundled Puppet Forge module** — the directory contains `checksums.json`, `CHANGELOG.md`, and a `metadata.json` whose `"author"` field is a Forge username (e.g. `"puppetlabs"`, `"jfryman"`). This is a full Forge download vendored in-tree. Don't patch it: **upgrade it to a newer release of the same Forge module yourself.** This is a routine fix and needs no human sign-off.
+- **Bundled Puppet Forge module** — the directory contains `checksums.json`, `CHANGELOG.md`, and a `metadata.json` whose `"author"` field is a Forge username (e.g. `"puppetlabs"`, `"jfryman"`). This is a full Forge download vendored in-tree. Choose between two fixes; both are routine and need no human sign-off:
+  - **Patch it in place** when the only gap is a missing OS case (e.g. `params.pp` has no branch for Debian 12) or a dependency the module declares but doesn't use. Make the smallest change that works, and keep the rest of the vendored code as released.
+  - **Upgrade it to a newer release of the same Forge module** when its Puppet code no longer works with current stdlib (removed functions such as `validate_string`, changed resource parameters) or the gap is more than a missing case. Steps below.
+
+  Either way, say in the commit which you did and why (e.g. `java: patch bundled puppetlabs-java 6.5.0, add Debian 12 case` or `xinetd: upgrade bundled puppetlabs-xinetd 2.0.0 -> 3.4.0 (stdlib < 5 conflict)`).
+
+  To upgrade:
   1. List the releases: `https://forgeapi.puppet.com/v3/releases?module=<author>-<name>&sort_by=release_date` (reached through the same proxy as librarian). Pick the newest release whose `metadata.json` dependencies overlap what the other bookworm modules require (e.g. stdlib `>= 5.0.0 < 9.0.0`) and whose Puppet requirement includes 7.
   2. Download its tarball (`https://forgeapi.puppet.com/v3/files/<author>-<name>-<version>.tar.gz`) to a temp directory outside the repo and unpack it there.
   3. Replace the vendored files with the release's, **keeping the SecGen files**: `secgen_metadata.xml`, the entry manifest `<dir_name>.pp`, `secgen_test/`, and anything else the Forge tarball doesn't contain (`git diff` after the swap shows them as deleted if you missed one).
   4. Check the SecGen entry manifest still matches the new release's classes and parameters (renamed or removed parameters are the usual break), and that every dependency in the new `metadata.json` is a module SecGen already bundles.
   5. Commit with the old and new versions in the message (e.g. `xinetd: upgrade bundled puppetlabs-xinetd 2.0.0 -> 3.4.0 (stdlib < 5 conflict)`), then let the build and test prove it.
 
-  Escalate only if no release of that module supports current stdlib and Puppet 7, if the newer release needs a Forge dependency SecGen doesn't bundle, or if the only fix is switching to a different Forge module (another author or a fork). Print `ESCALATE: bundled Forge module cannot be upgraded in place — <module-dir> <current-version>: <why>`.
+  Escalate only if a patch won't do and no release of that module supports current stdlib and Puppet 7, if the newer release needs a Forge dependency SecGen doesn't bundle, or if the only fix is switching to a different Forge module (another author or a fork). Print `ESCALATE: bundled Forge module cannot be upgraded in place — <module-dir> <current-version>: <why>`.
 
 - **SecGen-authored module with its own `metadata.json`** — the module's Puppet code is ours but it declares a dependency ceiling that is now too low. Before touching the ceiling, check whether the module is intentionally for older bases only (e.g. it uses `example42-*` deps that never supported newer stdlib). If so, add a `<conflict>` to `secgen_metadata.xml` to exclude it from bookworm builds — this prevents `accounts_newer` (bookworm-only) from being co-built with it:
   ```xml

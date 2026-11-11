@@ -1,0 +1,173 @@
+<%
+  require 'json'
+  require 'securerandom'
+
+  abort('Sorry, you need to provide an account') if self.accounts.empty?
+  $main_user = JSON.parse(self.accounts.first)['username'].to_s
+  $flags = self.flags
+  $params = JSON.parse(self.lab_params.first)
+  $check = "/opt/python_ml_env/bin/python -I /opt/ai_lab/code/check_model_stealing.py --host {{chat_ip_address}} --user #{$main_user}"
+
+  REQUIRED_FLAGS = 3
+  while $flags.length < REQUIRED_FLAGS
+    $flags << "flag{#{SecureRandom.hex}}"
+    Print.err "Warning: Not enough flags provided to hackerbot_config generator, some flags won't be tracked/marked!"
+  end
+
+  def get_binding
+    binding
+  end
+-%>
+<?xml version="1.0"?>
+<hackerbot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.github/cliffe/SecGen/hackerbot">
+  <name>Hackerbot</name>
+  <AIML_chatbot_rules>config/AIML</AIML_chatbot_rules>
+  <get_shell>ssh -i /opt/hackerbot/keys/id_rsa -oStrictHostKeyChecking=no root@{{chat_ip_address}} /bin/bash</get_shell>
+	<messages>
+    <show_attack_numbers />
+
+		<greeting>Hello. I mark your work on the deployed model at http://hackerbot:5000. I will ask you what you found, then check your stolen model when you say 'ready'. Checks take a minute or two, so please wait for my reply.</greeting>
+
+		<!--Must provide alternatives for each message-->
+		<say_ready>Let me know when you are 'ready', if you want to move on to another attack, say 'next', or 'previous' and I'll move things along.</say_ready>
+		<say_ready>When you are ready, simply say 'ready'.</say_ready>
+		<say_ready>'Ready'?</say_ready>
+		<say_ready>Better hurry, the attack is imminent... Let me know when you're 'ready'.</say_ready>
+		<next>Ok, I'll do what I can to move things along...</next>
+		<next>Moving things along to the next attack...</next>
+		<next>Ok, next attack...</next>
+		<previous>Ok, I'll do what I can to back things up...</previous>
+		<previous>Ok, previous attack...</previous>
+		<previous>Ok, backing up.</previous>
+		<goto>Ok, skipping it along.</goto>
+		<goto>Let me see what I can do to goto that attack.</goto>
+		<last_attack>That was the last attack for now. You can rest easy, until next time... (End.)</last_attack>
+		<last_attack>That was the last attack. Game over?</last_attack>
+		<first_attack>You are back to the beginning!</first_attack>
+		<first_attack>This is where it all began.</first_attack>
+		<getting_shell>Ok. Gaining shell access, and running post command...</getting_shell>
+		<getting_shell>Hacking in progress...</getting_shell>
+		<getting_shell>Attack underway...</getting_shell>
+		<getting_shell>Here we go...</getting_shell>
+		<got_shell>We are in to your system.</got_shell>
+		<got_shell>You are pwned.</got_shell>
+		<got_shell>We have shell.</got_shell>
+		<repeat>Let me know when you are 'ready', if you want to move on to another attack, say 'next', or 'previous' and I'll move things along.</repeat>
+		<repeat>Say 'ready', 'next', or 'previous'.</repeat>
+
+		<!--Single responses:-->
+		<help>I am waiting for you to say 'ready', 'next', 'previous', 'list', 'goto *X*', or 'answer *X*'</help>
+		<say_answer>Say "The answer is X".</say_answer>
+		<no_quiz>There is no question to answer</no_quiz>
+		<correct_answer>Correct</correct_answer>
+		<incorrect_answer>Incorrect</incorrect_answer>
+		<invalid>That's not possible.</invalid>
+		<non_answer>Wouldn't you like to know.</non_answer>
+
+		<!--can be overwritten per-attack-->
+		<shell_fail_message>Oh no. Failed to get shell... You need to let us in.</shell_fail_message>
+	</messages>
+  <attack>
+    <prompt>Reconnaissance. Find out what the deployed model at http://hackerbot:5000 will tell you about itself, using the /info endpoint. Say 'ready' when you know how many queries you are allowed.</prompt>
+    <get_shell>false</get_shell>
+    <post_shell>curl -s -m 20 http://127.0.0.1:5000/health 2>/dev/null | grep -q healthy &amp;&amp; echo APIUP || echo APIDOWN</post_shell>
+    <suppress_command_output_feedback/>
+    <condition>
+      <output_matches>APIUP</output_matches>
+      <message>The API is up.</message>
+      <trigger_quiz/>
+    </condition>
+    <condition>
+      <output_matches>APIDOWN</output_matches>
+      <message>The API is not answering yet. Give it a minute and say 'ready' again.</message>
+    </condition>
+    <else_condition>
+      <message>I could not check the API. Say 'ready' to try again.</message>
+    </else_condition>
+    <quiz>
+      <question>How many queries are in your budget? (Use the query_budget figure from /info.)</question>
+      <answer><%= $params['query_budget'] %></answer>
+      <correct_answer_response>Well done, that is what an attacker learns first. Flag: <%= $flags.pop %></correct_answer_response>
+      <trigger_next_attack/>
+    </quiz>
+  </attack>
+
+  <attack>
+    <prompt>Steal the model. Query the API, train your copy, and save it as ~/stolen_model.keras. Say 'ready' and I will test it on images it has never seen, with the real API switched off. You need at least <%= ($params['agreement_threshold'] * 100).round %>% agreement.</prompt>
+    <get_shell>false</get_shell>
+    <post_shell><%= $check %> --mode standard 2>/dev/null</post_shell>
+    <condition>
+      <output_matches>RESULT PASS</output_matches>
+      <message>That copy behaves like the real thing. Flag: <%= $flags.pop %></message>
+      <trigger_next_attack/>
+    </condition>
+    <condition>
+      <output_matches>RESULT NOMODEL</output_matches>
+      <message>I can't find ~/stolen_model.keras. Run the save cell in your notebook, then say 'ready'.</message>
+    </condition>
+    <condition>
+      <output_matches>RESULT BADMODEL</output_matches>
+      <message>I found your model but could not get predictions from it. It needs to take 28x28x1 images scaled 0-1 and output 10 category probabilities, with no Lambda layers.</message>
+    </condition>
+    <condition>
+      <output_matches>RESULT LOW</output_matches>
+      <message>Not close enough yet. Use more of your queries, check you trained on the API's answers rather than anything else, and try again.</message>
+    </condition>
+    <else_condition>
+      <message>Something went wrong with the check. Say 'ready' to try again, and if it keeps happening tell your tutor.</message>
+    </else_condition>
+  </attack>
+
+  <attack>
+    <prompt>Steal it on a budget. A real attacker pays for every query. Say 'ready' to start a new round, which resets your query count. Then make at most <%= $params['tight_budget'] %> queries, train and save a new ~/stolen_model.keras, and say 'ready' again. You need at least <%= ($params['tight_threshold'] * 100).round %>% agreement.</prompt>
+    <get_shell>false</get_shell>
+    <post_shell><%= $check %> --mode budget 2>/dev/null</post_shell>
+    <condition>
+      <output_matches>RESULT STARTED</output_matches>
+      <message>New round started: your query count is back to zero. Train with at most <%= $params['tight_budget'] %> queries, save your model, then say 'ready'.</message>
+    </condition>
+    <condition>
+      <output_matches>RESULT PASS</output_matches>
+      <message>Impressive, and cheap too. Flag: <%= $flags.pop %></message>
+      <trigger_next_attack/>
+    </condition>
+    <condition>
+      <output_matches>RESULT OVERBUDGET</output_matches>
+      <message>You used too many queries this round. Say 'ready' to start another round and be more careful with what you ask.</message>
+    </condition>
+    <condition>
+      <output_matches>RESULT NOMODEL</output_matches>
+      <message>I can't find ~/stolen_model.keras. Save it and say 'ready'; your round is still running.</message>
+    </condition>
+    <condition>
+      <output_matches>RESULT BADMODEL</output_matches>
+      <message>I could not get predictions from your model. Fix it and say 'ready'; your round is still running.</message>
+    </condition>
+    <condition>
+      <output_matches>RESULT LOW</output_matches>
+      <message>Not close enough. Say 'ready' to start another round. Think about which images and which training settings give you most for each query.</message>
+    </condition>
+    <else_condition>
+      <message>Something went wrong with the check. Say 'ready' to try again.</message>
+    </else_condition>
+  </attack>
+
+  <attack>
+    <prompt>Out of queries? Say 'ready' here and I will reset your query count to zero. Then 'goto 2' or 'goto 3' to carry on.</prompt>
+    <get_shell>false</get_shell>
+    <post_shell><%= $check %> --mode reset 2>/dev/null</post_shell>
+    <suppress_command_output_feedback/>
+    <condition>
+      <output_matches>RESULT RESET</output_matches>
+      <message>Your query count is back to zero.</message>
+    </condition>
+    <condition>
+      <output_matches>RESULT</output_matches>
+      <message>That did not work. Say 'ready' to try again.</message>
+    </condition>
+    <else_condition>
+      <message>That did not work. Say 'ready' to try again.</message>
+    </else_condition>
+  </attack>
+</hackerbot>

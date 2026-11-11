@@ -95,6 +95,7 @@ Use the matching skill in `.claude/skills/` rather than working from memory:
 | Build and run a module/scenario's tests on Proxmox; diagnose failures | `secgen-test-pipeline` |
 | Hackerbot labs / `hackerbot_config` generators | `secgen-hackerbot` |
 | CTF scenario descriptions | `write-secgen-ctf-description` |
+| Create or modify a randomised MetaCTF reverse engineering challenge | `create-metactf-challenge` |
 | Write/debug module Puppet code | `secgen-puppet` |
 
 When you add or rename a skill (by hand or with `skill-creator`), add a row

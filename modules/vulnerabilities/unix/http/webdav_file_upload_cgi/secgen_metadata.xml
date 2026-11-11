@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>WebDAV Upload to CGI Code Execution</name>
+  <author>Tom Shaw</author>
+  <module_license>MIT</module_license>
+  <description>
+    Turns an unauthenticated, writable Apache WebDAV collection into remote code
+    execution by enabling CGI for everything under the WebDAV docroot. Enables
+    mod_cgi and drops a config snippet that adds Options +ExecCGI and a
+    cgi-script handler for /var/www/webdav, so an executable script dropped into
+    the collection runs instead of being served as text. An attacker who can PUT
+    to the collection uploads a CGI shell (a .cgi/.pl/.sh with the exec bit) and
+    runs commands as the Apache user. This is the execution half of the chain:
+    it pairs with apache_webdav_upload (the writable collection) to give a shell.
+  </description>
+
+  <type>remote</type>
+  <privilege>user_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <cvss_base_score>8.8</cvss_base_score>
+  <cvss_vector>AV:N/AC:L/Au:N/C:P/I:P/A:P</cvss_vector>
+  <reference>https://httpd.apache.org/docs/2.4/mod/mod_cgi.html</reference>
+  <reference>https://httpd.apache.org/docs/2.4/howto/cgi.html</reference>
+  <reference>https://owasp.org/www-community/attacks/Webdav</reference>
+
+  <software_name>webdav_exec_method</software_name>
+
+  <hint>The WebDAV collection now runs CGI: PUT an executable .cgi/.pl script and request it over GET to execute commands as www-data.</hint>
+
+  <!-- Only one execution method (php or cgi) should be layered onto the
+       collection; both enablers share this software_name and conflict on it. -->
+  <conflict>
+    <software_name>webdav_exec_method</software_name>
+  </conflict>
+
+  <!-- Must land on the same host as the writable WebDAV collection, and apply
+       after it. apache_webdav_upload itself requires the Apache service, so this
+       transitively orders the CGI config after Apache too; requiring ".*apache"
+       directly here as well would make the resolver try to select Apache a
+       second time and hit its software_name self-conflict. -->
+  <requires>
+    <module_path>.*/apache_webdav_upload</module_path>
+  </requires>
+
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>server-side misconfiguration and vulnerable components</keyword>
+    <keyword>Vulnerable defaults</keyword>
+  </CyBOK>
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION</keyword>
+  </CyBOK>
+</vulnerability>

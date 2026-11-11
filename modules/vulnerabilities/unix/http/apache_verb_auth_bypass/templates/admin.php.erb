@@ -1,0 +1,51 @@
+<%# Managed by SecGen apache_verb_auth_bypass. Deliberately vulnerable. %>
+<?php
+// Acme admin console. DELIBERATELY VULNERABLE.
+//
+// This page is "protected" by Apache Basic Auth written as <Limit GET POST>, so
+// a GET is challenged for credentials but an arbitrary verb is not. PHP runs
+// this script whatever the request method, and reads $_GET whatever the method,
+// so the reset action below can be driven by the same verb bypass that reaches
+// the page - no credentials required.
+
+$flag        = '<%= @flag %>';
+$reset_user  = '<%= @reset_user %>';
+$reset_tool  = '<%= @reset_tool %>';
+
+$notice = '';
+if (isset($_GET['action']) && $_GET['action'] === 'reset') {
+    $user = isset($_GET['user']) ? $_GET['user'] : '';
+    $pw   = isset($_GET['pw'])   ? $_GET['pw']   : '';
+    // The helper only ever resets $reset_user; the submitted user name is
+    // checked here purely so the panel tells the operator what happened.
+    if ($user === $reset_user && $pw !== '') {
+        shell_exec('/usr/bin/sudo ' . $reset_tool . ' ' . escapeshellarg($pw) . ' 2>&1');
+        $notice = "Password for " . htmlspecialchars($user) . " has been reset.";
+    } elseif ($user !== '' && $user !== $reset_user) {
+        $notice = "Only the '" . htmlspecialchars($reset_user) . "' account can be reset from this console.";
+    } elseif ($user === $reset_user) {
+        $notice = "No new password supplied.";
+    }
+}
+?>
+<!doctype html>
+<html>
+<head><title>Acme Admin Console</title></head>
+<body>
+  <h1>Acme Admin Console</h1>
+  <p>Welcome, administrator.</p>
+
+  <h2>Dashboard</h2>
+  <p>System status flag: <code><?php echo htmlspecialchars($flag); ?></code></p>
+
+  <h2>Reset a user password</h2>
+  <?php if ($notice !== '') { echo '<p><strong>' . $notice . '</strong></p>'; } ?>
+  <form method="get" action="admin.php">
+    <input type="hidden" name="action" value="reset">
+    <label>User: <input name="user" value="<?php echo htmlspecialchars($reset_user); ?>"></label>
+    <label>New password: <input name="pw"></label>
+    <button type="submit">Reset</button>
+  </form>
+  <p><small>Only the <?php echo htmlspecialchars($reset_user); ?> account can be reset here.</small></p>
+</body>
+</html>

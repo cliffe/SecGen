@@ -1,0 +1,66 @@
+#!/usr/bin/env ruby
+# Checks that KVM works and that a USB keyboard can be hot-plugged, typed on and
+# removed over QMP, using a throwaway QEMU with no disk. Exits non-zero on failure.
+require 'json'
+require 'socket'
+require 'tmpdir'
+
+def fail_with(message)
+  warn "FAIL: #{message}"
+  exit 1
+end
+
+fail_with('/dev/kvm is missing: nested virtualisation is not available') unless File.exist?('/dev/kvm')
+fail_with('no read/write access to /dev/kvm (are you in the kvm group?)') unless File.readable?('/dev/kvm') && File.writable?('/dev/kvm')
+puts 'OK: /dev/kvm is usable'
+
+Dir.mktmpdir('devbox-check') do |dir|
+  socket_path = File.join(dir, 'qmp.sock')
+  pid = spawn('qemu-system-x86_64', '-machine', 'q35,accel=kvm', '-m', '128', '-nodefaults', '-display', 'none',
+              '-device', 'qemu-xhci,id=xhci', '-qmp', "unix:#{socket_path},server=on,wait=off",
+              out: File::NULL, err: File.join(dir, 'qemu.log'))
+  begin
+    50.times do
+      break if File.exist?(socket_path)
+      sleep 0.2
+    end
+    fail_with("QEMU did not start: #{File.read(File.join(dir, 'qemu.log'))}") unless File.exist?(socket_path)
+
+    qmp = UNIXSocket.new(socket_path)
+    qmp.gets # greeting
+
+    command = lambda do |name, arguments = {}|
+      qmp.puts({ execute: name, arguments: arguments }.to_json)
+      loop do
+        reply = JSON.parse(qmp.gets)
+        fail_with("#{name}: #{reply['error']}") if reply['error']
+        break reply['return'] if reply.key?('return')
+      end
+    end
+    usb_devices = -> { command.call('human-monitor-command', 'command-line': 'info usb') }
+
+    command.call('qmp_capabilities')
+    fail_with('QEMU is not using KVM') unless command.call('query-kvm')['enabled']
+    puts 'OK: QEMU is running under KVM'
+
+    command.call('device_add', driver: 'usb-kbd', id: 'devbox_check', bus: 'xhci.0')
+    fail_with('usb-kbd not listed after device_add') unless usb_devices.call.include?('devbox_check')
+    puts 'OK: device_add usb-kbd'
+
+    key = { type: 'qcode', data: 'a' }
+    command.call('input-send-event', events: [{ type: 'key', data: { down: true, key: key } }])
+    command.call('input-send-event', events: [{ type: 'key', data: { down: false, key: key } }])
+    puts 'OK: input-send-event'
+
+    command.call('device_del', id: 'devbox_check')
+    50.times do
+      break unless usb_devices.call.include?('devbox_check')
+      sleep 0.1
+    end
+    fail_with('usb-kbd still listed after device_del') if usb_devices.call.include?('devbox_check')
+    puts 'OK: device_del'
+  ensure
+    Process.kill('KILL', pid)
+    Process.wait(pid)
+  end
+end

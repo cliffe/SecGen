@@ -89,6 +89,7 @@ CyBOK_ACRONYMS = {
   "HF" => "Human Factors",
   "HS" => "Hardware Security",
   "LR" => "Law &amp; Regulation",
+  "SPAI" => "Security &amp; Privacy of AI",
   "MAT" => "Malware &amp; Attack Technology",
   "NS" => "Network Security",
   "OSV" => "Operating Systems &amp; Virtualisation",

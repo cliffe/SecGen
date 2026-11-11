@@ -127,7 +127,7 @@ end
       # proxmox.qemu_bridge = 'vmbr0'
 
       proxmox.vm_id_range = <%= @options[:proxmoxvmidmin] || 1000 %>..<%= @options[:proxmoxvmidmax] || 999999999 %>
-      proxmox.vm_memory = 4096
+      proxmox.vm_memory = <%= [4096, memory_required(system)].max %>
       proxmox.selected_node = '<%= @options[:proxmoxnode] %>'
       proxmox.disable_adjust_forwarded_port = true
     end

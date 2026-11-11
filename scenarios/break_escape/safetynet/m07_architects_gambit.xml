@@ -74,12 +74,87 @@
       <value>172.16.0.2</value>
     </input>
 
+    <!-- Immersion: this Kali box is the field agent's staged kit for the op, dropped on the
+         facility maintenance VLAN. Its home folder carries HaX's deployment brief and the agent's
+         own relay scratch notes, in the SAFETYNET handler's clipped operational voice (Portland /
+         PNRGC, the backup-staging target at 172.16.0.2, the relay clock, the control-room abort).
+         Plain text only, no flags, no recovered credential: the login is still earned on the target.
+         These files reinforce the intended route (map the host, read each service, piece the login
+         together, root, then the console) without any decoy. Credentials and account order are
+         unchanged (kali/kali, super_user), so the attack box and the solve path are unaffected. -->
     <utility module_path=".*/parameterised_accounts">
       <input into="accounts">
-        <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
+        <generator type="account">
+          <input into="username">
+            <value>kali</value>
+          </input>
+          <input into="password">
+            <value>kali</value>
+          </input>
+          <input into="super_user">
+            <value>true</value>
+          </input>
+          <input into="leaked_filenames">
+            <value>FIELD_BRIEF.txt</value>
+            <value>relay_notes.txt</value>
+          </input>
+          <input into="strings_to_leak">
+            <value>SAFETYNET -- FIELD DEPLOYMENT  (eyes only, wiped on exfil)
+Op: ARCHITECT'S GAMBIT    Handler: HaX (agent_0x99)    Agent: 0x00
+================================================================
+
+Agent -- this box is your kit for the night. It sits on the facility
+maintenance VLAN, the one the SCADA contractor left wide open. Everything
+you need is in reach from here, and nothing on it leaves the segment.
+
+THE TARGET
+  Pacific Northwest Regional Grid Control, Portland. 147 substations,
+  8.4 million people on the other end of it. The host that matters is the
+  operator's backup / staging box -- asset tag reads 172.16.0.2, same
+  maintenance VLAN as you. That is the one you work.
+
+THE WAY IN
+  Don't force it. The operator's login is leaking across the box's own
+  services -- the handoff share gives you half, an open relay port hands
+  out the rest. Map the host first, then read what each service tells you.
+  Put the two pieces together and you have his account.
+
+ONE STRING, MORE THAN ONE DOOR
+  The man who runs this stack is vain and lazy in the same breath. He
+  won't set a thing twice. A code you recover here may open more than the
+  login it was meant for -- carry it, don't retype it.
+
+THE CLOCK
+  The sequence is local and hardcoded. It starts the moment your login
+  goes through the relay: fifteen minutes, no pause, no abort from
+  outside. The one place the abort goes in is the control room console,
+  north of the server hall. So the order is in, up to root, then the
+  console.
+
+Call me the second you hit something you can't open.
+-- HaX</value>
+            <value>RELAY NOTES -- agent scratch
+============================
+HaX keeps a tap on the control VLAN -- the relay that has sat on their
+segment since the recon pass. Whatever the operator's services say in
+clear, it catches.
+
+- The maintenance export is world-mountable. "Migration window," they
+  told the auditor. It is not. The operator handoff file is sitting in it.
+- A service up on a high port answers anyone and reads back a credential
+  line. That is the relay's catch -- it forwards whatever the box leaks.
+- The clock starts on the login, not on the scan. Map the host all you
+  want; the fifteen minutes do not move until the account actually goes
+  through.
+
+Elena, the engineer in the server hall, has the control room door code.
+If she turns she will give it. If she does not, keep working the box --
+it hands you what you need either way.</value>
+          </input>
+        </generator>
       </input>
     </utility>
-    
+
     <utility module_path=".*/iceweasel">
       <input into="accounts">
         <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
@@ -111,13 +186,15 @@
     <system_name>scada_attack_host</system_name>
     <base distro="Debian 12" type="desktop" name="KDE"/>
 
-    <!-- strong password -->
+    <!-- Operator login on the SCADA maintenance host. In canon this is James Mercer, the OptiGrid
+         Solutions contractor who runs the PNRGC SCADA stack (facility visitor log entry 218,
+         "J. MERCER ... credentials renewed 16 JUN"). The game reads this value back as flag_1
+         ("the operator's name"), so it is NOT a fixed game secret - it is whatever the VM generates -
+         but a named maintenance login reads as a real operator account instead of a random codeword.
+         Must stay a valid lowercase unix username; the m07 solve recovers it DYNAMICALLY from the NFS
+         over-share (2nd non-blank line) and never hardcodes it, so the value may change freely. -->
     <input into_datastore="username">
-      <generator type="random_sanitised_word">
-        <input into="wordlist">
-          <value>mythical_creatures</value>
-        </input>
-      </generator>
+      <value>jmercer</value>
     </input>
     <!-- pinned: shared secret = Elena's control room door code and the operator login (must match scada_password in scenario.json.erb exactly) -->
     <input into_datastore="password">
@@ -125,7 +202,19 @@
     </input>
 
     <!-- FLAG ORDER (Break Escape m07): 1 nfs_overshare, 2 nc_message, 3 parameterised_accounts, 4 sudo_root_awk -->
+    <!-- NFS over-share: the SCADA stack's maintenance export, left world-mountable during the
+         "migration window". It leaks the operator handoff file: the literal "User", the operator
+         login and the flag.
+         SOLVE-CRITICAL: the m07 solve parses the username as the 2nd non-blank, non-separator line, so
+         the "User" / username / flag triple MUST stay exactly these three, in this order. Do NOT add
+         further literal <value> strings here: SecGen groups all literal <value>s ahead of datastores
+         and generators, so an extra value would land between "User" and the username and shift the
+         parse. Immersion here is carried by the themed export filename only (the solve dumps every
+         file it mounts, so the filename is cosmetic). -->
     <vulnerability module_path=".*/nfs_overshare">
+      <input into="leaked_filenames">
+        <value>scada_maintenance/operator_handoff.txt</value>
+      </input>
       <input into="strings_to_leak">
         <value>User</value>
         <datastore>username</datastore>
@@ -133,6 +222,12 @@
       </input>
     </vulnerability>
 
+    <!-- Relay/listener on a random high port: the capture the SAFETYNET relay snagged off the control
+         VLAN. Serves the literal "Password", the operator password (= the control-room door code) and
+         the flag. SOLVE-CRITICAL: the solve (and the nc_creds assertion) read the password as the 2nd
+         non-blank line, so "Password" / password / flag MUST stay exactly these three in this order.
+         As with the NFS leak, do NOT add extra literal <value> strings (they are grouped ahead of the
+         password datastore and would shift the parse). -->
     <utility module_path=".*/nc_message">
       <input into="strings_to_leak">
         <value>Password</value>
@@ -164,18 +259,78 @@
           <input into="super_user">
             <value>false</value>
           </input>
+          <!-- flag_3 lands in the "flag" file; the two themed files are the operator's own working
+               notes, making the home feel lived-in. Notes are concatenate encoders (order-preserving)
+               with the flag generator LAST, because SecGen hoists bare <value>s ahead of generators
+               and would otherwise move the flag out of the "flag" file. All three are 0600 in the
+               operator's home; the solve SSHes in and dumps the whole home. -->
           <input into="leaked_filenames">
+            <value>SHIFT_HANDOVER.txt</value>
+            <value>scada_stack/maintenance_notes.txt</value>
             <value>flag</value>
           </input>
           <input into="strings_to_leak">
+            <encoder module_path="modules/encoders/selector/concatenate">
+              <input into="strings_to_encode">
+                <value>PNRGC CONTROL ROOM -- SHIFT HANDOVER
+Operator: J. Mercer (OptiGrid Solutions, SCADA stack)   Shift: nights
+---------------------------------------------------------------
+- Rebalancing left on AUTO. Do NOT touch; the sequence job drives the breakers.
+- Step 02 (PORTLAND) holds until the host kicks it. Hold means hold.
+- Backup genset online, 72h rating. Elena keeps asking for the load-shed tables; read-only, do not send.
+- Vault keypad was reset 16 JUN after the cabling survey. Ask T. Park if you need it.
+- Anyone asks why the maintenance share is open: "migration window". It is not.</value>
+              </input>
+            </encoder>
+            <encoder module_path="modules/encoders/selector/concatenate">
+              <input into="strings_to_encode">
+                <value>SCADA STACK -- MAINTENANCE NOTES (OptiGrid Solutions)
+Site: Pacific Northwest Regional Grid Control (147 substations, 8.4M served, WA/OR/N.CAL)
+Host role: backup / staging for the cascade control system. Mirrors the live sequence loader.
+Standing instruction from the client: keep the loaded sequence resident across reboots.
+This account can sudo awk without a password -- "so the night operator can grep the logs fast".
+Change control: waived by the client. The client signs as "A."</value>
+              </input>
+            </encoder>
             <generator type="flag_generator"/>
           </input>
         </generator>
       </input>
     </utility>
 
+    <!-- sudo_root_awk (flag_4, root). The NOPASSWD awk rule is the root breakout. The root-only leak
+         is split into the flag file and a themed "cascade authority" note so that landing root reveals
+         the sequence's single-authority schedule (the ENTROPY / Architect reveal), not a bare token.
+         Both live 0600 under /root; the solve runs awk-as-root and dumps all of /root, so the flag is
+         captured wherever it lands. -->
     <vulnerability module_path=".*/sudo_root_awk">
+      <!-- Authority note as a concatenate encoder (order-preserving) with the flag generator LAST so
+           the flag lands in the "flag" file, not in AUTHORITY.txt (bare <value>s are hoisted ahead of
+           generators). Both are 0600 under /root; the solve runs awk-as-root and dumps all of /root. -->
+      <input into="leaked_filenames">
+        <value>cascade_sequence/AUTHORITY.txt</value>
+        <value>flag</value>
+      </input>
       <input into="strings_to_leak">
+        <encoder module_path="modules/encoders/selector/concatenate">
+          <input into="strings_to_encode">
+            <value>CASCADE CONTROL SYSTEM -- SEQUENCE AUTHORITY (ROOT)
+================================================================
+SCHEDULE / ONE AUTHORITY / ALL CELLS -- WINDOW OPENS 02:40 PT
+
+  01  SEATTLE METRO      open critical breakers        ARMED
+  02  PORTLAND           absorb shed load              HOLD -- START ON HOST
+  03  OREGON             safety shutdown, sequential   PENDING
+  04  NORTHERN CAL       load imbalance trip           PENDING
+
+CELL: Critical Mass (Operation BLACKOUT)   SITE: PORTLAND / PNRGC
+The sequence starts only from a host inside the building. This is that host.
+Abort is physical: pull the originating host off the control VLAN.
+
+  "Entropy is inevitable. Systems decay. I merely publish the schedule."
+                                                              -- A.</value>
+          </input>
+        </encoder>
         <generator type="flag_generator"/>
       </input>
     </vulnerability>

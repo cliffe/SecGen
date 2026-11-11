@@ -90,7 +90,12 @@ scenario.json.erb to match — do not renumber here.
          being fed from here. -->
     <service module_path=".*/parameterised_website">
       <input into="organisation">
-        <value>{"business_name": "Albion Energy Storage - BMS Status", "business_motto": "Grid-scale storage, monitored around the clock.", "business_address": "Unit 4, Harbour Road, Grangemouth, FK3 8XH", "domain": "albion-energy.co.uk", "office_telephone": "01324 555 014", "office_email": "ops@albion-energy.co.uk", "industry": "Energy storage", "manager": {"name": "Fiona Gale", "address": "Unit 4, Harbour Road, Grangemouth, FK3 8XH", "phone_number": "07700 900412", "email_address": "fgale@albion-energy.co.uk", "username": "fgale", "password": ""}, "employees": [], "product_name": "Battery management system", "intro_paragraph": ["Live battery management status for the Albion grid storage site. Rack bank readings are published to the control room SCADA HMI."]}</value>
+<!-- Immersion: the site's named contact is the game's own facility manager, Robert Vance
+             ("he runs the site, and he's on shift" - HaX), so a player who scans the BMS site sees
+             the man HaX sends them to find. Staff echo the night-shift roster the game states
+             (Voltage: "Nine on the night crew in Hall 2, the duty engineer, and the man on the
+             gate"). All cosmetic contact text; no account here gates a flag. -->
+        <value>{"business_name": "Albion Energy Storage - BMS Status", "business_motto": "Grid-scale storage, monitored around the clock.", "business_address": "Unit 4, Harbour Road, Grangemouth, FK3 8XH", "domain": "albion-energy.co.uk", "office_telephone": "01324 555 014", "office_email": "ops@albion-energy.co.uk", "industry": "Energy storage", "manager": {"name": "Robert Vance (Facility Manager)", "address": "Unit 4, Harbour Road, Grangemouth, FK3 8XH", "phone_number": "07700 900188", "email_address": "rvance@albion-energy.co.uk", "username": "rvance", "password": ""}, "employees": [{"name": "Fiona Gale - Control Room Operations", "phone_number": "01324 555 014", "email_address": "ops@albion-energy.co.uk"}, {"name": "Control Room (24h) - Hall 2", "phone_number": "01324 555 019", "email_address": "control@albion-energy.co.uk"}, {"name": "Duty Engineer - Night Shift", "phone_number": "07700 900204", "email_address": "duty@albion-energy.co.uk"}], "product_name": "Battery management system", "intro_paragraph": ["Live battery management status for the Albion grid storage site. Rack bank readings are published to the control room SCADA HMI."]}</value>
       </input>
       <input into="main_page_paragraph_content">
         <value>RACK BANK STATUS -- AUTOMATED FEED
@@ -105,6 +110,26 @@ Emergency shutdown interlocks: ARMED
 Feed source: bms-historian. Values published to the control room SCADA HMI.
 Last integrity check: PASSED</value>
       </input>
+
+      <!-- Immersion: a maintenance notice on the public status page ties the "NOMINAL / PASSED"
+           feed to OptiGrid's "calibration" - the exact cover the player later unpicks from the
+           FTP coordination notes and the root-only override. Narrative payoff (it foreshadows the
+           trick), not a red herring: it adds no new path, and contract #4782 echoes the in-game
+           OptiGrid Job Card #4782 the player already holds. The flag is unaffected (it is leaked
+           as an HTML comment in the index source by strings_to_leak, below). -->
+      <input into="visible_tabs">
+        <generator type="html_snippet_generator">
+          <input into="heading">
+            <value>Scheduled maintenance - telemetry calibration</value>
+          </input>
+          <input into="paragraphs">
+            <value>A calibration profile supplied by our maintenance contractor (OptiGrid Solutions, contract #4782) is active on rack banks A, B and C. During the calibration window the historian publishes the calibrated feed to the control-room SCADA HMI.</value>
+            <value>Readings may differ from local rack instrumentation until calibration completes. Operators should act on the published feed. Emergency shutdown interlocks remain armed.</value>
+            <value>Maintenance contact: OptiGrid Solutions, ops@optigrid-solutions.co.uk. Site contact: Robert Vance, Facility Manager.</value>
+          </input>
+        </generator>
+      </input>
+
       <input into="strings_to_leak">
         <generator type="flag_generator"/>
       </input>

@@ -166,6 +166,19 @@ These VMs are provisioned by the Break Escape game engine via SecGen integration
         <generator type="flag_generator"/>
       </input>
 
+      <!-- The maltrail_data generator embeds a CTF flag in the threat data by default. The game
+           expects bunker_monitor to build exactly two flags (foothold + staging), so override the
+           generator's embedded_flag with a short in-story note instead of a flag: a narrative
+           breadcrumb on the watch-floor console that points the player at the staging account,
+           where flag 2 lives. Concept level only, no technique, and not a SecGen flag. -->
+      <input into="maltrail_data">
+        <generator type="maltrail_data">
+          <input into="embedded_flag">
+            <value>SAFETYNET watch floor. Cameras and doors nominal. Release staging copy moved off this console to the staging operators' account.</value>
+          </input>
+        </generator>
+      </input>
+
       <!-- Flag 2 and the staging schedule no longer live here (they were world-readable in the
            threat-data store / web UI). R30/B7 moves them to a separate, password-gated staging
            account below. The monitoring platform keeps generic threat data (module default). -->

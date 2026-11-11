@@ -14,7 +14,7 @@ Virtual machines for the Break Escape SAFETYNET mission 8 narrative experience. 
 ## Included Systems
 
 **safetynet_gitlist_server** (172.16.0.2)
-- Debian 12 desktop system
+- Debian 10 desktop system
 - Hosts SAFETYNET's internal GitList repository browser, vulnerable to an argument-injection remote-code-execution flaw that requires no authentication (GitList 0.4.0, CVE-2018-1000533)
 - Contains the mole's operations account, credentials committed into repository history, encrypted ENTROPY correspondence staged in a home directory, and a root-level cache of The Architect's authorisation confirming the Portland deployment database exfiltration
 - Intelligence: the exposed repository (recon), the stashed credentials, the ENTROPY correspondence, and The Architect's signed authorisation with a casualty acknowledgement

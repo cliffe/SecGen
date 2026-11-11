@@ -117,9 +117,73 @@ The transaction log itemises invoice ZDS-2024-0847 to GHOST (Ransomware Incorpor
       <generator type="strong_password_generator"/>
     </input>
 
+    <!-- Immersion: the 'student' trainee account is the lab login WhiteHat's
+         research team rehearses on. Its home folder holds the trainee's own
+         orientation notes and lab journal in the night team's "recon first"
+         house style, discoverable once the box is rooted. Plain text only:
+         no flags, no buyer names, no safe code, no Phase 2 detail (those stay
+         in the game's wall-safe catalogue). Credentials and account order are
+         unchanged (student/student, non-sudo), so the solve path is unaffected. -->
     <utility module_path=".*/parameterised_accounts">
       <input into="accounts">
-        <value>{"username":"student","password":"student","super_user":"false","strings_to_leak":[],"leaked_filenames":[]}</value>
+        <generator type="account">
+          <input into="username">
+            <value>student</value>
+          </input>
+          <input into="password">
+            <value>student</value>
+          </input>
+          <input into="super_user">
+            <value>false</value>
+          </input>
+          <input into="leaked_filenames">
+            <value>README-first.txt</value>
+            <value>lab_journal.txt</value>
+          </input>
+          <input into="strings_to_leak">
+            <value>ZERO DAY SYNDICATE -- RESEARCH TRAINING NETWORK
+Trainee onboarding (isolated lab -- nothing here leaves the segment)
+================================================================
+
+Welcome to the box. This is where we rehearse before a live job, so
+treat every service on it like the real thing.
+
+HOUSE RULES (kept from the day staff, do not argue with them):
+  1. Recon first. Everything on this network answers a scan -- map it
+     before you touch it. If you skipped the scan you are guessing.
+  2. Read the banners. The services tell you what they are and what
+     build they run. That is half the work done for you.
+  3. The anonymous FTP folder is a shop window. Nothing that matters
+     lives in it -- the real notes are behind the exploit.
+  4. The web host is the client-facing front. The price board on it is
+     for clients only and it is NOT plain ROT13 any more -- Sable moved
+     it to her own letter shift and mails the number out. Do not post
+     the shift on this box.
+  5. The distcc build box on the high port is legacy and off-limits
+     after hours. If you are reading this after hours, you know why.
+
+-- the night team</value>
+            <value>LAB JOURNAL -- trainee
+======================
+
+Day 1. Swept the segment end to end before touching anything, like the
+rules say. Two hosts. FTP, HTTP and that old build daemon on the high
+port. Noted the FTP build string straight off the login banner.
+
+Day 2. Worked the FTP box. The 1.3.3c build is the exact one we ship to
+the healthcare clients -- there is a note in root that spells it out.
+Rees on reception keeps asking what we actually do back here. I keep
+telling her "audits". Easier that way.
+
+Day 3. Pulled the client price board off the web host. Tried ROT13 out
+of habit and got nonsense -- the banner on the page says it is on
+Sable's client shift now, not ROT13. Foster said the number goes out by
+mail only, so unless you have her note you brute the 25 shifts until it
+reads. Barely a lock at all, that.
+
+TODO: leave the distcc box alone until the morning shift signs it off.</value>
+          </input>
+        </generator>
       </input>
     </utility>
     <utility module_path=".*/handy_cli_tools"/>
@@ -190,7 +254,7 @@ The operational records are not here. They sit on the legacy distcc box.</value>
            source comments below. No flag is generated here, so flag count/order is
            unchanged. business_name/motto/intro drive the visible index + contact page. -->
       <input into="organisation">
-        <value>{"business_name":"WhiteHat Security Services","business_motto":"Security Through Economics","business_address":"Callaghan Square, Cardiff, CF10 5BT","domain":"whitehat-security.co.uk","office_telephone":"029 2010 0101","office_email":"enquiries@whitehat-security.co.uk","industry":"Penetration Testing and Security Audit","manager":{"name":"Victoria Sterling","address":"Callaghan Square, Cardiff, CF10 5BT","phone_number":"029 2010 0102","email_address":"v.sterling@whitehat-security.co.uk","username":"v_sterling","password":""},"employees":[],"product_name":"Security assessments","intro_paragraph":["Independent penetration testing and security audit since 2010. Retail, logistics, local government and financial services. Clean reports, happy clients, discretion as standard.","This host is part of WhiteHat's isolated research and training network. Authorised staff only -- everything on this segment is rehearsal. If you can read this and you are not on the research team, you are in the wrong place."]}</value>
+        <value>{"business_name":"WhiteHat Security Services","business_motto":"Security Through Economics","business_address":"Callaghan Square, Cardiff, CF10 5BT","domain":"whitehat-security.co.uk","office_telephone":"029 2010 0101","office_email":"enquiries@whitehat-security.co.uk","industry":"Penetration Testing and Security Audit","manager":{"name":"Victoria Sterling","address":"Callaghan Square, Cardiff, CF10 5BT","phone_number":"029 2010 0102","email_address":"v.sterling@whitehat-security.co.uk","username":"v_sterling","password":""},"employees":[{"name":"Ffion Rees -- Reception and Client Liaison","address":"Callaghan Square, Cardiff, CF10 5BT","phone_number":"029 2010 0101","email_address":"reception@whitehat-security.co.uk","username":"f_rees","password":""},{"name":"Danny Foster -- Senior Security Consultant","address":"Callaghan Square, Cardiff, CF10 5BT","phone_number":"029 2010 0105","email_address":"d.foster@whitehat-security.co.uk","username":"d_foster","password":""},{"name":"Rhodri Pugh -- Lead Penetration Tester","address":"Callaghan Square, Cardiff, CF10 5BT","phone_number":"029 2010 0106","email_address":"r.pugh@whitehat-security.co.uk","username":"r_pugh","password":""}],"product_name":"Security assessments","intro_paragraph":["Independent penetration testing and security audit since 2010. Retail, logistics, local government and financial services. Clean reports, happy clients, discretion as standard.","This host is part of WhiteHat's isolated research and training network. Authorised staff only -- everything on this segment is rehearsal. If you can read this and you are not on the research team, you are in the wrong place."]}</value>
       </input>
       <input into="strings_to_leak">
         <!-- Plain HTML comment: the web host's banner, carrying the SAME flag 1

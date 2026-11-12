@@ -100,3 +100,30 @@ Install the lib/batch/batch-secgen.service systemd service file.
 sudo systemctl enable /absolute/path/to/SecGen/lib/batch/batch-secgen.service
 service batch-secgen start
 ```
+
+## Optional: keep the puppet scratch in RAM (`SECGEN_PUPPET_TMPFS`)
+
+Generating a project copies the selected puppet modules into
+`projects/<id>/puppet/` — one tree per system, hundreds of MB of small,
+`fsync`-heavy files. On a slow or encrypted disk this is the heaviest local
+I/O of a build, and several builds generating at once can stall the disk badly
+enough to hang the host.
+
+Set `SECGEN_PUPPET_TMPFS` to an existing directory on a tmpfs (RAM-backed)
+filesystem and SecGen puts each project's `puppet/` tree there via a symlink,
+while the project directory and everything worth keeping — the resolved
+`scenario.xml`, `datastores` (spoiler passwords and flags), `flag_hints.xml`,
+`Vagrantfile`, the `.vagrant` VM ids and `test_results/` — stay on the normal
+disk. The puppet tree is reproducible from those records, so losing it on a
+reboot or crash costs only a rebuild.
+
+`/dev/shm` is a tmpfs on most systems and needs no root:
+
+```
+mkdir -p /dev/shm/secgen-puppet
+export SECGEN_PUPPET_TMPFS=/dev/shm/secgen-puppet
+```
+
+`destroy-project` removes the RAM-backed tree along with the project. Budget
+roughly 100 MB per system per build. The variable is optional: leave it unset
+and `puppet/` is written to disk as before.

@@ -44,9 +44,29 @@ class DestroyFunctions
     if !remaining.empty?
       Print.err "VMs not destroyed: #{remaining.join(', ')}. Keeping #{project_dir} for manual cleanup."
     elsif remove_project
+      cleanup_puppet_scratch(project_dir)
       FileUtils.rm_rf(project_dir)
       Print.info "Removed #{project_dir}"
     end
     remaining
+  end
+
+  # If puppet/ was symlinked onto a tmpfs scratch mount (SECGEN_PUPPET_TMPFS),
+  # remove the RAM-backed target too, so it is reclaimed now rather than only at
+  # the next reboot. Best-effort, and scoped strictly to the configured root.
+  def self.cleanup_puppet_scratch(project_dir)
+    scratch_root = ENV['SECGEN_PUPPET_TMPFS']
+    return if scratch_root.nil? || scratch_root.strip.empty?
+    link = "#{project_dir}/puppet"
+    return unless File.symlink?(link)
+    target = (File.realpath(link) rescue nil)
+    return if target.nil?
+    root = (File.realpath(scratch_root) rescue scratch_root)
+    return unless target.start_with?("#{root}/")
+    FileUtils.rm_rf(target)
+    parent = File.dirname(target)
+    Dir.rmdir(parent) if File.directory?(parent) && Dir.empty?(parent)
+  rescue => e
+    Print.warn "Could not clean puppet tmpfs scratch for #{project_dir}: #{e.message}"
   end
 end

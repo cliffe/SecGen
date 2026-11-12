@@ -41,6 +41,34 @@ class ProjectFilesCreator
     @builder_type = @options.has_key?(:esxi_url) ? :vmware_iso : :virtualbox_iso
   end
 
+  # Optionally place the heavy, regenerable puppet/ module tree on a tmpfs
+  # scratch mount (env SECGEN_PUPPET_TMPFS, e.g. /dev/shm/secgen-puppet), while
+  # the project directory and all its records (resolved scenario.xml,
+  # datastores/flags, Vagrantfile, .vagrant VM ids, test_results) stay on the
+  # persistent disk. The per-system module copies are large and fsync-heavy, so
+  # keeping them in RAM avoids stalling a slow or encrypted backing disk. The
+  # puppet tree is reproducible from the records, so losing it on a crash costs
+  # nothing but a rebuild. Inert unless the env var names an existing directory.
+  def setup_puppet_scratch
+    scratch_root = ENV['SECGEN_PUPPET_TMPFS']
+    return if scratch_root.nil? || scratch_root.strip.empty?
+    unless File.directory?(scratch_root)
+      Print.warn "SECGEN_PUPPET_TMPFS=#{scratch_root} is not a directory; puppet/ stays on disk"
+      return
+    end
+    puppet_link = "#{@out_dir}/puppet"
+    # Leave a real (non-symlink) puppet dir alone, e.g. re-provisioning a prior build.
+    return if File.exist?(puppet_link) && !File.symlink?(puppet_link)
+    target = "#{scratch_root}/#{File.basename(@out_dir)}/puppet"
+    FileUtils.mkpath(target)
+    FileUtils.mkpath(@out_dir)
+    FileUtils.rm_f(puppet_link) if File.symlink?(puppet_link)
+    File.symlink(target, puppet_link)
+    Print.std "Puppet scratch on tmpfs: #{puppet_link} -> #{target}"
+  rescue => e
+    Print.warn "Could not set up puppet tmpfs scratch (#{e.message}); puppet/ stays on disk"
+  end
+
 # Generate all relevant files for the project
   def write_files
     # when writing to a project that already contains a project, move everything out the way,
@@ -60,6 +88,7 @@ class ProjectFilesCreator
     end
 
     FileUtils.mkpath "#{@out_dir}" unless File.exist?("#{@out_dir}")
+    setup_puppet_scratch
     FileUtils.mkpath "#{@out_dir}/puppet/" unless File.exist?("#{@out_dir}/puppet/")
     FileUtils.mkpath "#{@out_dir}/environments/production/" unless File.exist?("#{@out_dir}/environments/production/")
 

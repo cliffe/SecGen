@@ -16,7 +16,7 @@ class ReversingToolsTest < PostProvisionTest
 
     tier(1) do
       test_local_command('gdb installed?', 'which gdb', 'gdb')
-      %w[gdb git ltrace strace valgrind pax-utils binwalk vbindiff ssdeep gcc-multilib yara nmap].each do |pkg|
+      %w[gdb git ltrace strace valgrind pax-utils binwalk vbindiff ssdeep gcc-multilib yara nmap netcat-openbsd tcpdump].each do |pkg|
         test_local_command("#{pkg} package installed?", "dpkg -l #{pkg} | grep '^ii'", pkg)
       end
       test_local_command('upx installed?', 'test -x /usr/local/bin/upx && echo "ok"', 'ok')
@@ -45,6 +45,7 @@ class ReversingToolsTest < PostProvisionTest
       test_local_command('ssdeep runs', 'ssdeep -V 2>&1', '.')
       test_local_command('yara runs', 'yara --version 2>&1', '.')
       test_local_command('nmap runs', 'nmap --version 2>&1', 'Nmap')
+      test_netcat_and_tcpdump
       test_local_command('procyon runs', 'command -v procyon >/dev/null && procyon --help 2>&1', 'Usage: procyon') unless kali
       if modern
         test_local_command('radare2 runs', 'command -v radare2 >/dev/null && radare2 -v 2>&1', 'radare2')
@@ -53,6 +54,27 @@ class ReversingToolsTest < PostProvisionTest
         test_local_command('gef loads in gdb', 'gef -batch -ex "gef help" 2>&1', 'GEF')
       end
       test_cutter
+    end
+  end
+
+  # One loopback exchange proves both tools: an OpenBSD netcat listener receives a line from an
+  # OpenBSD netcat client, while tcpdump (as root) captures a packet of the connection on lo.
+  def test_netcat_and_tcpdump
+    port = 47391
+    cmd = "D=$(mktemp -d); timeout 15 tcpdump -i lo -n -l -c 1 'tcp dst port #{port}' > $D/cap 2>/dev/null & T=$!; sleep 2; " \
+          "timeout 10 nc.openbsd -l 127.0.0.1 #{port} > $D/rx & L=$!; sleep 1; " \
+          "echo secgen-nc-roundtrip | timeout 5 nc.openbsd -N 127.0.0.1 #{port}; wait $L $T; " \
+          "grep -q secgen-nc-roundtrip $D/rx && echo 'netcat roundtrip ok'; " \
+          "grep -q '> 127.0.0.1.#{port}' $D/cap && echo 'tcpdump captured ok'; cat $D/cap; rm -rf $D"
+    out = run_command(cmd)
+    add_evidence('netcat/tcpdump loopback', cmd)
+    { 'netcat sends and receives on loopback' => 'netcat roundtrip ok',
+      'tcpdump captures loopback traffic' => 'tcpdump captured ok' }.each do |name, marker|
+      if out[:stdout].include?(marker)
+        pass_check(name, "#{name} on #{get_system_name}")
+      else
+        fail_check(name, "#{name} on #{get_system_name}", evidence: "$ #{cmd}\n--- stdout\n#{out[:stdout]}\n--- stderr\n#{out[:stderr]}")
+      end
     end
   end
 

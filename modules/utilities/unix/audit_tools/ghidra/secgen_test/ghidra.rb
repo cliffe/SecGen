@@ -7,7 +7,9 @@ class GhidraTest < PostProvisionTest
     super
   end
 
-  # No inputs. The Puppet differs by base: Kali downloads Ghidra at build time and sets up the gdb debugger
+  # Two inputs, both Debian only. font_size: when set, the interface and code font sizes in launch.properties and
+  # gui.theme.properties. debugger_layout: when true, the Debugger tool's default layout in Debugger.jar is the
+  # lab's (the stock tool starts unmaximised, EX_STATE="0"; the lab's starts maximised, EX_STATE="6"). The Puppet differs by base: Kali downloads Ghidra at build time and sets up the gdb debugger
   # packages; the Debian bases ship a bundled release. Checks for the Kali-only parts are guarded on the base.
   def test_module
     super
@@ -29,6 +31,18 @@ class GhidraTest < PostProvisionTest
         end
         test_local_command('/opt/ghidra links to the versioned install', 'readlink /opt/ghidra', '/opt/ghidra_')
         test_local_command('launch.properties pins JDK 21', 'grep "^JAVA_HOME_OVERRIDE=" /opt/ghidra/support/launch.properties', 'java-21-openjdk')
+      end
+      unless kali
+        layout = self.json_inputs['debugger_layout']&.first == 'true'
+        read_tool = %q(python3 -c "import zipfile; t = zipfile.ZipFile('/opt/ghidra/Ghidra/Debug/Debugger/lib/Debugger.jar').read('defaultTools/Debugger.tool').decode(); print('lab layout' if 'EX_STATE=\\"6\\"' in t else 'stock layout')")
+        test_local_command("Debugger default tool has the #{layout ? 'lab' : 'stock'} layout", read_tool,
+                           layout ? 'lab layout' : 'stock layout')
+        if (size = self.json_inputs['font_size']&.first) && !size.empty?
+          test_local_command("interface font size #{size}", 'grep "^VMARGS=-Dfont.size.override=" /opt/ghidra/support/launch.properties',
+                             "font.size.override=#{size}")
+          test_local_command("code font size #{size}", 'grep "^font.monospaced = " /opt/ghidra/Ghidra/Framework/Gui/data/gui.theme.properties',
+                             "monospaced-plain-#{size}")
+        end
       end
     end
 

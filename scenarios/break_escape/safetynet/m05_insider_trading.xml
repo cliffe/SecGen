@@ -139,8 +139,16 @@ These VMs are provisioned by the Break Escape game engine via SecGen integration
     </input>
 
     <vulnerability module_path=".*/bludit_upload_images_exec">
-      <!-- Flag order is document order: the recon (pre_leak) input is written first so it numbers
-           before the RCE flag. Within-module order needs a build to confirm. -->
+      <!-- Flag order is document order, and that order is build-stable (NOT build-dependent).
+           SecGen's scenario reader inserts each input generator immediately before the module it
+           feeds, and keeps two generators on the SAME module in their XML order
+           (lib/readers/system_reader.rb: the insert-before-target loop), so strings_to_pre_leak
+           (recon) always numbers before strings_to_leak (RCE), and this module (positioned first)
+           always numbers before parameterised_accounts (manifest) and sudo_root_less (root).
+           Confirmed against a real build (flag_hints.xml challenge order):
+           flag_1 = recon note, flag_2 = RCE, flag_3 = staging manifest, flag_4 = root.
+           The game pins story meaning to flag_1..flag_4 by this position, so KEEP the pre_leak
+           input above strings_to_leak and KEEP this module above the two modules below. -->
       <!-- flag1: RECON - sloppy QDC handover note exposing the Bludit admin credentials -->
       <input into="strings_to_pre_leak">
         <value>QDC RESEARCH PORTAL -- HANDOVER NOTE

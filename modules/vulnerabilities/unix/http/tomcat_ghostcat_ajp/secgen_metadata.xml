@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>Apache Tomcat AJP Ghostcat File Read (CVE-2020-1938)</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>
+    Apache Tomcat's AJP connector is exposed on all interfaces (0.0.0.0:8009)
+    with no shared secret and arbitrary request attributes allowed, which is the
+    "Ghostcat" misconfiguration behind CVE-2020-1938. An unauthenticated
+    attacker speaking AJP can set the javax.servlet.include.* request attributes
+    to make Tomcat read any file under the web application, including files under
+    WEB-INF that are never served over HTTP.
+
+    Version-vs-CVE note: the service module installs Tomcat 9.0.123, which ships
+    the 9.0.31 fix (AJP bound to localhost, secretRequired=true, request
+    attributes blocked by default). This module deliberately restores the
+    pre-9.0.31 behaviour on the connector - address="0.0.0.0",
+    secretRequired="false" and allowedRequestAttributesPattern=".*" - which is a
+    documented real-world misconfiguration that re-opens the exact Ghostcat file
+    read. The stock Metasploit auxiliary reads the planted WEB-INF file against
+    this configuration unchanged.
+  </description>
+
+  <type>http</type>
+  <type>tomcat</type>
+  <type>in_the_wild</type>
+  <!-- File read over AJP as the tomcat service user; no shell, no code exec. -->
+  <privilege>info_leak</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <!-- The flag planted under the web app's WEB-INF directory. -->
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+
+  <default_input into="strings_to_leak">
+    <generator type="message_generator"/>
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+  </default_input>
+
+  <!--optional details-->
+  <cve>CVE-2020-1938</cve>
+  <cvss_base_score>9.8</cvss_base_score>
+  <cvss_vector>AV:N/AC:L/Au:N/C:C/I:C/A:C</cvss_vector>
+  <reference>https://nvd.nist.gov/vuln/detail/CVE-2020-1938</reference>
+  <reference>https://www.chaitin.cn/en/ghostcat</reference>
+  <reference>https://www.rapid7.com/db/modules/auxiliary/admin/http/tomcat_ghostcat/</reference>
+  <software_name>Apache Tomcat</software_name>
+  <software_license>Apache v2</software_license>
+
+  <!--optional hints-->
+  <msf_module>auxiliary/admin/http/tomcat_ghostcat</msf_module>
+
+  <requires>
+    <module_path>modules/services/unix/http/tomcat</module_path>
+  </requires>
+
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>server-side misconfiguration and vulnerable components</keyword>
+    <keyword>Path Traversal</keyword>
+  </CyBOK>
+  <CyBOK KA="SS" topic="Categories of Vulnerabilities">
+    <keyword>CVEs and CWEs</keyword>
+  </CyBOK>
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION</keyword>
+    <keyword>EXPLOITATION FRAMEWORKS</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+
+</vulnerability>

@@ -1,0 +1,211 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>A Tale of Two Kitties</name>
+  <author>Thomas Shaw</author>
+  <description>Two servers, one careless team. The first application server is
+  leaking files it should keep to itself; buried in what it hands over is the
+  key to the second. The second server's administrative console was never
+  locked down, and whoever runs code on it can take the whole machine. But the
+  real prize is getting back to the first box and reading what the administrator
+  left lying around: a password for an account on the second server, and the
+  hashed password of another. Four flags sit along the way, spread across both
+  machines. You will need to read what should have stayed hidden, run what
+  should not have run, escalate, loot, crack, and pivot. The two boxes are
+  wired together by the mistakes their owners share.</description>
+
+  <type>ctf</type>
+  <type>attack-ctf</type>
+  <type>pwn-ctf</type>
+  <difficulty>hard</difficulty>
+
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>server-side misconfiguration and vulnerable components</keyword>
+    <keyword>Path Traversal</keyword>
+  </CyBOK>
+  <CyBOK KA="AAA" topic="Authentication">
+    <keyword>Cryptography and authentication (hashes and attacks against authentication schemes / passwords)</keyword>
+  </CyBOK>
+  <CyBOK KA="AAA" topic="Authorisation">
+    <keyword>Vulnerabilities and attacks on access control misconfigurations</keyword>
+  </CyBOK>
+  <CyBOK KA="AB" topic="Models">
+    <keyword>kill chains</keyword>
+  </CyBOK>
+  <CyBOK KA="MAT" topic="Malicious Activities by Malware">
+    <keyword>cyber kill chain</keyword>
+  </CyBOK>
+
+  <!-- ================= Attacker ================= -->
+  <system>
+    <system_name>attack_vm</system_name>
+    <base distro="Kali" name="MSF"/>
+
+    <input into_datastore="IP_addresses">
+      <!-- 0 attack_vm -->
+      <network_ip system="attack_vm"/>
+      <!-- 1 linux_mgr (box 1: Tomcat Manager RCE) -->
+      <network_ip system="linux_mgr"/>
+      <!-- 2 deploy_srv (box 2: Ghostcat + pivot destination) -->
+      <network_ip system="deploy_srv"/>
+    </input>
+
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts">
+        <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
+      </input>
+    </utility>
+
+    <utility module_path=".*/iceweasel">
+      <input into="accounts">
+        <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
+      </input>
+      <input into="autostart"><value>false</value></input>
+    </utility>
+
+    <utility module_path=".*/kali_top10"/>
+    <utility module_path=".*/kali_web"/>
+
+    <network type="private_network"/>
+
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+    <build type="cleanup">
+      <input into="root_password"><datastore>spoiler_admin_pass</datastore></input>
+    </build>
+  </system>
+
+  <!-- ================= Box 1: Tomcat Manager RCE target ================= -->
+  <system>
+    <system_name>linux_mgr</system_name>
+    <base distro="Debian 12" type="desktop" name="KDE"/>
+
+    <!-- Shared secrets produced once here; datastores are scenario-global so
+         box 2 reads them too. -->
+    <!-- Box 1's root password: deliberately strong, but leaked (base64) through
+         box 2's Ghostcat file read. Root SSH is password-disabled by default,
+         so the only use for it is `su` from the Manager RCE shell. -->
+    <input into_datastore="box1_root_pw">
+      <generator type="strong_password_generator"/>
+    </input>
+    <!-- Box 2's admin password: strong and never crackable; the only copy the
+         attacker can reach sits in box 1's /root (found-password pivot). -->
+    <input into_datastore="box2_admin_pw">
+      <generator type="strong_password_generator"/>
+    </input>
+    <!-- The devops password: weak and reused on both boxes. Recovered by
+         cracking box 1's /etc/shadow, then reused to log in to box 2. -->
+    <input into_datastore="devops_pw">
+      <generator type="crackable_password_generator"/>
+    </input>
+
+    <!-- Foothold: Tomcat Manager default/weak creds -> WAR deploy -> RCE as the
+         tomcat service account. -->
+    <vulnerability module_path=".*/tomcat_manager_default_creds"/>
+
+    <!-- devops exists here only so its weak hash sits in /etc/shadow for the
+         cracking step; its flag lives on box 2, not here. -->
+    <input into_datastore="box1_accounts">
+      <generator type="account">
+        <input into="username"><value>devops</value></input>
+        <input into="password"><datastore>devops_pw</datastore></input>
+        <input into="super_user"><value>false</value></input>
+      </generator>
+    </input>
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts"><datastore>box1_accounts</datastore></input>
+    </utility>
+
+    <!-- Root flag, readable only once the attacker has escalated to root. -->
+    <utility module_path=".*/leak_to_file">
+      <input into="leaked_filename"><value>flag.txt</value></input>
+      <input into="storage_directory"><value>/root</value></input>
+      <input into="base64_file">
+        <encoder module_path=".*/base64">
+          <input into="strings_to_encode"><generator type="flag_generator"/></input>
+        </encoder>
+      </input>
+    </utility>
+
+    <!-- The administrator's notes in /root: box 2's admin password, in the
+         clear, for whoever roots this box (found-password lateral move). -->
+    <utility module_path=".*/leak_to_file">
+      <input into="leaked_filename"><value>deployment_notes.txt</value></input>
+      <input into="storage_directory"><value>/root</value></input>
+      <input into="base64_file">
+        <encoder module_path=".*/base64">
+          <input into="strings_to_encode"><datastore>box2_admin_pw</datastore></input>
+        </encoder>
+      </input>
+    </utility>
+
+    <network type="private_network"/>
+
+    <!-- Root password IS the leaked value, so the Ghostcat-recovered secret
+         actually works for `su`. Still strong and recorded as the spoiler. -->
+    <build type="cleanup">
+      <input into="root_password"><datastore>box1_root_pw</datastore></input>
+    </build>
+  </system>
+
+  <!-- ================= Box 2: Ghostcat + pivot destination ================= -->
+  <system>
+    <system_name>deploy_srv</system_name>
+    <base distro="Debian 12" type="desktop" name="KDE"/>
+
+    <!-- Ghostcat (CVE-2020-1938): unauthenticated AJP file read under WEB-INF.
+         Two files are planted: flag 1, and box 1's root password base64-encoded
+         (the attacker decodes it to escalate on box 1). -->
+    <vulnerability module_path=".*/tomcat_ghostcat_ajp">
+      <input into="leaked_filenames">
+        <value>secret_flag.txt</value>
+        <value>db_backup.properties</value>
+      </input>
+      <input into="strings_to_leak">
+        <generator type="flag_generator"/>
+        <encoder module_path=".*/base64">
+          <input into="strings_to_encode"><datastore>box1_root_pw</datastore></input>
+        </encoder>
+      </input>
+    </vulnerability>
+
+    <!-- Two accounts reachable only by the two pivots from box 1:
+         admin  -> via the password found in box 1's /root (strong password)
+         devops -> via the weak password cracked from box 1's /etc/shadow
+         Neither is a super_user: box 2 has no local privesc, so each flag is
+         reachable only through its own pivot. -->
+    <input into_datastore="box2_accounts">
+      <generator type="account">
+        <input into="username"><value>admin</value></input>
+        <input into="password"><datastore>box2_admin_pw</datastore></input>
+        <input into="super_user"><value>false</value></input>
+        <input into="leaked_filenames"><value>flag.txt</value></input>
+        <input into="strings_to_leak"><generator type="flag_generator"/></input>
+      </generator>
+      <generator type="account">
+        <input into="username"><value>devops</value></input>
+        <input into="password"><datastore>devops_pw</datastore></input>
+        <input into="super_user"><value>false</value></input>
+        <input into="leaked_filenames"><value>flag.txt</value></input>
+        <input into="strings_to_leak"><generator type="flag_generator"/></input>
+      </generator>
+    </input>
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts"><datastore>box2_accounts</datastore></input>
+    </utility>
+
+    <network type="private_network"/>
+
+    <input into_datastore="spoiler_admin_pass_box2">
+      <generator type="strong_password_generator"/>
+    </input>
+    <build type="cleanup">
+      <input into="root_password"><datastore>spoiler_admin_pass_box2</datastore></input>
+    </build>
+  </system>
+
+</scenario>

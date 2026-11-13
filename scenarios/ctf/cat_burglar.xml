@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>Cat Burglar</name>
+  <author>Thomas Shaw</author>
+  <description>Someone left the back door to the application server propped open.
+  Its administrative console is sitting on the network, and the only thing
+  standing between you and it is a login that whoever deployed this box never
+  bothered to change. Guess your way in, and the console will happily let you
+  hand the server a new application to run, on your terms. Turn that into a
+  foothold on the machine, then read the flag waiting for whoever gets the
+  server to run their code.</description>
+
+  <type>ctf</type>
+  <type>attack-ctf</type>
+  <type>pwn-ctf</type>
+  <difficulty>easy</difficulty>
+
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>server-side misconfiguration and vulnerable components</keyword>
+  </CyBOK>
+  <CyBOK KA="AAA" topic="Authentication">
+    <keyword>Cryptography and authentication (hashes and attacks against authentication schemes / passwords)</keyword>
+  </CyBOK>
+
+  <system>
+    <system_name>attack_vm</system_name>
+    <base distro="Kali" name="MSF"/>
+
+    <input into_datastore="IP_addresses">
+      <!-- 0 attack_vm -->
+      <network_ip system="attack_vm"/>
+      <!-- 1 target -->
+      <network_ip system="target"/>
+    </input>
+
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts">
+        <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
+      </input>
+    </utility>
+
+    <utility module_path=".*/iceweasel">
+      <input into="accounts">
+        <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
+      </input>
+      <input into="autostart"><value>false</value></input>
+    </utility>
+
+    <utility module_path=".*/kali_top10"/>
+    <utility module_path=".*/kali_web"/>
+
+    <network type="private_network"/>
+
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+    <build type="cleanup">
+      <input into="root_password"><datastore>spoiler_admin_pass</datastore></input>
+    </build>
+  </system>
+
+  <system>
+    <system_name>target</system_name>
+    <base distro="Debian 12" type="desktop" name="KDE"/>
+
+    <!-- Foothold: Tomcat Manager reachable with default/weak creds -> deploy a
+         WAR -> remote code execution as the tomcat service account. -->
+    <vulnerability module_path=".*/tomcat_manager_default_creds"/>
+
+    <!-- The flag the tomcat service account can read once code runs as it. -->
+    <utility module_path=".*/leak_to_file">
+      <input into="account">
+        <value>{"username":"tomcat","password":"x","super_user":"false","strings_to_leak":[],"leaked_filenames":[]}</value>
+      </input>
+      <input into="leaked_filename"><value>flag.txt</value></input>
+      <input into="base64_file">
+        <encoder module_path=".*/base64">
+          <input into="strings_to_encode"><generator type="flag_generator"/></input>
+        </encoder>
+      </input>
+    </utility>
+
+    <network type="private_network"/>
+
+    <build type="cleanup">
+      <input into="root_password"><datastore>spoiler_admin_pass</datastore></input>
+    </build>
+  </system>
+
+</scenario>

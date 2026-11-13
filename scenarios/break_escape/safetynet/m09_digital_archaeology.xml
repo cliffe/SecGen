@@ -133,6 +133,19 @@ These VMs are provisioned by the Break Escape game engine via SecGen integration
     <base distro="Debian 12" type="desktop" name="KDE"/>
 
     <!--
+      FLAG ORDER IS BUILD-STABLE. SecGen numbers this box's flags in module
+      document order, so flag_1 is the parameterised_accounts leak (catalogue
+      index, in the catalogsvc home, the foothold) and flag_2 is the
+      sudo_root_more leak (Initiative ledger, in /root, the privesc). Confirmed
+      2026-11-13 against the real build (project d_61_137, set 918): the resolved
+      scenario.xml and flag_hints.xml both order the index at flag_1 and the
+      ledger at flag_2, matching the game's catalogue_server flag1/flag2 wiring.
+      A 2026-11-13 film handover reported the order reversed; that was a misread
+      (captured values transcribed to the wrong steps), not a build fault. Keep
+      parameterised_accounts before sudo_root_more so this order holds.
+    -->
+
+    <!--
       Flag 1: the catalogue service account (catalogsvc). The game hands this
       login on the reading-room duty-desk slip (catalogsvc / Catalog!Helena2016);
       the restricted catalogue index is in this account's home and is reachable

@@ -205,18 +205,35 @@ generators (or inline JSON):
 ```xml
 <input into_datastore="accounts">
   <generator type="account">
-    <input into="username"><value>shepherd</value></input>
-    <input into="password"><generator type="strong_password_generator"/></input>
-    <input into="super_user"><value>false</value></input>
-    <input into="leaked_filenames"><value>flag.txt</value></input>
-    <input into="strings_to_leak"><generator type="flag_generator"/></input>
+    <input into="username">
+      <value>shepherd</value>
+    </input>
+    <input into="password">
+      <generator type="strong_password_generator"/>
+    </input>
+    <input into="super_user">
+      <value>false</value>
+    </input>
+    <input into="leaked_filenames">
+      <value>flag.txt</value>
+    </input>
+    <input into="strings_to_leak">
+      <generator type="flag_generator"/>
+    </input>
   </generator>
 </input>
 
 <utility module_path=".*/parameterised_accounts">
-  <input into="accounts"><datastore>accounts</datastore></input>
+  <input into="accounts">
+    <datastore>accounts</datastore>
+  </input>
 </utility>
 ```
+
+**Formatting.** Put each nested child on its own indented line, never inline:
+write `<input into="x">`, the `<value>`/`<generator>`/`<encoder>`/`<datastore>`
+child indented beneath it, then `</input>` — as above, and the same for every
+nested element. Don't write `<input into="x"><value>asdf</value></input>`.
 
 Notes:
 
@@ -358,22 +375,36 @@ starting point:
       <generator type="account">
         <input into="username">
           <generator type="random_sanitised_word">
-            <input into="wordlist"><value>mythical_creatures</value></input>
+            <input into="wordlist">
+              <value>mythical_creatures</value>
+            </input>
           </generator>
         </input>
-        <input into="password"><generator type="strong_password_generator"/></input>
-        <input into="super_user"><value>false</value></input>
-        <input into="leaked_filenames"><value>flag.txt</value></input>
-        <input into="strings_to_leak"><generator type="flag_generator"/></input>
+        <input into="password">
+          <generator type="strong_password_generator"/>
+        </input>
+        <input into="super_user">
+          <value>false</value>
+        </input>
+        <input into="leaked_filenames">
+          <value>flag.txt</value>
+        </input>
+        <input into="strings_to_leak">
+          <generator type="flag_generator"/>
+        </input>
       </generator>
     </input>
 
     <utility module_path=".*/parameterised_accounts">
-      <input into="accounts"><datastore>accounts</datastore></input>
+      <input into="accounts">
+        <datastore>accounts</datastore>
+      </input>
     </utility>
 
     <service module_path=".*/proftpd">
-      <input into="port"><value>21</value></input>
+      <input into="port">
+        <value>21</value>
+      </input>
     </service>
 
     <network type="private_network"/>

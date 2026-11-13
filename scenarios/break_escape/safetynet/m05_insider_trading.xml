@@ -145,10 +145,15 @@ These VMs are provisioned by the Break Escape game engine via SecGen integration
            (lib/readers/system_reader.rb: the insert-before-target loop), so strings_to_pre_leak
            (recon) always numbers before strings_to_leak (RCE), and this module (positioned first)
            always numbers before parameterised_accounts (manifest) and sudo_root_less (root).
-           Confirmed against a real build (flag_hints.xml challenge order):
+           This gives the flag_hints.xml challenge order:
            flag_1 = recon note, flag_2 = RCE, flag_3 = staging manifest, flag_4 = root.
-           The game pins story meaning to flag_1..flag_4 by this position, so KEEP the pre_leak
-           input above strings_to_leak and KEEP this module above the two modules below. -->
+           NOTE: this SecGen document order is stable; the game numbering that rode on the
+           Hacktivity flag ingest row order was NOT, and on some sets reversed the story
+           meaning (see Hacktivity tmp/playtest/handover_m05_flagorder2.md). That is fixed on
+           the game side by numbering flags by their recorded document position (Flag#position),
+           so flag_1..flag_4 again mean recon, RCE, manifest, root. KEEP the pre_leak input
+           above strings_to_leak and KEEP this module above the two modules below so the
+           document order itself stays correct. -->
       <!-- flag1: RECON - sloppy QDC handover note exposing the Bludit admin credentials -->
       <input into="strings_to_pre_leak">
         <value>QDC RESEARCH PORTAL -- HANDOVER NOTE

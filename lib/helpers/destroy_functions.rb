@@ -63,9 +63,11 @@ class DestroyFunctions
     return if target.nil?
     root = (File.realpath(scratch_root) rescue scratch_root)
     return unless target.start_with?("#{root}/")
-    FileUtils.rm_rf(target)
-    parent = File.dirname(target)
-    Dir.rmdir(parent) if File.directory?(parent) && Dir.empty?(parent)
+    # target is <scratch>/<id>/puppet; remove the whole <scratch>/<id> dir so the
+    # puppet tree and the lib symlink beside it both go (the symlink is unlinked,
+    # its target — the project's real lib/ — is untouched).
+    scratch_proj = File.dirname(target)
+    FileUtils.rm_rf(scratch_proj) if scratch_proj.start_with?("#{root}/")
   rescue => e
     Print.warn "Could not clean puppet tmpfs scratch for #{project_dir}: #{e.message}"
   end

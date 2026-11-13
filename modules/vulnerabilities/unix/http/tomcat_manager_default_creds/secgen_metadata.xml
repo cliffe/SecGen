@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>Apache Tomcat Manager Default/Weak Credentials</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>The Apache Tomcat Manager application is left reachable over the
+    network and protected only by a weak, well-known credential (tomcat:tomcat
+    by default). An attacker who guesses the credential gains access to the
+    Manager, which allows deploying an arbitrary WAR and so remote code
+    execution as the Tomcat service account.
+
+    The misconfiguration is the combination of exposing the Manager app (the
+    default install restricts it to localhost via a RemoteAddrValve) and
+    granting a manager role to an account with a guessable password. Proven
+    with the Metasploit auxiliary login scanner tomcat_mgr_login.
+  </description>
+
+  <type>http</type>
+  <privilege>user_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>tomcat_manager_username</read_fact>
+  <read_fact>tomcat_manager_password</read_fact>
+
+  <!-- A classic default pair that Metasploit's stock tomcat_mgr_login
+       wordlist (tomcat_mgr_default_userpass.txt) contains, so the scanner
+       finds it without a custom list. -->
+  <default_input into="tomcat_manager_username">
+    <value>tomcat</value>
+  </default_input>
+  <default_input into="tomcat_manager_password">
+    <value>tomcat</value>
+  </default_input>
+
+  <!--optional vulnerability details-->
+  <reference>https://cwe.mitre.org/data/definitions/1392.html</reference>
+  <reference>https://tomcat.apache.org/tomcat-9.0-doc/manager-howto.html</reference>
+  <software_name>tomcat</software_name>
+  <software_license>Apache v2</software_license>
+
+  <msf_module>auxiliary/scanner/http/tomcat_mgr_login</msf_module>
+
+  <requires>
+    <type>update</type>
+  </requires>
+  <requires>
+    <module_path>services/unix/http/tomcat</module_path>
+  </requires>
+
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>server-side misconfiguration and vulnerable components</keyword>
+  </CyBOK>
+  <CyBOK KA="AAA" topic="Authentication">
+    <keyword>Cryptography and authentication (hashes and attacks against authentication schemes / passwords)</keyword>
+  </CyBOK>
+  <CyBOK KA="AAA" topic="Authorisation">
+    <keyword>Vulnerabilities and attacks on access control misconfigurations</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+</vulnerability>

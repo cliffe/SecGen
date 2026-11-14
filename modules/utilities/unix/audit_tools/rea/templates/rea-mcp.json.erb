@@ -1,0 +1,29 @@
+<%
+  require 'json'
+  env = {
+    'GHIDRA_INSTALL_DIR'            => @ghidra_dir.to_s,
+    'REA_GHIDRA_STARTUP_TIMEOUT_MS' => @ghidra_startup_timeout_ms.to_s,
+  }
+  env['JAVA_HOME'] = @java_home.to_s unless @java_home.to_s.empty?
+  startup = @mcp_startup_timeout_ms.to_s.to_i
+  fragment = {
+    'mcp' => {
+      # OpenCode defaults these to 5 seconds, which starting a JVM never meets
+      'timeout' => { 'startup' => startup, 'catalog' => startup },
+      'servers' => {
+        'rea' => {
+          'type'        => 'local',
+          'command'     => ['/usr/local/bin/node', @rea_entry.to_s, 'mcp'],
+          'environment' => env,
+          # execution covers one tool call, which is where Ghidra's analysis of a large binary runs
+          'timeout'     => {
+            'startup'   => startup,
+            'catalog'   => startup,
+            'execution' => @mcp_execution_timeout_ms.to_s.to_i,
+          },
+        },
+      },
+    },
+  }
+-%>
+<%= JSON.pretty_generate(fragment) %>

@@ -1,0 +1,95 @@
+#!/usr/local/bin/node
+// Installed by SecGen (opencode module): merges every JSON fragment in /usr/local/lib/secgen-opencode, in
+// filename order, into /etc/skel and each user's OpenCode config. Modules drop a fragment here rather than
+// writing the config themselves, so that a provider, an MCP server registration and anything else added later
+// compose instead of overwriting one another.
+// Usage: secgen-opencode-merge-config [--check]   (--check: exit 1 if any config needs updating)
+'use strict';
+const fs = require('fs');
+const path = require('path');
+
+const FRAGMENT_DIR = '/usr/local/lib/secgen-opencode';
+const CHECK = process.argv.includes('--check');
+
+function fragments() {
+  let names = [];
+  try {
+    names = fs.readdirSync(FRAGMENT_DIR).filter((n) => n.endsWith('.json')).sort();
+  } catch (err) {
+    return [];
+  }
+  return names.map((n) => JSON.parse(fs.readFileSync(path.join(FRAGMENT_DIR, n), 'utf8')));
+}
+
+// Key order varies between writers, so compare canonical forms rather than raw text
+function canon(value) {
+  if (Array.isArray(value)) return value.map(canon);
+  if (value && typeof value === 'object') {
+    const out = {};
+    for (const key of Object.keys(value).sort()) out[key] = canon(value[key]);
+    return out;
+  }
+  return value;
+}
+
+// The fragment wins for the keys it names; everything else already in the file is kept, so a setting the
+// student changed, or one written by another tool, survives a re-provision.
+function merge(base, over) {
+  const mergeable = (v) => v && typeof v === 'object' && !Array.isArray(v);
+  if (!mergeable(base) || !mergeable(over)) return over;
+  const out = Object.assign({}, base);
+  for (const key of Object.keys(over)) out[key] = merge(base[key], over[key]);
+  return out;
+}
+
+// /etc/skel, root, and every local user with a home under /home (uid 1000-59999)
+function targets() {
+  const out = [{ home: '/etc/skel', uid: 0, gid: 0 }];
+  for (const line of fs.readFileSync('/etc/passwd', 'utf8').split('\n')) {
+    const f = line.split(':');
+    if (f.length < 7) continue;
+    const name = f[0], uid = parseInt(f[2], 10), gid = parseInt(f[3], 10), home = f[5];
+    const isLocalUser = uid >= 1000 && uid < 60000 && home.startsWith('/home/');
+    if ((name === 'root' || isLocalUser) && fs.existsSync(home)) out.push({ home, uid, gid });
+  }
+  return out;
+}
+
+const wanted = fragments();
+if (wanted.length === 0) {
+  process.stderr.write(`no fragments in ${FRAGMENT_DIR}\n`);
+  process.exit(CHECK ? 0 : 1);
+}
+
+let needsUpdate = false;
+
+for (const target of targets()) {
+  const configDir = path.join(target.home, '.config');
+  const dir = path.join(configDir, 'opencode');
+  const file = path.join(dir, 'opencode.json');
+
+  // An unparseable config is treated as absent and replaced
+  let existing = {};
+  let hadConfig = false;
+  try {
+    existing = JSON.parse(fs.readFileSync(file, 'utf8'));
+    hadConfig = true;
+  } catch (err) {
+    existing = {};
+  }
+
+  const merged = wanted.reduce((acc, fragment) => merge(acc, fragment), existing);
+  if (hadConfig && JSON.stringify(canon(merged)) === JSON.stringify(canon(existing))) continue;
+  if (CHECK) {
+    needsUpdate = true;
+    continue;
+  }
+
+  fs.mkdirSync(dir, { recursive: true, mode: 0o700 });
+  fs.writeFileSync(file, JSON.stringify(merged, null, 2) + '\n', { mode: 0o600 });
+  for (const p of [configDir, dir, file]) fs.chownSync(p, target.uid, target.gid);
+  fs.chmodSync(dir, 0o700);
+  fs.chmodSync(file, 0o600);
+}
+
+process.exit(CHECK && needsUpdate ? 1 : 0);

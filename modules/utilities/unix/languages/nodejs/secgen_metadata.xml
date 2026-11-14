@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Node.js</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>The Node.js JavaScript runtime and npm, installed from a pinned upstream release tarball rather
+    than the distro package, which lags behind the engines ranges current npm packages ask for. Global npm
+    packages are installed under /usr/local, so their executables are on the default PATH. Pass global_packages
+    to have some installed at build time, or require this module from one that installs its own.</description>
+
+  <type>language</type>
+  <type>node</type>
+  <platform>linux</platform>
+
+  <reference>https://nodejs.org/</reference>
+  <software_name>nodejs</software_name>
+  <software_license>MIT</software_license>
+
+  <!-- Release to install from https://nodejs.org/dist/. Change node_sha256 with it: the tarball is checked
+       against that hash, and a mismatch fails the build. -->
+  <read_fact>node_version</read_fact>
+  <read_fact>node_sha256</read_fact>
+  <!-- npm package specs to install globally, e.g. opencode-ai@1.19.5. Empty values are ignored. -->
+  <read_fact>global_packages</read_fact>
+
+  <default_input into="node_version">
+    <value>24.22.3</value>
+  </default_input>
+  <default_input into="node_sha256">
+    <value>4f2b175a6d53a5c617a80dba2676238a0688cef28c6da4eba35c7d844e66fcfb</value>
+  </default_input>
+  <default_input into="global_packages">
+    <value></value>
+  </default_input>
+
+  <!-- Node 24 needs glibc 2.28 or newer, and the Licensed Tools base (2018.3) is older than that -->
+  <conflict>
+    <name>.*Debian.*Wheezy.*</name>
+  </conflict>
+  <conflict>
+    <name>.*Debian.*Stretch.*</name>
+  </conflict>
+  <conflict>
+    <name>.*Debian.*Buster.*</name>
+  </conflict>
+  <conflict>
+    <name>Kali with Licensed Tools.*</name>
+  </conflict>
+
+  <requires>
+    <type>update</type>
+  </requires>
+</utility>

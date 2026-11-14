@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>OpenCode</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>OpenCode, a terminal coding agent, installed globally through npm and preconfigured with an
+    OpenAI-compatible provider for every user on the system: normally the local Spark LLMs reached through an
+    llm_relay VM (set llm_relay_ip). OpenCode holds the model connection and runs the agent loop; it needs a
+    model that supports tool calling to do anything useful with an MCP server. The provider SDK is installed
+    locally and referenced by path, so a VM with no route to the npm registry can still start. The config is
+    merged rather than overwritten, leaving any mcp section another module has registered in place. Put the
+    accounts before it in the scenario so that their configs are written to their home directories.</description>
+
+  <type>llm_client</type>
+  <platform>linux</platform>
+
+  <reference>https://opencode.ai/</reference>
+  <software_name>opencode</software_name>
+  <software_license>MIT</software_license>
+
+  <!-- npm package versions, pinned so a lab build does not move under the students mid-semester -->
+  <read_fact>opencode_version</read_fact>
+  <read_fact>provider_sdk_version</read_fact>
+  <!-- OpenAI-compatible base URL, used when llm_relay_ip is not set (e.g. the gateway directly) -->
+  <read_fact>llm_api_url</read_fact>
+  <!-- IP of an llm_relay VM: when set, the URL becomes http://<llm_relay_ip>:<llm_relay_port>/api/v1 -->
+  <read_fact>llm_relay_ip</read_fact>
+  <read_fact>llm_relay_port</read_fact>
+  <!-- Stored in each user's OpenCode config, readable by the student. Leave as the placeholder when the relay
+       adds the real key. -->
+  <read_fact>llm_api_key</read_fact>
+  <!-- One model per entry; the first becomes the configured default -->
+  <read_fact>llm_models</read_fact>
+
+  <default_input into="opencode_version">
+    <value>1.19.5</value>
+  </default_input>
+  <default_input into="provider_sdk_version">
+    <value>3.0.92</value>
+  </default_input>
+  <default_input into="llm_api_url">
+    <value>http://172.22.222.222:8080/api/v1</value>
+  </default_input>
+  <default_input into="llm_relay_ip">
+    <value></value>
+  </default_input>
+  <default_input into="llm_relay_port">
+    <value>8080</value>
+  </default_input>
+  <default_input into="llm_api_key">
+    <value>relay</value>
+  </default_input>
+  <default_input into="llm_models">
+    <value>smart</value>
+    <value>fast</value>
+  </default_input>
+
+  <requires>
+    <module_path>.*/nodejs</module_path>
+  </requires>
+</utility>

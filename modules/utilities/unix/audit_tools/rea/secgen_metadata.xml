@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>REA (reverse engineer anything)</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>REA, registered as an MCP tool server for OpenCode and pointed at the ghidra module's
+    installation. REA drives Ghidra headless and exposes it as tools an agent can call: it holds no model
+    configuration of its own, so the model comes from OpenCode's provider and must support tool calling. A
+    student asks OpenCode a question about a binary, OpenCode gives the model REA's tools, and REA runs the
+    decompiler. Kali only, since REA needs Ghidra 12.1 or newer and the JDK that installation declares. The MCP
+    server's own timeouts are raised well above OpenCode's 5 second default, because loading a binary starts a
+    JVM and runs Ghidra's analysis before any tool can answer.</description>
+
+  <type>mcp_server</type>
+  <platform>linux</platform>
+
+  <reference>https://www.npmjs.com/package/rea-agents</reference>
+  <software_name>rea-agents</software_name>
+  <software_license>MIT</software_license>
+
+  <read_fact>rea_version</read_fact>
+  <!-- How long REA waits for Ghidra to come up (REA_GHIDRA_STARTUP_TIMEOUT_MS) -->
+  <read_fact>ghidra_startup_timeout_ms</read_fact>
+  <!-- How long OpenCode waits for the MCP server to start and to list its tools -->
+  <read_fact>mcp_startup_timeout_ms</read_fact>
+  <!-- How long OpenCode waits for a single tool call: Ghidra's analysis of a large binary runs here -->
+  <read_fact>mcp_execution_timeout_ms</read_fact>
+  <!-- Leave empty to use whichever java is on PATH. Set it when that one falls outside the Java range the
+       Ghidra installation declares, which rea doctor reports at build time. -->
+  <read_fact>java_home</read_fact>
+
+  <default_input into="rea_version">
+    <value>6.9.0</value>
+  </default_input>
+  <default_input into="ghidra_startup_timeout_ms">
+    <value>300000</value>
+  </default_input>
+  <default_input into="mcp_startup_timeout_ms">
+    <value>120000</value>
+  </default_input>
+  <default_input into="mcp_execution_timeout_ms">
+    <value>900000</value>
+  </default_input>
+  <default_input into="java_home">
+    <value></value>
+  </default_input>
+
+  <!-- Kali only: the Debian bases ship the bundled Ghidra 11.1.2, which REA will not accept, and the Licensed
+       Tools base has no JDK 21 -->
+  <conflict>
+    <name>.*Debian.*</name>
+  </conflict>
+  <conflict>
+    <name>Kali with Licensed Tools.*</name>
+  </conflict>
+
+  <!-- opencode brings nodejs with it; requiring nodejs here as well would not resolve -->
+  <requires>
+    <module_path>.*/opencode</module_path>
+  </requires>
+  <requires>
+    <module_path>.*/ghidra</module_path>
+  </requires>
+</utility>

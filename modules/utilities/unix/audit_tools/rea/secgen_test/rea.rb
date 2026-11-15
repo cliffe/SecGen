@@ -70,7 +70,32 @@ class ReaTest < PostProvisionTest
       end
 
       test_mcp_registration(mcp_timeout, ghidra_timeout, java_home)
+      test_opencode_connects_to_the_server(user)
       test_decompiles_a_binary
+    end
+  end
+
+  # A registration that reads correctly still proves nothing about whether OpenCode can start the server and
+  # list its tools: a wrong command, a missing JAVA_HOME or a Ghidra that will not come up all leave the
+  # fragment looking right and the agent with no tools. "opencode mcp list" starts the server for real.
+  def test_opencode_connects_to_the_server(user)
+    name = 'OpenCode connects to the REA MCP server'
+    return skip_check(name, 'no ordinary login account on this system', tier: 2) unless user
+
+    command = 'set -a; [ -f /etc/environment ] && . /etc/environment; set +a; timeout 240 opencode mcp list'
+    result = run_as_user(user, command, timeout: 300)
+    # The listing is drawn with box characters and ANSI colour, and a colour escape lands directly against
+    # the status word ("rea \e[90mconnected"), killing the word boundary a match needs. Strip the escapes.
+    output = result[:stdout].to_s.gsub(/\e\[[0-9;]*[a-zA-Z]/, '')
+    evidence = "$ #{command}\n--- stdout\n#{output}\n--- stderr\n#{result[:stderr]}"
+
+    if result[:exit_status] == 124
+      skip_check(name, 'opencode mcp list did not answer within 240s', tier: 2)
+    elsif output.match?(/\brea\b/) && output.match?(/\bconnected\b/) &&
+          !output.match?(/not connected|disconnected|failed/i)
+      pass_check(name, "#{name}: rea connected", tier: 2)
+    else
+      fail_check(name, "#{name}: rea was not listed as connected", tier: 2, evidence: evidence)
     end
   end
 

@@ -28,8 +28,8 @@
   <read_fact>mcp_startup_timeout_ms</read_fact>
   <!-- How long OpenCode waits for a single tool call: Ghidra's analysis of a large binary runs here -->
   <read_fact>mcp_execution_timeout_ms</read_fact>
-  <!-- Leave empty to use whichever java is on PATH. Set it when that one falls outside the Java range the
-       Ghidra installation declares, which rea doctor reports at build time. -->
+  <!-- Leave empty to use the JDK the ghidra module pins for its installation. Set it to point REA at another
+       JDK 21+; rea doctor reports at build time when the one in use falls outside Ghidra's range. -->
   <read_fact>java_home</read_fact>
 
   <default_input into="rea_version">

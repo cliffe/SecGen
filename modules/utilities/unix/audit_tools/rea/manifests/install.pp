@@ -16,13 +16,22 @@ class rea::install {
   $ghidra_startup_timeout_ms = $secgen_parameters['ghidra_startup_timeout_ms'][0]
   $mcp_startup_timeout_ms    = $secgen_parameters['mcp_startup_timeout_ms'][0]
   $mcp_execution_timeout_ms  = $secgen_parameters['mcp_execution_timeout_ms'][0]
-  $java_home                 = $secgen_parameters['java_home'][0]
+  $java_home_input           = $secgen_parameters['java_home'][0]
 
   $ghidra_dir = $ghidra::install::ghidra_dir
   # Read by the opencode module's merge tool, which assembles each user's config from these fragments
   $fragment_dir = '/usr/local/lib/secgen-opencode'
   $merge_tool   = '/usr/local/sbin/secgen-opencode-merge-config'
   $rea_entry    = '/usr/local/lib/node_modules/rea-agents/scripts/rea.mjs'
+
+  # REA inspects the java it finds and marks the Ghidra provider unavailable on anything that is not a full JDK 21
+  # or newer. kali-rolling's default java is a newer JRE, so use the JDK the ghidra module pins unless a scenario
+  # names one of its own. Reaches the student's shell, the MCP server's environment and the build-time check below.
+  if $java_home_input and $java_home_input != '' {
+    $java_home = $java_home_input
+  } else {
+    $java_home = $ghidra::install::jdk_home
+  }
 
   # REA's process supervisor looks for a procps-compatible ps on PATH before it will launch Ghidra. Without one
   # the provider reports itself unavailable instead of naming the cause.

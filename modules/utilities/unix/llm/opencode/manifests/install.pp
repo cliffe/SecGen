@@ -2,8 +2,18 @@
 # system. OpenCode holds the model connection and runs the agent loop; MCP servers are registered separately
 # (see the rea module), which is why the config is assembled from fragments rather than written whole.
 class opencode::install {
-  require nodejs::install
+  # nodejs::install is deliberately not required here. A module's manifests run as their own catalog with their own
+  # inputs, so evaluating that class from this run would hand it opencode's inputs and it would fail reading
+  # node_version. The nodejs module is ordered before this one by <requires> in the metadata instead.
   Exec { path => ['/bin', '/usr/bin', '/usr/local/bin', '/sbin', '/usr/sbin'] }
+
+  # npm comes from the nodejs module. Stop with a readable message rather than a bare "npm: command not found"
+  # if that ordering ever stops holding.
+  exec { 'confirm npm is installed before opencode':
+    command  => 'echo "opencode: npm is not on PATH; the nodejs module must provision first" >&2; exit 1',
+    unless   => 'test -x /usr/local/bin/npm',
+    provider => shell,
+  }
 
   $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
 
@@ -20,6 +30,20 @@ class opencode::install {
   $llm_key    = $secgen_parameters['llm_api_key'][0]
   $llm_models = $secgen_parameters['llm_models']
 
+  # The Proxmox templates export http_proxy/https_proxy from /etc/environment, pointing at a Squid on the
+  # provisioning network. That proxy is unreachable once the VM reboots onto its isolated lab VLAN, and both Bun
+  # and Node 24 honour those variables for fetch, so a request to the relay would be handed to a dead proxy.
+  # Exclude the relay. Only when it is on the lab network: an external llm_api_url still has to go through.
+  if $relay_ip and $relay_ip != '' {
+    ['no_proxy', 'NO_PROXY'].each |$proxy_var| {
+      file_line { "exclude the llm relay from ${proxy_var}":
+        path  => '/etc/environment',
+        line  => "${proxy_var}=\"localhost,127.0.0.1,${relay_ip}\"",
+        match => "^${proxy_var}=",
+      }
+    }
+  }
+
   $provider_dir = '/opt/opencode-providers'
   $sdk_package  = '@ai-sdk/openai-compatible'
   $fragment_dir = '/usr/local/lib/secgen-opencode'
@@ -29,6 +53,7 @@ class opencode::install {
     command => "npm install -g --no-fund --no-audit opencode-ai@${opencode_version}",
     creates => '/usr/local/lib/node_modules/opencode-ai',
     timeout => 1800,
+    require => Exec['confirm npm is installed before opencode'],
   }
 
   file { $provider_dir:

@@ -18,6 +18,10 @@ class ghidra::install{
 
     ensure_packages(['openjdk-21-jre', 'openjdk-21-jdk', 'curl', 'unzip', 'gdb', 'python3-pip'])
 
+    # Named here rather than inline below because other modules driving this installation need the same JDK:
+    # kali-rolling's default java is a newer, JRE-only build that Ghidra and its headless tooling reject.
+    $jdk_home = '/usr/lib/jvm/java-21-openjdk-amd64'
+
     # ~570MB: no overall puppet timeout (slow links can exceed 30 min); curl instead aborts a stalled transfer
     # (<10KB/s for 5 min) and retries (-C - resumes a partial download, also on a later provision).
     # Skip the download if a verified zip is already present; on an HTTP error (curl 22, e.g. 416 when resuming
@@ -43,7 +47,7 @@ class ghidra::install{
     file_line { 'ghidra java home override':
       path    => "${ghidra_dir}/support/launch.properties",
       match   => '^JAVA_HOME_OVERRIDE=',
-      line    => 'JAVA_HOME_OVERRIDE=/usr/lib/jvm/java-21-openjdk-amd64',
+      line    => "JAVA_HOME_OVERRIDE=${jdk_home}",
       require => [Exec['download and unpack ghidra'], Package['openjdk-21-jdk']],
     }
 

@@ -48,12 +48,25 @@ class nodejs::install {
 
   # Without this, a global install lands in /opt/node/bin, which is on nobody's PATH. /usr/local/bin is, so
   # point npm's prefix there and the executables appear where a student would expect them.
-  file { '/etc/npmrc':
+  #
+  # The file has to go in npm's own prefix, not /etc. npm derives globalconfig as $prefix/etc/npmrc, and its
+  # prefix is this unpacked tarball, so /etc/npmrc is never read when node comes from /opt: packages would
+  # silently install under /opt/node-v*/lib/node_modules with their executables off PATH.
+  file { "${node_dir}/etc":
+    ensure  => directory,
+    mode    => '0755',
+    owner   => 'root',
+    group   => 'root',
+    require => Exec['download and unpack node'],
+  }
+
+  file { "${node_dir}/etc/npmrc":
     ensure  => file,
     content => "prefix=/usr/local\n",
     mode    => '0644',
     owner   => 'root',
     group   => 'root',
+    require => File["${node_dir}/etc"],
   }
 
   unless $global_packages == undef {
@@ -65,7 +78,7 @@ class nodejs::install {
         command => "npm install -g --no-fund --no-audit ${pkg}",
         creates => "/usr/local/lib/node_modules/${pkg_name}",
         timeout => 1800,
-        require => [File['/usr/local/bin/npm'], File['/etc/npmrc']],
+        require => [File['/usr/local/bin/npm'], File["${node_dir}/etc/npmrc"]],
       }
     }
   }

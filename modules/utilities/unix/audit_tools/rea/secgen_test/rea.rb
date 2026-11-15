@@ -49,9 +49,15 @@ class ReaTest < PostProvisionTest
         test_local_command('Ghidra startup timeout exported', 'echo "$REA_GHIDRA_STARTUP_TIMEOUT_MS"',
                            ghidra_timeout, user: user)
       end
-      unless java_home.empty?
+      # A JAVA_HOME is always exported: the scenario's, or the JDK the ghidra module pins. Kali's default java
+      # is a JRE, which REA rejects, so prove the one in use carries the compiler rather than only that the
+      # variable is set.
+      if java_home.empty?
+        test_command_succeeds('JAVA_HOME exported', 'test -n "$JAVA_HOME"', user: user)
+      else
         test_local_command('JAVA_HOME exported', 'echo "$JAVA_HOME"', java_home, user: user)
       end
+      test_local_command('JAVA_HOME is a full JDK', 'test -x "$JAVA_HOME/bin/javac" && echo ok', 'ok', user: user)
 
       # Scoped doctor: its exit status reflects the Ghidra checks alone, so it proves the engine, its JDK and
       # the owned-process prerequisite together
@@ -107,7 +113,17 @@ class ReaTest < PostProvisionTest
     if ghidra_timeout
       expect(fields, 'ghidra_timeout', ghidra_timeout, 'Ghidra startup timeout reaches the MCP server', evidence)
     end
-    expect(fields, 'java_home', java_home, 'JAVA_HOME reaches the MCP server', evidence) unless java_home.empty?
+    # The server runs without a login shell, so the registration has to carry JAVA_HOME itself
+    if java_home.empty?
+      name = 'JAVA_HOME reaches the MCP server'
+      if fields['java_home'].to_s.empty?
+        fail_check(name, "#{name}: the registration carries no JAVA_HOME", tier: 2, evidence: evidence)
+      else
+        pass_check(name, "#{name}: #{fields['java_home']}", tier: 2)
+      end
+    else
+      expect(fields, 'java_home', java_home, 'JAVA_HOME reaches the MCP server', evidence)
+    end
     # The server is started without a login shell, so it cannot fall back on /etc/profile.d
     name = 'Ghidra install dir reaches the MCP server'
     if !fields['ghidra_dir'].to_s.empty? && fields['ghidra_dir'] == ghidra_install_dir

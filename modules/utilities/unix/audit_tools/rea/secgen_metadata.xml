@@ -21,6 +21,11 @@
   <software_name>rea-agents</software_name>
   <software_license>MIT</software_license>
 
+  <!-- A tool call that opens a binary starts its own Ghidra JVM, which has to coexist with the student's GUI
+       Ghidra on the same VM. On the 4096 MB SecGen gives a VM by default the second JVM is killed before it
+       reports its version, and REA then declares the Ghidra provider unavailable. -->
+  <memory_required>8192</memory_required>
+
   <read_fact>rea_version</read_fact>
   <!-- How long REA waits for Ghidra to come up (REA_GHIDRA_STARTUP_TIMEOUT_MS) -->
   <read_fact>ghidra_startup_timeout_ms</read_fact>

@@ -10,9 +10,9 @@
     installation. REA drives Ghidra headless and exposes it as tools an agent can call: it holds no model
     configuration of its own, so the model comes from OpenCode's provider and must support tool calling. A
     student asks OpenCode a question about a binary, OpenCode gives the model REA's tools, and REA runs the
-    decompiler. Kali only, since REA needs Ghidra 12.1 or newer and the JDK that installation declares. The MCP
-    server's own timeouts are raised well above OpenCode's 5 second default, because loading a binary starts a
-    JVM and runs Ghidra's analysis before any tool can answer.</description>
+    decompiler. Kali only, since REA needs Ghidra 12.1 or newer and the JDK that installation declares. OpenCode's
+    MCP timeout is raised well above its default here, because loading a binary starts a JVM and runs Ghidra's
+    analysis before any tool can answer.</description>
 
   <type>mcp_server</type>
   <platform>linux</platform>
@@ -24,10 +24,9 @@
   <read_fact>rea_version</read_fact>
   <!-- How long REA waits for Ghidra to come up (REA_GHIDRA_STARTUP_TIMEOUT_MS) -->
   <read_fact>ghidra_startup_timeout_ms</read_fact>
-  <!-- How long OpenCode waits for the MCP server to start and to list its tools -->
-  <read_fact>mcp_startup_timeout_ms</read_fact>
-  <!-- How long OpenCode waits for a single tool call: Ghidra's analysis of a large binary runs here -->
-  <read_fact>mcp_execution_timeout_ms</read_fact>
+  <!-- How long OpenCode waits on the MCP server: starting it, listing its tools, and each tool call, which
+       is where Ghidra's analysis of a large binary runs. The pinned OpenCode has one setting for all three. -->
+  <read_fact>mcp_timeout_ms</read_fact>
   <!-- Leave empty to use the JDK the ghidra module pins for its installation. Set it to point REA at another
        JDK 21+; rea doctor reports at build time when the one in use falls outside Ghidra's range. -->
   <read_fact>java_home</read_fact>
@@ -38,10 +37,7 @@
   <default_input into="ghidra_startup_timeout_ms">
     <value>300000</value>
   </default_input>
-  <default_input into="mcp_startup_timeout_ms">
-    <value>120000</value>
-  </default_input>
-  <default_input into="mcp_execution_timeout_ms">
+  <default_input into="mcp_timeout_ms">
     <value>900000</value>
   </default_input>
   <default_input into="java_home">

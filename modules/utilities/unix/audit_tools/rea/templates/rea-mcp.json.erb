@@ -5,25 +5,21 @@
     'REA_GHIDRA_STARTUP_TIMEOUT_MS' => @ghidra_startup_timeout_ms.to_s,
   }
   env['JAVA_HOME'] = @java_home.to_s unless @java_home.to_s.empty?
-  startup = @mcp_startup_timeout_ms.to_s.to_i
+  # The pinned OpenCode reads configuration in its older form: one MCP server per key under "mcp", and a
+  # single timeout in milliseconds under "experimental". Given the newer schema's "mcp.servers" with a
+  # {startup, catalog, execution} block it logs "Omitted native setting that cannot be represented in V1"
+  # and falls back on a default of seconds, which opening a binary never meets: the first tool call starts a
+  # JVM and runs Ghidra's analysis before it answers.
   fragment = {
     'mcp' => {
-      # OpenCode defaults these to 5 seconds, which starting a JVM never meets
-      'timeout' => { 'startup' => startup, 'catalog' => startup },
-      'servers' => {
-        'rea' => {
-          'type'        => 'local',
-          'command'     => ['/usr/local/bin/node', @rea_entry.to_s, 'mcp'],
-          'environment' => env,
-          # execution covers one tool call, which is where Ghidra's analysis of a large binary runs
-          'timeout'     => {
-            'startup'   => startup,
-            'catalog'   => startup,
-            'execution' => @mcp_execution_timeout_ms.to_s.to_i,
-          },
-        },
+      'rea' => {
+        'type'        => 'local',
+        'enabled'     => true,
+        'command'     => ['/usr/local/bin/node', @rea_entry.to_s, 'mcp'],
+        'environment' => env,
       },
     },
+    'experimental' => { 'mcp_timeout' => @mcp_timeout_ms.to_s.to_i },
   }
 -%>
 <%= JSON.pretty_generate(fragment) %>

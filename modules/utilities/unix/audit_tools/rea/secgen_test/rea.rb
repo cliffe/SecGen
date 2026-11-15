@@ -17,8 +17,7 @@ class ReaTest < PostProvisionTest
 
     rea_version = self.json_inputs['rea_version']&.first
     ghidra_timeout = self.json_inputs['ghidra_startup_timeout_ms']&.first
-    mcp_startup = self.json_inputs['mcp_startup_timeout_ms']&.first
-    mcp_execution = self.json_inputs['mcp_execution_timeout_ms']&.first
+    mcp_timeout = self.json_inputs['mcp_timeout_ms']&.first
     java_home = self.json_inputs['java_home']&.first.to_s.strip
     user = login_user
 
@@ -70,28 +69,28 @@ class ReaTest < PostProvisionTest
                    evidence: "--- stdout\n#{doctor[:stdout]}\n--- stderr\n#{doctor[:stderr]}")
       end
 
-      test_mcp_registration(mcp_startup, mcp_execution, ghidra_timeout, java_home)
+      test_mcp_registration(mcp_timeout, ghidra_timeout, java_home)
       test_decompiles_a_binary
     end
   end
 
-  # The registration has to carry the raised timeouts, and the merge has to leave the opencode module's
-  # provider block in place rather than replacing the file.
-  def test_mcp_registration(mcp_startup, mcp_execution, ghidra_timeout, java_home)
+  # The registration has to carry the raised timeout, and the merge has to leave the opencode module's
+  # provider block in place rather than replacing the file. Both are written in the form the pinned OpenCode
+  # honours: a server keyed under "mcp", and the timeout under "experimental".
+  def test_mcp_registration(mcp_timeout, ghidra_timeout, java_home)
     probe = <<~'JS'
       const fs = require("fs");
       const config = JSON.parse(fs.readFileSync(process.env.CFG, "utf8"));
-      const server = (((config.mcp || {}).servers) || {}).rea || {};
-      const timeout = server.timeout || {};
+      const server = (config.mcp || {}).rea || {};
       const environment = server.environment || {};
       console.log("type=" + (server.type || ""));
+      console.log("enabled=" + String(server.enabled !== false));
       console.log("command=" + (server.command || []).join(" "));
-      console.log("startup=" + (timeout.startup || ""));
-      console.log("execution=" + (timeout.execution || ""));
+      console.log("timeout=" + ((config.experimental || {}).mcp_timeout || ""));
       console.log("ghidra_dir=" + (environment.GHIDRA_INSTALL_DIR || ""));
       console.log("ghidra_timeout=" + (environment.REA_GHIDRA_STARTUP_TIMEOUT_MS || ""));
       console.log("java_home=" + (environment.JAVA_HOME || ""));
-      console.log("provider_kept=" + String(Boolean((config.providers || {}).spark)));
+      console.log("provider_kept=" + String(Boolean((config.provider || {}).spark)));
     JS
     command = 'U=$(awk -F: \'$3>=1000 && $3<60000 && $6 ~ /^\/home\// {print $1; exit}\' /etc/passwd); ' \
               '[ -n "$U" ] || { echo "no-login-user"; exit 0; }; ' \
@@ -106,10 +105,10 @@ class ReaTest < PostProvisionTest
     evidence = "$ #{command}\n--- stdout\n#{result[:stdout]}\n--- stderr\n#{result[:stderr]}"
 
     expect(fields, 'type', 'local', 'REA is registered as a local MCP server', evidence)
+    expect(fields, 'enabled', 'true', 'the registration is enabled', evidence)
     expect(fields, 'command', "/usr/local/bin/node #{ENTRY} mcp", 'registration launches the MCP entry script',
            evidence)
-    expect(fields, 'startup', mcp_startup, 'MCP startup timeout is the configured one', evidence) if mcp_startup
-    expect(fields, 'execution', mcp_execution, 'MCP execution timeout is the configured one', evidence) if mcp_execution
+    expect(fields, 'timeout', mcp_timeout, 'MCP timeout is the configured one', evidence) if mcp_timeout
     if ghidra_timeout
       expect(fields, 'ghidra_timeout', ghidra_timeout, 'Ghidra startup timeout reaches the MCP server', evidence)
     end

@@ -52,6 +52,7 @@ class OpencodeTest < PostProvisionTest
       test_command_succeeds('merging the config again is a no-op', "#{MERGE_TOOL} --check")
 
       test_merged_provider(models)
+      test_opencode_registers_the_provider(models, user)
     end
   end
 
@@ -63,14 +64,14 @@ class OpencodeTest < PostProvisionTest
       const read = (path) => JSON.parse(fs.readFileSync(path, "utf8"));
       const config = read(process.env.CFG);
       const fragment = read("/usr/local/lib/secgen-opencode/10-provider.json");
-      const provider = (config.providers || {}).spark || {};
-      const settings = provider.settings || {};
-      const key = settings.apiKey || "";
-      console.log("baseURL=" + (settings.baseURL || ""));
-      console.log("key_matches_fragment=" + (key !== "" && key === ((fragment.providers.spark.settings || {}).apiKey || "")));
+      const provider = (config.provider || {}).spark || {};
+      const options = provider.options || {};
+      const key = options.apiKey || "";
+      console.log("baseURL=" + (options.baseURL || ""));
+      console.log("key_matches_fragment=" + (key !== "" && key === ((fragment.provider.spark.options || {}).apiKey || "")));
       console.log("model=" + (config.model || ""));
       console.log("models=" + Object.keys(provider.models || {}).sort().join(","));
-      console.log("package=" + (provider.package || ""));
+      console.log("npm=" + (provider.npm || ""));
     JS
     command = 'U=$(awk -F: \'$3>=1000 && $3<60000 && $6 ~ /^\/home\// {print $1; exit}\' /etc/passwd); ' \
               '[ -n "$U" ] || { echo "no-login-user"; exit 0; }; ' \
@@ -93,10 +94,34 @@ class OpencodeTest < PostProvisionTest
     expect(fields, 'models', models.sort.join(','), 'every configured model is offered', evidence) unless models.empty?
     expect(fields, 'model', "spark/#{models.first}", 'first configured model is the default', evidence) unless models.empty?
     name = 'provider package is the local SDK copy'
-    if fields['package'].to_s.start_with?("file://#{PROVIDER_DIR}/")
-      pass_check(name, "#{name}: #{fields['package']}", tier: 2)
+    if fields['npm'].to_s.start_with?("#{PROVIDER_DIR}/")
+      pass_check(name, "#{name}: #{fields['npm']}", tier: 2)
     else
-      fail_check(name, "#{name}: got #{fields['package'].inspect}", tier: 2, evidence: evidence)
+      fail_check(name, "#{name}: got #{fields['npm'].inspect}", tier: 2, evidence: evidence)
+    end
+  end
+
+  # The fragment's own structure proves nothing on its own: OpenCode silently discards a provider written in a
+  # form its version does not read, leaving the model unavailable at the first prompt. "opencode models" is the
+  # cheapest thing that puts the config through OpenCode itself.
+  def test_opencode_registers_the_provider(models, user)
+    return if models.empty?
+
+    name = 'OpenCode offers the provider\'s models'
+    wanted = models.map { |model| "spark/#{model}" }
+    # OpenCode fetches its model catalogue, so give it the proxy settings a login session would have
+    command = 'set -a; [ -f /etc/environment ] && . /etc/environment; set +a; timeout 120 opencode models'
+    result = user ? run_as_user(user, command, timeout: 180) : run_vagrant_ssh(command, timeout: 180)
+    missing = wanted.reject { |model| result[:stdout].to_s.include?(model) }
+    evidence = "$ #{command}\n--- stdout\n#{result[:stdout]}\n--- stderr\n#{result[:stderr]}"
+
+    if result[:exit_status] == 124
+      skip_check(name, 'opencode models did not answer within 120s; it needs to reach its model catalogue',
+                 tier: 2)
+    elsif missing.empty?
+      pass_check(name, "#{name}: #{wanted.join(', ')}", tier: 2)
+    else
+      fail_check(name, "#{name}: #{missing.join(', ')} not listed", tier: 2, evidence: evidence)
     end
   end
 

@@ -4,15 +4,18 @@
   models = Array(@llm_models).map(&:to_s).reject(&:empty?)
   model_map = {}
   models.each { |m| model_map[m] = { 'name' => "Spark #{m}" } }
+  # The pinned OpenCode reads configuration in its older form. Given the newer schema's "providers" it logs
+  # "Omitted native setting that cannot be represented in V1" and leaves the provider unregistered, so write
+  # the keys it honours: "provider", with "npm" and "options".
   fragment = {
-    '$schema'   => 'https://opencode.ai/config.json',
-    'providers' => {
+    '$schema'  => 'https://opencode.ai/config.json',
+    'provider' => {
       'spark' => {
-        'name'     => 'Spark (local LLMs)',
-        # An absolute file:// path, so no npm registry lookup is needed at first run
-        'package'  => "file://#{@provider_dir}/node_modules/#{@sdk_package}",
-        'settings' => { 'baseURL' => url, 'apiKey' => @llm_key.to_s },
-        'models'   => model_map,
+        'name'    => 'Spark (local LLMs)',
+        # An absolute path to the local copy, so no npm registry lookup is needed at first run
+        'npm'     => "#{@provider_dir}/node_modules/#{@sdk_package}",
+        'options' => { 'baseURL' => url, 'apiKey' => @llm_key.to_s },
+        'models'  => model_map,
       },
     },
   }

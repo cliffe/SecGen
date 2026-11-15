@@ -14,8 +14,7 @@ class rea::install {
 
   $rea_version               = $secgen_parameters['rea_version'][0]
   $ghidra_startup_timeout_ms = $secgen_parameters['ghidra_startup_timeout_ms'][0]
-  $mcp_startup_timeout_ms    = $secgen_parameters['mcp_startup_timeout_ms'][0]
-  $mcp_execution_timeout_ms  = $secgen_parameters['mcp_execution_timeout_ms'][0]
+  $mcp_timeout_ms            = $secgen_parameters['mcp_timeout_ms'][0]
   $java_home_input           = $secgen_parameters['java_home'][0]
 
   $ghidra_dir = $ghidra::install::ghidra_dir

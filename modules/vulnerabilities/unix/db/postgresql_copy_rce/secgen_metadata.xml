@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>PostgreSQL COPY FROM PROGRAM authenticated command execution</name>
+  <author>SecGen Pipeline</author>
+  <module_license>MIT</module_license>
+  <description>A PostgreSQL server reachable on every interface with a superuser role protected by a
+    weak password. A superuser (or any role granted pg_execute_server_program) can run
+    COPY ... TO/FROM PROGRAM, which executes an arbitrary OS command as the postgres service
+    account. An attacker who authenticates with the weak credential turns database access into a
+    shell on the host. The teaching point is the danger of weak database credentials and the power
+    of COPY FROM PROGRAM when a superuser account is exposed; the Metasploit module
+    exploit/linux/postgres/postgres_copy_from_program_cmd_exec automates it.</description>
+
+  <type>database</type>
+  <privilege>user_rwx</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>username</read_fact>
+  <read_fact>password</read_fact>
+  <read_fact>auth_method</read_fact>
+
+  <!-- The superuser the exploit authenticates as; postgres matches the MSF default. -->
+  <default_input into="username">
+    <value>postgres</value>
+  </default_input>
+
+  <!-- Deliberately weak, overridable from a datastore in a scenario. -->
+  <default_input into="password">
+    <generator type="weak_password_generator"/>
+  </default_input>
+
+  <!-- pg_hba.conf method for the superuser's network rule. scram-sha-256 matches
+       the required service's default password storage and its loopback rules. -->
+  <default_input into="auth_method">
+    <value>scram-sha-256</value>
+  </default_input>
+
+  <!--optional details-->
+  <cve>CVE-2019-9193</cve>
+  <reference>https://www.rapid7.com/db/modules/exploit/linux/postgres/postgres_copy_from_program_cmd_exec</reference>
+  <reference>https://github.com/vulhub/vulhub/tree/master/postgres/CVE-2019-9193</reference>
+  <reference>https://www.postgresql.org/docs/15/sql-copy.html</reference>
+  <!-- No <software_name> here: this module installs no software of its own, it
+       misconfigures the PostgreSQL provided by the required service module. -->
+  <software_license>PostgreSQL Licence</software_license>
+
+  <!--optional hints-->
+  <msf_module>exploit/linux/postgres/postgres_copy_from_program_cmd_exec</msf_module>
+  <hint>A database superuser with a weak password, reachable over the network</hint>
+  <solution>Use a strong superuser password, restrict pg_hba.conf to trusted hosts, and avoid
+    granting superuser or pg_execute_server_program to application roles</solution>
+
+  <!-- PostgreSQL 15 paths (/etc/postgresql/15) are Debian 12 specific, matching
+       the required postgresql service module. -->
+  <conflict>
+    <module_path>.*bases/(?!debian_bookworm).*</module_path>
+  </conflict>
+
+  <requires>
+    <module_path>modules/services/unix/database/postgresql</module_path>
+  </requires>
+  <requires>
+    <type>update</type>
+  </requires>
+
+  <CyBOK KA="AAA" topic="Authentication">
+    <keyword>Passwords and alternatives</keyword>
+  </CyBOK>
+  <CyBOK KA="AAA" topic="Authorisation">
+    <keyword>access control</keyword>
+    <keyword>Vulnerabilities and attacks on access control misconfigurations</keyword>
+  </CyBOK>
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>server-side misconfiguration and vulnerable components</keyword>
+    <keyword>Vulnerable defaults</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+</vulnerability>

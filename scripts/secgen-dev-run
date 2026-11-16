@@ -38,6 +38,7 @@
 # Builds the checkout this script lives in (so a worktree builds its own code).
 # Output is logged to log/[ERROR_]<project_id>: interleaved, then stderr only. When
 # tests ran, the log is also copied (password masked) to test_results/<project-id>/build.log.
+# With SECGEN_OUTPUT_DIR set, projects/, test_results/ and log/ are under that directory.
 
 set -euo pipefail
 source "$(dirname "$(readlink -f "$0")")/lib/common.sh"
@@ -140,12 +141,15 @@ echo "${CMD[*]}"
 [[ $DRY_RUN -eq 1 ]] && exit 0
 
 cd "$SECGEN_DIR"
+# projects/, test_results/ and log/ go under SECGEN_OUTPUT_DIR when set (secgen.rb
+# reads the same variable), otherwise under the checkout.
+OUT_DIR="${SECGEN_OUTPUT_DIR:-$SECGEN_DIR}"
 
 # Log to log/[ERROR_]<project_id> (batch_secgen naming; project id parsed from
 # "Creating project: ..."; falls back to <prefix>_<time>). The log has the full
 # output interleaved in order, then stderr again on its own so errors stand out.
 # Output still streams to the terminal while it runs.
-mkdir -p log
+mkdir -p "$OUT_DIR/log"
 ALL=$(mktemp); ERR=$(mktemp); SYNC=$(mktemp --suffix=.rb)
 trap 'rm -f "$ALL" "$ERR" "$SYNC"' EXIT
 trap 'true' INT TERM   # let Ctrl-C stop secgen but still write the log
@@ -166,7 +170,7 @@ else
 fi
 # 2 = tests SKIPped (could not test): not a build error
 [[ $STATUS -eq 0 || $STATUS -eq 2 ]] && LOG_PREFIX="" || LOG_PREFIX="ERROR_"
-LOG="log/${LOG_PREFIX}${PROJECT_ID}"
+LOG="$OUT_DIR/log/${LOG_PREFIX}${PROJECT_ID}"
 {
   printf 'SecGen project path::: %s\n\n\n' "$PROJECT_PATH"
   printf 'SecGen arguments::: %s\n\n\n' "${CMD[*]:2}"
@@ -176,12 +180,12 @@ LOG="log/${LOG_PREFIX}${PROJECT_ID}"
   printf '\n\n\nErrors only (stderr)::: \n\n\n'
   cat "$ERR"
 } > "$LOG"
-echo "SecGen exit status $STATUS; log: $SECGEN_DIR/$LOG"
+echo "SecGen exit status $STATUS; log: $LOG"
 
-if [[ -f "test_results/$PROJECT_ID/summary.json" ]]; then
+if [[ -f "$OUT_DIR/test_results/$PROJECT_ID/summary.json" ]]; then
   # Masking happens in Ruby with the password from the environment, never argv.
   SECGEN_PROXMOX_PASS="$(conf_get --proxmoxpass)" SECGEN_LLM_API_KEY="${SECGEN_LLM_API_KEY:-$(conf_get --llm-api-key)}" \
-    ruby "$SECGEN_DIR/scripts/lib/attach_build_log.rb" "$SECGEN_DIR" "$LOG" "$PROJECT_ID" || true
-  echo "Test results: $SECGEN_DIR/test_results/$PROJECT_ID/summary.json"
+    ruby "$SECGEN_DIR/scripts/lib/attach_build_log.rb" "$OUT_DIR" "$LOG" "$PROJECT_ID" || true
+  echo "Test results: $OUT_DIR/test_results/$PROJECT_ID/summary.json"
 fi
 exit "$STATUS"

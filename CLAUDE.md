@@ -16,6 +16,8 @@ Vagrantfile + Puppet), then Vagrant builds the VMs (VirtualBox, oVirt or Proxmox
   `modules/{generators,encoders}` — run locally at build time to produce data.
 - `scenarios/` — `ctf/`, `labs/`, `examples/`, `tests/`, `dev/` …
 - `projects/` — generated output (gitignored). Never edit; regenerate instead.
+  With `SECGEN_OUTPUT_DIR` set, `projects/`, `test_results/` and `log/` live under that
+  directory instead of the checkout (see README-Batch-VMs.md).
 - `README-*.md` — longer docs (Modules-Metadata, Modules-Puppet, Creating-Scenarios, Networking,
   Testing: tiers, statuses and the `test_results/` contract).
 

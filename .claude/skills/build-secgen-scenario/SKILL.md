@@ -325,7 +325,8 @@ The sanctioned loop before you ever build a VM (SecGen's "check cheaply" rule):
 
    Do **not** pass `--read-options` / a `secgen.conf` path on the command line:
    it is unnecessary for `build-project` and is blocked here. A clean run prints
-   the generated `projects/<id>` path.
+   the generated project's path (`projects/<id>` under `$SECGEN_OUTPUT_DIR`
+   when that is set, otherwise under the checkout).
 
    **From a git worktree**, gems resolve relative to the worktree, which has
    none, so the run fails with `Could not find nokogiri-…`. Prefix the command
@@ -341,8 +342,9 @@ The sanctioned loop before you ever build a VM (SecGen's "check cheaply" rule):
 3. Only once both pass is the scenario worth building on real VMs — that is the
    `secgen-test-pipeline` skill's job.
 
-`build-project` writes a `projects/<id>/` directory (gitignored). Delete scratch
-projects you no longer need to keep the tree tidy.
+`build-project` writes a `projects/<id>/` directory (gitignored) under
+`"${SECGEN_OUTPUT_DIR:-.}"`. Delete scratch projects you no longer need, and only
+your own: the output directory may be shared with other checkouts.
 
 ## A minimal single-VM template to copy
 

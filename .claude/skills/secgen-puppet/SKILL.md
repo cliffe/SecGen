@@ -181,8 +181,8 @@ exec { 'clone theZoo':
 ## Debugging a provisioning failure
 
 1. Find the failing module in the Vagrant output: each run is labelled by `module_path_name` (path with `/` -> `_`).
-2. Generated project: `projects/SecGen<timestamp>/puppet/<system>/modules/` holds the exact modules + `secgen_functions/files/json_inputs/<module>_*` (base64 JSON - decode it to see the inputs the module received).
-3. Iterate without regenerating: `ruby secgen.rb --project projects/SecGen... build-vms` rebuilds VMs from an existing project, so you can edit the copied manifests under `projects/.../puppet/<system>/modules/` and retry (copy fixes back to `modules/` afterwards). On a running VM, `vagrant provision` from the project dir re-runs all module provisioners.
+2. Generated project (under `$SECGEN_OUTPUT_DIR` when set, else the checkout): `projects/SecGen<timestamp>/puppet/<system>/modules/` holds the exact modules + `secgen_functions/files/json_inputs/<module>_*` (base64 JSON - decode it to see the inputs the module received).
+3. Iterate without regenerating: `ruby secgen.rb --project "${SECGEN_OUTPUT_DIR:-.}"/projects/SecGen... build-vms` rebuilds VMs from an existing project, so you can edit the copied manifests under `projects/.../puppet/<system>/modules/` and retry (copy fixes back to `modules/` afterwards). On a running VM, `vagrant provision` from the project dir re-runs all module provisioners.
 4. Syntax check locally if Puppet is installed: `puppet parser validate manifests/*.pp`.
 5. Common messages:
    - `Could not set 'file' on ensure: No such file or directory` -> missing parent dir (see above).

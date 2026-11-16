@@ -35,7 +35,7 @@
   # left" (a slow or dropped shell, seen on the first attack after boot) from "your rule didn't fire".
   $transfer_marker = Hash.new { |h, k| h[k] = "/tmp/.#{SecureRandom.hex(4)}" }
 
-  REQUIRED_FLAGS = 11
+  REQUIRED_FLAGS = 10
   while $flags.length < REQUIRED_FLAGS
     $flags << "flag{#{SecureRandom.hex}}"
     Print.err "Warning: Not enough flags provided to hackerbot_config generator, some flags won't be tracked/marked!"

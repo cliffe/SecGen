@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<service xmlns="http://www.github/cliffe/SecGen/service"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/service">
+  <name>Finger daemon (fingerd)</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Debian's fingerd (the BSD finger daemon), run from openbsd-inetd on TCP/79. Anyone who can reach the port can ask which accounts exist and when they last logged in, so it is a source of user enumeration before a login attack. The users it reports are the accounts the scenario creates.</description>
+
+  <type>finger</type>
+  <platform>linux</platform>
+
+  <!--optional details-->
+  <software_name>fingerd</software_name>
+  <software_name>inetd</software_name>
+
+  <requires>
+    <type>update</type>
+  </requires>
+</service>

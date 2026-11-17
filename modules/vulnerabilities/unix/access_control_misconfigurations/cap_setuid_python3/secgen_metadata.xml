@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>Access control mis-configurations python3 cap_setuid capability</name>
+  <author>SecGen contributors</author>
+  <module_license>Apache v2</module_license>
+  <description>Misconfigure file capabilities to enable root privileges: the python3 binary has the cap_setuid capability,
+so any local user can call os.setuid(0) and run commands as root (GTFOBins: python, capabilities).
+  </description>
+
+  <type>access_control_misconfiguration</type>
+  <type>capabilities_privilege_escalation</type>
+  <privilege>root_rwx</privilege>
+  <access>local</access>
+  <platform>unix</platform>
+
+  <read_fact>strings_to_leak</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+
+  <!-- flags or other secrets exposed after exploitation -->
+  <default_input into="strings_to_leak">
+    <generator type="message_generator"/>
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+  </default_input>
+
+  <CyBOK KA="AAA" topic="Authorisation">
+    <keyword>access control</keyword>
+    <keyword>Elevated privileges</keyword>
+    <keyword>Vulnerabilities and attacks on access control misconfigurations</keyword>
+  </CyBOK>
+  <CyBOK KA="OSV" topic="Primitives for Isolation and Mediation">
+    <keyword>Access controls and operating systems</keyword>
+    <keyword>Linux security model</keyword>
+    <keyword>Capabilities</keyword>
+  </CyBOK>
+
+</vulnerability>

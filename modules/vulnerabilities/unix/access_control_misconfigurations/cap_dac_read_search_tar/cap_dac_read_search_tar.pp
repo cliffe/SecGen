@@ -1,0 +1,1 @@
+include cap_dac_read_search_tar::config

@@ -1,10 +1,11 @@
 # Installs the standalone capa release (rules embedded) as /usr/local/bin/capa.
+# v9.4.0 is the newest release built on Ubuntu 22.04; v10's bundled libraries need glibc 2.38, newer than Debian 12's.
 class capa::install {
   Exec { path => ['/bin', '/usr/bin', '/sbin', '/usr/sbin'] }
 
-  $version = 'v10.0.0'
+  $version = 'v9.4.0'
   $archive = "capa-${version}-linux.zip"
-  $sha256  = '96cb5115f495024a478b0e9f9f77f9027058155589235fbd4c50e7382055fcca'
+  $sha256  = '07800a1d20a21eb18fc98716e2ae81b668e0c9a04defd588c8aa17ea3d3281e4'
 
   ensure_packages(['wget', 'unzip'])
 

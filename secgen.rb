@@ -237,7 +237,7 @@ def build_vms(scenario, project_dir, options)
           split = vagrant_output[:output].split('==> ')
           failures_to_destroy = []
           split.each do |line|
-            if match = line.match(/^([-a-zA-Z_0-9]+):[^:]+An error occured/i)
+            if match = line.match(/^([-a-zA-Z_0-9]+):[^:]+An error occur+ed/i)
               vm_to_destroy = match.captures[0]
               failures_to_destroy << vm_to_destroy
             elsif match = line.match(/^([-a-zA-Z_0-9]+):[^:]+Error:/i)

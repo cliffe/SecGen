@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>capa</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Installs Mandiant's capa, which identifies the capabilities of a PE, ELF or .NET executable or shellcode (for example "create TCP socket" or "persist via cron") using a built-in rule set, mapped to MITRE ATT&amp;CK and MBC. Installs the pinned standalone release binary, verified against its SHA-256.</description>
+
+  <type>static_analysis_tools</type>
+  <platform>linux</platform>
+
+  <software_name>capa</software_name>
+  <software_license>Apache v2</software_license>
+
+  <requires>
+    <type>update</type>
+  </requires>
+</utility>

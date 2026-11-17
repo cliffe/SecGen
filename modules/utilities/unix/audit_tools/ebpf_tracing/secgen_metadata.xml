@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>eBPF tracing tools</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Installs eBPF-based runtime tracing tools for observing program behaviour from the kernel: Aqua Security's Tracee (pinned release, verified against its SHA-256), which records process, file and network events and flags suspicious behaviour with built-in signatures, and bpftrace for one-line custom traces. Both need root and a kernel with BTF (Debian 12 and later).</description>
+
+  <type>runtime_tracing_tools</type>
+  <platform>linux</platform>
+
+  <software_name>tracee</software_name>
+  <software_name>bpftrace</software_name>
+  <software_license>Apache v2 (Tracee user space and bpftrace), GPLv2 (Tracee eBPF programs)</software_license>
+
+  <requires>
+    <type>update</type>
+  </requires>
+</utility>

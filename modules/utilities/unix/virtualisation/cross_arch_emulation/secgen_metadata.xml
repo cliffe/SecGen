@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Cross-architecture emulation</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Installs QEMU user-mode emulation (qemu-user-static) with binfmt-support, so Linux executables built for other CPU architectures (ARM, MIPS, PowerPC and others) run directly on an x86-64 host, and gdb-multiarch for debugging them.</description>
+
+  <type>cross_arch_emulation</type>
+  <platform>linux</platform>
+
+  <software_name>qemu-user-static</software_name>
+  <software_name>gdb-multiarch</software_name>
+  <software_license>GPLv2 (QEMU), GPLv3 (GDB)</software_license>
+
+  <requires>
+    <type>update</type>
+  </requires>
+</utility>

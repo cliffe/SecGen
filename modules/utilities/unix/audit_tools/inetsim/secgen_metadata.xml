@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>INetSim</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Installs INetSim, which simulates common internet services (DNS, HTTP and HTTPS, SMTP, POP3, FTP, NTP, IRC and others) so that malware network behaviour can be observed on an isolated network. Every service listens on all interfaces, and the DNS service answers every A query with dns_default_ip.</description>
+
+  <type>network_simulation</type>
+  <platform>linux</platform>
+
+  <software_name>inetsim</software_name>
+  <software_license>GPLv2+</software_license>
+
+  <!-- the address INetSim's DNS gives for every name: normally this VM's own address on the lab network -->
+  <read_fact>dns_default_ip</read_fact>
+
+  <default_input into="dns_default_ip">
+    <value>127.0.0.1</value>
+  </default_input>
+
+  <requires>
+    <type>update</type>
+  </requires>
+</utility>

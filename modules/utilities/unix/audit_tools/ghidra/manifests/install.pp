@@ -4,8 +4,12 @@ class ghidra::install{
   ensure_packages('zip')
 
   $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
-  $debugger_layout = $secgen_parameters['debugger_layout'][0] == 'true'
-  $font_size = $secgen_parameters['font_size'][0]
+  # A module that requires this class (ghidrassist, rea) provisions with its own inputs file, so ghidra's
+  # own keys are absent in that run: fall back to the metadata defaults instead of indexing undef.
+  $debugger_layout_input = $secgen_parameters['debugger_layout']
+  $font_size_input = $secgen_parameters['font_size']
+  $debugger_layout = $debugger_layout_input ? { undef => false, default => $debugger_layout_input[0] == 'true' }
+  $font_size = $font_size_input ? { undef => undef, default => $font_size_input[0] }
 
   if $operatingsystem == 'Kali' {
     # Kali: download the current upstream release at build time (Kali's own ghidra package, 12.1.3+ds, crashes in

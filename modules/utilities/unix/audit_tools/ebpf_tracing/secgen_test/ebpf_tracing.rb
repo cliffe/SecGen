@@ -12,7 +12,7 @@ class EbpfTracingTest < PostProvisionTest
 
     tier(1) do
       test_local_command('bpftrace package installed?', "dpkg -l bpftrace | grep '^ii'", 'bpftrace')
-      test_local_command('tracee installed', 'test -x /opt/tracee/dist/tracee && readlink /usr/local/bin/tracee', '/opt/tracee/dist/tracee')
+      test_local_command('tracee installed', 'test -x /opt/tracee/dist/tracee-static && readlink /usr/local/bin/tracee', '/opt/tracee/dist/tracee-static')
       test_local_command('kernel exposes BTF', 'test -r /sys/kernel/btf/vmlinux && echo btf-present', 'btf-present')
     end
 

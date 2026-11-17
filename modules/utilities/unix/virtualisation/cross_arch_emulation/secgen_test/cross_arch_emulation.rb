@@ -30,7 +30,8 @@ class CrossArchEmulationTest < PostProvisionTest
     tier(2) do
       run_vagrant_ssh("python3 -c \"open('#{PROBE}','wb').write(bytes.fromhex('#{ARM_PROBE_HEX}'))\" && chmod 0755 #{PROBE}")
       test_local_command('ARM binary runs directly', PROBE, 'secgen-arm-ok', user: user)
-      test_local_command('gdb-multiarch loads an ARM binary', "gdb-multiarch -batch -ex 'info files' #{PROBE} 2>&1", 'elf32-littlearm')
+      # The probe has no section headers, so check the architecture gdb takes from the ELF header.
+      test_local_command('gdb-multiarch loads an ARM binary', "gdb-multiarch -batch -ex 'show architecture' #{PROBE} 2>&1", 'currently "arm')
       run_vagrant_ssh("rm -f #{PROBE}")
     end
   end

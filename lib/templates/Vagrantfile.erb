@@ -126,6 +126,15 @@ end
       # proxmox.qemu_nic_model = 'virtio'
       # proxmox.qemu_bridge = 'vmbr0'
 
+      # A clone runs as a Proxmox 'qmclone' task, which the provider times with
+      # imgcopy_timeout; its default is 120 seconds. wait_for_completion raises on
+      # timeout rather than returning a failure, so the provider's own 30-attempt
+      # clone retry loop never covers a timeout, only a lock conflict. A large
+      # template on busy shared storage regularly needs more than two minutes to
+      # clone, and without this the whole build fails with 'Unable to clone the
+      # virtual machine! Cause: Timeout error'.
+      proxmox.imgcopy_timeout = 1800
+
       proxmox.vm_id_range = <%= @options[:proxmoxvmidmin] || 1000 %>..<%= @options[:proxmoxvmidmax] || 999999999 %>
       proxmox.vm_memory = <%= [4096, memory_required(system)].max %>
       proxmox.selected_node = '<%= @options[:proxmoxnode] %>'

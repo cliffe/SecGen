@@ -74,6 +74,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 -%>
   config.vm.define "<%= system.name %>" do |<%= system.name %>|
 <%
+    windows_system = system.module_selections.any? { |m| m.module_type == 'base' && m.attributes['platform']&.first.to_s.downcase == 'windows' }
+    other_puppet_dirs = (@systems.map(&:name) - [system.name]).map { |n| "/puppet/#{n}/" }
+    unless windows_system || other_puppet_dirs.empty?
+-%>
+    # The project is copied to /vagrant on each VM; leave out the other systems' puppet trees,
+    # which can hold large bundled files and fill the guest's disk.
+    <%= system.name %>.vm.synced_folder '.', '/vagrant', type: 'rsync', rsync__exclude: <%= other_puppet_dirs.inspect %>
+<%
+    end
     case provider
     when "ovirt"
 %>

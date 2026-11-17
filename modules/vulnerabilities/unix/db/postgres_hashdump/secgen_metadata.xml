@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+  <name>PostgreSQL Remote Hash Dump</name>
+  <author>SecGen</author>
+  <module_license>MIT</module_license>
+  <description>PostgreSQL configured to listen on every interface (listen_addresses = '*')
+    with a remote superuser account protected by a weak password. An attacker who guesses
+    or captures the credentials can connect over the network and, because the account is a
+    superuser, read pg_shadow/pg_authid and dump every role's password hash for offline
+    cracking. Layered on top of the standard PostgreSQL service module.</description>
+
+  <type>db</type>
+  <privilege>info_leak</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>username</read_fact>
+  <read_fact>password</read_fact>
+
+  <!-- Weak remote superuser credentials, overridable from a datastore in a scenario. -->
+  <default_input into="username">
+    <value>dbadmin</value>
+  </default_input>
+
+  <default_input into="password">
+    <generator type="weak_password_generator"/>
+  </default_input>
+
+  <reference>https://www.rapid7.com/db/modules/auxiliary/scanner/postgres/postgres_hashdump</reference>
+  <reference>https://www.postgresql.org/docs/15/view-pg-shadow.html</reference>
+
+  <msf_module>auxiliary/scanner/postgres/postgres_hashdump</msf_module>
+
+  <!-- PostgreSQL 15 paths (/etc/postgresql/15/main) are Debian 12 specific, as is
+       the required service module. -->
+  <conflict>
+    <module_path>.*bases/(?!debian_bookworm).*</module_path>
+  </conflict>
+
+  <!-- Pulls in the PostgreSQL service (Debian service on bookworm). This module
+       must not declare software_name=postgresql itself, or the requirement
+       self-satisfies and the service is never added. -->
+  <requires>
+    <software_name>postgresql</software_name>
+  </requires>
+
+  <CyBOK KA="NS" topic="Network protocols and vulnerability">
+    <keyword>DATABASE</keyword>
+    <keyword>AUTHENTICATION</keyword>
+  </CyBOK>
+
+</vulnerability>

@@ -3,13 +3,14 @@
 # SECGEN_LLM_API_KEY, never command-line arguments), and records it in that
 # run's summary.json.
 #
-# Usage: SECGEN_PROXMOX_PASS=... ruby attach_build_log.rb <secgen dir> <log file> <project id>
+# Usage: SECGEN_PROXMOX_PASS=... ruby attach_build_log.rb <output dir> <log file> <project id>
+# (<output dir> holds test_results/: SECGEN_OUTPUT_DIR, or the SecGen checkout)
 require 'json'
 require 'fileutils'
 
-secgen_dir, log, project_id = ARGV
-abort 'Usage: attach_build_log.rb <secgen dir> <log file> <project id>' unless project_id && File.file?(log.to_s)
-out = File.join(secgen_dir, 'test_results', project_id)
+output_dir, log, project_id = ARGV
+abort 'Usage: attach_build_log.rb <output dir> <log file> <project id>' unless project_id && File.file?(log.to_s)
+out = File.join(output_dir, 'test_results', project_id)
 summary_path = File.join(out, 'summary.json')
 exit 0 unless File.exist?(summary_path) # not a test run
 

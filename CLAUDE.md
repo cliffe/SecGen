@@ -16,6 +16,8 @@ Vagrantfile + Puppet), then Vagrant builds the VMs (VirtualBox, oVirt or Proxmox
   `modules/{generators,encoders}` — run locally at build time to produce data.
 - `scenarios/` — `ctf/`, `labs/`, `examples/`, `tests/`, `dev/` …
 - `projects/` — generated output (gitignored). Never edit; regenerate instead.
+  With `SECGEN_OUTPUT_DIR` set, `projects/`, `test_results/` and `log/` live under that
+  directory instead of the checkout (see README-Batch-VMs.md).
 - `README-*.md` — longer docs (Modules-Metadata, Modules-Puppet, Creating-Scenarios, Networking,
   Testing: tiers, statuses and the `test_results/` contract).
 
@@ -77,7 +79,7 @@ skill; the build→provision→test→fix loop and cleanup are in the
 **`secgen-test-pipeline`** skill. Helpers live in `scripts/` (see
 `scripts/README.md`): `scripts/secgen-dev-run` (build), `scripts/secgen-test-run` (run one
 `secgen_test`), `scripts/pve-check`, `scripts/agent-check`; delete a kept project's VMs with
-`scripts/secgen-dev-destroy projects/<id>` (`secgen.rb destroy-project`, given the options file by path). Run them by that path from
+`scripts/secgen-dev-destroy "${SECGEN_OUTPUT_DIR:-.}"/projects/<id>` (`secgen.rb destroy-project`, given the options file by path). Run them by that path from
 the checkout/worktree you're working in — they build that checkout and find the gems
 themselves. A failing test on a genuinely broken
 module is the pipeline working — fix the module template, not the generated project.

@@ -65,6 +65,9 @@ class reversing_tools::install {
     }
   }
 
+  # netcat-openbsd (nc, netcat) and tcpdump: stand up a fake service for a sample and capture what it sends
+  ensure_packages(['netcat-openbsd', 'tcpdump'])
+
   # Cutter (GUI front end for radare2): deploy the bundled v1.7.2 AppImage rather than downloading it at build time.
   # The AppImage is extracted once here so it runs without FUSE; --appimage-extract-and-run would unpack
   # 240 MB into /tmp and list every file on each launch.

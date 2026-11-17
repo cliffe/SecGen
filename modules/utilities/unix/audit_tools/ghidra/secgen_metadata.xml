@@ -13,6 +13,21 @@
 
   <software_license>GPLv3</software_license>
 
+  <!-- true: replace the Debugger tool's default layout (Debian's Ghidra 11.1.2 only) with the one in
+       files/debugger_layout, which the dynamic debugging lab sheet is written against -->
+  <read_fact>debugger_layout</read_fact>
+  <!-- a font size in points (Debian's Ghidra 11.1.2 only) for both the interface and the code views; blank keeps
+       Ghidra's defaults (12 point code font). One point smaller matches Ghidra's Ctrl+- (Decrement Font) -->
+  <read_fact>font_size</read_fact>
+
+  <default_input into="debugger_layout">
+    <value>false</value>
+  </default_input>
+
+  <default_input into="font_size">
+    <value></value>
+  </default_input>
+
   <conflict>
     <name>.*Debian.*Wheezy.*</name>
   </conflict>

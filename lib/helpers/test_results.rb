@@ -17,7 +17,7 @@ require_relative 'print.rb'
 # (PostProvisionTest); this runs them, keeps their output as <module>.log, and
 # copies everything out of the project with the Proxmox password masked.
 module TestResults
-  RESULTS_DIR = "#{ROOT_DIR}/test_results".freeze
+  RESULTS_DIR = "#{OUTPUT_DIR}/test_results".freeze
   STATUS_ORDER = %w[PASS SKIP FAIL].freeze # worst last
   EXIT_CODES = { 'PASS' => 0, 'FAIL' => 1, 'SKIP' => 2 }.freeze
   MASK = '********'.freeze

@@ -127,3 +127,23 @@ export SECGEN_PUPPET_TMPFS=/dev/shm/secgen-puppet
 `destroy-project` removes the RAM-backed tree along with the project. Budget
 roughly 100 MB per system per build. The variable is optional: leave it unset
 and `puppet/` is written to disk as before.
+
+## Optional: keep build output outside the checkout (`SECGEN_OUTPUT_DIR`)
+
+Set `SECGEN_OUTPUT_DIR` to a directory on persistent disk and SecGen writes
+`projects/` and `test_results/` there instead of inside the checkout;
+`scripts/secgen-dev-run` puts its `log/` there too. Several checkouts or
+worktrees can share one output directory, because project ids are unique.
+
+This matters when the checkout itself is disposable, for example a worktree on
+a tmpfs. A project's `.vagrant` VM ids, `Vagrantfile` and records then survive
+losing the checkout, so `scripts/secgen-dev-destroy` can still remove its VMs,
+and test results and build logs are kept. Combine it with
+`SECGEN_PUPPET_TMPFS` so the bulky puppet tree stays in RAM:
+
+```
+export SECGEN_OUTPUT_DIR=$HOME/secgen-output
+```
+
+Leave it unset and output goes under the checkout as before. `batch_secgen.rb`
+still writes its logs to `log/` in the directory it runs from.

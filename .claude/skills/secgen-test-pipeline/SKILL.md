@@ -19,6 +19,15 @@ The helper scripts are in `scripts/` (usage in `scripts/README.md`); run them as
 (Proxmox hosts, creds location, VLAN range) live in `CLAUDE.local.md`. This skill
 is the mechanism and the workflow.
 
+**Where build output goes.** Builds write `projects/`, `test_results/` and
+`log/` under `$SECGEN_OUTPUT_DIR` when it is set (check with `echo
+"$SECGEN_OUTPUT_DIR"`), otherwise under the checkout itself. Below, `<output>`
+means that directory; from the checkout root, `"${SECGEN_OUTPUT_DIR:-.}"` gives
+it in a command. With the variable set, a project survives its worktree being
+removed, and its VMs can be destroyed from any checkout. Several checkouts may
+share the directory, so only touch projects whose name starts with your own
+build prefix (`<owner>-<name>-NN`).
+
 ## How testing works
 
 - Each module may ship `secgen_test/<name>.rb`, a subclass of `PostProvisionTest`
@@ -269,7 +278,7 @@ on the 302). For anything more bespoke, run the attack directly with
 ### Results and exit codes
 
 `run` prints `PASSED:` / `FAILED:` / `SKIPPED:` lines, writes
-`projects/<id>/test_results/<system>/<module>.json`
+`<output>/projects/<id>/test_results/<system>/<module>.json`
 (`{module, module_path, system, backend, started_at, duration_s, status,
 tier_reached, results: [{tier, name, status, detail, evidence?}]}`), and exits:
 
@@ -313,7 +322,7 @@ start (the one full reboot: static IPs up, reboot-dependent modules settle) →
 wait for the guest agent (`SECGEN_AGENT_WAIT_BOOT`, default 600s) → settle
 (`SECGEN_TEST_SETTLE`, default 30s) → every module's `secgen_test` (each with a
 `SECGEN_TEST_TIMEOUT`, default 900s; `SECGEN_TEST_JOBS`, default 4, run side by
-side) → `test_results/<project-id>/` →
+side) → `<output>/test_results/<project-id>/` →
 destroy the VMs via the API and remove the project.
 
 A build whose VMs outlive the tests (`run`/`build-vms`, `secgen-dev-run` without
@@ -327,7 +336,7 @@ rolled back turns the run into a FAIL and is destroyed like any other failure.
 A FAIL/SKIP is never rolled back: the VMs keep the evidence.
 
 - **Exit code:** 0 all PASS, 1 any FAIL (or the build failed), 2 any SKIP.
-- **Results** (gitignored, survive teardown): `test_results/<project-id>/`
+- **Results** (gitignored, survive teardown): `<output>/test_results/<project-id>/`
   holds `summary.json` (build status/attempts, counts, per-system modules with
   status and `tier_reached`, SecGen commit/branch, `masked_secrets`),
   `scenario.xml` (the resolved scenario: what was actually tested),
@@ -337,7 +346,7 @@ A FAIL/SKIP is never rolled back: the VMs keep the evidence.
 - `-- --keep-vms` keeps the VMs and project for debugging (even on PASS);
   `-- --no-destroy-on-failure` keeps them only if the build fails or the
   tests don't PASS. Destroy them afterwards with
-  `scripts/secgen-dev-destroy projects/<id>`.
+  `scripts/secgen-dev-destroy "${SECGEN_OUTPUT_DIR:-.}"/projects/<id>`.
 - A plain `secgen.rb run` on Proxmox without `--no-tests` uses the same
   order and writes the same report. On PASS it shuts the VMs down unless
   `--proxmox-post-boot`; on a **FAIL or SKIP it destroys them** (the project
@@ -364,7 +373,7 @@ even the project directory. Signs:
 
 Kill the `vagrant up` process group (`kill -- -<pgid>`, from
 `ps -o pgid= -p <pid>`) and the build's own group, then destroy the project's
-VMs with `scripts/secgen-dev-destroy projects/<id>`. Look the PIDs up first:
+VMs with `scripts/secgen-dev-destroy "${SECGEN_OUTPUT_DIR:-.}"/projects/<id>`. Look the PIDs up first:
 `pkill -f` with a pattern from your own command line kills your shell. A
 pipeline that drives many builds should watch each build for output and
 connection traffic rather than relying on a fixed timer; a rebuild after an
@@ -381,12 +390,12 @@ error can legitimately take a long time.
    then `build-project` (no VMs).
 3. Build: `scripts/secgen-dev-run -p <name> -s scenarios/tests/<scn>.xml`
    (`--dry-run` first). It runs the tests after net0 teardown + reboot and
-   writes `test_results/<id>/`, but leaves the VM running whatever the result
+   writes `<output>/test_results/<id>/`, but leaves the VM running whatever the result
    (on PASS, rolled back to its pre-test snapshot; on FAIL/SKIP, as the tests left it) (`-- --no-tests` to skip them). It passes `--retries 1` (`SECGEN_RETRIES`) to absorb the
    intermittent provisioning-net flake (no DHCP lease → vagrant times out
    "waiting for SSH to configure network interfaces" with no Puppet run); when
    vagrant can't say which VM failed, SecGen now destroys all and retries.
-4. Re-run a test against the running VM (e.g. after changing the test): `scripts/secgen-test-run <project>/puppet/<system>/modules/<mod>/secgen_test/<mod>.rb`
+4. Re-run a test against the running VM (e.g. after changing the test): `scripts/secgen-test-run <output>/projects/<id>/puppet/<system>/modules/<mod>/secgen_test/<mod>.rb`
    — expect `PASSED: ...` / exit 0 (1 FAIL, 2 SKIP). `scripts/secgen-test-run` injects
    `SECGEN_PROXMOX_PASS` from the config without printing it. The JSON result
    and any FAIL evidence land in `<project>/test_results/<system>/`.
@@ -396,7 +405,7 @@ error can legitimately take a long time.
    config-syntax checks). A failing test on a genuinely broken module is the
    pipeline working — fix the **module template/manifest**, not the generated
    project, then rebuild.
-6. **Clean up**: `scripts/secgen-dev-destroy projects/<id>`
+6. **Clean up**: `scripts/secgen-dev-destroy "${SECGEN_OUTPUT_DIR:-.}"/projects/<id>`
    hard-stops and deletes the project's VMs via the API, checks they're gone,
    and removes the project dir (`--keep-dir` keeps it).
    Remove any scratch files/logs too. Verify no orphans with

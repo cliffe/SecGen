@@ -22,8 +22,15 @@ NETWORK_SCHEMA_FILE = "#{ROOT_DIR}/lib/schemas/network_metadata_schema.xsd"
 BASE_SCHEMA_FILE = "#{ROOT_DIR}/lib/schemas/base_metadata_schema.xsd"
 BUILDS_SCHEMA_FILE = "#{ROOT_DIR}/lib/schemas/build_metadata_schema.xsd"
 
+# Where build output goes: projects/, test_results/ and (via scripts/secgen-dev-run)
+# log/. Defaults to the checkout itself. Set SECGEN_OUTPUT_DIR to a directory on
+# persistent disk to share one output tree between several checkouts or worktrees,
+# for example when the checkouts live on a tmpfs: a project's .vagrant VM ids then
+# outlive the checkout, so its VMs can still be destroyed.
+OUTPUT_DIR = ENV['SECGEN_OUTPUT_DIR'].to_s.strip.empty? ? ROOT_DIR : File.expand_path(ENV['SECGEN_OUTPUT_DIR'])
+
 # Path to projects directory
-PROJECTS_DIR = "#{ROOT_DIR}/projects"
+PROJECTS_DIR = "#{OUTPUT_DIR}/projects"
 
 # Path to modules directories
 MODULES_DIR = "#{ROOT_DIR}/modules/"

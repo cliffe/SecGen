@@ -110,7 +110,9 @@ attacker, gives the known `kali/kali` login, and installs the usual tools.
     <input into="accounts">
       <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
     </input>
-    <input into="autostart"><value>false</value></input>
+    <input into="autostart">
+      <value>false</value>
+    </input>
   </utility>
 
   <utility module_path=".*/kali_top10"/>
@@ -122,7 +124,9 @@ attacker, gives the known `kali/kali` login, and installs the usual tools.
     <generator type="strong_password_generator"/>
   </input>
   <build type="cleanup">
-    <input into="root_password"><datastore>spoiler_admin_pass</datastore></input>
+    <input into="root_password">
+      <datastore>spoiler_admin_pass</datastore>
+    </input>
   </build>
 </system>
 ```
@@ -148,17 +152,23 @@ Notes:
 
   <!-- step 1: remote foothold, unauthenticated -->
   <vulnerability module_path=".*/<foothold_module>">
-    <input into="strings_to_leak"><generator type="flag_generator"/></input>
+    <input into="strings_to_leak">
+      <generator type="flag_generator"/>
+    </input>
   </vulnerability>
 
   <!-- step 2: privilege escalation to root -->
   <vulnerability module_path=".*/<privesc_module>">
-    <input into="strings_to_leak"><generator type="flag_generator"/></input>
+    <input into="strings_to_leak">
+      <generator type="flag_generator"/>
+    </input>
   </vulnerability>
 
   <network type="private_network"/>
   <build type="cleanup">
-    <input into="root_password"><datastore>spoiler_admin_pass</datastore></input>
+    <input into="root_password">
+      <datastore>spoiler_admin_pass</datastore>
+    </input>
   </build>
 </system>
 ```

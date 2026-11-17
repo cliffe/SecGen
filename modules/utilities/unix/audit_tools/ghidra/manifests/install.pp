@@ -3,6 +3,10 @@ class ghidra::install{
   Exec { path => ['/bin', '/usr/bin', '/usr/local/bin', '/sbin', '/usr/sbin'] }
   ensure_packages('zip')
 
+  $secgen_parameters = secgen_functions::get_parameters($::base64_inputs_file)
+  $debugger_layout = $secgen_parameters['debugger_layout'][0] == 'true'
+  $font_size = $secgen_parameters['font_size'][0]
+
   if $operatingsystem == 'Kali' {
     # Kali: download the current upstream release at build time (Kali's own ghidra package, 12.1.3+ds, crashes in
     # JavaHelp with "view is invalid"). Ghidra 12.x needs a JDK 21+; pin JDK 21, as kali-rolling defaults to newer.
@@ -13,6 +17,10 @@ class ghidra::install{
     $ghidra_dir     = "/opt/ghidra_${ghidra_version}_PUBLIC"
 
     ensure_packages(['openjdk-21-jre', 'openjdk-21-jdk', 'curl', 'unzip', 'gdb', 'python3-pip'])
+
+    # Named here rather than inline below because other modules driving this installation need the same JDK:
+    # kali-rolling's default java is a newer, JRE-only build that Ghidra and its headless tooling reject.
+    $jdk_home = '/usr/lib/jvm/java-21-openjdk-amd64'
 
     # ~570MB: no overall puppet timeout (slow links can exceed 30 min); curl instead aborts a stalled transfer
     # (<10KB/s for 5 min) and retries (-C - resumes a partial download, also on a later provision).
@@ -39,7 +47,7 @@ class ghidra::install{
     file_line { 'ghidra java home override':
       path    => "${ghidra_dir}/support/launch.properties",
       match   => '^JAVA_HOME_OVERRIDE=',
-      line    => 'JAVA_HOME_OVERRIDE=/usr/lib/jvm/java-21-openjdk-amd64',
+      line    => "JAVA_HOME_OVERRIDE=${jdk_home}",
       require => [Exec['download and unpack ghidra'], Package['openjdk-21-jdk']],
     }
 
@@ -105,6 +113,45 @@ class ghidra::install{
       mode   => '0644',
       owner => 'root',
       group => 'root',
+    }
+
+    # The lab's Debugger layout: Ghidra copies defaultTools/Debugger.tool from Debugger.jar into each user's
+    # tool chest on first launch, so replacing it there gives every account the layout, and Tools > Import
+    # Default Tools restores it. files/debugger_layout/make_layout.py generates the tool from the stock one.
+    if $debugger_layout {
+      $debugger_jar = '/opt/ghidra/Ghidra/Debug/Debugger/lib/Debugger.jar'
+      $layout_dir = '/opt/ghidra-debugger-layout'
+      file { [$layout_dir, "${layout_dir}/defaultTools"]:
+        ensure => directory,
+        mode   => '0755',
+      } ->
+      file { "${layout_dir}/defaultTools/Debugger.tool":
+        source => 'puppet:///modules/ghidra/debugger_layout/Debugger.tool',
+        mode   => '0644',
+      } ->
+      exec { 'ghidra debugger lab layout':
+        command => "zip -q ${debugger_jar} defaultTools/Debugger.tool",
+        cwd     => $layout_dir,
+        unless  => "python3 -c \"import sys, zipfile; sys.exit(zipfile.ZipFile('${debugger_jar}').read('defaultTools/Debugger.tool') != open('${layout_dir}/defaultTools/Debugger.tool', 'rb').read())\"",
+        require => [File['/opt/ghidra'], Package['zip']],
+      }
+    }
+
+    # Font size: font.size.override sets the interface fonts and font.monospaced the listings and decompiler,
+    # so together they match Ghidra's own Ctrl+- / Ctrl+= adjustment, but for every user and every session.
+    if $font_size and $font_size != '' {
+      file_line { 'ghidra interface font size':
+        path    => '/opt/ghidra/support/launch.properties',
+        match   => '^VMARGS=-Dfont.size.override=',
+        line    => "VMARGS=-Dfont.size.override=${font_size}",
+        require => File['/opt/ghidra'],
+      }
+      file_line { 'ghidra code font size':
+        path    => '/opt/ghidra/Ghidra/Framework/Gui/data/gui.theme.properties',
+        match   => '^font.monospaced = ',
+        line    => "font.monospaced = monospaced-plain-${font_size}",
+        require => File['/opt/ghidra'],
+      }
     }
   }
 

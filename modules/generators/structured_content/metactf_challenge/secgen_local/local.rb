@@ -205,6 +205,7 @@ class MetaCTFChallengeGenerator < StringGenerator
      {:difficulty => 'hard', :path => 'src_malware/Ch11-13/Ch11MalBeh_LdPreloadGetUID'},
      {:difficulty => 'hard', :path => 'src_malware/Ch11-13/Ch11MalBeh_LdPreloadRand'},
      {:difficulty => 'hard', :path => 'src_malware/Ch11-13/Ch11MalBeh_NetcatShovel'},
+     {:difficulty => 'hard', :path => 'src_malware/Ch11-13/Ch11MalBeh_C2Beacon'},
      {:difficulty => 'hard', :path => 'src_malware/Ch11-13/Ch12Covert_ForkFollow'},
      {:difficulty => 'hard', :path => 'src_malware/Ch11-13/Ch12Covert_ForkPipe'},
      {:difficulty => 'hard', :path => 'src_malware/Ch11-13/Ch13DataEnc_BaseEnc'},

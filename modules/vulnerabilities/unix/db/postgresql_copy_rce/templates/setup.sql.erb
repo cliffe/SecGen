@@ -1,0 +1,9 @@
+DO $do$
+BEGIN
+  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = $secgen$<%= @username %>$secgen$) THEN
+    EXECUTE format('CREATE ROLE %I SUPERUSER LOGIN PASSWORD %L', $secgen$<%= @username %>$secgen$, $secgen$<%= @password %>$secgen$);
+  ELSE
+    EXECUTE format('ALTER ROLE %I SUPERUSER LOGIN PASSWORD %L', $secgen$<%= @username %>$secgen$, $secgen$<%= @password %>$secgen$);
+  END IF;
+END
+$do$;

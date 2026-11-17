@@ -64,6 +64,14 @@ class ProjectFilesCreator
     FileUtils.mkpath(@out_dir)
     FileUtils.rm_f(puppet_link) if File.symlink?(puppet_link)
     File.symlink(target, puppet_link)
+    # Each secgen_test does `require_relative '../../../../../lib/post_provision_test'`
+    # relative to its location under puppet/. With puppet/ symlinked onto tmpfs,
+    # Ruby resolves that through the symlink to <scratch>/<id>/lib, so expose the
+    # project's real lib/ (populated later in the build) at that path too, or every
+    # test fails to load the harness.
+    lib_link = "#{scratch_root}/#{File.basename(@out_dir)}/lib"
+    FileUtils.rm_f(lib_link) if File.symlink?(lib_link)
+    File.symlink("#{File.expand_path(@out_dir)}/lib", lib_link)
     Print.std "Puppet scratch on tmpfs: #{puppet_link} -> #{target}"
   rescue => e
     Print.warn "Could not set up puppet tmpfs scratch (#{e.message}); puppet/ stays on disk"

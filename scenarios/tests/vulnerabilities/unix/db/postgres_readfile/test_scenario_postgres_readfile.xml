@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>Test: postgres_readfile</name>
+  <author>SecGen Pipeline</author>
+  <description>Auto-generated test scenario for the postgres_readfile module.</description>
+
+  <type>test</type>
+
+  <system>
+    <system_name>postgres_readfile_target</system_name>
+    <base platform="linux" distro="Debian 12" type="desktop"/>
+<input into_datastore="IP_addresses">
+  <network_ip system="postgres_readfile_target"/>
+  <network_ip system="attacker"/>
+</input>
+
+    <!-- Shared PostgreSQL connection details. The service module and the
+         misconfiguration both read these, so they agree on the one role, its
+         password, its database and the auth method. listen_addresses '*' is set
+         on the service so it exposes the cluster on every interface and writes
+         the matching remote pg_hba rules (which sit ahead of its loopback
+         catch-all) itself. postgres_readfile then grants that role
+         pg_read_server_files and plants the flag. -->
+    <input into_datastore="pg_username"><value>appuser</value></input>
+    <input into_datastore="pg_password"><generator type="strong_password_generator"/></input>
+    <input into_datastore="pg_database"><value>readfiledb</value></input>
+    <input into_datastore="pg_auth"><value>scram-sha-256</value></input>
+    <input into_datastore="pg_listen"><value>*</value></input>
+
+    <service module_path=".*/postgresql">
+      <input into="username"><datastore>pg_username</datastore></input>
+      <input into="password"><datastore>pg_password</datastore></input>
+      <input into="database_name"><datastore>pg_database</datastore></input>
+      <input into="auth_method"><datastore>pg_auth</datastore></input>
+      <input into="listen_addresses"><datastore>pg_listen</datastore></input>
+    </service>
+
+    <vulnerability module_path=".*/postgres_readfile">
+      <input into="username"><datastore>pg_username</datastore></input>
+      <input into="password"><datastore>pg_password</datastore></input>
+      <input into="database_name"><datastore>pg_database</datastore></input>
+      <input into="auth_method"><datastore>pg_auth</datastore></input>
+    </vulnerability>
+
+    <network type="private_network"/>
+
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+
+<system>
+  <system_name>attacker</system_name>
+  <base distro="Kali" name="MSF"/>
+  <network type="private_network"/>
+  <input into_datastore="spoiler_admin_pass_attacker">
+    <generator type="strong_password_generator"/>
+  </input>
+  <build type="cleanup">
+    <input into="root_password">
+      <datastore>spoiler_admin_pass_attacker</datastore>
+    </input>
+  </build>
+</system>
+</scenario>

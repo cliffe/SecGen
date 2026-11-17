@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>Curiosity Killed the Cat</name>
+  <author>Thomas Shaw</author>
+  <description>A Java application server is running happily on its usual port,
+  serving nothing but a friendly default welcome page. But the application
+  server is listening on a second, less friendly port as well, and that one was
+  never meant to face the network. Whoever stood this box up trusted it to keep
+  the application's private files to itself. It does not. Somewhere beneath the
+  web application, in a directory the web server will never hand out over HTTP,
+  sits a configuration file the developers assumed nobody could reach. Find the
+  forgotten connector, ask it nicely for the file the website refuses to serve,
+  and read the one flag it was hiding.</description>
+
+  <type>ctf</type>
+  <type>attack-ctf</type>
+  <difficulty>easy</difficulty>
+
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>server-side misconfiguration and vulnerable components</keyword>
+    <keyword>Path Traversal</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+  </CyBOK>
+
+  <system>
+    <system_name>attack_vm</system_name>
+    <base distro="Kali" name="MSF"/>
+
+    <input into_datastore="IP_addresses">
+      <!-- 0 attack_vm -->
+      <network_ip system="attack_vm"/>
+      <!-- 1 target -->
+      <network_ip system="target"/>
+    </input>
+
+    <utility module_path=".*/parameterised_accounts">
+      <input into="accounts">
+        <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
+      </input>
+    </utility>
+
+    <utility module_path=".*/iceweasel">
+      <input into="accounts">
+        <value>{"username":"kali","password":"kali","super_user":"true","strings_to_leak":[],"leaked_filenames":[]}</value>
+      </input>
+      <input into="autostart"><value>false</value></input>
+    </utility>
+
+    <utility module_path=".*/kali_top10"/>
+    <utility module_path=".*/kali_web"/>
+
+    <network type="private_network"/>
+
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+    <build type="cleanup">
+      <input into="root_password"><datastore>spoiler_admin_pass</datastore></input>
+    </build>
+  </system>
+
+  <system>
+    <system_name>target</system_name>
+    <base distro="Debian 12" type="desktop" name="KDE"/>
+
+    <!-- Ghostcat (CVE-2020-1938): the AJP connector is exposed, letting an
+         unauthenticated attacker read a file under WEB-INF that HTTP never
+         serves. The flag is that file. -->
+    <vulnerability module_path=".*/tomcat_ghostcat_ajp">
+      <input into="leaked_filenames"><value>application.properties</value></input>
+      <input into="strings_to_leak"><generator type="flag_generator"/></input>
+    </vulnerability>
+
+    <network type="private_network"/>
+
+    <build type="cleanup">
+      <input into="root_password"><datastore>spoiler_admin_pass</datastore></input>
+    </build>
+  </system>
+
+</scenario>

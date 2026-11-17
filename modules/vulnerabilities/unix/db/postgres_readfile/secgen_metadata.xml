@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>PostgreSQL arbitrary file read via COPY</name>
+  <author>SecGen Pipeline</author>
+  <module_license>MIT</module_license>
+  <description>A PostgreSQL server reachable over the network with a login role that has been granted
+    membership of the predefined pg_read_server_files role. Because COPY ... FROM reads any path the
+    database process can reach, the remote account can disclose arbitrary files from the server's
+    filesystem (for example /etc/passwd or a planted flag).</description>
+
+  <type>database</type>
+  <privilege>info_leak</privilege>
+  <access>remote</access>
+  <platform>linux</platform>
+  <difficulty>low</difficulty>
+
+  <read_fact>username</read_fact>
+  <read_fact>password</read_fact>
+  <read_fact>database_name</read_fact>
+  <read_fact>auth_method</read_fact>
+  <read_fact>storage_directory</read_fact>
+  <read_fact>leaked_filenames</read_fact>
+  <read_fact>strings_to_leak</read_fact>
+
+  <default_input into="username">
+    <generator type="username_generator"/>
+  </default_input>
+
+  <!-- Deliberately weak, overridden from a datastore in a scenario. -->
+  <default_input into="password">
+    <generator type="weak_password_generator"/>
+  </default_input>
+
+  <!-- A database the remote role owns, so it can create the temp table COPY uses. -->
+  <default_input into="database_name">
+    <value>readfiledb</value>
+  </default_input>
+
+  <!-- pg_hba.conf method for the role. The PostgreSQL 15 server default encrypts
+       passwords with scram-sha-256, which modern Metasploit speaks, so the shared
+       pg_hba rule uses it too; md5 also works if the scenario sets it on both the
+       service and this module. -->
+  <default_input into="auth_method">
+    <value>scram-sha-256</value>
+  </default_input>
+
+  <default_input into="storage_directory">
+    <generator type="storage_directory_generator"/>
+  </default_input>
+
+  <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+  </default_input>
+
+  <default_input into="strings_to_leak">
+    <generator type="message_generator"/>
+  </default_input>
+
+  <!--optional details-->
+  <reference>https://www.postgresql.org/docs/15/sql-copy.html</reference>
+  <reference>https://www.postgresql.org/docs/15/predefined-roles.html</reference>
+  <reference>https://www.rapid7.com/db/modules/auxiliary/admin/postgres/postgres_readfile</reference>
+  <!-- No <software_name> here: this module installs no software of its own, it
+       misconfigures the PostgreSQL provided by the required service module.
+       Declaring software_name "postgresql" would make this module self-satisfy
+       its own <requires> below (the resolver matches software_name as an
+       unanchored regexp), so the real service module would never be added. -->
+
+  <!--optional hints-->
+  <msf_module>auxiliary/admin/postgres/postgres_readfile</msf_module>
+  <hint>A database account that can read files from the server</hint>
+  <solution>Revoke pg_read_server_files from the login role and restrict listen_addresses and pg_hba.conf to trusted hosts</solution>
+
+  <!-- PostgreSQL 15 paths (/etc/postgresql/15) are Debian 12 specific, matching
+       the required service module. -->
+  <conflict>
+    <module_path>.*bases/(?!debian_bookworm).*</module_path>
+  </conflict>
+
+  <requires>
+    <software_name>postgresql</software_name>
+  </requires>
+
+  <CyBOK KA="OSV" topic="Operating System Hardening">
+    <keyword>ACCESS CONTROLS</keyword>
+    <keyword>PRIVILEGE ESCALATION</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+
+</vulnerability>

@@ -243,6 +243,11 @@ def build_vms(scenario, project_dir, options)
             elsif match = line.match(/^([-a-zA-Z_0-9]+):[^:]+Error:/i)
               vm_to_destroy = match.captures[0]
               failures_to_destroy << vm_to_destroy
+            elsif (match = line.match(/^([-a-zA-Z_0-9]+): Cloning the VM/)) && line.include?('Unable to clone the virtual machine')
+              # The Proxmox clone failure is printed without a '==> <vm>:' prefix, and the
+              # lines between it and the VM name contain colons, so the patterns above
+              # (which can't cross a colon) never reach it.
+              failures_to_destroy << match.captures[0]
             elsif match = line.match(/^([-a-zA-Z_0-9]+):[^:]+VM is not created/i)
               vm_not_to_destroy = match.captures[0]
               Print.err "Not going to destroy #{vm_not_to_destroy}, since it does not exist"

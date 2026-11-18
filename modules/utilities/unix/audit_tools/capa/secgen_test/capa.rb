@@ -16,7 +16,7 @@ class CapaTest < PostProvisionTest
     end
 
     tier(2) do
-      test_local_command('capa reports its version', 'capa --version 2>&1', 'v9.4.0', user: user)
+      test_local_command('capa reports its version', 'capa --version 2>&1', 'capa 9.4.0', user: user)
       # A full analysis of a small system binary: the report header lists the sample's hashes.
       result = run_as_user(user, 'capa /usr/bin/true 2>&1', timeout: 300)
       name = "capa analyses an ELF binary as #{user}"

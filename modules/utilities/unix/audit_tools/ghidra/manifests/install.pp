@@ -66,11 +66,12 @@ class ghidra::install{
       command  => "gdb -batch -ex 'python import sys, runpy' -ex \"python sys.argv=[${pip_args}]\" -ex \"python runpy.run_module('pip', run_name='__main__')\" && ${gdb_ok}",
       unless   => $gdb_ok,
       provider => shell,
-      # Puppet's default exec timeout is 300s. The install is offline, but when gdb's
-      # embedded python has no matching wheel in the bundled dist dirs pip falls back to
-      # building from source (protobuf), which takes well over five minutes on a lab VM and
-      # failed the whole build with 'Command exceeded timeout'. logoutput keeps pip's own
-      # error in the provisioning log so the next failure is diagnosable.
+      # Puppet's default exec timeout is 300s, which this install overran on a loaded
+      # build server and killed the whole run with 'Command exceeded timeout'. gdb's
+      # embedded python resolves the bundled wheels itself, so the step is normally
+      # quick; give it room rather than a ceiling that depends on host load.
+      # logoutput keeps pip's own output in the provisioning log so a real failure here
+      # is diagnosable instead of just timing out.
       timeout   => 1800,
       logoutput => true,
       require  => [Exec['download and unpack ghidra'], Package['python3-pip', 'gdb']],

@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<scenario xmlns="http://www.github/cliffe/SecGen/scenario"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.github/cliffe/SecGen/scenario">
+
+  <name>Test: dns_resolver</name>
+  <author>Thomas Shaw</author>
+  <description>Test scenario for the dns_resolver module: a static address on the scenario network, with the nameserver set to another address on it.</description>
+
+  <type>test</type>
+
+  <system>
+    <system_name>dns_resolver_target</system_name>
+    <base platform="linux" distro="Debian 12" type="desktop"/>
+
+    <input into_datastore="IP_addresses">
+      <value>172.16.53.10</value>
+      <value>172.16.53.1</value>
+    </input>
+
+    <utility module_path=".*/dns_resolver">
+      <input into="nameservers">
+        <datastore access="1">IP_addresses</datastore>
+      </input>
+    </utility>
+
+    <network type="private_network">
+      <input into="IP_address">
+        <datastore access="0">IP_addresses</datastore>
+      </input>
+      <input into="dns_nameservers">
+        <datastore access="1">IP_addresses</datastore>
+      </input>
+    </network>
+
+    <input into_datastore="spoiler_admin_pass">
+      <generator type="strong_password_generator"/>
+    </input>
+    <build type="cleanup">
+      <input into="root_password">
+        <datastore>spoiler_admin_pass</datastore>
+      </input>
+    </build>
+  </system>
+
+</scenario>

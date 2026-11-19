@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>DNS resolver</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Sets the nameservers in /etc/resolv.conf (up to three) and stops DHCP clients and NetworkManager rewriting the file, so a VM keeps them once the build network has gone. Without it, a VM with a static address on the scenario network keeps the nameserver and search domain its build network's DHCP server gave it. Select it after the system's other modules, since any module provisioned after it resolves names through these nameservers.</description>
+
+  <type>dns_resolver</type>
+  <platform>linux</platform>
+
+  <read_fact>nameservers</read_fact>
+
+  <default_input into="nameservers">
+    <value>127.0.0.1</value>
+  </default_input>
+</utility>

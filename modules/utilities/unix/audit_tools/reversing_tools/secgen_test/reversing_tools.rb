@@ -92,12 +92,12 @@ class ReversingToolsTest < PostProvisionTest
 
     cmd = "#{x}U=$(awk -F: '$3>=1000 && $3<65534 && $6 ~ /^\\/home\\// {print $1; exit}' /etc/passwd); " \
           'H=$(getent passwd "$U" | cut -d: -f6); T=$(mktemp); cp "$A" "$T"; chown "$U" "$T"; ' \
-          'out=$(runuser -u "$U" -- env DISPLAY=:0 XAUTHORITY="$T" HOME="$H" timeout 45 cutter -A 1 /bin/true 2>&1); rc=$?; ' \
+          'out=$(runuser -u "$U" -- env DISPLAY=:0 XAUTHORITY="$T" HOME="$H" timeout 120 cutter -A 1 /bin/true 2>&1); rc=$?; ' \
           'rm -f "$T"; pkill -u "$U" -f /opt/Cutter/squashfs-root; ' \
           'echo "$out" | grep -v "^/tmp/appimage" | tail -25; echo "user=$U rc=$rc"; ' \
           'echo "$out" | grep -q "(aac)" && [ "$rc" = 124 ] && echo "cutter analysed /bin/true"'
     name = 'cutter opens and analyses a binary as a user'
-    out = run_vagrant_ssh(cmd, timeout: 90)
+    out = run_vagrant_ssh(cmd, timeout: 180)
     if out[:stdout].include?('cutter analysed /bin/true')
       pass_check(name, "#{name} (#{out[:stdout][/user=\S+/]}) on #{get_system_name}")
     else

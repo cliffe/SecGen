@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Sandboxing tools</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>Installs bubblewrap and Firejail, which run a program inside Linux namespaces with a restricted view of the filesystem, processes and network (for example with no network at all), for containing a program while its behaviour is observed.</description>
+
+  <type>sandboxing_tools</type>
+  <platform>linux</platform>
+
+  <software_name>bubblewrap</software_name>
+  <software_name>firejail</software_name>
+  <software_license>LGPLv2+ (bubblewrap), GPLv2 (Firejail)</software_license>
+
+  <requires>
+    <type>update</type>
+  </requires>
+</utility>

@@ -1156,6 +1156,14 @@ class PostProvisionTest
     run_vagrant_ssh(as_user_command(user, command, sudo: !proxmox?), timeout: timeout)
   end
 
+  # The first ordinary login account on the guest (UID 1000-59999) other than the build's
+  # vagrant account, falling back to vagrant, or nil if there is none.
+  # For checking a tool works for a normal user when the module itself takes no account input.
+  def regular_user
+    out = run_vagrant_ssh("getent passwd | awk -F: '$3 >= 1000 && $3 < 60000 { if ($1 == \"vagrant\") v = $1; else { print $1; f = 1; exit } } END { if (!f && v) print v }'")[:stdout].to_s.strip
+    out.empty? ? nil : out
+  end
+
   def as_user_command(user, command, sudo: false)
     u = Shellwords.escape(user)
     c = Shellwords.escape(command)

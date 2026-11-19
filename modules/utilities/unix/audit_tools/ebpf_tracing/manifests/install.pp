@@ -1,14 +1,15 @@
 # Installs bpftrace from the Debian archive and the Tracee release binaries under /opt/tracee,
-# with /usr/local/bin/tracee pointing at the statically linked build: the dynamic one needs
-# glibc 2.38, newer than Debian 12's. The static build can't load the Go signature plugin.
+# with /usr/local/bin/tracee pointing at the dynamically linked build, which loads the detection
+# signatures in dist/signatures. Pinned to v0.23.2: later releases' dynamic build needs glibc 2.38,
+# newer than Debian 12's, and the static build can't load the Go signature plugin.
 class ebpf_tracing::install {
   Exec { path => ['/bin', '/usr/bin', '/sbin', '/usr/sbin'] }
 
-  $version = 'v0.24.1'
+  $version = 'v0.23.2'
   $archive = "tracee-x86_64.${version}.tar.gz"
-  $sha256  = '8cc56bd8c8dd3efadb0441c84849592affc48a71d3afbe7751a9e2014ef9ec85'
+  $sha256  = '6a3f2cdc5023bc833d261cf4e3d84ff258b24a8b313f8f20438f0b04842060fa'
 
-  ensure_packages(['bpftrace', 'wget'])
+  ensure_packages(['bpftrace', 'wget', 'libelf1', 'zlib1g'])
 
   file { '/opt/tracee':
     ensure => directory,
@@ -29,13 +30,13 @@ class ebpf_tracing::install {
   exec { 'extract tracee':
     command => "tar -xzf ${archive} && rm -f ${archive}.part",
     cwd     => '/opt/tracee',
-    creates => '/opt/tracee/dist/tracee-static',
+    creates => '/opt/tracee/dist/tracee',
     require => Exec['download tracee'],
   }
 
   file { '/usr/local/bin/tracee':
     ensure  => link,
-    target  => '/opt/tracee/dist/tracee-static',
+    target  => '/opt/tracee/dist/tracee',
     require => Exec['extract tracee'],
   }
 }

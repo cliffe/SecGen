@@ -5,7 +5,7 @@
   <name>eBPF tracing tools</name>
   <author>Thomas Shaw</author>
   <module_license>MIT</module_license>
-  <description>Installs two eBPF tools that watch what programs do from inside the kernel. Aqua Security's Tracee (pinned release, checked against its SHA-256) records process, file and network events as JSON. Its detection signatures are not loaded, because only the statically linked build runs on Debian 12. bpftrace runs short custom traces written on the command line. Both run as root, and Tracee needs a kernel with BTF (Debian 12 or later).</description>
+  <description>Installs two eBPF tools that watch what programs do from inside the kernel. Aqua Security's Tracee (pinned release, checked against its SHA-256) records process, file and network events as JSON. Its built-in detection signatures (for example anti-debugging, fileless execution and rootkit behaviour) report suspicious activity as events. bpftrace runs short custom traces written on the command line. Both run as root, and Tracee needs a kernel with BTF (Debian 12 or later).</description>
 
   <type>runtime_tracing_tools</type>
   <platform>linux</platform>

@@ -12,7 +12,7 @@ class EbpfTracingTest < PostProvisionTest
 
     tier(1) do
       test_local_command('bpftrace package installed?', "dpkg -l bpftrace | grep '^ii'", 'bpftrace')
-      test_local_command('tracee installed', 'test -x /opt/tracee/dist/tracee-static && readlink /usr/local/bin/tracee', '/opt/tracee/dist/tracee-static')
+      test_local_command('tracee installed', 'test -x /opt/tracee/dist/tracee && readlink /usr/local/bin/tracee', '/opt/tracee/dist/tracee')
       test_local_command('kernel exposes BTF', 'test -r /sys/kernel/btf/vmlinux && echo btf-present', 'btf-present')
     end
 
@@ -34,6 +34,16 @@ class EbpfTracingTest < PostProvisionTest
         pass_check('tracee records an execve event')
       else
         fail_check('tracee records an execve event', "#{result[:stdout]} #{result[:stderr]}".strip[0, 1000])
+      end
+
+      # A detection signature fires: TRC-102 reports a process that calls ptrace(PTRACE_TRACEME).
+      probe = '( for i in $(seq 1 20); do sleep 4; python3 -c "import ctypes; ctypes.CDLL(None).ptrace(0, 0, 0, 0)"; done ) & p=$!; ' \
+              'timeout 90 tracee --events anti_debugging --output json 2>&1 | grep -m1 -o anti_debugging; kill $p 2>/dev/null; true'
+      result = run_vagrant_ssh(probe, timeout: 150)
+      if result[:stdout].to_s.include?('anti_debugging')
+        pass_check('tracee signature detects anti-debugging')
+      else
+        fail_check('tracee signature detects anti-debugging', "#{result[:stdout]} #{result[:stderr]}".strip[0, 1000])
       end
     end
   end

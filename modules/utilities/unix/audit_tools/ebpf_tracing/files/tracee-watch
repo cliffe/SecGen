@@ -1,0 +1,34 @@
+#!/bin/bash
+# tracee-watch: runs Tracee for an unprivileged user through sudo. The user chooses only which
+# program to watch: the events are fixed, nothing is captured to disk, and only processes
+# running as the calling user (and the processes they start) are traced.
+set -eu
+export PATH=/usr/sbin:/usr/bin:/sbin:/bin
+
+usage() {
+  echo "Usage: sudo tracee-watch PROGRAM" >&2
+  echo "Traces each process named PROGRAM, and every process it starts, until you press Ctrl+C." >&2
+  exit 1
+}
+
+[ $# -eq 1 ] || usage
+name=$(basename -- "$1")
+[[ "$name" =~ ^[A-Za-z0-9._+-]+$ ]] || usage
+# The kernel keeps the first 15 characters of a program's name.
+comm=${name:0:15}
+
+scope=(--scope "comm=$comm" --scope follow)
+if [ -n "${SUDO_UID:-}" ]; then
+  [[ "$SUDO_UID" =~ ^[0-9]+$ ]] || usage
+  scope+=(--scope "uid=$SUDO_UID")
+fi
+
+# Tracee's working files go in a root-only directory, not the default /tmp/tracee.
+install_path=/run/tracee-watch
+mkdir -p "$install_path"
+chmod 0700 "$install_path"
+
+echo "Starting Tracee for programs named '$comm'. Run the program once the column headings appear; press Ctrl+C to stop." >&2
+exec /opt/tracee/dist/tracee --install-path "$install_path" --no-containers --log warn "${scope[@]}" \
+  --events sched_process_exec,sched_process_fork,sched_process_exit,security_file_open,security_socket_connect,ptrace,anti_debugging \
+  --output table --output option:parse-arguments

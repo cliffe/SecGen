@@ -5,7 +5,7 @@
   <name>eBPF tracing tools</name>
   <author>Thomas Shaw</author>
   <module_license>MIT</module_license>
-  <description>Installs two eBPF tools that watch what programs do from inside the kernel. Aqua Security's Tracee (pinned release, checked against its SHA-256) records process, file and network events as JSON. Its built-in detection signatures (for example anti-debugging, fileless execution and rootkit behaviour) report suspicious activity as events. bpftrace runs short custom traces written on the command line. Both run as root, and Tracee needs a kernel with BTF (Debian 12 or later).</description>
+  <description>Installs two eBPF tools that watch what programs do from inside the kernel. Aqua Security's Tracee (pinned release, checked against its SHA-256) records process, file and network events as JSON. Its built-in detection signatures (for example anti-debugging, fileless execution and rootkit behaviour) report suspicious activity as events. bpftrace runs short custom traces written on the command line. Both run as root, and Tracee needs a kernel with BTF (Debian 12 or later). With student_wrapper set to true, users without root can run sudo tracee-watch PROGRAM, which traces their own processes of that name (and any they start) with a fixed set of process, file, network and anti-debugging events, and nothing else.</description>
 
   <type>runtime_tracing_tools</type>
   <platform>linux</platform>
@@ -13,6 +13,12 @@
   <software_name>tracee</software_name>
   <software_name>bpftrace</software_name>
   <software_license>Apache v2 (Tracee user space and bpftrace), GPLv2 (Tracee eBPF programs)</software_license>
+
+  <read_fact>student_wrapper</read_fact>
+
+  <default_input into="student_wrapper">
+    <value>false</value>
+  </default_input>
 
   <requires>
     <type>update</type>

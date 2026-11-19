@@ -46,6 +46,36 @@ class EbpfTracingTest < PostProvisionTest
         fail_check('tracee signature detects anti-debugging', "#{result[:stdout]} #{result[:stderr]}".strip[0, 1000])
       end
     end
+
+    # student_wrapper: a user without root runs Tracee through sudo tracee-watch, for their own programs only.
+    if json_inputs['student_wrapper']&.first.to_s == 'true'
+      user = regular_user
+      if user.nil?
+        skip_check('tracee-watch as a regular user', 'no regular user account on this system', tier: 2)
+      else
+        tier(1) do
+          test_local_command('tracee-watch wrapper installed', 'stat -c %U:%a /usr/local/sbin/tracee-watch', 'root:755')
+          test_local_command('sudoers allows only the wrapper', 'visudo -cf /etc/sudoers.d/tracee-watch && cat /etc/sudoers.d/tracee-watch',
+                             'NOPASSWD: /usr/local/sbin/tracee-watch')
+        end
+        tier(2) do
+          # A copy of true under a distinctive name, run repeatedly by the user until Tracee reports its exec.
+          probe = 'cp /bin/true /tmp/sgwatchprobe && ( for i in $(seq 1 20); do sleep 4; /tmp/sgwatchprobe; done ) & p=$!; ' \
+                  'timeout 90 sudo -n /usr/local/sbin/tracee-watch sgwatchprobe 2>&1 | grep -m1 -o "sched_process_exec.*sgwatchprobe"; kill $p 2>/dev/null; true'
+          result = run_as_user(user, probe, timeout: 150)
+          if result[:stdout].to_s.include?('sched_process_exec')
+            pass_check("tracee-watch traces a program as #{user}")
+          else
+            fail_check("tracee-watch traces a program as #{user}", "#{result[:stdout]} #{result[:stderr]}".strip[0, 1000])
+          end
+          # The wrapper refuses anything but a plain program name, and sudo grants nothing else.
+          test_local_command('tracee-watch rejects extra arguments',
+                             'sudo -n /usr/local/sbin/tracee-watch "x --capture exec" 2>&1; sudo -n /usr/local/sbin/tracee-watch a b 2>&1', 'Usage:', user: user)
+          test_local_command('sudo grants no other command', 'sudo -n /opt/tracee/dist/tracee --help >/dev/null 2>&1 && echo granted || echo refused',
+                             'refused', user: user)
+        end
+      end
+    end
   end
 end
 

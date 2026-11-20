@@ -1,0 +1,33 @@
+server {
+	 listen      <%=@port%> default_server;
+	 listen      [::]:<%=@port%> default_server;
+	 #server_name <%=@nginx_server_name%>;
+	 root        /opt/librenms/html;
+	 index       index.php;
+
+	 charset utf-8;
+	 gzip on;
+	 gzip_types text/css application/javascript text/javascript application/x-javascript image/svg+xml text/plain text/xsd text/xsl text/xml image/x-icon;
+
+	 proxy_read_timeout 300;
+	 proxy_connect_timeout 300;
+	 proxy_send_timeout 300;
+
+	 location / {
+		
+		try_files $uri $uri/ =404;
+
+	 }
+	 location /api/v0 {
+		try_files $uri $uri/ /api_v0.php?$query_string;
+	 }
+	 location ~ \.php {
+		include fastcgi.conf;
+		fastcgi_split_path_info ^(.+\.php)(/.+)$;
+		fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
+
+	 }
+	 location ~ /\.ht {
+		deny all;
+	 }
+}

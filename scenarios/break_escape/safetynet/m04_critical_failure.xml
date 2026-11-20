@@ -19,9 +19,11 @@ BMS/SCADA thermal telemetry.
 **bms_jump_server**
 - Debian 12 system sitting between the corporate LAN and the BMS/SCADA segment
 - Exposed web service carrying the falsified rack status page
-- ProFTPD service holding OptiGrid's transferred operational intelligence
+- ProFTPD 1.3.3c distribution-backdoored service: an unauthenticated remote ROOT shell.
+  It holds both OptiGrid's transferred coordination intel AND the root-only calibration
+  override — the file-drop stage already gives full control of the box by design, so no
+  separate local escalation is taught.
 - Erlang/OTP SSH daemon (CVE-2025-32433) left behind by the "maintenance" crew — unauthenticated pre-auth remote code execution
-- sudoedit (CVE-2023-22809) for local privilege escalation
 
 **kali**
 - Kali Linux platform for reconnaissance and exploitation against the jump server
@@ -37,10 +39,14 @@ keys flags by `system_name` and takes them in document order from the generated
 flag_hints.xml. scenario.json.erb therefore expects exactly four flags on
 `bms_jump_server`, in this declared order:
 
-  flag_1  parameterised_website     -> submit_network_scan_flag
-  flag_2  proftpd_133c_backdoor     -> submit_ftp_intel_flag
-  flag_3  sudoedit                  -> submit_privesc_flag
-  flag_4  ssh_erlangotp_rce         -> submit_erlang_rce_flag
+  flag_1  parameterised_website                             -> submit_network_scan_flag
+  flag_2  proftpd_133c_backdoor (coordination_notes)        -> submit_ftp_intel_flag
+  flag_3  proftpd_133c_backdoor (bms_calibration_override)  -> submit_privesc_flag
+  flag_4  ssh_erlangotp_rce                                 -> submit_erlang_rce_flag
+
+  flags 2 and 3 are BOTH leaked to /root by the one ProFTPD backdoor (its root shell reaches
+  both): coordination_notes first, then root_only/bms_calibration_override, in that declared
+  order. The in-file encoder order (below) fixes flag_2 before flag_3.
 
 If a SecGen build emits a different order or count, update `targetFlags` in
 scenario.json.erb to match — do not renumber here.
@@ -135,16 +141,26 @@ Last integrity check: PASSED</value>
       </input>
     </service>
 
-    <!-- FLAG 2 (submit_ftp_intel_flag)
+    <!-- FLAG 2 (submit_ftp_intel_flag) and FLAG 3 (submit_privesc_flag)
          OptiGrid's transfer channel, left running with the backdoored ProFTPD the
-         "maintenance crew" installed. Holds the cross-cell coordination intel. -->
+         "maintenance crew" installed. The distribution backdoor gives an UNAUTHENTICATED
+         ROOT shell, so the file-drop stage already owns the box by design. Two files are
+         leaked to /root and read over that root shell, in declared order:
+           1. coordination_notes            (flag_2) — the cross-cell coordination intel
+           2. root_only/bms_calibration_override (flag_3) — the root-only sabotage override
+         There is deliberately no separate privilege-escalation step: the former sudoedit
+         (CVE-2023-22809) stage was removed because the backdoor's root shell already reaches
+         the root-only override, which made the escalation redundant. zip() in
+         secgen_functions::leak_files pairs strings_to_leak[i] with leaked_filenames[i], so
+         the two encoders below must stay in the same order as the two filenames. -->
     <vulnerability module_path=".*/proftpd_133c_backdoor">
       <input into="organisation">
         <value>{"business_name": "OptiGrid Solutions", "business_motto": "Smarter grids, quietly maintained.", "business_address": "12 Canal Wharf, Leeds, LS11 5PS", "domain": "optigrid-solutions.co.uk", "office_telephone": "0113 496 0727", "office_email": "ops@optigrid-solutions.co.uk", "industry": "Grid maintenance contractor", "manager": {"name": "Darren Pryce", "address": "12 Canal Wharf, Leeds, LS11 5PS", "phone_number": "07700 900412", "email_address": "dpryce@optigrid-solutions.co.uk", "username": "dpryce", "password": ""}, "employees": [], "product_name": "Maintenance file transfer", "intro_paragraph": ["OptiGrid Solutions provides maintenance and integration services for grid storage operators."]}</value>
       </input>
       <input into="strings_to_leak">
-        <!-- R27: the leaked file carries a real in-fiction document (heading + text);
-             the flag is concatenated on the end so exploitation still yields it. -->
+        <!-- R27: each leaked file carries a real in-fiction document (heading + text);
+             the flag is concatenated on the end so exploitation still yields it.
+             ENCODER 1 = coordination_notes (flag_2). -->
         <encoder module_path="modules/encoders/selector/concatenate">
           <input into="strings_to_encode">
             <value>OPTIGRID SOLUTIONS -- SITE TRANSFER CHANNEL
@@ -166,19 +182,8 @@ Operator procedures are not kept here. See the toolkit notes.</value>
             <generator type="flag_generator"/>
           </input>
         </encoder>
-      </input>
-      <input into="leaked_filenames">
-        <value>optigrid_transfer/coordination_notes</value>
-      </input>
-    </vulnerability>
-
-    <!-- FLAG 3 (submit_privesc_flag)
-         sudoedit (CVE-2023-22809). sudo_baron was swapped out: it conflicts with every
-         base except Debian 10 Buster, and this system is Debian 12. The maintenance account can become root, which is how
-         the crew rewrote the telemetry the control room trusts. -->
-    <vulnerability module_path=".*/sudoedit">
-      <input into="strings_to_leak">
-        <!-- R27: in-fiction calibration-override document; flag concatenated on the end. -->
+        <!-- ENCODER 2 = root_only/bms_calibration_override (flag_3). Root-only sabotage
+             document, read over the same backdoor root shell. Formerly the sudoedit stage. -->
         <encoder module_path="modules/encoders/selector/concatenate">
           <input into="strings_to_encode">
             <value>BMS CALIBRATION OVERRIDE -- RESTRICTED (root)
@@ -200,6 +205,7 @@ runaway while every screen in the control room says it is fine.</value>
         </encoder>
       </input>
       <input into="leaked_filenames">
+        <value>optigrid_transfer/coordination_notes</value>
         <value>root_only/bms_calibration_override</value>
       </input>
     </vulnerability>

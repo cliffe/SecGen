@@ -1,0 +1,96 @@
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+
+<name>elFinder Archive Command Injection</name>
+  <author>Sofia Markusfeld</author>
+  <module_license>BSD/MIT</module_license>
+
+  <description>elFinder versions below 2.1.59 are vulnerable to a command injection vulnerability via the archive functionality. 
+  </description>
+
+  <type>remote</type>
+  <type>in_the_wild</type>
+  <privilege></privilege>
+  <access>remote</access>
+  <platform>linux_apache_php</platform>
+  <difficulty>low</difficulty>
+  
+
+   <read_fact>port</read_fact>
+   <read_fact>strings_to_leak</read_fact>
+      <read_fact>strings_to_preleak</read_fact>
+     <read_fact>leaked_filenames</read_fact>
+	 <read_fact>storage_directory</read_fact>
+   
+   <default_input into="port">
+		<value>80</value>
+   </default_input>
+   
+     <!-- flags or other secrets exposed after exploitation -->
+  <default_input into="strings_to_leak">
+    <generator type="message_generator"/>
+  </default_input>
+  
+    <default_input into="leaked_filenames">
+    <generator type="filename_generator"/>
+  </default_input>
+  
+    <default_input into="storage_directory">
+    <generator type="storage_directory_generator"/>
+  </default_input>
+  
+    <!--optional vulnerability details-->
+  <!-- rce vuln -->
+  <cve>CVE-2021-32682</cve>
+
+  
+  
+    <cvss_base_score>9</cvss_base_score>
+  <cvss_vector>AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H</cvss_vector>
+  <reference>https://github.com/rapid7/metasploit-framework/blob/master//modules/exploits/linux/http/elfinder_archive_cmd_injection.rb</reference>
+  <reference>https://www.rapid7.com/db/modules/exploit/linux/http/elfinder_archive_cmd_injection/</reference>
+  <software_name>elFinder</software_name>
+  <software_license>BSD/MIT</software_license>
+  
+  
+    <!--optional hints-->
+  <msf_module>exploit/linux/http/elfinder_archive_cmd_injection</msf_module>
+  <!--update for module-->
+  <hint>Visit the webapp in a browser at: ip/elfinder </hint>
+  
+    <!-- find any conflicts ie webapp -->
+  <conflict>
+    <type></type>
+  </conflict>
+
+
+  <requires>
+    <module_path>.*apache.*compatible.*</module_path>
+  </requires>
+
+  <requires>
+    <module_path>.*php.*compatible.*</module_path>
+  </requires>
+  
+  
+  
+  <!-- CyBOK metadata - related security concepts / knowledge required -->
+
+  <CyBOK KA="WAM" topic="Server-Side Vulnerabilities and Mitigations">
+    <keyword>server-side misconfiguration and vulnerable components</keyword>
+    <keyword>FILE UPLOAD VULNERABILITY</keyword>
+  </CyBOK>
+  <CyBOK KA="MAT" topic="Attacks and exploitation">
+    <keyword>EXPLOITATION</keyword>
+    <keyword>EXPLOITATION FRAMEWORKS</keyword>
+  </CyBOK>
+  <CyBOK KA="SS" topic="Categories of Vulnerabilities">
+    <keyword>CVEs and CWEs</keyword>
+  </CyBOK>
+  <CyBOK KA="SOIM" topic="PENETRATION TESTING">
+    <keyword>PENETRATION TESTING - SOFTWARE TOOLS</keyword>
+    <keyword>PENETRATION TESTING - ACTIVE PENETRATION</keyword>
+  </CyBOK>
+
+</vulnerability>

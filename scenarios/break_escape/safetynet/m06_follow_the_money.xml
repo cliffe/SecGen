@@ -243,21 +243,27 @@ This account is the financial database. Its flag confirms full read access.</val
           </encoder>
           <encoder module_path="modules/encoders/selector/concatenate">
             <input into="strings_to_encode">
-              <value>ENTROPY FINANCIAL NETWORK -- TRANSACTION ANALYSIS
+              <value>ENTROPY FINANCIAL NETWORK - TRANSACTION ANALYSIS
 (P. Raghavan, draft. Not for Irina yet.)
 
-1. INTO OUR MIXER (public chain, Bitcoin side) -- paying into hc-mixer-01 (times UTC):
-   14 Jul  21:40  1ENTROPY2RansomInc  $2,400,000  ransomware proceeds, pooled across victims
-   29 Jul  22:10  1ENTROPY3ZeroDaySy  $1,200,000  exploit sales
-   03 Aug  20:05  1ENTROPY1SocialFab    $680,000  disinformation contracts
-   (Plus about $12M more since January from wallets with no names on them. Same pattern.)
+1. INTO OUR MIXER (public chain, Bitcoin side)
+Three wallets with ENTROPY in the address, all paying into hc-mixer-01 (times UTC):
+
+  14 Jul  21:40  1ENTROPY2RansomInc  $2,400,000  ransomware proceeds, pooled across victims
+  29 Jul  22:10  1ENTROPY3ZeroDaySy  $1,200,000  exploit sales
+  03 Aug  20:05  1ENTROPY1SocialFab    $680,000  disinformation contracts
+
+(Plus about $12M more since January from wallets with no names on them. Same pattern.)
 
 2. OUT OF THE MIXER
-   The middle is Monero. What comes out is a fresh Bitcoin credit into one of our own
-   cold-storage slots, and the chain can't tell me which slot. The settlement log can.
+This is where I lose it. The middle is Monero. What comes out is a fresh Bitcoin credit into one of our own cold-storage slots, and the chain can't tell me which slot. Our settlement log can. It lives on the transaction server in the data centre.
+
+How I'd match it: the same amount less the mixer's fee, landing no sooner than the pool's minimum hold. Both numbers are in Irina's pool config.
 
 3. OUT OF WHEREVER IT LANDED
-   04 Aug  $3,200,000 split six ways. Advances to 1ARCHITECT9FUND. Paid on CEO authorisation.
+  02 Aug  $847,000 to 1TALENTSTACKPAY (the Quantum Dynamics job budget)
+  04 Aug  $3,200,000 split six ways. Advances?
+Both paid out of our custody on CEO authorisation. Same slot as above? I'd bet on it.
 
 (Margin: every cell seems to use us. Are we the bank for all of them?)</value>
             </input>
@@ -280,15 +286,19 @@ same account (CTO override). Slot 4471 has no customer behind it. -- P.R.</value
           </encoder>
           <encoder module_path="modules/encoders/selector/concatenate">
             <input into="strings_to_encode">
-              <value># HashChain cold-storage custody index. Labels are whatever the account
-# manager typed. Trust the money, not the label. -- I.V.
+              <value>hashchain :: custody_index.csv (cold slots)
+
 slot,label,opened_by,opened
 2207,OTC desk settlement,CEO,2023-02
 3815,customer reserve B,CEO,2022-09
 4471,client escrow,ops,2025-05
 5093,client escrow,CEO,2025-04
-6120,market-making float,CEO,2024-08
-8846,fees,ops,2024-01</value>
+6120,"client escrow -- do not reconcile",CEO,2024-06
+7302,dormant (legacy),ops,2021-01
+8846,market-maker float,ops,2024-02
+
+# The custody console opens a slot's file by its number.
+# Labels are whatever the account manager typed. Trust the money, not the label. -- I.V.</value>
             </input>
           </encoder>
           <generator type="flag_generator" /> <!-- flag_3: financial database access -->

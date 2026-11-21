@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>Deleted-binary (fileless) process</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>A long-running process whose on-disk executable has been unlinked, so it survives only in memory (/proc/&lt;pid&gt;/exe reads "(deleted)"). It overwrites its argument vector to masquerade as a kernel worker thread ([kworker/...]) that the live tools print, while its kernel task name (comm) holds the real, build-specific name decoded into RAM at runtime. That name never appears in the on-disk binary and is recoverable from a memory image (Volatility psscan reads comm directly, past the argv disguise) or the live process. Teaches that argv can be forged but the kernel's own task name survives in a capture, and why volatile evidence must be collected before powering a system down.</description>
+
+  <type>backdoor</type>
+  <privilege>root_rwx</privilege>
+  <access>local</access>
+  <platform>unix</platform>
+  <difficulty>medium</difficulty>
+
+  <read_fact>flag</read_fact>
+
+  <default_input into="flag">
+    <generator type="flag_generator"/>
+  </default_input>
+
+  <hint>A process can keep running after its executable is deleted from disk.</hint>
+  <solution>Find the process whose /proc/&lt;pid&gt;/exe is marked "(deleted)", then read its real name from the task's comm field (Volatility psscan on a RAM capture, or ps -o comm on the live process); the argv column shows a forged [kworker/...] name, and the real name is in no file on disk.</solution>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+  <CyBOK KA="MAT" topic="Malware Detection">
+    <keyword>identifying the presence of malware</keyword>
+    <keyword>evasion and countermeasures</keyword>
+  </CyBOK>
+  <CyBOK KA="F" topic="Main Memory Forensics">
+    <keyword>process information</keyword>
+    <keyword>artifacts and fragments</keyword>
+    <keyword>challenges of live forensics</keyword>
+  </CyBOK>
+</vulnerability>

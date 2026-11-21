@@ -6,7 +6,9 @@
   <name>LiME - Linux Memory Extractor</name>
   <author>Thomas Shaw</author>
   <module_license>GPLv2</module_license>
-  <description>Installs LiME from github repo.</description>
+  <description>Installs LiME from github repo.
+
+    NOTE: LiME captures RAM on whatever kernel it is built against, but analysing that image in Volatility needs a symbol table (ISF) for the captured kernel. The volatility3 module ships ISFs for the current Debian 12 base kernels, so a capture meant for Volatility analysis should come from a covered base; an uncovered kernel needs a fresh ISF first (see the volatility3 module and the update-volatility-isf skill).</description>
 
   <type>audit_tools</type>
   <platform>linux</platform>

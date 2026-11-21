@@ -1,0 +1,9 @@
+{
+  "_note": "Baked token values present in golden.img.xz at capture time. Overwritten per build by patch_golden.py. Keys starting with _ are ignored. REGENERATE this together with golden.img.xz whenever the golden is recaptured (see README.md).",
+  "_captured": "2026-11-20 from deploy-iri-golden-01_SecGen20261120_075033 (compromised_server, kernel 6.1.0-56-amd64 / 6.1.192-2)",
+  "deleted_proc_name": "77c434fd2b07",
+  "nc_proc_name": "79cfa468012d",
+  "nc_ref_token": "e62fd096f131",
+  "env_token": "d5a6e9d05c9ec54a1c29278281be4a45",
+  "bash_token": "342234f82c31b8cf43fcfc8555ea8619"
+}

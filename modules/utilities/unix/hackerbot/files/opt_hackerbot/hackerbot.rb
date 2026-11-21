@@ -246,6 +246,11 @@ def read_bots (irc_server_ip_address)
               end
             else
               m.reply "#{bots[bot_name]['messages']['incorrect_answer']} (#{answer})"
+              # Optional per-quiz wrong-answer hint, mirroring correct_answer_response.
+              # Labs without an <incorrect_answer_response> keep the global message only.
+              if quiz.key?('incorrect_answer_response')
+                m.reply quiz['incorrect_answer_response']
+              end
             end
           else
             m.reply bots[bot_name]['messages']['no_quiz']

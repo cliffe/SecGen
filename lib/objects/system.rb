@@ -14,6 +14,7 @@ class System
   attr_accessor :network_module_selections
   attr_accessor :num_actioned_module_conflicts
   attr_accessor :memory  # (RAM allocation for the system)
+  attr_accessor :memory_cap  # (optional hard cap on RAM in MB, from the scenario)
   attr_accessor :options  # (command line options hash)
   attr_accessor :scenario_path  # (path to scenario file associated with this system)
 
@@ -36,6 +37,7 @@ class System
     self.network_module_selections = []
     self.num_actioned_module_conflicts = 0
     self.memory = "512"
+    self.memory_cap = nil
     self.options = options
     self.scenario_path = scenario_file
     set_hostname

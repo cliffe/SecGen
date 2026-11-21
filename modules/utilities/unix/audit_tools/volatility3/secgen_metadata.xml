@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Volatility 3 - memory forensics framework</name>
+  <author>Thomas Shaw</author>
+  <module_license>GPLv2</module_license>
+  <description>Installs the Volatility 3 memory forensics framework into a venv and the bundled Linux symbol tables (ISFs) for the current Debian 12 base kernels. All bundled ISFs go into Volatility's symbol path and Volatility matches the right one to a memory image by its kernel banner.
+
+    NOTE: an ISF must match the kernel of the captured image, which (for a SecGen lab) is the newest kernel the base boots AFTER the post-provision reboot. Volatility analysis therefore only works for images captured from a base whose kernel is covered here. A capture from an uncovered kernel (a different distro, or a Debian base whose kernel has moved on) needs a fresh ISF - see the update-volatility-isf skill. The module's secgen_test runs post-reboot and fails with "NO BUNDLED ISF FOR: &lt;banner&gt;" when the running kernel isn't covered. This can't be a requires/conflicts: the module installs on the analyst workstation, not on the VM whose RAM is captured.</description>
+
+  <type>audit_tools</type>
+  <platform>linux</platform>
+
+  <reference>https://github.com/volatilityfoundation/volatility3</reference>
+
+  <requires>
+    <type>update</type>
+  </requires>
+</utility>

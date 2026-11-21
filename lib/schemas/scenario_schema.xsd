@@ -81,6 +81,10 @@
           </xs:restriction>
         </xs:simpleType>
       </xs:element>
+      <!-- optional hard cap on this system's RAM in MB; lowers it below the
+           provider default (e.g. Proxmox's 4096 floor). Cannot be combined with
+           a module that declares <memory_required> - the build errors out. -->
+      <xs:element name="memory_cap" type="xs:positiveInteger" minOccurs="0" maxOccurs="1"/>
       <xs:element name='base' type='BaseType' minOccurs='1' maxOccurs='1' />
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element name="input" type="InputElements" minOccurs="0" maxOccurs="unbounded" />

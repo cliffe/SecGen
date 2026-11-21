@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Disable Kernel KASLR Linux</name>
+  <author>Thomas Shaw</author>
+  <module_license>GPLv2</module_license>
+  <description>Disable Kernel Address Space Layout Randomisation (KASLR) by adding nokaslr to the kernel command line. The kernel then loads at its fixed default address, which keeps a memory capture's layout deterministic and below the high-memory boundary so Volatility can resolve kernel symbols reliably.</description>
+
+  <type>mitigations</type>
+  <platform>linux</platform>
+
+</utility>

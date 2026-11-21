@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>In-memory bash history artefact</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>A detached interactive shell is left running with a command in its history that carries a token. The shell's HISTFILE is pointed away from disk, so the command never reaches ~/.bash_history and survives only in the running shell's memory. It is recoverable from a RAM image by searching the raw capture (strings), not from any file on disk. Teaches that an interactive shell keeps its command history in memory, separate from the on-disk history file.</description>
+
+  <type>backdoor</type>
+  <privilege>root_rwx</privilege>
+  <access>local</access>
+  <platform>unix</platform>
+  <difficulty>medium</difficulty>
+
+  <read_fact>flag</read_fact>
+
+  <default_input into="flag">
+    <generator type="flag_generator"/>
+  </default_input>
+
+  <hint>An interactive shell remembers the commands you typed even when it is told not to write them to a file.</hint>
+  <solution>Search a RAM capture for the command in the running shell's in-memory history (strings on the image); the command carrying the token is not in any on-disk history file.</solution>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+  <CyBOK KA="F" topic="Main Memory Forensics">
+    <keyword>process information</keyword>
+    <keyword>artifacts and fragments</keyword>
+    <keyword>challenges of live forensics</keyword>
+  </CyBOK>
+  <CyBOK KA="MAT" topic="Malware Detection">
+    <keyword>identifying the presence of malware</keyword>
+    <keyword>evasion and countermeasures</keyword>
+  </CyBOK>
+</vulnerability>

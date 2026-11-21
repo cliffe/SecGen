@@ -20,6 +20,11 @@
   <read_fact>hackerbot_server_ip</read_fact>
   <read_fact>hidden_port</read_fact>
   <read_fact>hidden_string</read_fact>
+  <read_fact>deleted_proc_name</read_fact>
+  <read_fact>nc_proc_name</read_fact>
+  <read_fact>nc_ref_token</read_fact>
+  <read_fact>env_token</read_fact>
+  <read_fact>bash_token</read_fact>
 
 
   <default_input into="accounts">
@@ -35,6 +40,41 @@
     <generator type="flag_generator"/>
     <generator type="flag_generator"/>
     <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+    <generator type="flag_generator"/>
+  </default_input>
+
+  <default_input into="deleted_proc_name">
+    <generator module_path=".*/random_hex">
+      <input into="line_length">
+        <value>6</value>
+      </input>
+    </generator>
+  </default_input>
+
+  <default_input into="nc_proc_name">
+    <generator module_path=".*/random_hex">
+      <input into="line_length">
+        <value>6</value>
+      </input>
+    </generator>
+  </default_input>
+
+  <default_input into="nc_ref_token">
+    <generator module_path=".*/random_hex">
+      <input into="line_length">
+        <value>6</value>
+      </input>
+    </generator>
+  </default_input>
+
+  <default_input into="env_token">
+    <generator module_path=".*/random_hex"/>
+  </default_input>
+
+  <default_input into="bash_token">
+    <generator module_path=".*/random_hex"/>
   </default_input>
 
   <default_input into="root_password">

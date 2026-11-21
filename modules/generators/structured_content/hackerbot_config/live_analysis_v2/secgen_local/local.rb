@@ -7,6 +7,11 @@ class HBC < HackerbotConfigGenerator
   attr_accessor :hackerbot_server_ip
   attr_accessor :hidden_port
   attr_accessor :hidden_string
+  attr_accessor :deleted_proc_name
+  attr_accessor :nc_proc_name
+  attr_accessor :nc_ref_token
+  attr_accessor :env_token
+  attr_accessor :bash_token
 
   def initialize
     super
@@ -21,13 +26,23 @@ class HBC < HackerbotConfigGenerator
     self.hackerbot_server_ip = []
     self.hidden_port = []
     self.hidden_string = []
+    self.deleted_proc_name = []
+    self.nc_proc_name = []
+    self.nc_ref_token = []
+    self.env_token = []
+    self.bash_token = []
   end
 
   def get_options_array
     super + [['--compromised_server_ip', GetoptLong::REQUIRED_ARGUMENT],
              ['--hackerbot_server_ip', GetoptLong::REQUIRED_ARGUMENT],
              ['--hidden_port', GetoptLong::REQUIRED_ARGUMENT],
-             ['--hidden_string', GetoptLong::REQUIRED_ARGUMENT]]
+             ['--hidden_string', GetoptLong::REQUIRED_ARGUMENT],
+             ['--deleted_proc_name', GetoptLong::REQUIRED_ARGUMENT],
+             ['--nc_proc_name', GetoptLong::REQUIRED_ARGUMENT],
+             ['--nc_ref_token', GetoptLong::REQUIRED_ARGUMENT],
+             ['--env_token', GetoptLong::REQUIRED_ARGUMENT],
+             ['--bash_token', GetoptLong::REQUIRED_ARGUMENT]]
   end
 
   def process_options(opt, arg)
@@ -41,6 +56,16 @@ class HBC < HackerbotConfigGenerator
         self.hidden_port << arg;
       when '--hidden_string'
         self.hidden_string << arg;
+      when '--deleted_proc_name'
+        self.deleted_proc_name << arg;
+      when '--nc_proc_name'
+        self.nc_proc_name << arg;
+      when '--nc_ref_token'
+        self.nc_ref_token << arg;
+      when '--env_token'
+        self.env_token << arg;
+      when '--bash_token'
+        self.bash_token << arg;
     end
   end
 

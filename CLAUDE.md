@@ -99,6 +99,7 @@ Use the matching skill in `.claude/skills/` rather than working from memory:
 | CTF scenario descriptions | `write-secgen-ctf-description` |
 | Create or modify a randomised MetaCTF reverse engineering challenge | `create-metactf-challenge` |
 | Write/debug module Puppet code | `secgen-puppet` |
+| Regenerate the Volatility 3 ISF (symbol table) for a new/updated kernel | `update-volatility-isf` |
 
 When you add or rename a skill (by hand or with `skill-creator`), add a row
 here in the same change, and to the skills table of any workspace you run

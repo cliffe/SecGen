@@ -153,7 +153,11 @@ class SystemReader < XMLReader
         end
 
       end
-      systems << System.new(system_name, system_attributes, module_selectors, scenario_file, options)
+      system = System.new(system_name, system_attributes, module_selectors, scenario_file, options)
+      # optional per-system RAM cap (MB); lowers the VM below the provider default
+      memory_cap_node = system_node.at_xpath('memory_cap')
+      system.memory_cap = memory_cap_node.text.strip.to_i if memory_cap_node
+      systems << system
     end
 
     return systems

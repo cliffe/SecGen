@@ -1,0 +1,1 @@
+include bash_history_artefact::install

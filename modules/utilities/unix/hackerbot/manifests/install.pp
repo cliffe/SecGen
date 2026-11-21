@@ -44,10 +44,14 @@ class hackerbot::install {
     onlyif  => 'gem list | grep -q "^nokogiri"',
   }
 
-  # Install nokogiri with system libraries and specific platform
+  # Install nokogiri with system libraries and specific platform.
+  # timeout => 1800: the native gem install can exceed Puppet's 300s default
+  # when host I/O/CPU is contended (concurrent builds), which otherwise kills
+  # the exec and cascades the whole hackerbot stack to failed dependencies.
   exec { 'install nokogiri':
     command => 'gem install nokogiri -v 1.15.5',
     path    => [ '/usr/bin', '/bin', '/usr/sbin' ],
+    timeout => 1800,
     require => [
       Package[$system_packages],
       Exec['remove nokogiri']
@@ -56,10 +60,11 @@ class hackerbot::install {
   }
 
 
-  # Install cinch from GitHub
+  # Install cinch from GitHub (clone + build; same contention timeout as nokogiri)
   exec { 'install cinch gem from github':
     command => 'gem specific_install -l https://github.com/cliffe/cinch.git',
     path    => [ '/usr/bin', '/bin', '/usr/sbin' ],
+    timeout => 1800,
     require => Package['specific_install'],
     unless  => 'gem list | grep -q "^cinch"',
   }

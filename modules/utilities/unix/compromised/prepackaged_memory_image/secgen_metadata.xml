@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>Pre-packaged memory image</name>
+  <author>SecGen contributors</author>
+  <module_license>MIT</module_license>
+  <description>Places a pre-captured RAM image on the analyst's machine for memory-forensics
+    practice, rewriting the per-build artefact tokens baked into it so each build's answers are
+    unique. The image is an atomic (hypervisor-paused) capture, so it is internally consistent
+    where a live in-guest capture would smear; the per-build tokens are the same fixed-length
+    random values planted on the compromised server, overwritten in place so no structure offset
+    moves.</description>
+
+  <type>compromised</type>
+  <platform>linux</platform>
+
+  <!-- Values recovered from the image, overwritten per build to match this build's artefacts. -->
+  <read_fact>deleted_proc_name</read_fact>
+  <read_fact>nc_proc_name</read_fact>
+  <read_fact>nc_ref_token</read_fact>
+  <read_fact>env_token</read_fact>
+  <read_fact>bash_token</read_fact>
+  <read_fact>account</read_fact>
+
+  <default_input into="deleted_proc_name">
+    <generator module_path=".*/random_hex">
+      <input into="line_length"><value>6</value></input>
+    </generator>
+  </default_input>
+  <default_input into="nc_proc_name">
+    <generator module_path=".*/random_hex">
+      <input into="line_length"><value>6</value></input>
+    </generator>
+  </default_input>
+  <default_input into="nc_ref_token">
+    <generator module_path=".*/random_hex">
+      <input into="line_length"><value>6</value></input>
+    </generator>
+  </default_input>
+  <default_input into="env_token">
+    <generator module_path=".*/random_hex"/>
+  </default_input>
+  <default_input into="bash_token">
+    <generator module_path=".*/random_hex"/>
+  </default_input>
+
+  <!-- The analyst account the image is placed under. A bare username (or a JSON
+       account hash) is accepted; root is the standalone default. -->
+  <default_input into="account">
+    <value>root</value>
+  </default_input>
+
+  <requires><type>update</type></requires>
+
+  <CyBOK KA="F" topic="Main Memory Forensics">
+    <keyword>memory acquisition</keyword>
+    <keyword>atomicity and challenges of live forensics</keyword>
+    <keyword>artifacts and fragments</keyword>
+  </CyBOK>
+</utility>

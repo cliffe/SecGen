@@ -1,0 +1,1 @@
+include deleted_binary_process::install

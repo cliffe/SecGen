@@ -1,0 +1,12 @@
+[Unit]
+Description=Userspace /dev network event helper
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/sbin/udev-net-helper
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

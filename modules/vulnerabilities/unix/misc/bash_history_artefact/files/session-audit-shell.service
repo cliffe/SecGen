@@ -1,0 +1,11 @@
+[Unit]
+Description=Session audit shell
+After=multi-user.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/session-audit-shell
+
+[Install]
+WantedBy=multi-user.target

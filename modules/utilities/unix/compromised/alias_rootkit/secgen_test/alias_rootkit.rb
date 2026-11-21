@@ -18,7 +18,7 @@ class AliasRootkitTest < PostProvisionTest
       test_local_command('aliases in /root/.bashrc', "grep -q 'alias ps=' /root/.bashrc && echo found", 'found')
       # one alias per hooked command, in root's and the skeleton (so later accounts) bashrc
       ['/root/.bashrc', '/etc/skel/.bashrc'].each do |rc|
-        %w[ps ls lsof netstat cat].each do |cmd|
+        %w[ps ls lsof netstat ss cat].each do |cmd|
           test_local_command("#{cmd} alias in #{rc}", "grep -cF \"alias #{cmd}='f(){\" #{rc}", '1')
         end
         test_local_command("sudo wrapper in #{rc}", "grep -c 'sudo_w' #{rc}", '1')
@@ -28,6 +28,7 @@ class AliasRootkitTest < PostProvisionTest
         end
         hidden_ports.each do |prt|
           test_local_command("hidden port #{prt} in #{rc} netstat alias", "grep 'alias netstat=' #{rc}", prt)
+          test_local_command("hidden port #{prt} in #{rc} ss alias", "grep 'alias ss=' #{rc}", prt)
         end
       end
       # the non-interactive early return is stripped from the skeleton so the aliases load

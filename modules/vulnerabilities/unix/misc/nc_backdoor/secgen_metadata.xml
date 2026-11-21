@@ -18,9 +18,27 @@
   <read_fact>port</read_fact>
   <read_fact>strings_to_leak</read_fact>
   <read_fact>leaked_filenames</read_fact>
+  <read_fact>proc_name</read_fact>
+  <read_fact>session_ref</read_fact>
 
   <default_input into="port">
     <generator module_path=".*random_unregistered_port" />
+  </default_input>
+
+  <!-- Optional: run the listener under this process name instead of plain
+       "ncat" (via a renamed link), so its kernel task name (comm) is a known,
+       per-build value a memory-forensics exercise can ask a student to recover.
+       Empty by default, which keeps the original "ncat" behaviour unchanged. -->
+  <default_input into="proc_name">
+    <value></value>
+  </default_input>
+
+  <!-- Optional: a session-reference string carried in the listener's command
+       line (via ncat -c "BACKDOOR_SESSION_ID=<ref> /bin/bash"), so the value is
+       recoverable from the process arguments in a memory image. Empty by
+       default, which keeps the original "-e /bin/bash" invocation unchanged. -->
+  <default_input into="session_ref">
+    <value></value>
   </default_input>
 
   <default_input into="strings_to_leak">

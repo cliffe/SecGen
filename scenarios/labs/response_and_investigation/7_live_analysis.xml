@@ -8,9 +8,11 @@
   <author>Z. Cliffe Schreuders</author>
   <description>
     # Introduction
-    In this lab, you will dive into the world of digital forensics and incident response by investigating a potentially compromised server. Security breaches and compromises are a common occurrence in the digital age, and it's essential to understand how to analyze and gather evidence from a compromised system to determine the extent of the intrusion and identify potential threats. This lab will walk you through the process of live system analysis, using both standard Unix commands and tools provided by the FIRE (Forensic and Incident Response Environment) CD/DVD ISO, in order to collect volatile data and assess the system's security.
+    A server on your network has been compromised. The intruder has planted a backdoor, is running processes they would rather you did not see, and has loaded a rootkit that lies to the usual command-line tools (ps, ss and the like) so the live system hides its own compromise. Your task is to work out what is really running on that machine and to recover the evidence the attacker tried to conceal.
 
-    Throughout this hands-on lab, you will learn essential techniques for live system analysis, such as collecting information about running processes, network connections, kernel modules, and system state. You will also explore the use of static binaries to avoid potential tampering with dynamically linked executables. Additionally, you will employ tools like Chkrootkit to detect rootkits and perform offline analysis to uncover any suspicious activity or security breaches. By completing tasks such as creating a list of suspicious open ports, identifying unreported processes, and analyzing the output of data collection scripts, you will gain practical experience in investigating compromised systems, a crucial skill for cybersecurity professionals and digital forensics experts.
+    You will do this with memory forensics. Memory holds what the disk and the live tools do not: the full command line of every process, the environment a daemon was started with, a process whose executable has been deleted, the in-memory history of a shell that was told not to save it. A RAM capture is also beyond the reach of a rootkit that hooks the running kernel's tools.
+
+    The lab has two halves. First you capture memory from the compromised server yourself, from inside the running system, and try to analyse it. There you meet the main problem of live acquisition: a capture taken while the kernel keeps running is not one consistent moment, so the plugins that walk the kernel's own lists give unreliable results. Then you analyse an atomic capture of the same system, taken with the virtual machine paused from the hypervisor so every structure is consistent, and recover the artefacts cleanly with Volatility 3. Along the way you will see why atomic acquisition matters, and which techniques (string search, pool scanning) still work when it is not available.
 
     This is a Hackerbot lab. Work through the lab sheet, then interact with Hackerbot to complete the challenges.
   </description>
@@ -112,6 +114,48 @@
     <input into_datastore="nc_port">
       <generator module_path=".*/random_unregistered_port" />
     </input>
+    <!-- Values students recover from the memory image. None is a flag{...}, so
+         none is greppable as a flag and none can be guessed; each is a per-build
+         random property of a real artefact (a process name, an env token, an
+         in-memory command token). Hackerbot checks the recovered value and hands
+         back the reward flag separately. -->
+    <!-- ch3: the deleted-binary process's real kernel name (comm). random_hex
+         emits 2x line_length hex chars, so 6 => a 12-char name, kept <=15 so the
+         kernel does not truncate comm and psscan reports it whole. -->
+    <input into_datastore="deleted_proc_name">
+      <generator module_path=".*/random_hex">
+        <input into="line_length">
+          <value>6</value>
+        </input>
+      </generator>
+    </input>
+    <!-- ch4: the netcat backdoor's masqueraded process name (comm). 6 => 12
+         chars (random_hex doubles line_length), <=15 so comm is not truncated. -->
+    <input into_datastore="nc_proc_name">
+      <generator module_path=".*/random_hex">
+        <input into="line_length">
+          <value>6</value>
+        </input>
+      </generator>
+    </input>
+    <!-- ch1: the backdoor listener's session marker, carried on its command
+         line as BACKDOOR_SESSION_ID=<token>. Recovered from the image with
+         linux.psaux (process argument vector), not strings/psscan. 6 => 12 hex. -->
+    <input into_datastore="nc_ref_token">
+      <generator module_path=".*/random_hex">
+        <input into="line_length">
+          <value>6</value>
+        </input>
+      </generator>
+    </input>
+    <!-- ch5: the value of the TELEMETRY_TOKEN env var on the sleeper process. -->
+    <input into_datastore="env_token">
+      <generator module_path=".*/random_hex"/>
+    </input>
+    <!-- ch6: the token carried by the command in the running shell's history. -->
+    <input into_datastore="bash_token">
+      <generator module_path=".*/random_hex"/>
+    </input>
 
     <input into_datastore="IP_addresses">
       <!-- desktop -->
@@ -166,6 +210,37 @@
     <utility module_path=".*/handy_cli_tools"/>
     <utility module_path=".*/binary_tools"/>
     <utility module_path=".*/nmap"/>
+    <!-- memory forensics workstation: analyse RAM captures here, not on the compromised box -->
+    <utility module_path=".*/volatility3"/>
+
+    <!-- Places an atomic (hypervisor-paused) RAM image of the compromised
+         server in the analyst's ~/evidence, rewriting the baked artefact tokens
+         to this build's per-build values so the answers are unique. It is a
+         capture of a different randomised instance of the same system. Students
+         also capture the live server themselves (see the compromised_server's
+         LiME) and find the list-walking plugins unreliable on that non-atomic
+         image; this atomic capture is the consistent snapshot where full
+         structured analysis works. -->
+    <utility module_path=".*/prepackaged_memory_image">
+      <input into="account">
+        <datastore access="0">accounts</datastore>
+      </input>
+      <input into="deleted_proc_name">
+        <datastore>deleted_proc_name</datastore>
+      </input>
+      <input into="nc_proc_name">
+        <datastore>nc_proc_name</datastore>
+      </input>
+      <input into="nc_ref_token">
+        <datastore>nc_ref_token</datastore>
+      </input>
+      <input into="env_token">
+        <datastore>env_token</datastore>
+      </input>
+      <input into="bash_token">
+        <datastore>bash_token</datastore>
+      </input>
+    </utility>
 
     <utility module_path=".*/hosts">
       <input into="hosts">
@@ -243,6 +318,21 @@
           <input into="hidden_string">
             <datastore>hidden_string</datastore>
           </input>
+          <input into="deleted_proc_name">
+            <datastore>deleted_proc_name</datastore>
+          </input>
+          <input into="nc_proc_name">
+            <datastore>nc_proc_name</datastore>
+          </input>
+          <input into="nc_ref_token">
+            <datastore>nc_ref_token</datastore>
+          </input>
+          <input into="env_token">
+            <datastore>env_token</datastore>
+          </input>
+          <input into="bash_token">
+            <datastore>bash_token</datastore>
+          </input>
         </generator>
       </input>
     </utility>
@@ -259,6 +349,16 @@
 
     <system>
       <system_name>compromised_server</system_name>
+      <!-- Cap RAM so the student's own in-guest capture (via LiME, below) stays
+           small and quick to copy and analyse. That live capture is part of the
+           lab by design: taken while the kernel keeps running, it is non-atomic,
+           so Volatility's list-walking plugins (pslist, linux.psaux,
+           linux.envars, linux.bash) give unreliable results on it. Students see
+           that first-hand, then analyse the atomic, hypervisor-paused capture
+           shipped to the desktop (prepackaged_memory_image), where the same
+           plugins work. String search and pool scanning (psscan) are the
+           techniques that survive the live smear. -->
+      <memory_cap>1536</memory_cap>
       <base distro="Debian 12" type="desktop" name="KDE"/>
 
 
@@ -293,12 +393,27 @@
       <!-- Install LiME as /proc/kcore dump doesn't work with 64-bit bases since Linux 4.8 -->
       <utility module_path=".*./lime"/>
 
+      <!-- Disable KASLR so the kernel loads at its fixed base and stays below the
+           high-memory boundary, keeping the memory capture's layout deterministic
+           and resolvable by Volatility -->
+      <utility module_path=".*/disable_kaslr"/>
+
       <vulnerability module_path=".*/nc_backdoor">
         <input into="port">
           <datastore>nc_port</datastore>
         </input>
-        <input into="strings_to_leak">
-          <generator type="flag_generator" />
+        <!-- Run the listener under a per-build random process name so a student
+             who recovers it from the memory image submits a build-unique value,
+             not the shared literal "ncat". The rootkit hides this name from live
+             tools; psscan reveals the process's real comm. -->
+        <input into="proc_name">
+          <datastore>nc_proc_name</datastore>
+        </input>
+        <!-- ch1: carry a per-build session marker on the listener's command line
+             (ncat -c "BACKDOOR_SESSION_ID=<ref> /bin/bash"), recoverable from the
+             image's process argument vectors with linux.psaux. -->
+        <input into="session_ref">
+          <datastore>nc_ref_token</datastore>
         </input>
       </vulnerability>
 
@@ -311,13 +426,46 @@
           <value>ncat</value>
           <value>hme</value>
           <datastore>hidden_string</datastore>
+          <datastore>nc_proc_name</datastore>
         </input>
       </utility>
 
-      <!-- TODO: these executables don't work on Stretch -->
-      <utility module_path=".*/adore_rootkit_static"/>
+      <!-- a process running from a deleted binary; its real kernel name (comm)
+           is a per-build random value the student recovers with psscan -->
+      <vulnerability module_path=".*/deleted_binary_process">
+        <input into="flag">
+          <datastore>deleted_proc_name</datastore>
+        </input>
+      </vulnerability>
+
+      <!-- a daemon holding a per-build random token in its process environment
+           (TELEMETRY_TOKEN), recoverable from the image with strings -->
+      <vulnerability module_path=".*/env_secret_process">
+        <input into="flag">
+          <datastore>env_token</datastore>
+        </input>
+      </vulnerability>
+
+      <!-- a running shell whose in-memory history carries a per-build random
+           token, recoverable from the image with strings -->
+      <vulnerability module_path=".*/bash_history_artefact">
+        <input into="flag">
+          <datastore>bash_token</datastore>
+        </input>
+      </vulnerability>
+
       <!-- required for chkrootkit -->
       <utility module_path=".*/binary_tools"/>
+
+      <!-- A statically linked BusyBox, standing in for the known-good tools a
+           responder brings on read-only media. Its ps/ls/netstat/cat are not
+           subverted by the alias_rootkit above (different command name, bypasses
+           the shell aliases) nor, in the real world, by an LD_PRELOAD /
+           ld.so.preload userland rootkit (static, so no victim libc or loader).
+           The lab sheet uses it to teach trusted-tool discipline and its limit:
+           a kernel rootkit still defeats it, which is why the student then turns
+           to memory forensics. -->
+      <utility module_path=".*/busybox_static"/>
 
       <utility module_path=".*/parameterised_accounts">
         <input into="accounts">

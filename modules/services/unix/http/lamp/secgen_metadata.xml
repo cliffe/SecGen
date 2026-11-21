@@ -11,7 +11,11 @@
   modules suit the base (required by software_name); this module enables mod_php in Apache
   and installs the PHP MySQL extension.</description>
 
-  <type>httpd</type>
+  <!-- Deliberately NOT advertising <type>httpd</type>: a generic
+       <service type="httpd"/> selector means "give me a web server", and lamp
+       requires mysql, so matching it here silently drags a whole database
+       stack onto the VM. Scenarios that want a LAMP stack select lamp
+       explicitly (module_path, or software_name php). -->
   <type>database</type>
 
   <platform>linux</platform>

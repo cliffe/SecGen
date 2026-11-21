@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<utility xmlns="http://www.github/cliffe/SecGen/utility"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.github/cliffe/SecGen/utility">
+  <name>BusyBox (static)</name>
+  <author>Z. Cliffe Schreuders</author>
+  <module_license>Apache v2</module_license>
+  <description>Installs a statically linked BusyBox (the busybox-static package): one self-contained
+    binary providing trusted implementations of ps, ls, netstat, cat and other utilities. On a
+    compromised host these stand in for the known-good tools a responder brings on read-only media.
+    Being statically linked, BusyBox does not load the victim's shared libraries or consult the
+    dynamic loader, so it is not subverted by a trojaned libc or an LD_PRELOAD / /etc/ld.so.preload
+    userland rootkit. A kernel rootkit that hooks the syscalls themselves still defeats it, which is
+    the point at which an investigator turns to memory forensics.</description>
+
+  <type>audit_tools</type>
+  <platform>linux</platform>
+
+</utility>

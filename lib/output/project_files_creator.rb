@@ -409,6 +409,7 @@ class ProjectFilesCreator
 
 # Determine how much memory the system requires for Vagrantfile
   def resolve_memory(system)
+    validate_memory_cap(system)
     if @options.has_key? :memory_per_vm
       memory = @options[:memory_per_vm]
     elsif @options.has_key? :total_memory
@@ -424,7 +425,34 @@ class ProjectFilesCreator
       memory = '1024'
     end
 
-    [memory.to_i, memory_required(system)].max.to_s
+    resolved = [memory.to_i, memory_required(system)].max
+    resolved = [resolved, system.memory_cap].min if system.memory_cap
+    resolved.to_s
+  end
+
+  # Proxmox memory for a system. A scenario <memory_cap> (MB) lowers the VM below
+  # the usual 4096 floor (e.g. for a fast, low-smear RAM capture); otherwise the
+  # floor, raised by any module's <memory_required>.
+  def proxmox_memory(system)
+    validate_memory_cap(system)
+    if system.memory_cap
+      [4096, system.memory_cap].min
+    else
+      [4096, memory_required(system)].max
+    end
+  end
+
+  # A system cannot both cap its memory and host a module that demands a minimum:
+  # the two intents contradict, so fail the build rather than silently pick one.
+  def validate_memory_cap(system)
+    return unless system.memory_cap
+    req = memory_required(system)
+    if req > 0
+      Print.err "Scenario error: system '#{system.name}' sets <memory_cap> " \
+                "(#{system.memory_cap} MB) but a selected module declares " \
+                "<memory_required> (#{req} MB). Remove the cap or the module."
+      abort
+    end
   end
 
   # The largest <memory_required> (MB) among the system's modules; 0 if none declare it.

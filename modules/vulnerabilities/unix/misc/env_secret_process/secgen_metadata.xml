@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+
+<vulnerability xmlns="http://www.github/cliffe/SecGen/vulnerability"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.github/cliffe/SecGen/vulnerability">
+  <name>Secret in process environment</name>
+  <author>Thomas Shaw</author>
+  <module_license>MIT</module_license>
+  <description>A long-running process started with a secret in its environment. The value is XOR-obfuscated in the on-disk binary and decoded into the process environment only at runtime, then inherited by a quiet sleeper it execs, so the plaintext lives only in that process's memory. It is recoverable from a RAM image by searching the raw capture (strings), not from any file on disk. Teaches that a process's environment block is volatile evidence.</description>
+
+  <type>backdoor</type>
+  <privilege>root_rwx</privilege>
+  <access>local</access>
+  <platform>unix</platform>
+  <difficulty>medium</difficulty>
+
+  <read_fact>flag</read_fact>
+
+  <default_input into="flag">
+    <generator type="flag_generator"/>
+  </default_input>
+
+  <hint>A process keeps the environment it was started with for its whole life, in memory.</hint>
+  <solution>Search a RAM capture for the environment variable (strings on the image, grep for TELEMETRY_TOKEN=) and read the token from it; it is not present in any file on disk.</solution>
+
+  <requires>
+    <type>update</type>
+  </requires>
+
+  <CyBOK KA="F" topic="Main Memory Forensics">
+    <keyword>process information</keyword>
+    <keyword>artifacts and fragments</keyword>
+    <keyword>challenges of live forensics</keyword>
+  </CyBOK>
+  <CyBOK KA="MAT" topic="Malware Detection">
+    <keyword>identifying the presence of malware</keyword>
+    <keyword>evasion and countermeasures</keyword>
+  </CyBOK>
+</vulnerability>

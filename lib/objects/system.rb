@@ -29,7 +29,8 @@ class System
   # @param [Object] name of the system
   # @param [Object] attributes such as base box selection
   # @param [Object] module_selectors these are modules that define filters for selecting the actual modules to use
-  def initialize(name, attributes, module_selectors, scenario_file, options)
+  # @param [Integer, nil] memory_cap optional hard cap on RAM in MB, from the scenario's <memory_cap>
+  def initialize(name, attributes, module_selectors, scenario_file, options, memory_cap: nil)
     self.name = name
     self.attributes = attributes
     self.module_selectors = module_selectors
@@ -37,7 +38,7 @@ class System
     self.network_module_selections = []
     self.num_actioned_module_conflicts = 0
     self.memory = "512"
-    self.memory_cap = nil
+    self.memory_cap = memory_cap
     self.options = options
     self.scenario_path = scenario_file
     set_hostname

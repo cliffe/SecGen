@@ -30,6 +30,10 @@ class SystemReader < XMLReader
       # system attributes, such as basebox selection
       system_attributes = read_attributes(system_node)
 
+      # optional per-system RAM cap (MB); lowers the VM below the provider default
+      memory_cap_node = system_node.at_xpath('memory_cap')
+      memory_cap = memory_cap_node ? memory_cap_node.text.strip.to_i : nil
+
       # populate datastores in document order, deferring network_ip references
       system_node.xpath('input[@into_datastore]').each do |input_node|
         datastore_name = input_node.xpath('@into_datastore').to_s
@@ -153,10 +157,7 @@ class SystemReader < XMLReader
         end
 
       end
-      system = System.new(system_name, system_attributes, module_selectors, scenario_file, options)
-      # optional per-system RAM cap (MB); lowers the VM below the provider default
-      memory_cap_node = system_node.at_xpath('memory_cap')
-      system.memory_cap = memory_cap_node.text.strip.to_i if memory_cap_node
+      system = System.new(system_name, system_attributes, module_selectors, scenario_file, options, memory_cap: memory_cap)
       systems << system
     end
 
